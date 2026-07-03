@@ -1,0 +1,10 @@
+# Node
+node_modules/
+
+# wp-env local overrides (machine-specific, never commit)
+.wp-env.override.json
+
+# Logs and OS noise
+*.log
+.DS_Store
+Thumbs.db
