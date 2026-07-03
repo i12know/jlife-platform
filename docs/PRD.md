@@ -1,11 +1,11 @@
-﻿# J-Life_VN Digital Disciplemaking System PRD - Draft 1
+# J-Life_VN Digital Disciplemaking System PRD - Draft 1
 
-Owner: RP leadership / project sponsor
+Owner: Project leadership / project sponsor
 Status: Draft for review
 Created: 2026-07-03
 Related project: `G:\Shared drives\RP Google Drive\Sonlife\J-Life_VN`
 Related source materials: Knowing Him, Harmony Bible, SonLife / J-Life disciplemaking framework
-Intended review audience: RP leadership, SonLife/J-Life partners, Vietnamese ministry partners, potential technical contributors
+Intended review audience: project leadership, SonLife/J-Life partners, Vietnamese ministry partners, potential technical contributors
 
 ## 1. Product Summary
 
@@ -158,7 +158,7 @@ The MVP should validate whether Vietnamese partners actually need a custom syste
 - Invite link or invite code.
 - Basic member roles: participant, huddle leader, admin.
 - Group discussion thread per lesson.
-- Optional private reflection notes visible only to the participant unless explicitly shared.
+- Optional private reflection notes visible only to the participant in normal application workflows unless explicitly shared.
 - Simple progress indicators.
 - Leader view showing participant progress at a non-invasive level.
 - Basic content management through structured files or simple admin workflow.
@@ -181,7 +181,7 @@ The MVP should validate whether Vietnamese partners actually need a custom syste
 
 ### Phase 0: Review And Discernment
 
-- Review this PRD with RP leadership and Vietnamese ministry partners.
+- Review this PRD with project leadership and Vietnamese ministry partners.
 - Decide whether to create a GitHub repository now for planning and prototypes.
 - Confirm project naming and ownership.
 - Contact relevant rights holders before reproducing source content.
@@ -275,9 +275,10 @@ Role requirements:
 
 ### 9.6 Notes And Responses
 
-- Private notes are visible only to the author by default.
+- Private notes are visible only to the author by default in normal application workflows.
 - Shared responses must require explicit participant action.
 - Leaders should not receive sensitive journal content unless shared.
+- Product copy and privacy policy must be honest that trusted system administrators, database operators, backup operators, or incident responders may technically access stored notes unless a later phase adds application-layer encryption.
 - The system should encourage in-person or trusted huddle conversation rather than replacing it.
 
 ### 9.7 Progress
@@ -351,7 +352,7 @@ Default stack direction:
 
 - **Primary platform:** WordPress with Disciple.Tools evaluated first as the disciplemaking CRM / huddle / cohort foundation.
 - **Primary extension model:** Disciple.Tools plugin first; WordPress companion plugin second if Disciple.Tools cannot cleanly own the study/huddle UX.
-- **Primary integration pattern:** ChMeetings remains the likely CRM/source-of-truth for existing RP/VAY people, groups, churches/ministries, and selected operational data; private discipleship reflections should remain in the J-Life_VN / Disciple.Tools layer unless explicitly shared and approved.
+- **Primary integration pattern:** ChMeetings remains the likely CRM/source-of-truth for existing approved people, groups, churches/ministries, and selected operational data in contexts that already use it; private discipleship reflections should remain in the J-Life_VN / Disciple.Tools layer unless explicitly shared and approved.
 - **Primary mobile strategy:** keep WordPress/Disciple.Tools as the default platform/backend while supporting the right participant mobile client: responsive web, PWA-style front end, Disciple.Tools mobile app/plugin integration, or a future companion mobile app if field testing proves it necessary. The PRD should avoid creating a separate standalone backend by default; it should not prohibit a separate mobile client.
 - **Primary content strategy:** portable structured content using WordPress custom post types, taxonomies, metadata, or exportable Markdown/JSON schemas; content must remain rights-aware and translation-reviewable. Do not assume the Disciple.Tools theme must also be the public study-content theme.
 - **Primary auth/permissions strategy:** reuse WordPress and Disciple.Tools users, roles, capabilities, groups, and permission models wherever feasible.
@@ -405,10 +406,10 @@ Repo name decision:
 
 Rationale:
 
-- It is short, clear, and durable while allowing the platform to support J-Life_VN, VAY, and other SonLife/J-Life-related discipleship use cases over time.
+- It is short, clear, and durable while allowing the platform to support J-Life_VN and other SonLife/J-Life-related discipleship use cases over time.
 - It can hold PRD/docs now, architecture spikes next, and plugin/code work later.
 - It avoids locking the repository to one geography, one ministry context, or one implementation layer such as huddles, WordPress, Disciple.Tools, or app.
-- It leaves room for Vietnamese partners and VAY/SonLife leaders to help name public-facing products separately from the technical repo.
+- It leaves room for Vietnamese partners and SonLife/J-Life leaders to help name public-facing products separately from the technical repo.
 
 Retired alternatives:
 
@@ -520,7 +521,7 @@ Possible measures:
 
 ## 18. Recommended Next Steps
 
-1. Review and revise this PRD with RP leadership and the project sponsor.
+1. Review and revise this PRD with project leadership and the project sponsor.
 2. Decide whether to create a private GitHub repo for planning.
 3. Create the `jlife-platform` GitHub repository under the chosen owner/organization.
 4. Identify the first pilot audience and huddle leader.
@@ -534,6 +535,7 @@ Possible measures:
 - 2026-07-03: J-Life_VN identified the need to consider digital system work beyond existing Knowing Him and Harmony Bible tools.
 - 2026-07-03: Key gaps identified: Vietnamese language support, community forum, private small-group huddle structure, leader/member roles, group discussion flow, and cohort-based discipleship support.
 - 2026-07-03: Draft PRD created for review before GitHub repository creation or software build.
+- 2026-07-03: Supporting docs added for technical analysis, architecture, roadmap, content rights, and integration boundaries.
 ## 20. Architecture Addendum: WordPress, Disciple.Tools, And ChMeetings
 
 Added: 2026-07-03
@@ -541,7 +543,7 @@ Status: Draft PRD update for review
 
 ### 20.1 Why This Changes The PRD
 
-After reviewing the existing project portfolio, future J-Life_VN system work should not begin from a generic standalone backend/platform assumption. RP/VAY already has a ChMeetings-centered CRM environment and existing WordPress integration experience. One existing VAY ministry event system uses ChMeetings as core registration/profile data, WordPress as the operations/admin surface, and Python middleware for durable sync. The project sponsor is also more familiar with WordPress than with other application stacks.
+After reviewing the existing project portfolio, future J-Life_VN system work should not begin from a generic standalone backend/platform assumption. Existing ministry operations already include a ChMeetings-centered CRM environment and WordPress integration experience. One existing ministry event system uses ChMeetings as core registration/profile data, WordPress as the operations/admin surface, and Python middleware for durable sync. The project sponsor is also more familiar with WordPress than with other application stacks.
 
 Disciple.Tools is especially relevant because it is a WordPress-based disciple-making movement CRM. Its public project describes a WordPress theme with contacts, groups, generational tracking, roles/permissions, metrics, REST API, hooks, plugins, secure collaboration, mobile-friendly behavior, and multilingual support. Its maintainers recommend building new features as plugins first rather than modifying the core theme.
 
@@ -566,7 +568,7 @@ If ChMeetings is the local church CRM source of truth, then the J-Life platform 
 
 Future system work should follow the established ChMeetings portfolio pattern:
 
-- Document tenant and scope explicitly: RP church, VAY, Vietnamese District, or ministry-level context.
+- Document tenant and scope explicitly: local church, regional/network, or ministry-level context.
 - Store external IDs for ChMeetings people, groups, churches, ministries, and events where relevant.
 - Isolate ChMeetings field names behind a `CHM_FIELDS`-style mapping module.
 - Use deterministic REST API calls for production sync rather than scraping or AI-only tooling.
@@ -601,7 +603,7 @@ The MVP should still begin with field validation and 5-7 pilot lessons, but the 
 - Can Harmony Bible provide an approved API, export, embed path, or licensing agreement for Vietnamese display?
 - Can J-Life_VN huddles map to Disciple.Tools groups without awkward workarounds?
 - Should participants be WordPress users, Disciple.Tools contacts, or both?
-- Can private reflections be protected from leaders/admins unless intentionally shared?
+- Can private reflections be protected from leaders and normal users unless intentionally shared, while honestly disclosing trusted admin/database access limits?
 - Can leader/cohort workflows be modeled through existing Disciple.Tools permissions and workflows?
 - Should ChMeetings sync be deferred until after the first field pilot?
 - Which ChMeetings tenant/scope would be used first, if any: an existing US-based church/ministry tenant, a district-level tenant, or no ChMeetings tenant during pilot?
@@ -666,7 +668,7 @@ Recommended first integration issues:
 - 2026-07-03: Local portfolio review added WordPress/Disciple.Tools-first architecture consideration and ChMeetings integration readiness requirements.
 - 2026-07-03: PRD direction changed from generic standalone app/PWA default to WordPress/Disciple.Tools-first platform/backend, with mobile-first UX and possible mobile-client integration preserved as requirements.
 - 2026-07-03: Disciple.Tools theme architecture clarified: prefer testing WordPress multisite with a Disciple.Tools private workflow subsite and a separate content subsite/app surface for public study content and Harmony Bible references.
-- 2026-07-03: Repo name initially considered as `jlife-vn`, then changed to `jlife-platform` to allow broader J-Life/SonLife discipleship platform use across J-Life_VN, VAY, and related ministry contexts.
+- 2026-07-03: Repo name initially considered as `jlife-vn`, then changed to `jlife-platform` to allow broader J-Life/SonLife discipleship platform use across J-Life_VN and related ministry contexts.
 ## 21. Public Repository Safety Notes
 
 Added: 2026-07-03

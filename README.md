@@ -5,6 +5,11 @@ J-Life Platform is an early-stage product and architecture exploration for a Son
 This repository is starting as a planning and prototype space. The first source of truth is the product requirements draft:
 
 - [Product Requirements](docs/PRD.md)
+- [Technical Analysis](docs/technical-analysis.md) — verified findings on Disciple.Tools, the multisite plugin, Harmony Bible, Knowing Him, and Vietnamese localization
+- [Architecture](docs/architecture.md) — proposed two-subsite multisite design, identity model, content model, and custom plugins
+- [Roadmap](docs/roadmap.md) — phased development plan with spikes, milestones, and exit criteria
+- [Content Rights Register](docs/content-rights.md) — rights inventory and handling rules
+- [Integration Boundaries](docs/integration-boundaries.md) — data ownership and sync rules across ChMeetings, Disciple.Tools, and the study surface
 
 ## Current Direction
 
