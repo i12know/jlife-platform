@@ -74,6 +74,28 @@ if (groupExists) {
   }
 }
 
+step('Creating placeholder study content on STUDY (Scripture references only)');
+// Regular posts for now; they migrate to jlife_series/jlife_lesson CPTs once
+// the jlife-studies plugin exists (#14/#13). No copied Bible/KH/HB text.
+const studyPosts = wpGet(['post', 'list', '--post_type=post', '--field=post_title', `--url=${BASE_URL}`]) || '';
+if (studyPosts.includes('Placeholder Lesson')) {
+  console.log('Placeholder study content already exists.');
+} else {
+  wp([
+    'post', 'create',
+    '--post_title=Placeholder Series: Cuộc đời Chúa Giê-xu (pilot)',
+    '--post_content=Placeholder for the pilot study series. Real content follows the /content schema (#5). Rights rule: Scripture references only — no copied Bible text.',
+    '--post_status=publish', `--url=${BASE_URL}`,
+  ]);
+  wp([
+    'post', 'create',
+    '--post_title=Placeholder Lesson 1: Kêu gọi môn đồ',
+    '--post_content=Scripture reference: Mác 1:16-20 (VIE2010 — reference only, read at bible.com/bible/151/MRK.1.VIE2010). Sections per architecture.md §4: teaching, reflection, live-it-out, prayer, huddle discussion prompts.',
+    '--post_status=publish', `--url=${BASE_URL}`,
+  ]);
+  console.log('Placeholder series + lesson created on STUDY.');
+}
+
 console.log(`
 Seed complete. Test accounts (password: "${PASSWORD}"):
   admin         super admin        ${BASE_URL}/wp-admin/network/

@@ -17,6 +17,8 @@ Tooling: [`@wordpress/env` (wp-env)](https://developer.wordpress.org/block-edito
 
 No local PHP, Composer, MySQL, or WP-CLI needed — everything runs in containers (WP-CLI is available via `npm run env:cli`).
 
+**Windows shells:** native PowerShell is a fully supported happy path — all orchestration is Node (no bash scripts), so nothing here requires a Unix shell. If you prefer WSL2 as your working shell, that works too: enable Docker Desktop's WSL2 integration for your distro, clone the repo inside the WSL2 filesystem (e.g. `~/src/jlife-platform`) for much faster file I/O, and run the same `npm` commands there.
+
 ## 2. Windows 10 + WSL2: disk-space planning (read before installing Docker)
 
 Docker Desktop puts everything on `C:` by default. If `C:` is tight, plan locations **before** the first `docker` run — moving later is possible but slower.

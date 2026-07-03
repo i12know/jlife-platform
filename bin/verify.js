@@ -47,17 +47,27 @@ async function httpStatus(url) {
   const hubLang = wpGet(['option', 'get', 'WPLANG', `--url=${HUB_URL}`]) || '(empty)';
   check('HUB locale is Vietnamese (vi)', hubLang === 'vi', hubLang);
 
-  for (const login of ['leader1', 'participant1']) {
+  for (const login of ['leader1', 'coach1', 'participant1', 'participant2', 'editor1']) {
     check(`user ${login} exists`, wpGet(['user', 'get', login, '--field=user_login']) === login);
   }
+  const leaderRoles = wpGet(['user', 'get', 'leader1', '--field=roles', `--url=${HUB_URL}`]) || '';
+  check('leader1 has the multiplier role on HUB', leaderRoles.includes('multiplier'), leaderRoles);
   const hubRoles = wpGet(['user', 'list', '--field=user_login', `--url=${HUB_URL}`]) || '';
   check('participant1 has NO role on HUB', !hubRoles.split('\n').includes('participant1'));
+
+  step('Verifying seed data');
+  const hubGroups = wpGet(['post', 'list', '--post_type=groups', '--field=post_title', `--url=${HUB_URL}`]) || '';
+  check('sample huddle (D.T group) exists on HUB', hubGroups.includes('Pilot Huddle'), hubGroups.replace(/\n/g, ' | '));
+  const studyPosts = wpGet(['post', 'list', '--post_type=post', '--field=post_title', `--url=${BASE_URL}`]) || '';
+  check('placeholder lesson exists on STUDY', studyPosts.includes('Placeholder Lesson'), '');
 
   step('Verifying HTTP responses');
   const studyStatus = await httpStatus(`${BASE_URL}/`);
   check('STUDY front page responds 200', studyStatus === 200, `status ${studyStatus}`);
   const hubStatus = await httpStatus(`${HUB_URL}/wp-login.php`);
   check('HUB login page responds 200', hubStatus === 200, `status ${hubStatus}`);
+  const networkStatus = await httpStatus(`${BASE_URL}/wp-admin/network/`);
+  check('Network admin reachable (redirects to login)', networkStatus === 200, `status ${networkStatus}`);
 
   const failed = results.filter((r) => !r.ok);
   console.log(`\n${results.length - failed.length}/${results.length} checks passed.`);
