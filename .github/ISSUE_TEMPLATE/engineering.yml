@@ -1,0 +1,32 @@
+name: Engineering task
+description: Code, tooling, or infrastructure work
+labels: ["engineering"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why this is needed; link docs/architecture.md or the parent issue.
+    validations:
+      required: true
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Tasks
+      value: |
+        - [ ] ...
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public-repo safety (PRD §21)
+      options:
+        - label: This issue and its deliverables will contain no partner-identifying info, real contact data, secrets, or unlicensed content
+          required: true

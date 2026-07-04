@@ -1,6 +1,9 @@
 # Node
 node_modules/
 
+# PHP / Composer (per-plugin vendor dirs, when composer.json lands)
+vendor/
+
 # wp-env local overrides (machine-specific, never commit)
 .wp-env.override.json
 

@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Architecture and roadmap docs
+    url: https://github.com/i12know/jlife-platform/tree/main/docs
+    about: Read the PRD, technical analysis, architecture, and roadmap before filing.

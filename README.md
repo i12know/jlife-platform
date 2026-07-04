@@ -28,6 +28,18 @@ This repository is starting as a planning and prototype space. The first source 
 - Map ChMeetings, Disciple.Tools, and participant-facing content data ownership.
 - Create initial technical spikes for WordPress multisite, Disciple.Tools plugin compatibility, and content modeling.
 
+## Repository Layout
+
+| Path | Purpose |
+|---|---|
+| `docs/` | PRD, technical analysis, architecture, roadmap, rights, spike write-ups (`docs/spikes/`) |
+| `content/` | Portable study content: schemas, pilot lessons, harmony outline ([rules](content/README.md)) |
+| `plugins/jlife-studies` | Study content engine for STUDY (scaffold) |
+| `plugins/jlife-huddles` | Huddle discussion/notes/progress for STUDY — privacy-critical (scaffold) |
+| `plugins/jlife-bridge` | STUDY ↔ Disciple.Tools HUB identity mapping and read API (scaffold) |
+| `design/`, `prototypes/` | UX artifacts; disposable spike experiments |
+| `bin/`, `config/`, `.wp-env.json` | Local dev environment ([docs](docs/dev-environment.md)) |
+
 ## Repository Safety
 
 This repository may eventually become public. Do not commit private partner names, contact details, private relationship maps, donor/support information, travel details, sensitive ministry context, credentials, or exports from private systems.
