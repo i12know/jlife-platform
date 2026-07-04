@@ -64,5 +64,10 @@ jobs:
         working-directory: plugins/jlife-huddles
       - name: Start wp-env
         run: npx wp-env start
+      # wp-env only downloads the WP PHPUnit suite during its configure
+      # phase; this guarantees the suite + wp-tests-config.php exist even
+      # when that phase was skipped (cached/interrupted instances).
+      - name: Ensure WordPress PHPUnit test library
+        run: node bin/ensure-wp-tests.js
       - name: Run jlife-huddles test suite
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-huddles vendor/bin/phpunit

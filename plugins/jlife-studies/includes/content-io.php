@@ -108,12 +108,12 @@ function jlife_studies_import_document( $doc ) {
 	}
 
 	$post_type = 'lesson' === $type ? 'jlife_lesson' : 'jlife_series';
-	$stable_id = 'lesson' === $type ? $doc['lesson_id'] : $doc['series_id'];
+	$stable_id = (string) ( 'lesson' === $type ? $doc['lesson_id'] : $doc['series_id'] );
 	$existing  = jlife_studies_find_post( $post_type, $stable_id );
 
 	$postarr = array(
 		'post_type'   => $post_type,
-		'post_title'  => $doc['title'],
+		'post_title'  => (string) $doc['title'],
 		'post_name'   => sanitize_title( $stable_id ),
 		'post_status' => 'publish',
 	);
@@ -132,6 +132,9 @@ function jlife_studies_import_document( $doc ) {
 		$meta_key = '_jlife_' . $field;
 		if ( array_key_exists( $field, $doc ) ) {
 			$encoded = wp_json_encode( $doc[ $field ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+			if ( false === $encoded ) {
+				return new WP_Error( 'jlife_encode_failed', "Could not JSON-encode field {$field}." );
+			}
 			update_post_meta( $post_id, $meta_key, wp_slash( $encoded ) );
 		} else {
 			delete_post_meta( $post_id, $meta_key );
@@ -152,18 +155,21 @@ function jlife_studies_import_document( $doc ) {
  * @param array $doc     Decoded lesson document.
  */
 function jlife_studies_sync_taxonomies( $post_id, $doc ) {
-	$events = array_merge(
-		array( $doc['primary_gospel_event_id'] ),
-		isset( $doc['related_gospel_event_ids'] ) ? $doc['related_gospel_event_ids'] : array()
+	$events = array_map(
+		'strval',
+		array_merge(
+			array( $doc['primary_gospel_event_id'] ),
+			isset( $doc['related_gospel_event_ids'] ) ? (array) $doc['related_gospel_event_ids'] : array()
+		)
 	);
 	wp_set_object_terms( $post_id, $events, 'gospel_event' );
 
-	$phase = isset( $doc['phase'] ) && null !== $doc['phase'] ? array( $doc['phase'] ) : array();
+	$phase = isset( $doc['phase'] ) && null !== $doc['phase'] ? array( (string) $doc['phase'] ) : array();
 	wp_set_object_terms( $post_id, $phase, 'gospel_phase' );
 
 	$refs = array();
-	foreach ( $doc['scripture_reference'] as $ref ) {
-		$refs[] = $ref['display'];
+	foreach ( (array) $doc['scripture_reference'] as $ref ) {
+		$refs[] = (string) $ref['display'];
 	}
 	wp_set_object_terms( $post_id, $refs, 'scripture_ref' );
 }
@@ -183,7 +189,7 @@ function jlife_studies_export_document( $post_id ) {
 
 	$doc = array();
 	foreach ( jlife_studies_field_order( $type ) as $field ) {
-		$encoded = get_post_meta( $post_id, '_jlife_' . $field, true );
+		$encoded = (string) get_post_meta( $post_id, '_jlife_' . $field, true );
 		if ( '' === $encoded ) {
 			continue; // Field was absent in the source file (optional field).
 		}
@@ -201,13 +207,16 @@ function jlife_studies_export_document( $post_id ) {
  */
 function jlife_studies_serialize_document( $doc ) {
 	$json = wp_json_encode( $doc, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+	if ( false === $json ) {
+		return "null\n";
+	}
 	// PHP pretty-print uses 4-space indent; content files use 2-space.
-	$json = preg_replace_callback(
+	$halved = preg_replace_callback(
 		'/^ +/m',
 		function ( $m ) {
 			return str_repeat( ' ', (int) ( strlen( $m[0] ) / 2 ) );
 		},
 		$json
 	);
-	return $json . "\n";
+	return ( null === $halved ? $json : $halved ) . "\n";
 }

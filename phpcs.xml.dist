@@ -26,12 +26,11 @@
 		</properties>
 	</rule>
 
-	<!-- Tests follow PHPUnit conventions: no WordPress file naming,
-	     docblocks, or output escaping requirements. -->
+	<!-- Tests follow PHPUnit conventions for file naming and CLI output.
+	     Note: exclude-pattern only propagates on single-sniff refs, not on
+	     ruleset refs like WordPress-Docs — so docs sniffs DO apply to tests;
+	     test files carry docblocks like everything else. -->
 	<rule ref="WordPress.Files.FileName">
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-	<rule ref="WordPress-Docs">
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 	<rule ref="WordPress.Security.EscapeOutput">

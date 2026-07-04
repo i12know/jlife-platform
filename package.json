@@ -15,7 +15,8 @@
     "env:verify": "node bin/verify.js",
     "env:up": "node bin/start.js && node bin/setup.js && node bin/seed.js && node bin/verify.js",
     "env:cli": "wp-env run cli -- wp",
-    "content:validate": "node bin/validate-content.js && node bin/validate-harmony.js"
+    "content:validate": "node bin/validate-content.js && node bin/validate-harmony.js",
+    "test:php": "node bin/ensure-wp-tests.js && wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-huddles vendor/bin/phpunit"
   },
   "devDependencies": {
     "@wordpress/env": "^10.0.0"

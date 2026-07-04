@@ -31,17 +31,20 @@ class Jlife_Content_Command {
 			if ( ! file_exists( $file ) ) {
 				WP_CLI::error( "File not found: {$file}" );
 			}
-			$doc = json_decode( file_get_contents( $file ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions -- local file, not remote.
-			if ( null === $doc ) {
+			$raw = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions -- local file, not remote.
+			$doc = is_string( $raw ) ? json_decode( $raw, true ) : null;
+			if ( ! is_array( $doc ) ) {
 				WP_CLI::error( "Invalid JSON: {$file}" );
+			} else {
+				$post_id = jlife_studies_import_document( $doc );
+				if ( is_wp_error( $post_id ) ) {
+					WP_CLI::error( "{$file}: " . $post_id->get_error_message() );
+				} else {
+					$type      = jlife_studies_document_type( $doc );
+					$stable_id = (string) ( 'lesson' === $type ? $doc['lesson_id'] : $doc['series_id'] );
+					WP_CLI::success( "Imported {$type} {$stable_id} as post {$post_id}." );
+				}
 			}
-			$post_id = jlife_studies_import_document( $doc );
-			if ( is_wp_error( $post_id ) ) {
-				WP_CLI::error( "{$file}: " . $post_id->get_error_message() );
-			}
-			$type      = jlife_studies_document_type( $doc );
-			$stable_id = 'lesson' === $type ? $doc['lesson_id'] : $doc['series_id'];
-			WP_CLI::success( "Imported {$type} {$stable_id} as post {$post_id}." );
 		}
 	}
 
@@ -64,7 +67,7 @@ class Jlife_Content_Command {
 	 * @param array $assoc_args Named args: dir, id.
 	 */
 	public function export( $args, $assoc_args ) {
-		$dir = rtrim( $assoc_args['dir'], '/' );
+		$dir = rtrim( (string) $assoc_args['dir'], '/' );
 		if ( ! is_dir( $dir ) && ! mkdir( $dir, 0755, true ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions -- CLI tooling writing outside WP uploads.
 			WP_CLI::error( "Cannot create directory: {$dir}" );
 		}
@@ -79,22 +82,23 @@ class Jlife_Content_Command {
 			)
 		);
 
-		$wanted = isset( $assoc_args['id'] ) ? $assoc_args['id'] : null;
+		$wanted = isset( $assoc_args['id'] ) ? (string) $assoc_args['id'] : null;
 		$count  = 0;
 		foreach ( $posts as $post ) {
 			$doc = jlife_studies_export_document( $post->ID );
 			if ( is_wp_error( $doc ) ) {
 				WP_CLI::error( $doc->get_error_message() );
+			} else {
+				$type      = jlife_studies_document_type( $doc );
+				$stable_id = (string) ( 'lesson' === $type ? $doc['lesson_id'] : $doc['series_id'] );
+				if ( null !== $wanted && $stable_id !== $wanted ) {
+					continue;
+				}
+				$path = "{$dir}/{$stable_id}.json";
+				file_put_contents( $path, jlife_studies_serialize_document( $doc ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions -- CLI tooling writing outside WP uploads.
+				WP_CLI::log( "Exported {$type} {$stable_id} -> {$path}" );
+				++$count;
 			}
-			$type      = jlife_studies_document_type( $doc );
-			$stable_id = 'lesson' === $type ? $doc['lesson_id'] : $doc['series_id'];
-			if ( null !== $wanted && $stable_id !== $wanted ) {
-				continue;
-			}
-			$path = "{$dir}/{$stable_id}.json";
-			file_put_contents( $path, jlife_studies_serialize_document( $doc ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions -- CLI tooling writing outside WP uploads.
-			WP_CLI::log( "Exported {$type} {$stable_id} -> {$path}" );
-			$count++;
 		}
 		WP_CLI::success( "Exported {$count} document(s)." );
 	}

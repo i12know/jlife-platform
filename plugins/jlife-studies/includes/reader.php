@@ -25,7 +25,11 @@ function jlife_studies_render_lesson( $content ) {
 		return $content;
 	}
 
-	$doc = jlife_studies_export_document( get_the_ID() );
+	$post_id = get_the_ID();
+	if ( ! $post_id ) {
+		return $content;
+	}
+	$doc = jlife_studies_export_document( $post_id );
 	if ( is_wp_error( $doc ) ) {
 		return $content;
 	}
@@ -33,10 +37,10 @@ function jlife_studies_render_lesson( $content ) {
 	$out = '';
 
 	$out .= '<section class="jlife-scripture"><h2>' . esc_html__( 'Scripture', 'jlife-studies' ) . '</h2><ul>';
-	foreach ( $doc['scripture_reference'] as $ref ) {
-		$display = esc_html( $ref['display'] );
+	foreach ( (array) $doc['scripture_reference'] as $ref ) {
+		$display = esc_html( (string) $ref['display'] );
 		if ( ! empty( $ref['deep_link'] ) ) {
-			$out .= '<li><a href="' . esc_url( $ref['deep_link'] ) . '">' . $display . '</a></li>';
+			$out .= '<li><a href="' . esc_url( (string) $ref['deep_link'] ) . '">' . $display . '</a></li>';
 		} else {
 			$out .= '<li>' . $display . '</li>';
 		}
@@ -52,13 +56,13 @@ function jlife_studies_render_lesson( $content ) {
 	foreach ( $prose_sections as $field => $heading ) {
 		$out .= '<section class="jlife-' . esc_attr( str_replace( '_', '-', $field ) ) . '">';
 		$out .= '<h2>' . esc_html( $heading ) . '</h2>';
-		$out .= wpautop( esc_html( $doc[ $field ] ) );
+		$out .= wpautop( esc_html( (string) $doc[ $field ] ) );
 		$out .= '</section>';
 	}
 
 	$out .= '<section class="jlife-reflection"><h2>' . esc_html__( 'Reflection Questions', 'jlife-studies' ) . '</h2><ol>';
-	foreach ( $doc['reflection_questions'] as $q ) {
-		$out .= '<li>' . esc_html( $q['text'] ) . '</li>';
+	foreach ( (array) $doc['reflection_questions'] as $q ) {
+		$out .= '<li>' . esc_html( (string) $q['text'] ) . '</li>';
 	}
 	$out .= '</ol></section>';
 
@@ -66,12 +70,12 @@ function jlife_studies_render_lesson( $content ) {
 	// home; on STUDY they render only for users who can edit posts.
 	if ( current_user_can( 'edit_others_posts' ) ) {
 		$out .= '<section class="jlife-huddle-prompts"><h2>' . esc_html__( 'Huddle Discussion Prompts (leader)', 'jlife-studies' ) . '</h2><ol>';
-		foreach ( $doc['huddle_discussion_prompts'] as $p ) {
-			$out .= '<li>' . esc_html( $p['text'] ) . '</li>';
+		foreach ( (array) $doc['huddle_discussion_prompts'] as $p ) {
+			$out .= '<li>' . esc_html( (string) $p['text'] ) . '</li>';
 		}
 		$out .= '</ol></section>';
 		$out .= '<section class="jlife-leader-notes"><h2>' . esc_html__( 'Leader Notes', 'jlife-studies' ) . '</h2>';
-		$out .= wpautop( esc_html( $doc['leader_notes'] ) );
+		$out .= wpautop( esc_html( (string) $doc['leader_notes'] ) );
 		$out .= '</section>';
 	}
 

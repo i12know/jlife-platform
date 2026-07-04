@@ -2,8 +2,9 @@
 /**
  * PHPUnit bootstrap: loads the WordPress test suite and this plugin.
  *
- * wp-env provides the suite at WP_TESTS_DIR (/wordpress-phpunit in the
- * tests-cli container). Run via:
+ * The wp-env instance provides the suite at WP_TESTS_DIR (/wordpress-phpunit
+ * in the tests-cli container); run `node bin/ensure-wp-tests.js` after
+ * `wp-env start` to guarantee it is populated. Run tests via:
  *   npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-huddles vendor/bin/phpunit
  *
  * @package jlife-huddles

@@ -11,8 +11,14 @@
  * @package jlife-huddles
  */
 
+/**
+ * Smoke tests for plugin bootstrap.
+ */
 class Test_Plugin_Loaded extends WP_UnitTestCase {
 
+	/**
+	 * The main plugin file loaded and defined its functions.
+	 */
 	public function test_plugin_bootstraps() {
 		$this->assertTrue(
 			function_exists( 'jlife_huddles_load_textdomain' ),
@@ -20,6 +26,9 @@ class Test_Plugin_Loaded extends WP_UnitTestCase {
 		);
 	}
 
+	/**
+	 * The textdomain loader is hooked on init.
+	 */
 	public function test_textdomain_hook_registered() {
 		$this->assertNotFalse(
 			has_action( 'init', 'jlife_huddles_load_textdomain' ),
