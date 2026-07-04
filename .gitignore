@@ -4,6 +4,9 @@ node_modules/
 # PHP / Composer (per-plugin vendor dirs, when composer.json lands)
 vendor/
 
+# Local source/reference artifacts - do not commit copied third-party content
+/source-artifacts/
+
 # wp-env local overrides (machine-specific, never commit)
 .wp-env.override.json
 
