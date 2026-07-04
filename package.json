@@ -14,7 +14,8 @@
     "env:seed": "node bin/seed.js",
     "env:verify": "node bin/verify.js",
     "env:up": "node bin/start.js && node bin/setup.js && node bin/seed.js && node bin/verify.js",
-    "env:cli": "wp-env run cli -- wp"
+    "env:cli": "wp-env run cli -- wp",
+    "content:validate": "node bin/validate-content.js"
   },
   "devDependencies": {
     "@wordpress/env": "^10.0.0"

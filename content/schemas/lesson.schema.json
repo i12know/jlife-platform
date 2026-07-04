@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jlife.test/schemas/lesson.schema.json",
+  "title": "Study Lesson",
+  "description": "A single portable lesson. Authored prose sections are Markdown strings (no raw HTML). Scripture appears as references only — never quoted text — until a licensed text path lands (docs/content-rights.md). Participant responses, huddle discussion, and progress are out of scope: this file is study content only.",
+  "type": "object",
+  "$defs": {
+    "markdown": {
+      "type": "string",
+      "description": "Markdown prose. No raw HTML."
+    },
+    "identifiedText": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(q|p)[0-9]{2}$",
+          "description": "Stable within the lesson (q01…, p01…). Never renumbered when wording changes — #13 round-trips on it."
+        },
+        "text": { "$ref": "#/$defs/markdown" }
+      },
+      "required": ["id", "text"],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "lesson_id": {
+      "type": "string",
+      "pattern": "^lsn-[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Stable, permanent ID (e.g. lsn-come-follow-me). Never renamed once published."
+    },
+    "series_id": {
+      "type": "string",
+      "pattern": "^ser-[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "order": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Position within the series; must agree with the series file's lessons array."
+    },
+    "title": { "type": "string", "minLength": 1 },
+    "source_language": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]+)*$"
+    },
+    "translation_status": {
+      "enum": ["draft", "translated", "theology-reviewed", "language-reviewed", "approved", "published"]
+    },
+    "source_attribution": {
+      "type": ["string", "null"],
+      "description": "Optional lesson-level override; null inherits from the series."
+    },
+    "rights_note": {
+      "type": ["string", "null"],
+      "description": "Optional lesson-level override; null inherits from the series."
+    },
+    "primary_gospel_event_id": {
+      "type": "string",
+      "pattern": "^r1922-[0-9]{3}[ab]?$",
+      "description": "Robertson event this lesson centers on (content/harmony/robertson-1922-outline.json). Must exist in the harmony dataset."
+    },
+    "related_gospel_event_ids": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^r1922-[0-9]{3}[ab]?$" },
+      "uniqueItems": true,
+      "description": "Additional Robertson events the lesson touches. May be empty."
+    },
+    "phase": {
+      "type": ["string", "null"],
+      "description": "One of the 5 SonLife phases once mapped; null until ministry review (#21)."
+    },
+    "sub_phase": {
+      "type": ["string", "null"],
+      "description": "Reserved for finer SonLife arrangement encoding; null for now."
+    },
+    "phase_mapping_status": {
+      "enum": ["pending", "proposed", "approved"],
+      "description": "Same enum and default (\"pending\") as the harmony dataset — the two files must never use different vocabularies for the same state."
+    },
+    "scripture_reference": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "./scripture-ref.schema.json" },
+      "description": "The passage(s) this lesson studies. References only — no quoted Scripture text anywhere in this file."
+    },
+    "teaching": { "$ref": "#/$defs/markdown" },
+    "outside_the_box": { "$ref": "#/$defs/markdown" },
+    "reflection_questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/identifiedText" },
+      "description": "Personal reflection questions (ids q01, q02, …)."
+    },
+    "live_it_out": { "$ref": "#/$defs/markdown" },
+    "prayer_prompt": { "$ref": "#/$defs/markdown" },
+    "huddle_discussion_prompts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/identifiedText" },
+      "description": "Prompts a leader uses in the huddle (ids p01, p02, …). Prompts are content; participant responses never live in these files."
+    },
+    "leader_notes": {
+      "$ref": "#/$defs/markdown",
+      "description": "Guidance for the huddle leader. Rendered only on HUB, never on STUDY."
+    }
+  },
+  "required": [
+    "schema_version",
+    "lesson_id",
+    "series_id",
+    "order",
+    "title",
+    "source_language",
+    "translation_status",
+    "source_attribution",
+    "rights_note",
+    "primary_gospel_event_id",
+    "related_gospel_event_ids",
+    "phase",
+    "sub_phase",
+    "phase_mapping_status",
+    "scripture_reference",
+    "teaching",
+    "outside_the_box",
+    "reflection_questions",
+    "live_it_out",
+    "prayer_prompt",
+    "huddle_discussion_prompts",
+    "leader_notes"
+  ],
+  "additionalProperties": false
+}

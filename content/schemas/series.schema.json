@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jlife.test/schemas/series.schema.json",
+  "title": "Study Series",
+  "description": "A portable study series: ordered collection of lessons plus series-level rights and workflow metadata. The WordPress DB is a rendering of this file, never its home (architecture.md §4).",
+  "type": "object",
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "series_id": {
+      "type": "string",
+      "pattern": "^ser-[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Stable, permanent ID (e.g. ser-following-jesus). Never renamed once published — #13 round-trips on it."
+    },
+    "title": { "type": "string", "minLength": 1 },
+    "description": {
+      "type": "string",
+      "description": "Markdown. What the series covers and who it is for."
+    },
+    "source_language": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]+)*$",
+      "description": "BCP-47 tag of the language the content was authored in, e.g. \"en\", \"vi\"."
+    },
+    "translation_status": {
+      "enum": ["draft", "translated", "theology-reviewed", "language-reviewed", "approved", "published"],
+      "description": "Workflow state (content/README.md). States advance in order; a substantive edit returns the file to draft."
+    },
+    "source_attribution": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Required. Who authored/adapted this content and from what tradition or framework. Inherited by lessons unless they override."
+    },
+    "rights_note": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Required. Rights status of the content (docs/content-rights.md). Inherited by lessons unless they override."
+    },
+    "lessons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^lsn-[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "description": "Ordered lesson_ids. Order here is the series order; lessons also carry their own order field, and the two must agree."
+    }
+  },
+  "required": [
+    "schema_version",
+    "series_id",
+    "title",
+    "source_language",
+    "translation_status",
+    "source_attribution",
+    "rights_note",
+    "lessons"
+  ],
+  "additionalProperties": false
+}

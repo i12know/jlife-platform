@@ -16,4 +16,14 @@ Study content lives here as portable, rights-aware files. The WordPress database
 - Scripture as **references only** (plus VIE2010 deep links) until a text license/API path lands — [content-rights.md](../docs/content-rights.md).
 - No copied Knowing Him, Harmony Bible, or other copyrighted text. The harmony outline is sourced from Robertson/Project Gutenberg, never from harmony-bible.com's rendering.
 - No partner-identifying information (PRD §21). Sample identities use `.test` domains.
-- Translation workflow states: `draft → translated → theology-reviewed → language-reviewed → approved → published`.
+- Translation workflow states: `draft → translated → theology-reviewed → language-reviewed → approved → published`. A substantive edit returns the file to `draft`; `published` means the STUDY rendering may be generated from it.
+
+## Authoring & validation
+
+Series/lesson file formats, ID conventions, and a copyable example live in [`schemas/README.md`](schemas/README.md). Validate content files with:
+
+```
+npm run content:validate
+```
+
+The validator checks rights metadata, Scripture reference shape (shared with the harmony dataset), Robertson event ID linkage, phase-pending posture (#21), stable question/prompt IDs, and series↔lesson ordering.
