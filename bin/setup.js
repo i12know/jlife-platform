@@ -23,10 +23,25 @@ const ARTIFACTS = {
     'https://github.com/DiscipleTools/disciple-tools-demo-content/releases/download/0.6.7/disciple-tools-demo-content.zip',
 };
 
-step('Checking WordPress is installed (did env:start finish?)');
-if (wpGet(['core', 'is-installed']) === null && wpGet(['core', 'version']) === null) {
+step('Checking WordPress is available (did env:start finish?)');
+if (wpGet(['core', 'version']) === null) {
   console.error('WordPress does not respond. Run "npm run env:start" first.');
   process.exit(1);
+}
+
+if (wpGet(['core', 'is-installed']) === null) {
+  wp([
+    'core',
+    'install',
+    `--url=${BASE_URL}`,
+    '--title=J-Life Dev Network',
+    '--admin_user=admin',
+    '--admin_password=password',
+    '--admin_email=admin@example.test',
+    '--skip-email',
+  ]);
+} else {
+  console.log('WordPress database already installed.');
 }
 
 step('Converting to subdirectory multisite (skipped if already a network)');

@@ -1,6 +1,6 @@
 # Local Development Environment
 
-Status: Authored 2026-07-03 (issue #15). Awaiting first verification run on a Docker-equipped machine — see §7.
+Status: Verified 2026-07-03 (issue #15) on a Docker-equipped Windows machine and a separate cloud Docker environment.
 Related: [architecture.md](architecture.md) §8
 
 One reproducible command set gives every contributor the same disposable environment: a **subdirectory WordPress multisite** with the **STUDY** subsite at `/` (participant surface) and the **HUB** subsite at `/hub/` running the **Disciple.Tools** theme, plus seeded test users and sample data.
@@ -69,7 +69,7 @@ npm run env:up     # start containers + convert to multisite + install D.T + see
 
 | Command | What it does |
 |---|---|
-| `npm run env:start` | Start (or create) the containers |
+| `npm run env:start` | Start (or create) the containers via `bin/start.js`, which preloads the pinned WordPress version for deterministic startup |
 | `npm run env:setup` | Idempotent: multisite conversion, D.T theme + plugins (pinned versions), HUB subsite, `vi` locale on HUB, permalinks |
 | `npm run env:seed` | Idempotent: test users per role, sample huddle group + contacts |
 | `npm run env:verify` | Read-only PASS/FAIL audit of the whole setup (also intended for CI) |
@@ -98,7 +98,7 @@ Port busy? Set `WP_ENV_PORT=8890` (env var) before `env:start`; the scripts pick
 
 ## 4. What the setup pins
 
-Artifact versions are pinned in [`bin/setup.js`](../bin/setup.js): Disciple.Tools theme **1.82.2**, disciple-tools-multisite **1.17.0**, Magic Links (bulk-magic-link-sender) **1.33.0**, demo-content **0.6.7**. Bump deliberately and note behavior changes in `docs/spikes/`.
+WordPress core is pinned in [`.wp-env.json`](../.wp-env.json) and preloaded by [`bin/start.js`](../bin/start.js). This avoids `wp-env` reaching for a moving latest version during startup, and it also prevents Windows/Node DNS resolver failures from blocking a pinned environment. Artifact versions are pinned in [`bin/setup.js`](../bin/setup.js): Disciple.Tools theme **1.82.2**, disciple-tools-multisite **1.17.0**, Magic Links (bulk-magic-link-sender) **1.33.0**, demo-content **0.6.7**. Bump deliberately and note behavior changes in `docs/spikes/`.
 
 Multisite conversion happens inside the container's volume (wp-env manages `wp-config.php`), so after `env:destroy` simply re-run `env:setup` — that's by design; the environment is disposable.
 
@@ -117,7 +117,7 @@ Richer sample data: the official **Demo Content** plugin is activated on HUB —
 
 ## 7. Verifying on another (Docker-equipped) machine
 
-This config was authored on a machine without Docker, so the first full run doubles as its acceptance test:
+Acceptance procedure for a new Docker-equipped machine:
 
 1. Clone the repo, `npm install`, `npm run env:up`.
 2. `env:verify` must end with `Environment verified.` (exit code 0).
