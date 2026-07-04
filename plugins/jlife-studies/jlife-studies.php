@@ -11,6 +11,8 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       jlife-studies
  * Domain Path:       /languages
+ *
+ * @package jlife-studies
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -22,6 +24,9 @@ defined( 'ABSPATH' ) || exit;
  */
 add_action( 'init', 'jlife_studies_load_textdomain' );
 
+/**
+ * Load the plugin text domain for translation.
+ */
 function jlife_studies_load_textdomain() {
 	load_plugin_textdomain( 'jlife-studies', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }

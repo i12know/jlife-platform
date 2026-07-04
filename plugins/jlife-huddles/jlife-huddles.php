@@ -11,6 +11,8 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       jlife-huddles
  * Domain Path:       /languages
+ *
+ * @package jlife-huddles
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -23,6 +25,9 @@ defined( 'ABSPATH' ) || exit;
  */
 add_action( 'init', 'jlife_huddles_load_textdomain' );
 
+/**
+ * Load the plugin text domain for translation.
+ */
 function jlife_huddles_load_textdomain() {
 	load_plugin_textdomain( 'jlife-huddles', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }

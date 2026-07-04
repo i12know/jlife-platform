@@ -1,5 +1,7 @@
 # jlife-platform
 
+[![CI](https://github.com/i12know/jlife-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/i12know/jlife-platform/actions/workflows/ci.yml)
+
 J-Life Platform is an early-stage product and architecture exploration for a SonLife/J-Life disciplemaking platform that can support structured study content, private huddles, coaching cohorts, and long-term localization needs.
 
 This repository is starting as a planning and prototype space. The first source of truth is the product requirements draft:

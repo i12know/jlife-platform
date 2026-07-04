@@ -1,0 +1,21 @@
+{
+    "name": "i12know/jlife-platform",
+    "description": "Dev tooling for the J-Life platform monorepo — coding standards and static analysis for plugins/**.",
+    "license": "GPL-2.0-or-later",
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "wp-coding-standards/wpcs": "^3.1",
+        "phpstan/phpstan": "^2.0",
+        "szepeviktor/phpstan-wordpress": "^2.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "scripts": {
+        "lint:php": "phpcs",
+        "lint:php:fix": "phpcbf",
+        "analyse": "phpstan analyse"
+    }
+}
