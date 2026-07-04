@@ -164,7 +164,8 @@ function jlife_studies_sync_taxonomies( $post_id, $doc ) {
 	);
 	wp_set_object_terms( $post_id, $events, 'gospel_event' );
 
-	$phase = isset( $doc['phase'] ) && null !== $doc['phase'] ? array( (string) $doc['phase'] ) : array();
+	// isset() is false for a stored null, which is exactly the pending case.
+	$phase = isset( $doc['phase'] ) ? array( (string) $doc['phase'] ) : array();
 	wp_set_object_terms( $post_id, $phase, 'gospel_phase' );
 
 	$refs = array();
