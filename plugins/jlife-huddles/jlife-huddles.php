@@ -17,11 +17,19 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/includes/schema.php';
+require_once __DIR__ . '/includes/gate.php';
+require_once __DIR__ . '/includes/data.php';
+
+register_activation_hook( __FILE__, 'jlife_huddles_install_tables' );
+
 /**
- * Scaffold only (issue #14). This plugin is privacy-critical: its data model
- * and capability checks are designed and tested in spike S5 (#12) before any
- * feature code lands here. Responsibilities: see README.md and
- * docs/architecture.md §5–§6; boundaries: docs/integration-boundaries.md.
+ * Spike S5 (#12) data model: privacy-scoped custom tables (schema.php), a
+ * single capability gate every access decision flows through (gate.php),
+ * and a data API that refuses to touch the DB without the gate (data.php).
+ * Access-control tests: tests/test-access-control.php, run by CI (#16).
+ * Responsibilities: see README.md and docs/architecture.md §5–§6;
+ * boundaries: docs/integration-boundaries.md.
  */
 add_action( 'init', 'jlife_huddles_load_textdomain' );
 
