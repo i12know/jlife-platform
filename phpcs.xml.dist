@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<ruleset name="jlife-platform">
+	<description>WordPress coding standards for the J-Life plugins.</description>
+
+	<file>plugins</file>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+	<arg name="parallel" value="8"/>
+
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+
+	<rule ref="WordPress"/>
+
+	<config name="minimum_wp_version" value="6.0"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="jlife-studies"/>
+				<element value="jlife-huddles"/>
+				<element value="jlife-bridge"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Tests follow PHPUnit conventions for file naming and CLI output.
+	     Note: exclude-pattern only propagates on single-sniff refs, not on
+	     ruleset refs like WordPress-Docs — so docs sniffs DO apply to tests;
+	     test files carry docblocks like everything else. -->
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.Security.EscapeOutput">
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+</ruleset>

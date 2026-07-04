@@ -58,4 +58,9 @@ Mapping the 184 Robertson sections onto the 5 SonLife phases is ministry judgmen
 
 ## Validation
 
-The JSON was cross-checked against the Robertson "Table for Finding Any Passage" (every section has at least one scripture reference; all 185 events including the §128a/§128b split are present). Run `python3 tools/validate-harmony.py` (once that script exists) for automated round-trip validation.
+The JSON was cross-checked against the Robertson "Table for Finding Any Passage" (every section has at least one scripture reference; all 185 events including the §128a/§128b split are present). Run `node bin/validate-harmony.js` (also part of `npm run content:validate` and CI) for automated validation: dataset invariants, JSON↔CSV sync, and phase posture.
+
+Phase posture rules (enforced by the validator, per #21's workflow):
+
+- `phase: null` requires `phase_mapping_status: "pending"` — unless `notes` is non-empty, which is how #21 records a reviewed non-narrative section deliberately left unmapped.
+- A non-null `phase` requires `phase_mapping_status: "proposed"` or `"approved"` — a phase value with `"pending"` status means someone bypassed the mapping workflow.

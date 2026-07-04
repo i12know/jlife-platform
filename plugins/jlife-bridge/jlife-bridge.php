@@ -12,6 +12,8 @@
  * Text Domain:       jlife-bridge
  * Domain Path:       /languages
  * Network:           true
+ *
+ * @package jlife-bridge
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -24,12 +26,18 @@ defined( 'ABSPATH' ) || exit;
  */
 add_action( 'init', 'jlife_bridge_load_textdomain' );
 
+/**
+ * Load the plugin text domain for translation.
+ */
 function jlife_bridge_load_textdomain() {
 	load_plugin_textdomain( 'jlife-bridge', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 
 add_action( 'after_setup_theme', 'jlife_bridge_bootstrap', 100 );
 
+/**
+ * Bootstrap the Disciple.Tools-dependent parts of the bridge.
+ */
 function jlife_bridge_bootstrap() {
 	/*
 	 * The bridge runs network-wide but its Disciple.Tools integrations

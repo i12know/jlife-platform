@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  content:
+    name: Content validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      # Validators are dependency-free; no npm install needed.
+      - name: Validate harmony dataset (JSON invariants + CSV sync)
+        run: node bin/validate-harmony.js
+      - name: Validate series/lesson content against /content/schemas
+        run: node bin/validate-content.js
+      # No app JS/CSS yet — bin/ holds Node tooling, so a syntax check is the
+      # applicable lint. Swap in eslint/stylelint when plugin JS/CSS lands.
+      - name: Syntax-check Node tooling
+        run: |
+          for f in bin/*.js; do node --check "$f"; done
+
+  php-lint:
+    name: PHPCS + PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: Install tooling
+        run: composer install --no-interaction --no-progress
+      - name: PHPCS (WordPress coding standards)
+        run: vendor/bin/phpcs
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse --no-progress
+
+  phpunit:
+    # Runs every plugin test suite inside wp-env's tests container. The S5
+    # (#12) access-control tests land in plugins/jlife-huddles/tests/ and
+    # become required checks here automatically.
+    name: PHPUnit (wp-env)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Install plugin test dependencies
+        run: composer install --no-interaction --no-progress
+        working-directory: plugins/jlife-huddles
+      - name: Start wp-env
+        run: npx wp-env start
+      # wp-env only downloads the WP PHPUnit suite during its configure
+      # phase; this guarantees the suite + wp-tests-config.php exist even
+      # when that phase was skipped (cached/interrupted instances).
+      - name: Ensure WordPress PHPUnit test library
+        run: node bin/ensure-wp-tests.js
+      - name: Run jlife-huddles test suite
+        run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-huddles vendor/bin/phpunit
