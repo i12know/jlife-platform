@@ -33,6 +33,11 @@ function jlife_bridge_load_textdomain() {
 	load_plugin_textdomain( 'jlife-bridge', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 
+// The magic-link flow serves participants on STUDY, where the D.T theme is
+// not active — it must load outside the Disciple_Tools guard below. It reads
+// HUB state cross-blog through bridge functions only.
+require_once __DIR__ . '/includes/magic-link.php';
+
 add_action( 'after_setup_theme', 'jlife_bridge_bootstrap', 100 );
 
 /**
@@ -48,4 +53,6 @@ function jlife_bridge_bootstrap() {
 	if ( ! class_exists( 'Disciple_Tools' ) ) {
 		return;
 	}
+
+	require_once __DIR__ . '/includes/hub-tile.php';
 }
