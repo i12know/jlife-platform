@@ -50,6 +50,28 @@ function jlife_bridge_hub_blog_id() {
 }
 
 /**
+ * Find the STUDY blog ID (the participant-facing root subsite).
+ *
+ * @return int Blog ID, 0 if not found.
+ */
+function jlife_bridge_study_blog_id() {
+	$sites = get_sites(
+		array(
+			'path__in' => array( '/' ),
+			'number'   => 1,
+		)
+	);
+	$blog_id = $sites ? (int) $sites[0]->blog_id : 0;
+
+	/**
+	 * Filter the blog ID treated as STUDY.
+	 *
+	 * @param int $blog_id Detected STUDY blog ID.
+	 */
+	return (int) apply_filters( 'jlife_bridge_study_blog_id', $blog_id );
+}
+
+/**
  * Create (or regenerate) a scoped magic link for a participant contact.
  *
  * Regeneration replaces the stored key, which invalidates any previously
@@ -62,9 +84,13 @@ function jlife_bridge_hub_blog_id() {
  * @return string|WP_Error Absolute STUDY URL.
  */
 function jlife_bridge_create_magic_link( $dt_contact_id, $dt_group_id, $lesson_id, $ttl = WEEK_IN_SECONDS ) {
-	$hub = jlife_bridge_hub_blog_id();
+	$hub   = jlife_bridge_hub_blog_id();
+	$study = jlife_bridge_study_blog_id();
 	if ( ! $hub ) {
-		return new WP_Error( 'jlife_no_hub', 'HUB subsite not found.' );
+		return new WP_Error( 'jlife_no_hub', __( 'HUB subsite not found.', 'jlife-bridge' ) );
+	}
+	if ( ! $study ) {
+		return new WP_Error( 'jlife_no_study', __( 'STUDY subsite not found.', 'jlife-bridge' ) );
 	}
 
 	$token = function_exists( 'dt_create_unique_key' ) ? dt_create_unique_key() : wp_generate_password( 32, false );
@@ -83,7 +109,7 @@ function jlife_bridge_create_magic_link( $dt_contact_id, $dt_group_id, $lesson_i
 	update_post_meta( $dt_contact_id, JLIFE_MAGIC_DATA_META, wp_slash( wp_json_encode( $data ) ) );
 	restore_current_blog();
 
-	return home_url( '/?jlife_token=' . rawurlencode( $token ) );
+	return get_home_url( $study, '/?jlife_token=' . rawurlencode( $token ) );
 }
 
 /**
@@ -152,6 +178,26 @@ function jlife_bridge_resolve_magic_token( $token ) {
 	return $resolved;
 }
 
+/**
+ * Build the response key for a token scope.
+ *
+ * Scope includes the huddle ID so one participant can answer the same lesson
+ * in separate huddles without cross-huddle reads or overwrites.
+ *
+ * @param array $scope Resolved token scope.
+ * @return string
+ */
+function jlife_bridge_magic_response_key( $scope ) {
+	return implode(
+		':',
+		array(
+			(int) $scope['dt_contact_id'],
+			(int) $scope['dt_group_id'],
+			(string) $scope['lesson_id'],
+		)
+	);
+}
+
 add_action( 'template_redirect', 'jlife_bridge_magic_link_route' );
 
 /**
@@ -187,7 +233,8 @@ function jlife_bridge_magic_link_route() {
 		$posted_token = sanitize_text_field( wp_unslash( $_POST['jlife_token'] ) );
 		if ( $posted_token === $token ) {
 			$responses = get_option( 'jlife_s4_responses', array() );
-			$responses[ $scope['dt_contact_id'] . ':' . $scope['lesson_id'] ] = array(
+			$response_key = jlife_bridge_magic_response_key( $scope );
+			$responses[ $response_key ] = array(
 				'dt_contact_id' => $scope['dt_contact_id'],
 				'dt_group_id'   => $scope['dt_group_id'],
 				'lesson_id'     => $scope['lesson_id'],
@@ -226,8 +273,9 @@ function jlife_bridge_render_magic_lesson( $scope, $token, $notice ) {
 	}
 
 	$responses = get_option( 'jlife_s4_responses', array() );
-	$existing  = isset( $responses[ $scope['dt_contact_id'] . ':' . $scope['lesson_id'] ] )
-		? $responses[ $scope['dt_contact_id'] . ':' . $scope['lesson_id'] ]['response']
+	$response_key = jlife_bridge_magic_response_key( $scope );
+	$existing     = isset( $responses[ $response_key ] )
+		? $responses[ $response_key ]['response']
 		: '';
 
 	nocache_headers();
