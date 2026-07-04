@@ -65,6 +65,7 @@ One WordPress multisite network, subdirectory mode (validate in S1), two subsite
 Principles:
 
 - One `wp_users` account per person across the network; **roles are granted per subsite** and participants never receive a HUB role.
+- **HUB isolation is capability-based, not session-based** (verified in [spike S1](spikes/S1-multisite.md)): the `wordpress_logged_in_*` cookie is network-wide (`path=/`), so any logged-in user is *authenticated* on both subsites. What keeps participants out of HUB is having no role/capabilities there plus Disciple.Tools' authenticated-REST gate — which is why capability checks on every huddle read/write path (spike S5, #12) are load-bearing, not defense-in-depth.
 - Every participant user (or magic-link recipient) maps to a D.T **contact** via a stored external ID (`jlife_user_id` on the contact; `dt_contact_id` in user meta). The bridge plugin owns this mapping and its creation flow.
 - Onboarding flow: leader creates huddle in HUB (or via a simplified AutoLink-style form) → system generates invite link/code → participant opens link on STUDY → chooses account or continues via magic link → bridge creates/links D.T contact and adds them to the group.
 
