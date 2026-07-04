@@ -9,6 +9,9 @@
     "WP_DEBUG_DISPLAY": false
   },
   "mappings": {
-    ".htaccess": "./config/wp-env/htaccess-multisite"
+    ".htaccess": "./config/wp-env/htaccess-multisite",
+    "wp-content/plugins/jlife-studies": "./plugins/jlife-studies",
+    "wp-content/plugins/jlife-huddles": "./plugins/jlife-huddles",
+    "wp-content/plugins/jlife-bridge": "./plugins/jlife-bridge"
   }
 }

@@ -1,0 +1,42 @@
+name: Content / translation task
+description: Study content authoring, Vietnamese translation, or review work
+labels: ["content", "translation"]
+body:
+  - type: textarea
+    id: scope
+    attributes:
+      label: Content scope
+      description: Which series/lessons/dataset; link the schema or content directory.
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Target workflow stage
+      options:
+        - draft
+        - translated
+        - theology-reviewed
+        - language-reviewed
+        - approved
+        - published
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source and attribution
+      description: Where the material comes from; every content set needs source_attribution and rights_note.
+    validations:
+      required: true
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Rights checklist (content-rights.md)
+      options:
+        - label: No copied Bible text — Scripture references / VIE2010 deep links only (unless a license row in content-rights.md says otherwise)
+          required: true
+        - label: No copied Knowing Him or Harmony Bible text; harmony outline sourced from Robertson/Gutenberg only
+          required: true
+        - label: No partner-identifying information; sample identities use .test domains
+          required: true

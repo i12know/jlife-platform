@@ -111,7 +111,7 @@ Richer sample data: the official **Demo Content** plugin is activated on HUB —
 
 ## 6. Known gaps / future issues
 
-- **`jlife-*` plugin mappings**: when #14 creates `/plugins/jlife-{studies,huddles,bridge}`, add them to `.wp-env.json` `mappings` so they mount into both subsites.
+- **`jlife-*` plugins** are mapped into the container (`.wp-env.json` `mappings`, since #14) but intentionally **not activated** — they are scaffolds with no feature logic. Activate manually when developing: `npm run env:cli -- plugin activate jlife-studies --url=http://localhost:8888`.
 - **Magic Links flows** are installed but unconfigured — that's spike S4 (#11).
 - The `tests` environment wp-env creates on port 8889 is untouched for now; CI (#16) will use it.
 

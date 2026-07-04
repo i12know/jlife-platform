@@ -1,0 +1,35 @@
+name: Architecture spike
+description: Timeboxed investigation ending in a written conclusion in docs/spikes/
+title: "Spike: "
+labels: ["architecture-spike"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question / context
+      description: What assumption or unknown does this spike resolve? Link the relevant docs section.
+    validations:
+      required: true
+  - type: input
+    id: timebox
+    attributes:
+      label: Timebox
+      placeholder: e.g. 1 week
+    validations:
+      required: true
+  - type: textarea
+    id: pass
+    attributes:
+      label: Pass condition
+      description: The concrete, checkable outcome that means PASS.
+    validations:
+      required: true
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Tasks
+      value: |
+        - [ ] ...
+        - [ ] Write conclusion to docs/spikes/S<x>-<slug>.md
+    validations:
+      required: true
