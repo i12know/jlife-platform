@@ -77,10 +77,26 @@ function parseCsv(text) {
         typeof ref.display === 'string';
       if (!ok) check(`${ev.gospel_event_id} ref shape`, false, JSON.stringify(ref));
     }
-    if (!(ev.phase === null || typeof ev.phase === 'string') ||
-      !PHASE_MAPPING_STATUSES.includes(ev.phase_mapping_status) ||
-      (ev.phase === null && ev.phase_mapping_status !== 'pending' && ev.phase_mapping_status !== 'proposed')) {
-      check(`${ev.gospel_event_id} phase posture valid`, false);
+    // Phase posture (issue #21 workflow): null phase means unreviewed
+    // (status "pending") — unless the mapper deliberately left a
+    // non-narrative section unmapped, which #21 requires a note for.
+    // A non-null phase means the mapping workflow has run, so the status
+    // must be "proposed" or "approved", never "pending".
+    const status = ev.phase_mapping_status;
+    let posture = PHASE_MAPPING_STATUSES.includes(status);
+    if (posture) {
+      const hasNote = typeof ev.notes === 'string' && ev.notes.trim().length > 0;
+      if (ev.phase === null) {
+        posture = status === 'pending' || hasNote;
+      } else if (typeof ev.phase === 'string') {
+        posture = status === 'proposed' || status === 'approved';
+      } else {
+        posture = false;
+      }
+    }
+    if (!posture) {
+      check(`${ev.gospel_event_id} phase posture valid`, false,
+        `phase=${JSON.stringify(ev.phase)}, status=${JSON.stringify(status)}, null phase needs "pending" (or a note per #21); non-null needs "proposed"/"approved"`);
     }
   }
   check('every event has ≥1 scripture ref', events.every((e) => Array.isArray(e.scripture_refs) && e.scripture_refs.length > 0));

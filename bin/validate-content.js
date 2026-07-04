@@ -127,7 +127,10 @@ function validateLesson(file, doc, eventIds) {
   check(file, 'sub_phase is a string or null', doc.sub_phase === null || typeof doc.sub_phase === 'string');
   check(file, 'phase_mapping_status is pending|proposed|approved', PHASE_MAPPING_STATUSES.includes(doc.phase_mapping_status));
   if (doc.phase === null) {
-    check(file, 'null phase is marked pending', doc.phase_mapping_status === 'pending');
+    check(file, 'null phase requires phase_mapping_status "pending"', doc.phase_mapping_status === 'pending');
+  } else {
+    check(file, 'non-null phase requires phase_mapping_status "proposed" or "approved"',
+      ['proposed', 'approved'].includes(doc.phase_mapping_status));
   }
 
   checkScriptureRefs(file, doc.scripture_reference, 'scripture_reference');
