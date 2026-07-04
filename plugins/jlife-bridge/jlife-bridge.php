@@ -37,6 +37,7 @@ function jlife_bridge_load_textdomain() {
 // not active — it must load outside the Disciple_Tools guard below. It reads
 // HUB state cross-blog through bridge functions only.
 require_once __DIR__ . '/includes/magic-link.php';
+require_once __DIR__ . '/includes/group-membership.php';
 
 add_action( 'after_setup_theme', 'jlife_bridge_bootstrap', 100 );
 
