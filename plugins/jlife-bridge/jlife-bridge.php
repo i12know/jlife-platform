@@ -48,4 +48,6 @@ function jlife_bridge_bootstrap() {
 	if ( ! class_exists( 'Disciple_Tools' ) ) {
 		return;
 	}
+
+	require_once __DIR__ . '/includes/hub-tile.php';
 }
