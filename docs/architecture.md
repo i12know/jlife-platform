@@ -92,7 +92,17 @@ Taxonomies / reference fields:
                       Leadership Multiplication)
   gospel_event      — event outline ID seeded from the public-domain Robertson
                       (1922) harmony outline (Project Gutenberg #36264);
-                      optional harmony-bible.com deep link per event
+                      optional harmony-bible.com deep link per event.
+                      Each event in the outline dataset carries:
+                        phase                — one of the 5 phases; null until
+                                               ministry review (#21) assigns it
+                        sub_phase            — reserved for finer SonLife
+                                               arrangement encoding if the 5
+                                               phases need more nuance; null
+                                               until a framework need defines it
+                        phase_mapping_status — pending → proposed → approved
+                                               (mapper proposes, second
+                                               theological reviewer approves)
   scripture_ref     — book/chapter/verse metadata (machine-readable)
 
 Workflow meta (per lesson):
