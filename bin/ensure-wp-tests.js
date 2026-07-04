@@ -34,6 +34,31 @@ function git(args, cwd) {
   return execFileSync('git', args, { cwd, stdio: ['ignore', 'pipe', 'pipe'] }).toString();
 }
 
+const REQUIRED_TEST_CONSTANTS = {
+  WP_TESTS_DOMAIN: 'localhost',
+  WP_TESTS_EMAIL: 'admin@example.org',
+  WP_TESTS_TITLE: 'Test Blog',
+  WP_PHP_BINARY: 'php',
+};
+
+function withRequiredTestConstants(config) {
+  const missing = Object.entries(REQUIRED_TEST_CONSTANTS).filter(
+    ([key]) => !new RegExp(`define\\(\\s*'${key}'`).test(config)
+  );
+  if (missing.length === 0) return config;
+
+  const block = [
+    '',
+    '// WordPress PHPUnit defaults expected by the upstream test suite.',
+    ...missing.map(([key, value]) => `if ( ! defined( '${key}' ) ) { define( '${key}', '${value}' ); }`),
+    '',
+  ].join('\n');
+  const abspath = "define( 'ABSPATH', '/var/www/html/' );";
+  return config.includes(abspath)
+    ? config.replace(abspath, `${block}${abspath}`)
+    : `${config.trimEnd()}${block}`;
+}
+
 /** Reads the installed WordPress version from wp-includes/version.php. */
 function readWpVersion(wpDir) {
   const versionFile = path.join(wpDir, 'wp-includes', 'version.php');
@@ -63,6 +88,14 @@ function ensureSuite(suiteDir, wpVersion, label) {
   console.log(`FIX   ${label}: downloading PHPUnit suite (${ref})...`);
   const isRepo = fs.existsSync(path.join(suiteDir, '.git'));
   if (!isRepo) {
+    if (fs.existsSync(suiteDir) && fs.readdirSync(suiteDir).length > 0) {
+      const cacheName = path.basename(suiteDir);
+      if (!['WordPress-PHPUnit', 'tests-WordPress-PHPUnit'].includes(cacheName)) {
+        throw new Error(`${label}: refusing to replace unexpected directory ${suiteDir}`);
+      }
+      console.log(`FIX   ${label}: replacing incomplete PHPUnit suite directory`);
+      fs.rmSync(suiteDir, { recursive: true, force: true });
+    }
     fs.mkdirSync(suiteDir, { recursive: true });
     git(['clone', '--depth', '1', '--no-checkout', DEVELOP_REPO, suiteDir]);
     git(['sparse-checkout', 'set', '--cone', 'tests/phpunit'], suiteDir);
@@ -80,7 +113,14 @@ function ensureSuite(suiteDir, wpVersion, label) {
 function ensureTestsConfig(wpDir, suiteDir, label) {
   const target = path.join(suiteDir, 'tests', 'phpunit', 'wp-tests-config.php');
   if (fs.existsSync(target)) {
-    console.log(`OK    ${label}: wp-tests-config.php present`);
+    const existing = fs.readFileSync(target, 'utf8');
+    const repaired = withRequiredTestConstants(existing);
+    if (existing === repaired) {
+      console.log(`OK    ${label}: wp-tests-config.php present`);
+      return;
+    }
+    fs.writeFileSync(target, repaired);
+    console.log(`FIX   ${label}: wp-tests-config.php repaired`);
     return;
   }
 
@@ -102,7 +142,7 @@ function ensureTestsConfig(wpDir, suiteDir, label) {
   if (!transformed.includes("'/var/www/html/'")) {
     throw new Error(`${label}: could not locate the ABSPATH define in ${wpConfig}`);
   }
-  fs.writeFileSync(target, transformed);
+  fs.writeFileSync(target, withRequiredTestConstants(transformed));
   console.log(`FIX   ${label}: wp-tests-config.php generated`);
 }
 
