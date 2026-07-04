@@ -231,7 +231,7 @@ function jlife_bridge_magic_link_route() {
 	$notice = '';
 	if ( isset( $_POST['jlife_response'] ) && isset( $_POST['jlife_token'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- bearer-token flow; token re-validated above and must match the posted one.
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- bearer token is revalidated before any response is stored.
-		$posted_token               = sanitize_text_field( wp_unslash( $_POST['jlife_token'] ) );
+		$posted_token = sanitize_text_field( wp_unslash( $_POST['jlife_token'] ) );
 		if ( $posted_token === $token ) {
 			$responses                  = get_option( 'jlife_s4_responses', array() );
 			$response_key               = jlife_bridge_magic_response_key( $scope );
