@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "lsn-example-come-follow-me",
+  "series_id": "ser-example-following-jesus",
+  "order": 1,
+  "title": "Come, Follow Me",
+  "source_language": "en",
+  "translation_status": "draft",
+  "source_attribution": null,
+  "rights_note": null,
+  "primary_gospel_event_id": "r1922-041",
+  "related_gospel_event_ids": ["r1922-047"],
+  "phase": null,
+  "sub_phase": null,
+  "phase_mapping_status": "pending",
+  "scripture_reference": [
+    {
+      "book": "Mark",
+      "chapter_start": 1,
+      "verse_start": 16,
+      "chapter_end": 1,
+      "verse_end": 20,
+      "display": "Mark 1:16-20",
+      "deep_link": null
+    },
+    {
+      "book": "Luke",
+      "chapter_start": 5,
+      "verse_start": 1,
+      "chapter_end": 5,
+      "verse_end": 11,
+      "display": "Luke 5:1-11",
+      "deep_link": null
+    }
+  ],
+  "teaching": "Read the passage in your own Bible before you begin.\n\nJesus meets the four fishermen in the middle of an ordinary working day — mending nets, cleaning up after a long night. He does not wait for them to finish a course or reach a milestone. The invitation comes first: *come, follow me*. The transformation (\"fishers of men\") is his promise, not their qualification.\n\nNotice the order of events. The call precedes the competence. Everything the disciples later become begins with leaving the nets and walking after him.",
+  "outside_the_box": "In first-century Galilee, a rabbi's students applied to *him* — and only the most promising were accepted. Jesus reverses the direction: he chooses ordinary tradesmen and extends the invitation himself. His call is grace before it is assignment.",
+  "reflection_questions": [
+    {
+      "id": "q01",
+      "text": "What are the \"nets\" in your hands right now — the ordinary work and routines Jesus finds you in?"
+    },
+    {
+      "id": "q02",
+      "text": "The fishermen left *immediately* (Mark 1:18). What makes an immediate response to Jesus difficult for you?"
+    },
+    {
+      "id": "q03",
+      "text": "Jesus promises to *make* them fishers of men. Where are you tempted to qualify yourself before following?"
+    }
+  ],
+  "live_it_out": "This week, name one concrete area where you have been waiting to feel \"ready\" before obeying something you already know Jesus is asking. Take the first small step in that area before your next huddle, and be prepared to share what happened.",
+  "prayer_prompt": "Thank Jesus that his call comes to you in the middle of ordinary life, not at the end of your self-improvement. Ask him for the willingness of the fishermen — to respond today, and to trust him with what you leave behind.",
+  "huddle_discussion_prompts": [
+    {
+      "id": "p01",
+      "text": "Invite each person to share their answer to q01. Draw out the everyday settings — Jesus calls people at work, not only at church."
+    },
+    {
+      "id": "p02",
+      "text": "Compare Mark's brief account with Luke's fuller one (Luke 5:1-11). What does Peter's reaction in Luke add to our picture of what it costs — and what it means — to follow?"
+    }
+  ],
+  "leader_notes": "Keep the focus on the *direction* of the call (Jesus initiates) rather than on the drama of leaving everything — some participants will face real vocational questions, and this lesson is not the place to resolve them. If someone is stuck on q03, gently point back to the teaching: the promise \"I will make you\" belongs to Jesus. Close by previewing the next lesson."
+}

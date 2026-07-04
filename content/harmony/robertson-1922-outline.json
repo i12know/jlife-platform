@@ -1,0 +1,5962 @@
+{
+  "source": {
+    "title": "A Harmony of the Gospels for Students of the Life of Christ",
+    "authors": [
+      "John A. Broadus (1893, original harmony)",
+      "A. T. Robertson (1922, revised)"
+    ],
+    "year": 1922,
+    "source_url": "https://www.gutenberg.org/ebooks/36264",
+    "rights_note": "Public domain. Harmony arrangement first published by John A. Broadus (1893); revised by A. T. Robertson (1922). Full text available from Project Gutenberg #36264. Section titles, numbering, and scripture references are Robertson's own. See docs/content-rights.md §3."
+  },
+  "conventions": {
+    "gospel_event_id": "Stable ID derived from Robertson's own section numbers: \"r1922-\" + zero-padded section number (e.g. r1922-042 for §42). Sections 128a and 128b use their Robertson designations verbatim. IDs are permanent; do not renumber.",
+    "scripture_refs": "Each ref is a structured object: {book, chapter_start, verse_start, chapter_end, verse_end, display}. verse_start/verse_end are null for whole-chapter ranges. book uses full English name.",
+    "phase_fields": "phase and sub_phase are null in this file. Phase mapping (to 5 SonLife phases) is deferred to issue #21 (ministry-discernment + theological-review). phase_mapping_status=\"pending\" on all events."
+  },
+  "events": [
+    {
+      "gospel_event_id": "r1922-001",
+      "part": 1,
+      "part_name": "The Sources of the Gospels",
+      "robertson_section": "1",
+      "title": "In the Dedication Luke Explains His Method of Research",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 1,
+          "verse_start": 1,
+          "chapter_end": 1,
+          "verse_end": 4,
+          "display": "Luke 1:1-4"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-002",
+      "part": 2,
+      "part_name": "The Pre-Existent State of Christ and His Incarnation",
+      "robertson_section": "2",
+      "title": "In His Introduction John Pictures Christ as the Word (Logos)",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 1,
+          "verse_start": 1,
+          "chapter_end": 1,
+          "verse_end": 18,
+          "display": "John 1:1-18"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-003",
+      "part": 3,
+      "part_name": "The Two Genealogies in Matthew and Luke",
+      "robertson_section": "3",
+      "title": "Apparently Joseph's Genealogy in Matthew and Mary's in Luke",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 1,
+          "verse_start": 1,
+          "chapter_end": 1,
+          "verse_end": 17,
+          "display": "Matthew 1:1-17"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 3,
+          "verse_start": 23,
+          "chapter_end": 3,
+          "verse_end": 38,
+          "display": "Luke 3:23-38"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-004",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "4",
+      "title": "The Annunciation of the Birth of the Baptist to Zacharias",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 1,
+          "verse_start": 5,
+          "chapter_end": 1,
+          "verse_end": 25,
+          "display": "Luke 1:5-25"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-005",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "5",
+      "title": "The Annunciation to the Virgin Mary of the Birth of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 1,
+          "verse_start": 26,
+          "chapter_end": 1,
+          "verse_end": 38,
+          "display": "Luke 1:26-38"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-006",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "6",
+      "title": "The Song of Elisabeth to Mary Upon Her Visit",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 1,
+          "verse_start": 39,
+          "chapter_end": 1,
+          "verse_end": 45,
+          "display": "Luke 1:39-45"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-007",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "7",
+      "title": "The Magnificat of Mary",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 1,
+          "verse_start": 46,
+          "chapter_end": 1,
+          "verse_end": 56,
+          "display": "Luke 1:46-56"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-008",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "8",
+      "title": "The Birth and Childhood of the Baptist, and His Desert Life",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 1,
+          "verse_start": 57,
+          "chapter_end": 1,
+          "verse_end": 80,
+          "display": "Luke 1:57-80"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-009",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "9",
+      "title": "The Annunciation to Joseph of the Birth of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 1,
+          "verse_start": 18,
+          "chapter_end": 1,
+          "verse_end": 25,
+          "display": "Matthew 1:18-25"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-010",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "10",
+      "title": "The Birth of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 2,
+          "verse_start": 1,
+          "chapter_end": 2,
+          "verse_end": 7,
+          "display": "Luke 2:1-7"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-011",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "11",
+      "title": "The Praise of the Angels and the Homage of the Shepherds",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 2,
+          "verse_start": 8,
+          "chapter_end": 2,
+          "verse_end": 20,
+          "display": "Luke 2:8-20"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-012",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "12",
+      "title": "The Circumcision of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 2,
+          "verse_start": 21,
+          "chapter_end": 2,
+          "verse_end": 21,
+          "display": "Luke 2:21"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-013",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "13",
+      "title": "The Presentation in the Temple with the Homage of Simeon and Anna",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 2,
+          "verse_start": 22,
+          "chapter_end": 2,
+          "verse_end": 38,
+          "display": "Luke 2:22-38"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-014",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "14",
+      "title": "Magi Visit the New-born King of the Jews",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 2,
+          "verse_start": 1,
+          "chapter_end": 2,
+          "verse_end": 12,
+          "display": "Matthew 2:1-12"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-015",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "15",
+      "title": "The Child Jesus Carried to Egypt, and the Children at Bethlehem Slain",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 2,
+          "verse_start": 13,
+          "chapter_end": 2,
+          "verse_end": 18,
+          "display": "Matthew 2:13-18"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-016",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "16",
+      "title": "The Child Brought from Egypt to Nazareth",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 2,
+          "verse_start": 19,
+          "chapter_end": 2,
+          "verse_end": 23,
+          "display": "Matthew 2:19-23"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 2,
+          "verse_start": 39,
+          "chapter_end": 2,
+          "verse_end": 39,
+          "display": "Luke 2:39"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-017",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "17",
+      "title": "The Childhood of Jesus at Nazareth",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 2,
+          "verse_start": 40,
+          "chapter_end": 2,
+          "verse_end": 40,
+          "display": "Luke 2:40"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-018",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "18",
+      "title": "The Visit of the Boy Jesus to Jerusalem When Twelve Years Old",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 2,
+          "verse_start": 41,
+          "chapter_end": 2,
+          "verse_end": 50,
+          "display": "Luke 2:41-50"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-019",
+      "part": 4,
+      "part_name": "The Birth and Childhood of the Baptist and of Jesus",
+      "robertson_section": "19",
+      "title": "The Eighteen Years at Nazareth",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 2,
+          "verse_start": 51,
+          "chapter_end": 2,
+          "verse_end": 52,
+          "display": "Luke 2:51-52"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-020",
+      "part": 5,
+      "part_name": "The Beginning of the Baptist's Ministry",
+      "robertson_section": "20",
+      "title": "The Time of the Beginning",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 1,
+          "chapter_end": 1,
+          "verse_end": 1,
+          "display": "Mark 1:1"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 3,
+          "verse_start": 1,
+          "chapter_end": 3,
+          "verse_end": 2,
+          "display": "Luke 3:1-2"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-021",
+      "part": 5,
+      "part_name": "The Beginning of the Baptist's Ministry",
+      "robertson_section": "21",
+      "title": "The Message and the Messenger",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 2,
+          "chapter_end": 1,
+          "verse_end": 6,
+          "display": "Mark 1:2-6"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 3,
+          "verse_start": 1,
+          "chapter_end": 3,
+          "verse_end": 6,
+          "display": "Matthew 3:1-6"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 3,
+          "verse_start": 3,
+          "chapter_end": 3,
+          "verse_end": 6,
+          "display": "Luke 3:3-6"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-022",
+      "part": 5,
+      "part_name": "The Beginning of the Baptist's Ministry",
+      "robertson_section": "22",
+      "title": "A Specimen of John's Preaching",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 3,
+          "verse_start": 7,
+          "chapter_end": 3,
+          "verse_end": 10,
+          "display": "Matthew 3:7-10"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 3,
+          "verse_start": 7,
+          "chapter_end": 3,
+          "verse_end": 14,
+          "display": "Luke 3:7-14"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-023",
+      "part": 5,
+      "part_name": "The Beginning of the Baptist's Ministry",
+      "robertson_section": "23",
+      "title": "The Forerunner's Picture of the Messiah Before Seeing Him",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 7,
+          "chapter_end": 1,
+          "verse_end": 8,
+          "display": "Mark 1:7-8"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 3,
+          "verse_start": 11,
+          "chapter_end": 3,
+          "verse_end": 12,
+          "display": "Matthew 3:11-12"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 3,
+          "verse_start": 15,
+          "chapter_end": 3,
+          "verse_end": 18,
+          "display": "Luke 3:15-18"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-024",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "24",
+      "title": "Jesus Baptized by John in the Jordan",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 9,
+          "chapter_end": 1,
+          "verse_end": 11,
+          "display": "Mark 1:9-11"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 3,
+          "verse_start": 13,
+          "chapter_end": 3,
+          "verse_end": 17,
+          "display": "Matthew 3:13-17"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 3,
+          "verse_start": 21,
+          "chapter_end": 3,
+          "verse_end": 23,
+          "display": "Luke 3:21-23"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-025",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "25",
+      "title": "The Three Temptations of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 12,
+          "chapter_end": 1,
+          "verse_end": 13,
+          "display": "Mark 1:12-13"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 4,
+          "verse_start": 1,
+          "chapter_end": 4,
+          "verse_end": 11,
+          "display": "Matthew 4:1-11"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 4,
+          "verse_start": 1,
+          "chapter_end": 4,
+          "verse_end": 13,
+          "display": "Luke 4:1-13"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-026",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "26",
+      "title": "The Testimony of the Baptist to the Committee of the Sanhedrin",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 1,
+          "verse_start": 19,
+          "chapter_end": 1,
+          "verse_end": 28,
+          "display": "John 1:19-28"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-027",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "27",
+      "title": "John's Identification of Jesus as the Messiah",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 1,
+          "verse_start": 29,
+          "chapter_end": 1,
+          "verse_end": 34,
+          "display": "John 1:29-34"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-028",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "28",
+      "title": "Jesus Makes His First Disciples",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 1,
+          "verse_start": 35,
+          "chapter_end": 1,
+          "verse_end": 51,
+          "display": "John 1:35-51"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-029",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "29",
+      "title": "Jesus Works His First Miracle",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 2,
+          "verse_start": 1,
+          "chapter_end": 2,
+          "verse_end": 11,
+          "display": "John 2:1-11"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-030",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "30",
+      "title": "Jesus Makes a First Sojourn at Capernaum, Accompanied by His Kindred and His Early Disciples",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 2,
+          "verse_start": 12,
+          "chapter_end": 2,
+          "verse_end": 12,
+          "display": "John 2:12"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-031",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "31",
+      "title": "The First Cleansing of the Temple at the Passover",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 2,
+          "verse_start": 13,
+          "chapter_end": 2,
+          "verse_end": 22,
+          "display": "John 2:13-22"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-032",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "32",
+      "title": "The Interview of Nicodemus with Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 2,
+          "verse_start": 23,
+          "chapter_end": 3,
+          "verse_end": 21,
+          "display": "John 2:23–3:21"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-033",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "33",
+      "title": "The Parallel Ministry of Jesus and John with John's Loyalty to Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 3,
+          "verse_start": 22,
+          "chapter_end": 3,
+          "verse_end": 36,
+          "display": "John 3:22-36"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-034",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "34",
+      "title": "Christ's Reasons for Leaving Judea",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 14,
+          "chapter_end": 1,
+          "verse_end": 14,
+          "display": "Mark 1:14"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 4,
+          "verse_start": 12,
+          "chapter_end": 4,
+          "verse_end": 12,
+          "display": "Matthew 4:12"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 3,
+          "verse_start": 19,
+          "chapter_end": 3,
+          "verse_end": 20,
+          "display": "Luke 3:19-20"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 4,
+          "verse_start": 14,
+          "chapter_end": 4,
+          "verse_end": 14,
+          "display": "Luke 4:14"
+        },
+        {
+          "book": "John",
+          "chapter_start": 4,
+          "verse_start": 1,
+          "chapter_end": 4,
+          "verse_end": 4,
+          "display": "John 4:1-4"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-035",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "35",
+      "title": "Jesus in Samaria at Jacob's Well and in Sychar",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 4,
+          "verse_start": 5,
+          "chapter_end": 4,
+          "verse_end": 42,
+          "display": "John 4:5-42"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-036",
+      "part": 6,
+      "part_name": "The Beginning of Christ's Public Ministry",
+      "robertson_section": "36",
+      "title": "The Arrival of Jesus in Galilee",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 4,
+          "verse_start": 43,
+          "chapter_end": 4,
+          "verse_end": 45,
+          "display": "John 4:43-45"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-037",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "37",
+      "title": "General Account of His Teaching in Galilee",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 14,
+          "chapter_end": 1,
+          "verse_end": 15,
+          "display": "Mark 1:14-15"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 4,
+          "verse_start": 17,
+          "chapter_end": 4,
+          "verse_end": 17,
+          "display": "Matthew 4:17"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 4,
+          "verse_start": 14,
+          "chapter_end": 4,
+          "verse_end": 15,
+          "display": "Luke 4:14-15"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-038",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "38",
+      "title": "The Healing at Cana of the Son of a Courtier of Capernaum",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 4,
+          "verse_start": 46,
+          "chapter_end": 4,
+          "verse_end": 54,
+          "display": "John 4:46-54"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-039",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "39",
+      "title": "The First Rejection at Nazareth",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 4,
+          "verse_start": 16,
+          "chapter_end": 4,
+          "verse_end": 31,
+          "display": "Luke 4:16-31"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-040",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "40",
+      "title": "The New Home in Capernaum",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 4,
+          "verse_start": 13,
+          "chapter_end": 4,
+          "verse_end": 16,
+          "display": "Matthew 4:13-16"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-041",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "41",
+      "title": "Jesus Finds Four Fishers of Men in Four Fishermen",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 16,
+          "chapter_end": 1,
+          "verse_end": 20,
+          "display": "Mark 1:16-20"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 4,
+          "verse_start": 18,
+          "chapter_end": 4,
+          "verse_end": 22,
+          "display": "Matthew 4:18-22"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 5,
+          "verse_start": 1,
+          "chapter_end": 5,
+          "verse_end": 11,
+          "display": "Luke 5:1-11"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-042",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "42",
+      "title": "The Excitement in the Synagogue Because of the Teaching of Jesus and the Healing of a Demoniac on the Sabbath",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 21,
+          "chapter_end": 1,
+          "verse_end": 28,
+          "display": "Mark 1:21-28"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 4,
+          "verse_start": 31,
+          "chapter_end": 4,
+          "verse_end": 37,
+          "display": "Luke 4:31-37"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-043",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "43",
+      "title": "He Heals Peter's Mother-in-Law and Many Others",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 29,
+          "chapter_end": 1,
+          "verse_end": 34,
+          "display": "Mark 1:29-34"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 8,
+          "verse_start": 14,
+          "chapter_end": 8,
+          "verse_end": 17,
+          "display": "Matthew 8:14-17"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 4,
+          "verse_start": 38,
+          "chapter_end": 4,
+          "verse_end": 41,
+          "display": "Luke 4:38-41"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-044",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "44",
+      "title": "The First Tour of Galilee with the Four Fishermen",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 35,
+          "chapter_end": 1,
+          "verse_end": 39,
+          "display": "Mark 1:35-39"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 4,
+          "verse_start": 23,
+          "chapter_end": 4,
+          "verse_end": 25,
+          "display": "Matthew 4:23-25"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 4,
+          "verse_start": 42,
+          "chapter_end": 4,
+          "verse_end": 44,
+          "display": "Luke 4:42-44"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-045",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "45",
+      "title": "A Leper Healed and Much Popular Excitement",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 40,
+          "chapter_end": 1,
+          "verse_end": 45,
+          "display": "Mark 1:40-45"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 8,
+          "verse_start": 2,
+          "chapter_end": 8,
+          "verse_end": 4,
+          "display": "Matthew 8:2-4"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 5,
+          "verse_start": 12,
+          "chapter_end": 5,
+          "verse_end": 16,
+          "display": "Luke 5:12-16"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-046",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "46",
+      "title": "Thronged in Capernaum, He Heals a Paralytic Lowered Through the Roof of Peter's House",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 2,
+          "verse_start": 1,
+          "chapter_end": 2,
+          "verse_end": 12,
+          "display": "Mark 2:1-12"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 9,
+          "verse_start": 1,
+          "chapter_end": 9,
+          "verse_end": 8,
+          "display": "Matthew 9:1-8"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 5,
+          "verse_start": 17,
+          "chapter_end": 5,
+          "verse_end": 26,
+          "display": "Luke 5:17-26"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-047",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "47",
+      "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 2,
+          "verse_start": 13,
+          "chapter_end": 2,
+          "verse_end": 17,
+          "display": "Mark 2:13-17"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 9,
+          "verse_start": 9,
+          "chapter_end": 9,
+          "verse_end": 13,
+          "display": "Matthew 9:9-13"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 5,
+          "verse_start": 27,
+          "chapter_end": 5,
+          "verse_end": 32,
+          "display": "Luke 5:27-32"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-048",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "48",
+      "title": "Jesus in Three Parables Defends His Disciples for Feasting Instead of Fasting",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 2,
+          "verse_start": 18,
+          "chapter_end": 2,
+          "verse_end": 22,
+          "display": "Mark 2:18-22"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 9,
+          "verse_start": 14,
+          "chapter_end": 9,
+          "verse_end": 17,
+          "display": "Matthew 9:14-17"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 5,
+          "verse_start": 33,
+          "chapter_end": 5,
+          "verse_end": 39,
+          "display": "Luke 5:33-39"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-049",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "49",
+      "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 5,
+          "verse_start": 1,
+          "chapter_end": 5,
+          "verse_end": 47,
+          "display": "John 5:1-47"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-050",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "50",
+      "title": "Another Sabbath Controversy with the Pharisees When the Disciples Pluck Ears of Grain in the Fields",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 2,
+          "verse_start": 23,
+          "chapter_end": 2,
+          "verse_end": 28,
+          "display": "Mark 2:23-28"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 12,
+          "verse_start": 1,
+          "chapter_end": 12,
+          "verse_end": 8,
+          "display": "Matthew 12:1-8"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 1,
+          "chapter_end": 6,
+          "verse_end": 5,
+          "display": "Luke 6:1-5"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-051",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "51",
+      "title": "A Third Sabbath Controversy with the Pharisees Over the Healing of a Man with a Withered Hand in a Synagogue",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 3,
+          "verse_start": 1,
+          "chapter_end": 3,
+          "verse_end": 6,
+          "display": "Mark 3:1-6"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 12,
+          "verse_start": 9,
+          "chapter_end": 12,
+          "verse_end": 14,
+          "display": "Matthew 12:9-14"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 6,
+          "chapter_end": 6,
+          "verse_end": 11,
+          "display": "Luke 6:6-11"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-052",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "52",
+      "title": "Jesus Teaches and Heals Great Multitudes by the Sea of Galilee",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 3,
+          "verse_start": 7,
+          "chapter_end": 3,
+          "verse_end": 12,
+          "display": "Mark 3:7-12"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 12,
+          "verse_start": 15,
+          "chapter_end": 12,
+          "verse_end": 21,
+          "display": "Matthew 12:15-21"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-053",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "53",
+      "title": "After a Night of Prayer Jesus Selects Twelve Apostles",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 3,
+          "verse_start": 13,
+          "chapter_end": 3,
+          "verse_end": 19,
+          "display": "Mark 3:13-19"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 12,
+          "chapter_end": 6,
+          "verse_end": 16,
+          "display": "Luke 6:12-16"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-054",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "54",
+      "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 5,
+          "verse_start": null,
+          "chapter_end": 7,
+          "verse_end": null,
+          "display": "Matthew 5–7"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 17,
+          "chapter_end": 6,
+          "verse_end": 49,
+          "display": "Luke 6:17-49"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-055",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "55",
+      "title": "Jesus Heals a Centurion's Servant at Capernaum",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 8,
+          "verse_start": 5,
+          "chapter_end": 8,
+          "verse_end": 13,
+          "display": "Matthew 8:5-13"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 7,
+          "verse_start": 1,
+          "chapter_end": 7,
+          "verse_end": 10,
+          "display": "Luke 7:1-10"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-056",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "56",
+      "title": "He Raises a Widow's Son at Nain",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 7,
+          "verse_start": 11,
+          "chapter_end": 7,
+          "verse_end": 17,
+          "display": "Luke 7:11-17"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-057",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "57",
+      "title": "The Message from the Baptist and the Eulogy of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 11,
+          "verse_start": 2,
+          "chapter_end": 11,
+          "verse_end": 19,
+          "display": "Matthew 11:2-19"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 7,
+          "verse_start": 18,
+          "chapter_end": 7,
+          "verse_end": 35,
+          "display": "Luke 7:18-35"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-058",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "58",
+      "title": "Woes Upon the Cities of Opportunity: The Claims of Christ as the Teacher About the Father",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 11,
+          "verse_start": 20,
+          "chapter_end": 11,
+          "verse_end": 30,
+          "display": "Matthew 11:20-30"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-059",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "59",
+      "title": "The Anointing of Christ's Feet by a Sinful Woman in the House of Simon a Pharisee: The Parable of the Two Debtors",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 7,
+          "verse_start": 36,
+          "chapter_end": 7,
+          "verse_end": 50,
+          "display": "Luke 7:36-50"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-060",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "60",
+      "title": "The Second Tour of Galilee",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 8,
+          "verse_start": 1,
+          "chapter_end": 8,
+          "verse_end": 3,
+          "display": "Luke 8:1-3"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-061",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "61",
+      "title": "Blasphemous Accusation of League with Beelzebub",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 3,
+          "verse_start": 19,
+          "chapter_end": 3,
+          "verse_end": 30,
+          "display": "Mark 3:19-30"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 12,
+          "verse_start": 22,
+          "chapter_end": 12,
+          "verse_end": 37,
+          "display": "Matthew 12:22-37"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-062",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "62",
+      "title": "Scribes and Pharisees Demand a Sign",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 12,
+          "verse_start": 38,
+          "chapter_end": 12,
+          "verse_end": 45,
+          "display": "Matthew 12:38-45"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-063",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "63",
+      "title": "Christ's Mother and Brethren Seek to Take Him Home",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 3,
+          "verse_start": 31,
+          "chapter_end": 3,
+          "verse_end": 35,
+          "display": "Mark 3:31-35"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 12,
+          "verse_start": 46,
+          "chapter_end": 12,
+          "verse_end": 50,
+          "display": "Matthew 12:46-50"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 8,
+          "verse_start": 19,
+          "chapter_end": 8,
+          "verse_end": 21,
+          "display": "Luke 8:19-21"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-064",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "64",
+      "title": "The First Great Group of Parables",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 4,
+          "verse_start": 1,
+          "chapter_end": 4,
+          "verse_end": 34,
+          "display": "Mark 4:1-34"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 1,
+          "chapter_end": 13,
+          "verse_end": 53,
+          "display": "Matthew 13:1-53"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 8,
+          "verse_start": 4,
+          "chapter_end": 8,
+          "verse_end": 18,
+          "display": "Luke 8:4-18"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-065",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "65",
+      "title": "In Crossing the Lake, Jesus Stills the Tempest",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 4,
+          "verse_start": 35,
+          "chapter_end": 4,
+          "verse_end": 41,
+          "display": "Mark 4:35-41"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 8,
+          "verse_start": 18,
+          "chapter_end": 8,
+          "verse_end": 18,
+          "display": "Matthew 8:18"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 8,
+          "verse_start": 23,
+          "chapter_end": 8,
+          "verse_end": 27,
+          "display": "Matthew 8:23-27"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 8,
+          "verse_start": 22,
+          "chapter_end": 8,
+          "verse_end": 25,
+          "display": "Luke 8:22-25"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-066",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "66",
+      "title": "Beyond the Lake Jesus Heals the Gerasene Demoniac",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 5,
+          "verse_start": 1,
+          "chapter_end": 5,
+          "verse_end": 20,
+          "display": "Mark 5:1-20"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 8,
+          "verse_start": 28,
+          "chapter_end": 8,
+          "verse_end": 34,
+          "display": "Matthew 8:28-34"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 8,
+          "verse_start": 26,
+          "chapter_end": 8,
+          "verse_end": 39,
+          "display": "Luke 8:26-39"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-067",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "67",
+      "title": "The Return and the Healing of Jairus' Daughter and of the Woman Who Only Touched Christ's Garment",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 5,
+          "verse_start": 21,
+          "chapter_end": 5,
+          "verse_end": 43,
+          "display": "Mark 5:21-43"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 9,
+          "verse_start": 18,
+          "chapter_end": 9,
+          "verse_end": 26,
+          "display": "Matthew 9:18-26"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 8,
+          "verse_start": 40,
+          "chapter_end": 8,
+          "verse_end": 56,
+          "display": "Luke 8:40-56"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-068",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "68",
+      "title": "He Heals Two Blind Men and a Dumb Demoniac; a Blasphemous Accusation",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 9,
+          "verse_start": 27,
+          "chapter_end": 9,
+          "verse_end": 34,
+          "display": "Matthew 9:27-34"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-069",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "69",
+      "title": "The Last Visit to Nazareth",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 1,
+          "chapter_end": 6,
+          "verse_end": 6,
+          "display": "Mark 6:1-6"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 54,
+          "chapter_end": 13,
+          "verse_end": 58,
+          "display": "Matthew 13:54-58"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-070",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "70",
+      "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 6,
+          "chapter_end": 6,
+          "verse_end": 13,
+          "display": "Mark 6:6-13"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 9,
+          "verse_start": 35,
+          "chapter_end": 11,
+          "verse_end": 1,
+          "display": "Matthew 9:35–11:1"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 1,
+          "chapter_end": 9,
+          "verse_end": 6,
+          "display": "Luke 9:1-6"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-071",
+      "part": 7,
+      "part_name": "The Great Galilean Ministry",
+      "robertson_section": "71",
+      "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 14,
+          "chapter_end": 6,
+          "verse_end": 29,
+          "display": "Mark 6:14-29"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 14,
+          "verse_start": 1,
+          "chapter_end": 14,
+          "verse_end": 12,
+          "display": "Matthew 14:1-12"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 7,
+          "chapter_end": 9,
+          "verse_end": 9,
+          "display": "Luke 9:7-9"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-072",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "72",
+      "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 30,
+          "chapter_end": 6,
+          "verse_end": 44,
+          "display": "Mark 6:30-44"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 14,
+          "verse_start": 13,
+          "chapter_end": 14,
+          "verse_end": 21,
+          "display": "Matthew 14:13-21"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 10,
+          "chapter_end": 9,
+          "verse_end": 17,
+          "display": "Luke 9:10-17"
+        },
+        {
+          "book": "John",
+          "chapter_start": 6,
+          "verse_start": 1,
+          "chapter_end": 6,
+          "verse_end": 13,
+          "display": "John 6:1-13"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-073",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "73",
+      "title": "The Prevention of the Revolutionary Purpose to Proclaim Jesus King (A Political Messiah)",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 45,
+          "chapter_end": 6,
+          "verse_end": 46,
+          "display": "Mark 6:45-46"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 14,
+          "verse_start": 22,
+          "chapter_end": 14,
+          "verse_end": 23,
+          "display": "Matthew 14:22-23"
+        },
+        {
+          "book": "John",
+          "chapter_start": 6,
+          "verse_start": 14,
+          "chapter_end": 6,
+          "verse_end": 15,
+          "display": "John 6:14-15"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-074",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "74",
+      "title": "The Peril to the Twelve in the Storm at Sea and Christ's Coming to Them on the Water in the Darkness",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 47,
+          "chapter_end": 6,
+          "verse_end": 52,
+          "display": "Mark 6:47-52"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 14,
+          "verse_start": 24,
+          "chapter_end": 14,
+          "verse_end": 33,
+          "display": "Matthew 14:24-33"
+        },
+        {
+          "book": "John",
+          "chapter_start": 6,
+          "verse_start": 16,
+          "chapter_end": 6,
+          "verse_end": 21,
+          "display": "John 6:16-21"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-075",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "75",
+      "title": "The Reception at Gennesaret",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 53,
+          "chapter_end": 6,
+          "verse_end": 56,
+          "display": "Mark 6:53-56"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 14,
+          "verse_start": 34,
+          "chapter_end": 14,
+          "verse_end": 36,
+          "display": "Matthew 14:34-36"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-076",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "76",
+      "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 6,
+          "verse_start": 22,
+          "chapter_end": 6,
+          "verse_end": 71,
+          "display": "John 6:22-71"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-077",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "77",
+      "title": "Pharisees from Jerusalem Reproach Jesus for Allowing His Disciples to Disregard Their Traditions About Ceremonial Defilement of the Hands",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 7,
+          "verse_start": 1,
+          "chapter_end": 7,
+          "verse_end": 23,
+          "display": "Mark 7:1-23"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 15,
+          "verse_start": 1,
+          "chapter_end": 15,
+          "verse_end": 20,
+          "display": "Matthew 15:1-20"
+        },
+        {
+          "book": "John",
+          "chapter_start": 7,
+          "verse_start": 1,
+          "chapter_end": 7,
+          "verse_end": 1,
+          "display": "John 7:1"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-078",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "78",
+      "title": "The Second Withdrawal to the Region of Tyre and Sidon and the Healing of the Daughter of a Syro-Phoenician Woman",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 7,
+          "verse_start": 24,
+          "chapter_end": 7,
+          "verse_end": 30,
+          "display": "Mark 7:24-30"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 15,
+          "verse_start": 21,
+          "chapter_end": 15,
+          "verse_end": 28,
+          "display": "Matthew 15:21-28"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-079",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "79",
+      "title": "The Third Withdrawal North Through Phoenicia and East Towards Hermon and South Into Decapolis: Healing of the Deaf and Dumb Man and Feeding of the Four Thousand",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 7,
+          "verse_start": 31,
+          "chapter_end": 8,
+          "verse_end": 9,
+          "display": "Mark 7:31–8:9"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 15,
+          "verse_start": 29,
+          "chapter_end": 15,
+          "verse_end": 38,
+          "display": "Matthew 15:29-38"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-080",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "80",
+      "title": "The Brief Visit to Magadan (Dalmanutha) in Galilee and the Sharp Attack by the Pharisees and Sadducees",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 8,
+          "verse_start": 10,
+          "chapter_end": 8,
+          "verse_end": 12,
+          "display": "Mark 8:10-12"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 15,
+          "verse_start": 39,
+          "chapter_end": 16,
+          "verse_end": 4,
+          "display": "Matthew 15:39–16:4"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-081",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "81",
+      "title": "The Fourth Retirement to Bethsaida Julias with Sharp Rebuke of the Dulness of the Disciples and the Healing of a Blind Man in Bethsaida",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 8,
+          "verse_start": 13,
+          "chapter_end": 8,
+          "verse_end": 26,
+          "display": "Mark 8:13-26"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 16,
+          "verse_start": 5,
+          "chapter_end": 16,
+          "verse_end": 12,
+          "display": "Matthew 16:5-12"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-082",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "82",
+      "title": "Near Caesarea Philippi Jesus Tests the Faith of the Twelve in His Messiahship",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 8,
+          "verse_start": 27,
+          "chapter_end": 8,
+          "verse_end": 30,
+          "display": "Mark 8:27-30"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 16,
+          "verse_start": 13,
+          "chapter_end": 16,
+          "verse_end": 20,
+          "display": "Matthew 16:13-20"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 18,
+          "chapter_end": 9,
+          "verse_end": 21,
+          "display": "Luke 9:18-21"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-083",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "83",
+      "title": "Jesus Distinctly Foretells That He, the Messiah, Will Be Rejected and Killed and Will Rise the Third Day",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 8,
+          "verse_start": 31,
+          "chapter_end": 8,
+          "verse_end": 37,
+          "display": "Mark 8:31-37"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 16,
+          "verse_start": 21,
+          "chapter_end": 16,
+          "verse_end": 26,
+          "display": "Matthew 16:21-26"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 22,
+          "chapter_end": 9,
+          "verse_end": 25,
+          "display": "Luke 9:22-25"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-084",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "84",
+      "title": "The Coming of the Son of Man in That Generation",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 8,
+          "verse_start": 38,
+          "chapter_end": 9,
+          "verse_end": 1,
+          "display": "Mark 8:38–9:1"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 16,
+          "verse_start": 27,
+          "chapter_end": 16,
+          "verse_end": 28,
+          "display": "Matthew 16:27-28"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 26,
+          "chapter_end": 9,
+          "verse_end": 27,
+          "display": "Luke 9:26-27"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-085",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "85",
+      "title": "The Transfiguration of Jesus on a Mountain (Probably Hermon) Near Caesarea Philippi",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 9,
+          "verse_start": 2,
+          "chapter_end": 9,
+          "verse_end": 8,
+          "display": "Mark 9:2-8"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 17,
+          "verse_start": 1,
+          "chapter_end": 17,
+          "verse_end": 8,
+          "display": "Matthew 17:1-8"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 28,
+          "chapter_end": 9,
+          "verse_end": 36,
+          "display": "Luke 9:28-36"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-086",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "86",
+      "title": "The Puzzle of the Three Disciples About the Resurrection and About Elijah on Their Way Down the Mountain",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 9,
+          "verse_start": 9,
+          "chapter_end": 9,
+          "verse_end": 13,
+          "display": "Mark 9:9-13"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 17,
+          "verse_start": 9,
+          "chapter_end": 17,
+          "verse_end": 13,
+          "display": "Matthew 17:9-13"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 36,
+          "chapter_end": 9,
+          "verse_end": 36,
+          "display": "Luke 9:36"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-087",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "87",
+      "title": "The Demoniac Boy, Whom the Disciples Could Not Heal",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 9,
+          "verse_start": 14,
+          "chapter_end": 9,
+          "verse_end": 29,
+          "display": "Mark 9:14-29"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 17,
+          "verse_start": 14,
+          "chapter_end": 17,
+          "verse_end": 20,
+          "display": "Matthew 17:14-20"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 37,
+          "chapter_end": 9,
+          "verse_end": 43,
+          "display": "Luke 9:37-43"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-088",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "88",
+      "title": "Returning Privately Through Galilee, He Again Foretells His Death and Resurrection",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 9,
+          "verse_start": 30,
+          "chapter_end": 9,
+          "verse_end": 32,
+          "display": "Mark 9:30-32"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 17,
+          "verse_start": 22,
+          "chapter_end": 17,
+          "verse_end": 23,
+          "display": "Matthew 17:22-23"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 43,
+          "chapter_end": 9,
+          "verse_end": 45,
+          "display": "Luke 9:43-45"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-089",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "89",
+      "title": "Jesus, the Messiah, Pays the Half-Shekel for the Temple",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 17,
+          "verse_start": 24,
+          "chapter_end": 17,
+          "verse_end": 27,
+          "display": "Matthew 17:24-27"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-090",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "90",
+      "title": "The Twelve Contend as to Who Shall Be Greatest Under the Messiah's Reign: His Subjects Must Be Childlike",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 9,
+          "verse_start": 33,
+          "chapter_end": 9,
+          "verse_end": 37,
+          "display": "Mark 9:33-37"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 18,
+          "verse_start": 1,
+          "chapter_end": 18,
+          "verse_end": 5,
+          "display": "Matthew 18:1-5"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 46,
+          "chapter_end": 9,
+          "verse_end": 48,
+          "display": "Luke 9:46-48"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-091",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "91",
+      "title": "The Mistaken Zeal of the Apostle John Rebuked by Jesus in Pertinent Parables",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 9,
+          "verse_start": 38,
+          "chapter_end": 9,
+          "verse_end": 50,
+          "display": "Mark 9:38-50"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 18,
+          "verse_start": 6,
+          "chapter_end": 18,
+          "verse_end": 14,
+          "display": "Matthew 18:6-14"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 49,
+          "chapter_end": 9,
+          "verse_end": 50,
+          "display": "Luke 9:49-50"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-092",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "92",
+      "title": "Right Treatment of a Brother Who Has Sinned Against One, and Duty of Patiently Forgiving a Brother (Parable of the Unmerciful Servant)",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 18,
+          "verse_start": 15,
+          "chapter_end": 18,
+          "verse_end": 35,
+          "display": "Matthew 18:15-35"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-093",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "93",
+      "title": "The Messiah's Followers Must Give Up Everything for His Service",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 8,
+          "verse_start": 19,
+          "chapter_end": 8,
+          "verse_end": 22,
+          "display": "Matthew 8:19-22"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 57,
+          "chapter_end": 9,
+          "verse_end": 62,
+          "display": "Luke 9:57-62"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-094",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "94",
+      "title": "The Unbelieving Brothers of Jesus Counsel Him to Exhibit Himself in Judea, and He Rejects the Advice",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 7,
+          "verse_start": 2,
+          "chapter_end": 7,
+          "verse_end": 9,
+          "display": "John 7:2-9"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-095",
+      "part": 8,
+      "part_name": "The Special Training of the Twelve in Districts Around Galilee",
+      "robertson_section": "95",
+      "title": "He Goes Privately to Jerusalem Through Samaria",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 51,
+          "chapter_end": 9,
+          "verse_end": 56,
+          "display": "Luke 9:51-56"
+        },
+        {
+          "book": "John",
+          "chapter_start": 7,
+          "verse_start": 10,
+          "chapter_end": 7,
+          "verse_end": 10,
+          "display": "John 7:10"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-096",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "96",
+      "title": "The Coming of Jesus to the Feast of Tabernacles Creates Intense Excitement Concerning the Messiahship",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 7,
+          "verse_start": 11,
+          "chapter_end": 7,
+          "verse_end": 52,
+          "display": "John 7:11-52"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-097",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "97",
+      "title": "Story of an Adulterous Woman Brought to Jesus for Judgment",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 7,
+          "verse_start": 53,
+          "chapter_end": 8,
+          "verse_end": 11,
+          "display": "John 7:53–8:11"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-098",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "98",
+      "title": "After the Feast of Tabernacles in the Temple Jesus Angers the Pharisees by Claiming to Be the Light of the World",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 8,
+          "verse_start": 12,
+          "chapter_end": 8,
+          "verse_end": 20,
+          "display": "John 8:12-20"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-099",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "99",
+      "title": "The Pharisees Attempt to Stone Jesus When He Exposes Their Sinfulness",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 8,
+          "verse_start": 21,
+          "chapter_end": 8,
+          "verse_end": 59,
+          "display": "John 8:21-59"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-100",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "100",
+      "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 9,
+          "verse_start": 1,
+          "chapter_end": 9,
+          "verse_end": 41,
+          "display": "John 9:1-41"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-101",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "101",
+      "title": "In the Parable of the Good Shepherd Jesus Draws the Picture of the Hostile Pharisees and Intimates That He Is Going to Die for His Flock",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 10,
+          "verse_start": 1,
+          "chapter_end": 10,
+          "verse_end": 21,
+          "display": "John 10:1-21"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-102",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "102",
+      "title": "The Mission of the Seventy; Christ's Joy in Their Work on Their Return",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 10,
+          "verse_start": 1,
+          "chapter_end": 10,
+          "verse_end": 24,
+          "display": "Luke 10:1-24"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-103",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "103",
+      "title": "Jesus Answers a Lawyer's Question as to Eternal Life, Giving the Parable of the Good Samaritan",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 10,
+          "verse_start": 25,
+          "chapter_end": 10,
+          "verse_end": 37,
+          "display": "Luke 10:25-37"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-104",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "104",
+      "title": "Jesus the Guest of Martha and Mary",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 10,
+          "verse_start": 38,
+          "chapter_end": 10,
+          "verse_end": 42,
+          "display": "Luke 10:38-42"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-105",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "105",
+      "title": "Jesus Again Gives a Model of Prayer and Encourages His Disciples to Pray: Parable of the Importunate Friend",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 11,
+          "verse_start": 1,
+          "chapter_end": 11,
+          "verse_end": 13,
+          "display": "Luke 11:1-13"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-106",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "106",
+      "title": "Blasphemous Accusation of League with Beelzebub",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 11,
+          "verse_start": 14,
+          "chapter_end": 11,
+          "verse_end": 36,
+          "display": "Luke 11:14-36"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-107",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "107",
+      "title": "While Breakfasting with a Pharisee, Jesus Severely Denounces the Pharisees and Lawyers and Excites Their Enmity",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 11,
+          "verse_start": 37,
+          "chapter_end": 11,
+          "verse_end": 54,
+          "display": "Luke 11:37-54"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-108",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "108",
+      "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 12,
+          "verse_start": null,
+          "chapter_end": 12,
+          "verse_end": null,
+          "display": "Luke 12"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-109",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "109",
+      "title": "All Must Repent or Perish: Two Current Tragedies; Parable of the Barren Fig Tree",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 13,
+          "verse_start": 1,
+          "chapter_end": 13,
+          "verse_end": 9,
+          "display": "Luke 13:1-9"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-110",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "110",
+      "title": "Jesus Heals a Crippled Woman on the Sabbath and Defends Himself Against the Ruler of the Synagogue; Repetition of the Parables of the Mustard Seed and of the Leaven",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 13,
+          "verse_start": 10,
+          "chapter_end": 13,
+          "verse_end": 21,
+          "display": "Luke 13:10-21"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-111",
+      "part": 9,
+      "part_name": "The Later Judean Ministry",
+      "robertson_section": "111",
+      "title": "At the Feast of Dedication Jesus Will Not Yet Openly Say That He Is the Messiah; The Jews Try to Stone Him",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 10,
+          "verse_start": 22,
+          "chapter_end": 10,
+          "verse_end": 39,
+          "display": "John 10:22-39"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-112",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "112",
+      "title": "The Withdrawal from Jerusalem to Bethany Beyond Jordan",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 10,
+          "verse_start": 40,
+          "chapter_end": 10,
+          "verse_end": 42,
+          "display": "John 10:40-42"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-113",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "113",
+      "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 13,
+          "verse_start": 22,
+          "chapter_end": 13,
+          "verse_end": 35,
+          "display": "Luke 13:22-35"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-114",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "114",
+      "title": "While Dining with a Chief Pharisee, He Again Heals on the Sabbath and Defends Himself; Three Parables Suggested by the Occasion",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 14,
+          "verse_start": 1,
+          "chapter_end": 14,
+          "verse_end": 24,
+          "display": "Luke 14:1-24"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-115",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "115",
+      "title": "Great Crowds Follow Him, and He Warns Them to Count the Cost of Discipleship to Him",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 14,
+          "verse_start": 25,
+          "chapter_end": 14,
+          "verse_end": 35,
+          "display": "Luke 14:25-35"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-116",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "116",
+      "title": "The Pharisees and Scribes Murmur Against Jesus for Receiving Sinners: He Defends Himself by Three Great Parables (The Lost Sheep, The Lost Coin, The Lost Son)",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 15,
+          "verse_start": 1,
+          "chapter_end": 15,
+          "verse_end": 32,
+          "display": "Luke 15:1-32"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-117",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "117",
+      "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 16,
+          "verse_start": 1,
+          "chapter_end": 17,
+          "verse_end": 10,
+          "display": "Luke 16:1–17:10"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-118",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "118",
+      "title": "Jesus Raises Lazarus from the Dead",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 11,
+          "verse_start": 1,
+          "chapter_end": 11,
+          "verse_end": 44,
+          "display": "John 11:1-44"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-119",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "119",
+      "title": "The Effect of the Raising of Lazarus (On the People, On the Sanhedrin, On the Movements of Jesus)",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 11,
+          "verse_start": 45,
+          "chapter_end": 11,
+          "verse_end": 54,
+          "display": "John 11:45-54"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-120",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "120",
+      "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 17,
+          "verse_start": 11,
+          "chapter_end": 17,
+          "verse_end": 37,
+          "display": "Luke 17:11-37"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-121",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "121",
+      "title": "Two Parables on Prayer (The Importunate Widow; The Pharisee and the Publican)",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 18,
+          "verse_start": 1,
+          "chapter_end": 18,
+          "verse_end": 14,
+          "display": "Luke 18:1-14"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-122",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "122",
+      "title": "Going from Galilee Through Perea, He Teaches Concerning Divorce",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 10,
+          "verse_start": 1,
+          "chapter_end": 10,
+          "verse_end": 12,
+          "display": "Mark 10:1-12"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 19,
+          "verse_start": 1,
+          "chapter_end": 19,
+          "verse_end": 12,
+          "display": "Matthew 19:1-12"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-123",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "123",
+      "title": "Christ and Children and the Failure of the Disciples to Understand the Attitude of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 10,
+          "verse_start": 13,
+          "chapter_end": 10,
+          "verse_end": 16,
+          "display": "Mark 10:13-16"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 19,
+          "verse_start": 13,
+          "chapter_end": 19,
+          "verse_end": 15,
+          "display": "Matthew 19:13-15"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 18,
+          "verse_start": 15,
+          "chapter_end": 18,
+          "verse_end": 17,
+          "display": "Luke 18:15-17"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-124",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "124",
+      "title": "The Rich Young Ruler, the Perils of Riches, and Amazement of the Disciples; Rewards of Following the Messiah (Parable of the Laborers in the Vineyard)",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 10,
+          "verse_start": 17,
+          "chapter_end": 10,
+          "verse_end": 31,
+          "display": "Mark 10:17-31"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 19,
+          "verse_start": 16,
+          "chapter_end": 20,
+          "verse_end": 16,
+          "display": "Matthew 19:16–20:16"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 18,
+          "verse_start": 18,
+          "chapter_end": 18,
+          "verse_end": 30,
+          "display": "Luke 18:18-30"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-125",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "125",
+      "title": "Jesus Again Foretells to the Disciples His Death and Resurrection, and Rebukes the Selfish Ambition of James and John",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 10,
+          "verse_start": 32,
+          "chapter_end": 10,
+          "verse_end": 45,
+          "display": "Mark 10:32-45"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 20,
+          "verse_start": 17,
+          "chapter_end": 20,
+          "verse_end": 28,
+          "display": "Matthew 20:17-28"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 18,
+          "verse_start": 31,
+          "chapter_end": 18,
+          "verse_end": 34,
+          "display": "Luke 18:31-34"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-126",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "126",
+      "title": "Blind Bartimaeus and His Companion Healed",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 10,
+          "verse_start": 46,
+          "chapter_end": 10,
+          "verse_end": 52,
+          "display": "Mark 10:46-52"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 20,
+          "verse_start": 29,
+          "chapter_end": 20,
+          "verse_end": 34,
+          "display": "Matthew 20:29-34"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 18,
+          "verse_start": 35,
+          "chapter_end": 18,
+          "verse_end": 43,
+          "display": "Luke 18:35-43"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-127",
+      "part": 10,
+      "part_name": "The Later Perean Ministry",
+      "robertson_section": "127",
+      "title": "Jesus Visits Zacchaeus, and Speaks the Parable of the Pounds, and Sets Out for Jerusalem",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 19,
+          "verse_start": 1,
+          "chapter_end": 19,
+          "verse_end": 28,
+          "display": "Luke 19:1-28"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-128a",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "128a",
+      "title": "Jesus Arrives at Bethany Near Jerusalem",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 11,
+          "verse_start": 55,
+          "chapter_end": 12,
+          "verse_end": 1,
+          "display": "John 11:55–12:1"
+        },
+        {
+          "book": "John",
+          "chapter_start": 12,
+          "verse_start": 9,
+          "chapter_end": 12,
+          "verse_end": 11,
+          "display": "John 12:9-11"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-128b",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "128b",
+      "title": "His Triumphal Entry into Jerusalem as the Messiah",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 11,
+          "verse_start": 1,
+          "chapter_end": 11,
+          "verse_end": 11,
+          "display": "Mark 11:1-11"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 21,
+          "verse_start": 1,
+          "chapter_end": 21,
+          "verse_end": 11,
+          "display": "Matthew 21:1-11"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 21,
+          "verse_start": 14,
+          "chapter_end": 21,
+          "verse_end": 17,
+          "display": "Matthew 21:14-17"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 19,
+          "verse_start": 29,
+          "chapter_end": 19,
+          "verse_end": 44,
+          "display": "Luke 19:29-44"
+        },
+        {
+          "book": "John",
+          "chapter_start": 12,
+          "verse_start": 12,
+          "chapter_end": 12,
+          "verse_end": 19,
+          "display": "John 12:12-19"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-129",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "129",
+      "title": "The Barren Fig Tree Cursed, and the Second Cleansing of the Temple",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 11,
+          "verse_start": 12,
+          "chapter_end": 11,
+          "verse_end": 18,
+          "display": "Mark 11:12-18"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 21,
+          "verse_start": 18,
+          "chapter_end": 21,
+          "verse_end": 19,
+          "display": "Matthew 21:18-19"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 21,
+          "verse_start": 12,
+          "chapter_end": 21,
+          "verse_end": 13,
+          "display": "Matthew 21:12-13"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 19,
+          "verse_start": 45,
+          "chapter_end": 19,
+          "verse_end": 48,
+          "display": "Luke 19:45-48"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-130",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "130",
+      "title": "The Desire of Some Greeks to See Jesus Leads Jesus to Interpret Life and Death as Sacrifice and Show How Being Lifted Up He Will Draw All Men to Him",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 12,
+          "verse_start": 20,
+          "chapter_end": 12,
+          "verse_end": 50,
+          "display": "John 12:20-50"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-131",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "131",
+      "title": "The Barren Fig Tree Found to Have Withered",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 11,
+          "verse_start": 19,
+          "chapter_end": 11,
+          "verse_end": 25,
+          "display": "Mark 11:19-25"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 21,
+          "verse_start": 19,
+          "chapter_end": 21,
+          "verse_end": 22,
+          "display": "Matthew 21:19-22"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 21,
+          "verse_start": 37,
+          "chapter_end": 21,
+          "verse_end": 38,
+          "display": "Luke 21:37-38"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-132",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "132",
+      "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 11,
+          "verse_start": 27,
+          "chapter_end": 12,
+          "verse_end": 12,
+          "display": "Mark 11:27–12:12"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 21,
+          "verse_start": 23,
+          "chapter_end": 22,
+          "verse_end": 14,
+          "display": "Matthew 21:23–22:14"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 20,
+          "verse_start": 1,
+          "chapter_end": 20,
+          "verse_end": 19,
+          "display": "Luke 20:1-19"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-133",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "133",
+      "title": "The Pharisees and the Herodians Try to Ensnare Jesus About Paying Tribute to Caesar",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 12,
+          "verse_start": 13,
+          "chapter_end": 12,
+          "verse_end": 17,
+          "display": "Mark 12:13-17"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 22,
+          "verse_start": 15,
+          "chapter_end": 22,
+          "verse_end": 22,
+          "display": "Matthew 22:15-22"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 20,
+          "verse_start": 20,
+          "chapter_end": 20,
+          "verse_end": 26,
+          "display": "Luke 20:20-26"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-134",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "134",
+      "title": "The Sadducees Ask Him a Puzzling Question About the Resurrection",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 12,
+          "verse_start": 18,
+          "chapter_end": 12,
+          "verse_end": 27,
+          "display": "Mark 12:18-27"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 22,
+          "verse_start": 23,
+          "chapter_end": 22,
+          "verse_end": 33,
+          "display": "Matthew 22:23-33"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 20,
+          "verse_start": 27,
+          "chapter_end": 20,
+          "verse_end": 40,
+          "display": "Luke 20:27-40"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-135",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "135",
+      "title": "The Pharisees Rejoice Over the Rout of the Sadducees and a Pharisaic Lawyer Asks Jesus a Legal Question",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 12,
+          "verse_start": 28,
+          "chapter_end": 12,
+          "verse_end": 34,
+          "display": "Mark 12:28-34"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 22,
+          "verse_start": 34,
+          "chapter_end": 22,
+          "verse_end": 40,
+          "display": "Matthew 22:34-40"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-136",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "136",
+      "title": "Jesus Silences His Enemies by the Pertinent Question of the Messiah's Descent from David and Lordship Over David",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 12,
+          "verse_start": 35,
+          "chapter_end": 12,
+          "verse_end": 37,
+          "display": "Mark 12:35-37"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 22,
+          "verse_start": 41,
+          "chapter_end": 22,
+          "verse_end": 46,
+          "display": "Matthew 22:41-46"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 20,
+          "verse_start": 41,
+          "chapter_end": 20,
+          "verse_end": 44,
+          "display": "Luke 20:41-44"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-137",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "137",
+      "title": "In His Last Public Discourse, Jesus Solemnly Denounces the Scribes and Pharisees",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 12,
+          "verse_start": 38,
+          "chapter_end": 12,
+          "verse_end": 40,
+          "display": "Mark 12:38-40"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 23,
+          "verse_start": 1,
+          "chapter_end": 23,
+          "verse_end": 39,
+          "display": "Matthew 23:1-39"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 20,
+          "verse_start": 45,
+          "chapter_end": 20,
+          "verse_end": 47,
+          "display": "Luke 20:45-47"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-138",
+      "part": 11,
+      "part_name": "The Last Public Ministry in Jerusalem",
+      "robertson_section": "138",
+      "title": "Jesus Closely Observes the Contributions in the Temple, and Commends the Poor Widow's Gift",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 12,
+          "verse_start": 41,
+          "chapter_end": 12,
+          "verse_end": 44,
+          "display": "Mark 12:41-44"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 21,
+          "verse_start": 1,
+          "chapter_end": 21,
+          "verse_end": 4,
+          "display": "Luke 21:1-4"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-139",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "139",
+      "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 13,
+          "verse_start": 1,
+          "chapter_end": 13,
+          "verse_end": 37,
+          "display": "Mark 13:1-37"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 24,
+          "verse_start": null,
+          "chapter_end": 25,
+          "verse_end": null,
+          "display": "Matthew 24–25"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 21,
+          "verse_start": 5,
+          "chapter_end": 21,
+          "verse_end": 36,
+          "display": "Luke 21:5-36"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-140",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "140",
+      "title": "Jesus Predicts His Crucifixion Two Days Hence (Jewish Friday)",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 1,
+          "chapter_end": 14,
+          "verse_end": 2,
+          "display": "Mark 14:1-2"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 1,
+          "chapter_end": 26,
+          "verse_end": 5,
+          "display": "Matthew 26:1-5"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 1,
+          "chapter_end": 22,
+          "verse_end": 2,
+          "display": "Luke 22:1-2"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-141",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "141",
+      "title": "At the Feast in the House of Simon the Leper Mary of Bethany Anoints Jesus for His Burial",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 3,
+          "chapter_end": 14,
+          "verse_end": 9,
+          "display": "Mark 14:3-9"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 6,
+          "chapter_end": 26,
+          "verse_end": 13,
+          "display": "Matthew 26:6-13"
+        },
+        {
+          "book": "John",
+          "chapter_start": 12,
+          "verse_start": 2,
+          "chapter_end": 12,
+          "verse_end": 8,
+          "display": "John 12:2-8"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-142",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "142",
+      "title": "Judas, Stung by the Rebuke of Jesus at the Feast, Bargains with the Rulers to Betray Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 10,
+          "chapter_end": 14,
+          "verse_end": 11,
+          "display": "Mark 14:10-11"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 14,
+          "chapter_end": 26,
+          "verse_end": 16,
+          "display": "Matthew 26:14-16"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 3,
+          "chapter_end": 22,
+          "verse_end": 6,
+          "display": "Luke 22:3-6"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-143",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "143",
+      "title": "The Preparation for the Paschal Meal at the Home of a Friend",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 12,
+          "chapter_end": 14,
+          "verse_end": 16,
+          "display": "Mark 14:12-16"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 17,
+          "chapter_end": 26,
+          "verse_end": 19,
+          "display": "Matthew 26:17-19"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 7,
+          "chapter_end": 22,
+          "verse_end": 13,
+          "display": "Luke 22:7-13"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-144",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "144",
+      "title": "Jesus Partakes of the Paschal Meal with the Twelve Apostles and Rebukes Their Jealousy",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 17,
+          "chapter_end": 14,
+          "verse_end": 17,
+          "display": "Mark 14:17"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 20,
+          "chapter_end": 26,
+          "verse_end": 20,
+          "display": "Matthew 26:20"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 14,
+          "chapter_end": 22,
+          "verse_end": 16,
+          "display": "Luke 22:14-16"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 24,
+          "chapter_end": 22,
+          "verse_end": 30,
+          "display": "Luke 22:24-30"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-145",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "145",
+      "title": "During the Paschal Meal, Jesus Washes the Feet of His Disciples",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 13,
+          "verse_start": 1,
+          "chapter_end": 13,
+          "verse_end": 20,
+          "display": "John 13:1-20"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-146",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "146",
+      "title": "At the Paschal Meal Jesus Points Out Judas as the Betrayer",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 18,
+          "chapter_end": 14,
+          "verse_end": 21,
+          "display": "Mark 14:18-21"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 21,
+          "chapter_end": 26,
+          "verse_end": 25,
+          "display": "Matthew 26:21-25"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 21,
+          "chapter_end": 22,
+          "verse_end": 23,
+          "display": "Luke 22:21-23"
+        },
+        {
+          "book": "John",
+          "chapter_start": 13,
+          "verse_start": 21,
+          "chapter_end": 13,
+          "verse_end": 30,
+          "display": "John 13:21-30"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-147",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "147",
+      "title": "After the Departure of Judas Jesus Warns the Disciples (Peter in Particular) Against Desertion, While All Protest Their Loyalty",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 27,
+          "chapter_end": 14,
+          "verse_end": 31,
+          "display": "Mark 14:27-31"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 31,
+          "chapter_end": 26,
+          "verse_end": 35,
+          "display": "Matthew 26:31-35"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 31,
+          "chapter_end": 22,
+          "verse_end": 38,
+          "display": "Luke 22:31-38"
+        },
+        {
+          "book": "John",
+          "chapter_start": 13,
+          "verse_start": 31,
+          "chapter_end": 13,
+          "verse_end": 38,
+          "display": "John 13:31-38"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-148",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "148",
+      "title": "Jesus Institutes the Memorial of Eating Bread and Drinking Wine",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 22,
+          "chapter_end": 14,
+          "verse_end": 25,
+          "display": "Mark 14:22-25"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 26,
+          "chapter_end": 26,
+          "verse_end": 29,
+          "display": "Matthew 26:26-29"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 17,
+          "chapter_end": 22,
+          "verse_end": 20,
+          "display": "Luke 22:17-20"
+        },
+        {
+          "book": "1 Corinthians",
+          "chapter_start": 11,
+          "verse_start": 23,
+          "chapter_end": 11,
+          "verse_end": 26,
+          "display": "1 Corinthians 11:23-26"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-149",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "149",
+      "title": "The Farewell Discourse to His Disciples in the Upper Room",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 14,
+          "verse_start": null,
+          "chapter_end": 14,
+          "verse_end": null,
+          "display": "John 14"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-150",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "150",
+      "title": "The Discourse on the Way to Gethsemane",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 15,
+          "verse_start": null,
+          "chapter_end": 16,
+          "verse_end": null,
+          "display": "John 15–16"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-151",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "151",
+      "title": "Christ's Intercessory Prayer",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 17,
+          "verse_start": null,
+          "chapter_end": 17,
+          "verse_end": null,
+          "display": "John 17"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-152",
+      "part": 12,
+      "part_name": "In the Shadow with Jesus",
+      "robertson_section": "152",
+      "title": "Going Forth to Gethsemane, Jesus Suffers Long in Agony",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 26,
+          "chapter_end": 14,
+          "verse_end": 26,
+          "display": "Mark 14:26"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 32,
+          "chapter_end": 14,
+          "verse_end": 42,
+          "display": "Mark 14:32-42"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 30,
+          "chapter_end": 26,
+          "verse_end": 30,
+          "display": "Matthew 26:30"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 36,
+          "chapter_end": 26,
+          "verse_end": 46,
+          "display": "Matthew 26:36-46"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 39,
+          "chapter_end": 22,
+          "verse_end": 46,
+          "display": "Luke 22:39-46"
+        },
+        {
+          "book": "John",
+          "chapter_start": 18,
+          "verse_start": 1,
+          "chapter_end": 18,
+          "verse_end": 1,
+          "display": "John 18:1"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-153",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "153",
+      "title": "Jesus Is Betrayed, Arrested, and Forsaken",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 43,
+          "chapter_end": 14,
+          "verse_end": 52,
+          "display": "Mark 14:43-52"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 47,
+          "chapter_end": 26,
+          "verse_end": 56,
+          "display": "Matthew 26:47-56"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 47,
+          "chapter_end": 22,
+          "verse_end": 53,
+          "display": "Luke 22:47-53"
+        },
+        {
+          "book": "John",
+          "chapter_start": 18,
+          "verse_start": 2,
+          "chapter_end": 18,
+          "verse_end": 12,
+          "display": "John 18:2-12"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-154",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "154",
+      "title": "Jesus First Examined by Annas, the Ex-High Priest",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 18,
+          "verse_start": 12,
+          "chapter_end": 18,
+          "verse_end": 14,
+          "display": "John 18:12-14"
+        },
+        {
+          "book": "John",
+          "chapter_start": 18,
+          "verse_start": 19,
+          "chapter_end": 18,
+          "verse_end": 23,
+          "display": "John 18:19-23"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-155",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "155",
+      "title": "Jesus Hurriedly Tried and Condemned by Caiaphas and the Sanhedrin, Who Mock and Buffet Him",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 53,
+          "chapter_end": 14,
+          "verse_end": 53,
+          "display": "Mark 14:53"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 55,
+          "chapter_end": 14,
+          "verse_end": 65,
+          "display": "Mark 14:55-65"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 57,
+          "chapter_end": 26,
+          "verse_end": 57,
+          "display": "Matthew 26:57"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 59,
+          "chapter_end": 26,
+          "verse_end": 68,
+          "display": "Matthew 26:59-68"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 54,
+          "chapter_end": 22,
+          "verse_end": 54,
+          "display": "Luke 22:54"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 63,
+          "chapter_end": 22,
+          "verse_end": 65,
+          "display": "Luke 22:63-65"
+        },
+        {
+          "book": "John",
+          "chapter_start": 18,
+          "verse_start": 24,
+          "chapter_end": 18,
+          "verse_end": 24,
+          "display": "John 18:24"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-156",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "156",
+      "title": "Peter Thrice Denies His Lord",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 54,
+          "chapter_end": 14,
+          "verse_end": 54,
+          "display": "Mark 14:54"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 14,
+          "verse_start": 66,
+          "chapter_end": 14,
+          "verse_end": 72,
+          "display": "Mark 14:66-72"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 58,
+          "chapter_end": 26,
+          "verse_end": 58,
+          "display": "Matthew 26:58"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 26,
+          "verse_start": 69,
+          "chapter_end": 26,
+          "verse_end": 75,
+          "display": "Matthew 26:69-75"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 54,
+          "chapter_end": 22,
+          "verse_end": 62,
+          "display": "Luke 22:54-62"
+        },
+        {
+          "book": "John",
+          "chapter_start": 18,
+          "verse_start": 15,
+          "chapter_end": 18,
+          "verse_end": 18,
+          "display": "John 18:15-18"
+        },
+        {
+          "book": "John",
+          "chapter_start": 18,
+          "verse_start": 25,
+          "chapter_end": 18,
+          "verse_end": 27,
+          "display": "John 18:25-27"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-157",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "157",
+      "title": "After Dawn, Jesus Is Formally Condemned by the Sanhedrin",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 1,
+          "chapter_end": 15,
+          "verse_end": 1,
+          "display": "Mark 15:1"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 1,
+          "chapter_end": 27,
+          "verse_end": 1,
+          "display": "Matthew 27:1"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 22,
+          "verse_start": 66,
+          "chapter_end": 22,
+          "verse_end": 71,
+          "display": "Luke 22:66-71"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-158",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "158",
+      "title": "Remorse and Suicide of Judas the Betrayer",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 3,
+          "chapter_end": 27,
+          "verse_end": 10,
+          "display": "Matthew 27:3-10"
+        },
+        {
+          "book": "Acts",
+          "chapter_start": 1,
+          "verse_start": 18,
+          "chapter_end": 1,
+          "verse_end": 19,
+          "display": "Acts 1:18-19"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-159",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "159",
+      "title": "Jesus Before Pilate the First Time",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 1,
+          "chapter_end": 15,
+          "verse_end": 5,
+          "display": "Mark 15:1-5"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 2,
+          "chapter_end": 27,
+          "verse_end": 2,
+          "display": "Matthew 27:2"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 11,
+          "chapter_end": 27,
+          "verse_end": 14,
+          "display": "Matthew 27:11-14"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 1,
+          "chapter_end": 23,
+          "verse_end": 5,
+          "display": "Luke 23:1-5"
+        },
+        {
+          "book": "John",
+          "chapter_start": 18,
+          "verse_start": 28,
+          "chapter_end": 18,
+          "verse_end": 38,
+          "display": "John 18:28-38"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-160",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "160",
+      "title": "Jesus Before Herod Antipas the Tetrarch",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 6,
+          "chapter_end": 23,
+          "verse_end": 12,
+          "display": "Luke 23:6-12"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-161",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "161",
+      "title": "Jesus the Second Time Before Pilate",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 6,
+          "chapter_end": 15,
+          "verse_end": 15,
+          "display": "Mark 15:6-15"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 15,
+          "chapter_end": 27,
+          "verse_end": 26,
+          "display": "Matthew 27:15-26"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 13,
+          "chapter_end": 23,
+          "verse_end": 25,
+          "display": "Luke 23:13-25"
+        },
+        {
+          "book": "John",
+          "chapter_start": 18,
+          "verse_start": 39,
+          "chapter_end": 19,
+          "verse_end": 16,
+          "display": "John 18:39–19:16"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-162",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "162",
+      "title": "The Roman Soldiers Mock Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 16,
+          "chapter_end": 15,
+          "verse_end": 19,
+          "display": "Mark 15:16-19"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 27,
+          "chapter_end": 27,
+          "verse_end": 30,
+          "display": "Matthew 27:27-30"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-163",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "163",
+      "title": "Jesus on the Way to the Cross (Via Dolorosa) on Golgotha",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 20,
+          "chapter_end": 15,
+          "verse_end": 23,
+          "display": "Mark 15:20-23"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 31,
+          "chapter_end": 27,
+          "verse_end": 34,
+          "display": "Matthew 27:31-34"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 26,
+          "chapter_end": 23,
+          "verse_end": 33,
+          "display": "Luke 23:26-33"
+        },
+        {
+          "book": "John",
+          "chapter_start": 19,
+          "verse_start": 16,
+          "chapter_end": 19,
+          "verse_end": 17,
+          "display": "John 19:16-17"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-164",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "164",
+      "title": "The First Three Hours on the Cross",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 24,
+          "chapter_end": 15,
+          "verse_end": 32,
+          "display": "Mark 15:24-32"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 35,
+          "chapter_end": 27,
+          "verse_end": 44,
+          "display": "Matthew 27:35-44"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 33,
+          "chapter_end": 23,
+          "verse_end": 43,
+          "display": "Luke 23:33-43"
+        },
+        {
+          "book": "John",
+          "chapter_start": 19,
+          "verse_start": 18,
+          "chapter_end": 19,
+          "verse_end": 27,
+          "display": "John 19:18-27"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-165",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "165",
+      "title": "The Three Hours of Darkness from Noon to Three P.M.",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 33,
+          "chapter_end": 15,
+          "verse_end": 37,
+          "display": "Mark 15:33-37"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 45,
+          "chapter_end": 27,
+          "verse_end": 50,
+          "display": "Matthew 27:45-50"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 44,
+          "chapter_end": 23,
+          "verse_end": 46,
+          "display": "Luke 23:44-46"
+        },
+        {
+          "book": "John",
+          "chapter_start": 19,
+          "verse_start": 28,
+          "chapter_end": 19,
+          "verse_end": 30,
+          "display": "John 19:28-30"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-166",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "166",
+      "title": "The Phenomena Accompanying the Death of Christ",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 38,
+          "chapter_end": 15,
+          "verse_end": 41,
+          "display": "Mark 15:38-41"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 51,
+          "chapter_end": 27,
+          "verse_end": 56,
+          "display": "Matthew 27:51-56"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 45,
+          "chapter_end": 23,
+          "verse_end": 45,
+          "display": "Luke 23:45"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 47,
+          "chapter_end": 23,
+          "verse_end": 49,
+          "display": "Luke 23:47-49"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-167",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "167",
+      "title": "The Burial of the Body of Jesus in the Tomb of Joseph of Arimathea After Proof of His Death",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 42,
+          "chapter_end": 15,
+          "verse_end": 46,
+          "display": "Mark 15:42-46"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 57,
+          "chapter_end": 27,
+          "verse_end": 60,
+          "display": "Matthew 27:57-60"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 50,
+          "chapter_end": 23,
+          "verse_end": 54,
+          "display": "Luke 23:50-54"
+        },
+        {
+          "book": "John",
+          "chapter_start": 19,
+          "verse_start": 31,
+          "chapter_end": 19,
+          "verse_end": 42,
+          "display": "John 19:31-42"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-168",
+      "part": 13,
+      "part_name": "The Arrest, Trial, Crucifixion, and Burial of Jesus",
+      "robertson_section": "168",
+      "title": "The Watch of the Women by the Tomb of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 47,
+          "chapter_end": 15,
+          "verse_end": 47,
+          "display": "Mark 15:47"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 61,
+          "chapter_end": 27,
+          "verse_end": 66,
+          "display": "Matthew 27:61-66"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 55,
+          "chapter_end": 23,
+          "verse_end": 56,
+          "display": "Luke 23:55-56"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-169",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "169",
+      "title": "The Visit of the Women to the Tomb of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 16,
+          "verse_start": 1,
+          "chapter_end": 16,
+          "verse_end": 1,
+          "display": "Mark 16:1"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 28,
+          "verse_start": 1,
+          "chapter_end": 28,
+          "verse_end": 1,
+          "display": "Matthew 28:1"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-170",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "170",
+      "title": "The Earthquake, the Rolling Away of the Stone by an Angel, and the Fright of the Roman Watchers",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 28,
+          "verse_start": 2,
+          "chapter_end": 28,
+          "verse_end": 4,
+          "display": "Matthew 28:2-4"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-171",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "171",
+      "title": "The Visit of the Women to the Tomb About Sunrise Sunday Morning and the Message of the Angels About the Empty Tomb",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 16,
+          "verse_start": 2,
+          "chapter_end": 16,
+          "verse_end": 8,
+          "display": "Mark 16:2-8"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 28,
+          "verse_start": 5,
+          "chapter_end": 28,
+          "verse_end": 8,
+          "display": "Matthew 28:5-8"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 24,
+          "verse_start": 1,
+          "chapter_end": 24,
+          "verse_end": 8,
+          "display": "Luke 24:1-8"
+        },
+        {
+          "book": "John",
+          "chapter_start": 20,
+          "verse_start": 1,
+          "chapter_end": 20,
+          "verse_end": 1,
+          "display": "John 20:1"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-172",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "172",
+      "title": "Mary Magdalene and the Other Women Report to the Apostles, and Peter and John Visit the Empty Tomb",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 24,
+          "verse_start": 9,
+          "chapter_end": 24,
+          "verse_end": 12,
+          "display": "Luke 24:9-12"
+        },
+        {
+          "book": "John",
+          "chapter_start": 20,
+          "verse_start": 2,
+          "chapter_end": 20,
+          "verse_end": 10,
+          "display": "John 20:2-10"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-173",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "173",
+      "title": "The Appearance of Jesus to Mary Magdalene and the Message to the Disciples",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 16,
+          "verse_start": 9,
+          "chapter_end": 16,
+          "verse_end": 11,
+          "display": "Mark 16:9-11"
+        },
+        {
+          "book": "John",
+          "chapter_start": 20,
+          "verse_start": 11,
+          "chapter_end": 20,
+          "verse_end": 18,
+          "display": "John 20:11-18"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-174",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "174",
+      "title": "The Appearance of Jesus to the Other Women",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 28,
+          "verse_start": 9,
+          "chapter_end": 28,
+          "verse_end": 10,
+          "display": "Matthew 28:9-10"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-175",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "175",
+      "title": "Some of the Guard Report to the Jewish Rulers",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 28,
+          "verse_start": 11,
+          "chapter_end": 28,
+          "verse_end": 15,
+          "display": "Matthew 28:11-15"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-176",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "176",
+      "title": "The Appearance to Two Disciples (Cleopas and Another) on the Way to Emmaus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 16,
+          "verse_start": 12,
+          "chapter_end": 16,
+          "verse_end": 13,
+          "display": "Mark 16:12-13"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 24,
+          "verse_start": 13,
+          "chapter_end": 24,
+          "verse_end": 32,
+          "display": "Luke 24:13-32"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-177",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "177",
+      "title": "The Report of the Two Disciples and the News of the Appearance to Simon Peter",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 24,
+          "verse_start": 33,
+          "chapter_end": 24,
+          "verse_end": 35,
+          "display": "Luke 24:33-35"
+        },
+        {
+          "book": "1 Corinthians",
+          "chapter_start": 15,
+          "verse_start": 5,
+          "chapter_end": 15,
+          "verse_end": 5,
+          "display": "1 Corinthians 15:5"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-178",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "178",
+      "title": "The Appearance to the Astonished Disciples (Thomas Absent) with a Commission and Their Failure to Convince Thomas",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 16,
+          "verse_start": 14,
+          "chapter_end": 16,
+          "verse_end": 14,
+          "display": "Mark 16:14"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 24,
+          "verse_start": 36,
+          "chapter_end": 24,
+          "verse_end": 43,
+          "display": "Luke 24:36-43"
+        },
+        {
+          "book": "John",
+          "chapter_start": 20,
+          "verse_start": 19,
+          "chapter_end": 20,
+          "verse_end": 25,
+          "display": "John 20:19-25"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-179",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "179",
+      "title": "The Appearance to the Disciples the Next Sunday Night and the Convincing of Thomas",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 20,
+          "verse_start": 26,
+          "chapter_end": 20,
+          "verse_end": 31,
+          "display": "John 20:26-31"
+        },
+        {
+          "book": "1 Corinthians",
+          "chapter_start": 15,
+          "verse_start": 5,
+          "chapter_end": 15,
+          "verse_end": 5,
+          "display": "1 Corinthians 15:5"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-180",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "180",
+      "title": "The Appearance to Seven Disciples Beside the Sea of Galilee: The Miraculous Draught of Fishes",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 21,
+          "verse_start": null,
+          "chapter_end": 21,
+          "verse_end": null,
+          "display": "John 21"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-181",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "181",
+      "title": "The Appearance to About Five Hundred on an Appointed Mountain in Galilee, and a Commission Given",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 16,
+          "verse_start": 15,
+          "chapter_end": 16,
+          "verse_end": 18,
+          "display": "Mark 16:15-18"
+        },
+        {
+          "book": "Matthew",
+          "chapter_start": 28,
+          "verse_start": 16,
+          "chapter_end": 28,
+          "verse_end": 20,
+          "display": "Matthew 28:16-20"
+        },
+        {
+          "book": "1 Corinthians",
+          "chapter_start": 15,
+          "verse_start": 6,
+          "chapter_end": 15,
+          "verse_end": 6,
+          "display": "1 Corinthians 15:6"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-182",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "182",
+      "title": "The Appearance to James the Brother of Jesus",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "1 Corinthians",
+          "chapter_start": 15,
+          "verse_start": 7,
+          "chapter_end": 15,
+          "verse_end": 7,
+          "display": "1 Corinthians 15:7"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-183",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "183",
+      "title": "The Appearance to the Disciples with Another Commission",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 24,
+          "verse_start": 44,
+          "chapter_end": 24,
+          "verse_end": 49,
+          "display": "Luke 24:44-49"
+        },
+        {
+          "book": "Acts",
+          "chapter_start": 1,
+          "verse_start": 3,
+          "chapter_end": 1,
+          "verse_end": 8,
+          "display": "Acts 1:3-8"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    },
+    {
+      "gospel_event_id": "r1922-184",
+      "part": 14,
+      "part_name": "The Resurrection, Appearances, and Ascension of Christ",
+      "robertson_section": "184",
+      "title": "The Last Appearance and the Ascension",
+      "location": null,
+      "date_note": null,
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 16,
+          "verse_start": 19,
+          "chapter_end": 16,
+          "verse_end": 20,
+          "display": "Mark 16:19-20"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 24,
+          "verse_start": 50,
+          "chapter_end": 24,
+          "verse_end": 53,
+          "display": "Luke 24:50-53"
+        },
+        {
+          "book": "Acts",
+          "chapter_start": 1,
+          "verse_start": 9,
+          "chapter_end": 1,
+          "verse_end": 12,
+          "display": "Acts 1:9-12"
+        }
+      ],
+      "phase": null,
+      "sub_phase": null,
+      "phase_mapping_status": "pending",
+      "notes": ""
+    }
+  ]
+}

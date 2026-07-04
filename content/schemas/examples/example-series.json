@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "series_id": "ser-example-following-jesus",
+  "title": "Following Jesus (Example Series)",
+  "description": "A worked example series for schema documentation. It is **not** pilot content — the real pilot lessons land in `/content/pilot-lessons/` (#7).",
+  "source_language": "en",
+  "translation_status": "draft",
+  "source_attribution": "Original example content written for the J-Life platform schema documentation (issue #5). Not adapted from any published curriculum.",
+  "rights_note": "Original work, no external rights involved. Scripture appears as references only per docs/content-rights.md.",
+  "lessons": [
+    "lsn-example-come-follow-me"
+  ]
+}

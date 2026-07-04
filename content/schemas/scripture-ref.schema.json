@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jlife.test/schemas/scripture-ref.schema.json",
+  "title": "Scripture Reference",
+  "description": "Canonical machine-readable Scripture reference. Identical shape to content/harmony/robertson-1922-outline.json (#6) so lessons, the harmony dataset, and the S6 round-trip never drift. References only — never Scripture text (docs/content-rights.md).",
+  "type": "object",
+  "properties": {
+    "book": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Full English book name, e.g. \"Mark\", \"1 Corinthians\". If abbreviations or OSIS codes are needed later they become additional fields; this field never changes meaning."
+    },
+    "chapter_start": { "type": "integer", "minimum": 1 },
+    "verse_start": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "null for whole-chapter ranges (e.g. John 14)."
+    },
+    "chapter_end": { "type": "integer", "minimum": 1 },
+    "verse_end": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "null for whole-chapter ranges."
+    },
+    "display": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable rendering, e.g. \"Mark 1:16-20\"."
+    },
+    "deep_link": {
+      "type": ["string", "null"],
+      "description": "Optional deep link to a licensed online rendering (e.g. VIE2010). Null until the link convention lands (#1/#2 rights conversations)."
+    }
+  },
+  "required": ["book", "chapter_start", "verse_start", "chapter_end", "verse_end", "display"],
+  "additionalProperties": false
+}
