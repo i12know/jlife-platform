@@ -1,0 +1,22 @@
+{
+  "name": "jlife-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "J-Life Platform — dev environment and tooling (WordPress multisite + Disciple.Tools)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "env:start": "node bin/start.js",
+    "env:stop": "wp-env stop",
+    "env:destroy": "wp-env destroy",
+    "env:setup": "node bin/setup.js",
+    "env:seed": "node bin/seed.js",
+    "env:verify": "node bin/verify.js",
+    "env:up": "node bin/start.js && node bin/setup.js && node bin/seed.js && node bin/verify.js",
+    "env:cli": "wp-env run cli -- wp"
+  },
+  "devDependencies": {
+    "@wordpress/env": "^10.0.0"
+  }
+}
