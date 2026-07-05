@@ -18,6 +18,18 @@ Engineering proceeds in parallel using original placeholder content and referenc
 
 **Prototyping is fully unblocked** ([content-rights.md](content-rights.md) §3): the Gospel-harmony arrangement traces to the public-domain Broadus (1893) / Robertson (1922) harmonies, so a working system displaying public-domain Bible text (e.g. VIE1925) in that chronological arrangement — with original study content built on it — requires no rights agreement at all. The `gospel_event` taxonomy seeds directly from Robertson's outline (free on Project Gutenberg). Technical contributors can build the full study reader, huddle layer, and harmony browser against this foundation while content conversations proceed.
 
+## Tentative 2027 Ministry Planning Anchor
+
+Recorded 2026-07-05: a Vietnamese ministry/training partner indicated that **May 14-15, 2027** is currently the best available window for a possible J-Life_VN / SonLife-related training or strategy gathering. Treat this as a planning anchor only, not a confirmed event.
+
+Calendar check: **Mother's Day 2027 is Sunday, May 9**, so the proposed window is the Friday-Saturday immediately after Mother's Day weekend.
+
+Planning implications:
+
+- Use the May 14-15, 2027 window as a provisional backward-planning target for partner alignment, content rights, pilot materials, and translation/review readiness.
+- Keep public-repo language generic; private partner names, contact details, travel logistics, and relationship notes belong in the private shared drive / Command Center, not here.
+- Do not let the tentative date override the standing rights rules below. Knowing Him, Harmony Bible, SonLife/J-Life materials, and Vietnamese Bible text still require documented permission before translation, display, publication, or distribution.
+
 ## Phase 0 — Discernment & Rights Groundwork (now → ~4 weeks)
 
 | Workstream | Deliverables |
