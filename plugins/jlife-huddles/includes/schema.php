@@ -51,11 +51,14 @@ function jlife_huddles_install_tables() {
 		"CREATE TABLE {$p}jlife_private_notes (
 			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			user_id BIGINT(20) UNSIGNED NOT NULL,
+			dt_group_id BIGINT(20) UNSIGNED NOT NULL,
 			lesson_id VARCHAR(64) NOT NULL,
 			body LONGTEXT NOT NULL,
 			created DATETIME NOT NULL,
 			updated DATETIME NOT NULL,
 			PRIMARY KEY  (id),
+			UNIQUE KEY user_group_lesson (user_id, dt_group_id, lesson_id),
+			KEY group_lesson (dt_group_id, lesson_id),
 			KEY user_lesson (user_id, lesson_id)
 		) {$charset};"
 	);

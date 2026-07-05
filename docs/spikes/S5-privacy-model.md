@@ -33,6 +33,17 @@ closed.
 
 ## Implementation
 
+Post-review hardening for the MVP seed code:
+
+- `jlife_private_notes` is huddle-scoped with `dt_group_id` and keys notes by
+  `(user_id, dt_group_id, lesson_id)`, so the same participant can keep
+  separate private notes for the same lesson in separate huddles.
+- Private-note reads and writes remain author-only, but now also require
+  current membership in the note's huddle scope.
+- Progress self-detail now requires current membership in the huddle, so a
+  removed participant loses progress read access along with thread and note
+  access on the next membership check.
+
 - **Tables** (`plugins/jlife-huddles/includes/schema.php`, dbDelta, utf8mb4):
   `jlife_huddle_threads`, `jlife_private_notes`, `jlife_progress` — separate
   tables per sensitivity, never one "responses" junk drawer. Every

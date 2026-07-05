@@ -33,7 +33,7 @@ const JLIFE_MAGIC_DATA_META = 'jlife_magic_link_data';
  * @return int Blog ID, 0 if not found.
  */
 function jlife_bridge_hub_blog_id() {
-	$sites = get_sites(
+	$sites   = get_sites(
 		array(
 			'path__in' => array( '/hub/' ),
 			'number'   => 1,
@@ -55,7 +55,7 @@ function jlife_bridge_hub_blog_id() {
  * @return int Blog ID, 0 if not found.
  */
 function jlife_bridge_study_blog_id() {
-	$sites = get_sites(
+	$sites   = get_sites(
 		array(
 			'path__in' => array( '/' ),
 			'number'   => 1,
@@ -230,14 +230,16 @@ function jlife_bridge_magic_link_route() {
 	// Handle a submitted response (low-sensitivity, leader-visible only).
 	$notice = '';
 	if ( isset( $_POST['jlife_response'] ) && isset( $_POST['jlife_token'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- bearer-token flow; token re-validated above and must match the posted one.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- bearer token is revalidated before any response is stored.
 		$posted_token = sanitize_text_field( wp_unslash( $_POST['jlife_token'] ) );
 		if ( $posted_token === $token ) {
-			$responses = get_option( 'jlife_s4_responses', array() );
-			$response_key = jlife_bridge_magic_response_key( $scope );
+			$responses                  = get_option( 'jlife_s4_responses', array() );
+			$response_key               = jlife_bridge_magic_response_key( $scope );
 			$responses[ $response_key ] = array(
 				'dt_contact_id' => $scope['dt_contact_id'],
 				'dt_group_id'   => $scope['dt_group_id'],
 				'lesson_id'     => $scope['lesson_id'],
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- bearer token was revalidated above.
 				'response'      => sanitize_textarea_field( wp_unslash( $_POST['jlife_response'] ) ),
 				'visibility'    => 'leader',
 				'submitted'     => time(),
@@ -272,7 +274,7 @@ function jlife_bridge_render_magic_lesson( $scope, $token, $notice ) {
 		$doc   = is_wp_error( $maybe ) ? null : $maybe;
 	}
 
-	$responses = get_option( 'jlife_s4_responses', array() );
+	$responses    = get_option( 'jlife_s4_responses', array() );
 	$response_key = jlife_bridge_magic_response_key( $scope );
 	$existing     = isset( $responses[ $response_key ] )
 		? $responses[ $response_key ]['response']
