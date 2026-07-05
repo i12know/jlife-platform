@@ -108,23 +108,25 @@ function jlife_huddles_get_thread_post( $user_id, $post_id ) {
 }
 
 /**
- * Create or update the acting user's private note for a lesson.
+ * Create or update the acting user's private note for a huddle lesson.
  *
- * @param int    $user_id   Acting user (must be the author).
- * @param string $lesson_id Lesson.
- * @param string $body      Note body.
+ * @param int    $user_id     Acting user (must be the author).
+ * @param int    $dt_group_id Huddle.
+ * @param string $lesson_id   Lesson.
+ * @param string $body        Note body.
  * @return int|WP_Error Row ID.
  */
-function jlife_huddles_save_private_note( $user_id, $lesson_id, $body ) {
-	if ( ! jlife_huddles_can_write_private_note( $user_id, $user_id ) ) {
+function jlife_huddles_save_private_note( $user_id, $dt_group_id, $lesson_id, $body ) {
+	if ( ! jlife_huddles_can_write_private_note( $user_id, $user_id, $dt_group_id ) ) {
 		return jlife_huddles_denied();
 	}
 	global $wpdb;
 	$now      = current_time( 'mysql', true );
 	$existing = $wpdb->get_var(
 		$wpdb->prepare(
-			"SELECT id FROM {$wpdb->prefix}jlife_private_notes WHERE user_id = %d AND lesson_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT id FROM {$wpdb->prefix}jlife_private_notes WHERE user_id = %d AND dt_group_id = %d AND lesson_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			(int) $user_id,
+			(int) $dt_group_id,
 			(string) $lesson_id
 		)
 	);
@@ -144,13 +146,14 @@ function jlife_huddles_save_private_note( $user_id, $lesson_id, $body ) {
 	$ok = $wpdb->insert(
 		$wpdb->prefix . 'jlife_private_notes',
 		array(
-			'user_id'   => (int) $user_id,
-			'lesson_id' => (string) $lesson_id,
-			'body'      => (string) $body,
-			'created'   => $now,
-			'updated'   => $now,
+			'user_id'     => (int) $user_id,
+			'dt_group_id' => (int) $dt_group_id,
+			'lesson_id'   => (string) $lesson_id,
+			'body'        => (string) $body,
+			'created'     => $now,
+			'updated'     => $now,
 		),
-		array( '%d', '%s', '%s', '%s', '%s' )
+		array( '%d', '%d', '%s', '%s', '%s', '%s' )
 	);
 	return false === $ok ? new WP_Error( 'jlife_db', 'Insert failed.' ) : (int) $wpdb->insert_id;
 }
@@ -166,12 +169,12 @@ function jlife_huddles_get_private_note( $viewer_user_id, $note_id ) {
 	global $wpdb;
 	$row = $wpdb->get_row(
 		$wpdb->prepare(
-			"SELECT id, user_id, lesson_id, body, created, updated FROM {$wpdb->prefix}jlife_private_notes WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT id, user_id, dt_group_id, lesson_id, body, created, updated FROM {$wpdb->prefix}jlife_private_notes WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			(int) $note_id
 		),
 		ARRAY_A
 	);
-	if ( ! $row || ! jlife_huddles_can_read_private_note( $viewer_user_id, (int) $row['user_id'] ) ) {
+	if ( ! $row || ! jlife_huddles_can_read_private_note( $viewer_user_id, (int) $row['user_id'], (int) $row['dt_group_id'] ) ) {
 		return jlife_huddles_denied();
 	}
 	return $row;

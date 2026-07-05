@@ -129,17 +129,42 @@ class Test_Access_Control extends WP_UnitTestCase {
 	 * Private notes are author-only: not leaders, not admins, not anyone.
 	 */
 	public function test_private_note_author_only() {
-		$note_id = jlife_huddles_save_private_note( self::$u['member1'], 'lsn-x', 'Suy ngẫm riêng tư — không ai được đọc.' );
+		$note_id = jlife_huddles_save_private_note( self::$u['member1'], self::G1, 'lsn-author', 'Suy ngẫm riêng tư — không ai được đọc.' );
 		$this->assertIsInt( $note_id, 'author saves own note' );
 
-		$this->assertIsArray( jlife_huddles_get_private_note( self::$u['member1'], $note_id ), 'author reads own note' );
+		$note = jlife_huddles_get_private_note( self::$u['member1'], $note_id );
+		$this->assertIsArray( $note, 'author reads own note' );
+		$this->assertSame( self::G1, (int) $note['dt_group_id'], 'note stores huddle scope' );
 		$this->assertWPError( jlife_huddles_get_private_note( self::$u['leader1'], $note_id ), 'own huddle leader denied' );
 		$this->assertWPError( jlife_huddles_get_private_note( self::$u['member2'], $note_id ), 'co-member denied' );
 		$this->assertWPError( jlife_huddles_get_private_note( self::$u['other'], $note_id ), 'other-huddle member denied' );
 		$this->assertWPError( jlife_huddles_get_private_note( self::$u['admin'], $note_id ), 'site admin denied at app layer' );
 		$this->assertWPError( jlife_huddles_get_private_note( 0, $note_id ), 'anonymous denied' );
 
-		$this->assertWPError( jlife_huddles_save_private_note( 0, 'lsn-x', 'x' ), 'anonymous cannot write notes' );
+		$this->assertWPError( jlife_huddles_save_private_note( 0, self::G1, 'lsn-author', 'x' ), 'anonymous cannot write notes' );
+		$this->assertWPError( jlife_huddles_save_private_note( self::$u['other'], self::G1, 'lsn-author', 'x' ), 'other-huddle member cannot write into this note scope' );
+	}
+
+	/**
+	 * Private notes key by user + huddle + lesson, not user + lesson alone.
+	 */
+	public function test_private_note_scope_includes_huddle() {
+		self::$membership[ self::G2 ]['member_user_ids'][] = self::$u['member1'];
+
+		$g1_note_id = jlife_huddles_save_private_note( self::$u['member1'], self::G1, 'lsn-scope', 'G1 private reflection' );
+		$g2_note_id = jlife_huddles_save_private_note( self::$u['member1'], self::G2, 'lsn-scope', 'G2 private reflection' );
+
+		$this->assertIsInt( $g1_note_id );
+		$this->assertIsInt( $g2_note_id );
+		$this->assertNotSame( $g1_note_id, $g2_note_id, 'same lesson in two huddles creates two note rows' );
+
+		$g1_note = jlife_huddles_get_private_note( self::$u['member1'], $g1_note_id );
+		$g2_note = jlife_huddles_get_private_note( self::$u['member1'], $g2_note_id );
+
+		$this->assertSame( self::G1, (int) $g1_note['dt_group_id'] );
+		$this->assertSame( self::G2, (int) $g2_note['dt_group_id'] );
+		$this->assertSame( 'G1 private reflection', $g1_note['body'] );
+		$this->assertSame( 'G2 private reflection', $g2_note['body'] );
 	}
 
 	/**
@@ -147,7 +172,7 @@ class Test_Access_Control extends WP_UnitTestCase {
 	 */
 	public function test_vietnamese_text_integrity() {
 		$body    = 'Đức Chúa Giê-xu phán: «Hãy theo Ta» — ghi chú tiếng Việt đầy đủ dấu.';
-		$note_id = jlife_huddles_save_private_note( self::$u['member2'], 'lsn-vi', $body );
+		$note_id = jlife_huddles_save_private_note( self::$u['member2'], self::G1, 'lsn-vi', $body );
 		$note    = jlife_huddles_get_private_note( self::$u['member2'], $note_id );
 		$this->assertIsArray( $note );
 		$this->assertSame( $body, $note['body'], 'diacritics survive storage round-trip' );
@@ -164,6 +189,7 @@ class Test_Access_Control extends WP_UnitTestCase {
 
 		// Self detail.
 		$this->assertTrue( jlife_huddles_can_read_progress( self::$u['member1'], self::$u['member1'], self::G1 ) );
+		$this->assertFalse( jlife_huddles_can_read_progress( self::$u['other'], self::$u['other'], self::G1 ), 'self detail still requires current huddle membership' );
 		$this->assertFalse( jlife_huddles_can_read_progress( self::$u['member2'], self::$u['member1'], self::G1 ), 'co-member cannot read another member detail' );
 		$this->assertFalse( jlife_huddles_can_read_progress( self::$u['leader1'], self::$u['member1'], self::G1 ), 'leader uses flags, not member detail' );
 
@@ -191,11 +217,20 @@ class Test_Access_Control extends WP_UnitTestCase {
 	 */
 	public function test_stale_membership_revokes_access() {
 		$this->assertIsArray( jlife_huddles_get_thread_posts( self::$u['member2'], self::G1, 'lsn-x' ) );
+		$note_id = jlife_huddles_save_private_note( self::$u['member2'], self::G1, 'lsn-stale', 'private before removal' );
+		$this->assertIsInt( $note_id );
+		$this->assertTrue( jlife_huddles_set_progress( self::$u['member2'], self::G1, 'lsn-stale', 'started' ) );
+		$this->assertIsArray( jlife_huddles_get_private_note( self::$u['member2'], $note_id ) );
+		$this->assertTrue( jlife_huddles_can_read_progress( self::$u['member2'], self::$u['member2'], self::G1 ) );
 
 		self::$membership[ self::G1 ]['member_user_ids'] = array( self::$u['member1'] ); // member2 removed in D.T.
 
 		$this->assertWPError( jlife_huddles_get_thread_posts( self::$u['member2'], self::G1, 'lsn-x' ), 'removed member loses read immediately' );
 		$this->assertWPError( jlife_huddles_create_thread_post( self::$u['member2'], self::G1, 'lsn-x', 'x' ), 'removed member loses write immediately' );
+		$this->assertWPError( jlife_huddles_get_private_note( self::$u['member2'], $note_id ), 'removed member loses note read immediately' );
+		$this->assertWPError( jlife_huddles_save_private_note( self::$u['member2'], self::G1, 'lsn-stale', 'x' ), 'removed member loses note write immediately' );
+		$this->assertFalse( jlife_huddles_can_read_progress( self::$u['member2'], self::$u['member2'], self::G1 ), 'removed member loses progress read immediately' );
+		$this->assertWPError( jlife_huddles_set_progress( self::$u['member2'], self::G1, 'lsn-stale', 'completed' ), 'removed member loses progress write immediately' );
 	}
 
 	/**
@@ -204,6 +239,8 @@ class Test_Access_Control extends WP_UnitTestCase {
 	public function test_unknown_group_fails_closed() {
 		$this->assertWPError( jlife_huddles_get_thread_posts( self::$u['member1'], 999, 'lsn-x' ) );
 		$this->assertWPError( jlife_huddles_create_thread_post( self::$u['leader1'], 999, 'lsn-x', 'x' ) );
+		$this->assertWPError( jlife_huddles_save_private_note( self::$u['member1'], 999, 'lsn-x', 'x' ) );
+		$this->assertFalse( jlife_huddles_can_read_progress( self::$u['member1'], self::$u['member1'], 999 ) );
 		$this->assertWPError( jlife_huddles_get_progress_flags( self::$u['leader1'], 999, 'lsn-x' ) );
 	}
 
@@ -234,7 +271,7 @@ class Test_Access_Control extends WP_UnitTestCase {
 		$victim  = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		self::$membership[ self::G1 ]['member_user_ids'][] = $victim;
 
-		$note_id = jlife_huddles_save_private_note( $victim, 'lsn-x', 'sẽ bị xóa cùng tài khoản' );
+		$note_id = jlife_huddles_save_private_note( $victim, self::G1, 'lsn-delete', 'sẽ bị xóa cùng tài khoản' );
 		$this->assertIsInt( $note_id );
 		$this->assertTrue( jlife_huddles_set_progress( $victim, self::G1, 'lsn-x', 'started' ) );
 

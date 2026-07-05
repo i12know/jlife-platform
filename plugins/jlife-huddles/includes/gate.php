@@ -7,12 +7,13 @@
  * - Huddle threads: readable/writable by members and leaders of that huddle
  *   only. Site admins may read (moderation reality, disclosed in the privacy
  *   statement) but do not write.
- * - Private notes: author-only, full stop — leaders, coaches, and site
- *   admins get WP_Error through app code. (DB operators can technically
- *   read the table; that is the honesty statement, not an app permission.)
- * - Progress: self sees own detail; the huddle leader sees completion
- *   flags; aggregate counts are the only shape that leaves the huddle
- *   (coach/HUB tile via the bridge).
+ * - Private notes: author-only within the current huddle scope; leaders,
+ *   coaches, and site admins get WP_Error through app code. (DB operators
+ *   can technically read the table; that is the honesty statement, not an
+ *   app permission.)
+ * - Progress: current members see own detail; the huddle leader sees
+ *   completion flags; aggregate counts are the only shape that leaves the
+ *   huddle (coach/HUB tile via the bridge).
  * - Magic-link actors (S4 bearer tokens) may touch progress and
  *   leader-visible response surfaces only — never threads or private notes.
  *
@@ -121,14 +122,18 @@ function jlife_huddles_can_write_thread( $user_id, $dt_group_id, $lesson_id = ''
 /**
  * May the viewer read a private note authored by someone?
  *
- * Author-only. No leader, coach, or admin carve-out at the app layer.
+ * Author-only and current huddle membership required. No leader, coach, or
+ * admin carve-out at the app layer.
  *
  * @param int $viewer_user_id Viewer's WP user ID (0 = anonymous).
  * @param int $author_user_id Note author's WP user ID.
+ * @param int $dt_group_id    Huddle scope.
  * @return bool
  */
-function jlife_huddles_can_read_private_note( $viewer_user_id, $author_user_id ) {
-	return $viewer_user_id > 0 && (int) $viewer_user_id === (int) $author_user_id;
+function jlife_huddles_can_read_private_note( $viewer_user_id, $author_user_id, $dt_group_id ) {
+	return $viewer_user_id > 0
+		&& (int) $viewer_user_id === (int) $author_user_id
+		&& jlife_huddles_is_member( $viewer_user_id, $dt_group_id );
 }
 
 /**
@@ -136,17 +141,19 @@ function jlife_huddles_can_read_private_note( $viewer_user_id, $author_user_id )
  *
  * @param int $viewer_user_id Viewer's WP user ID.
  * @param int $author_user_id Note author's WP user ID.
+ * @param int $dt_group_id    Huddle scope.
  * @return bool
  */
-function jlife_huddles_can_write_private_note( $viewer_user_id, $author_user_id ) {
-	return jlife_huddles_can_read_private_note( $viewer_user_id, $author_user_id );
+function jlife_huddles_can_write_private_note( $viewer_user_id, $author_user_id, $dt_group_id ) {
+	return jlife_huddles_can_read_private_note( $viewer_user_id, $author_user_id, $dt_group_id );
 }
 
 /**
  * May the viewer read a subject's progress detail?
  *
- * Self only. Leaders use the flags API (status values, never bodies);
- * coaches/HUB use aggregates.
+ * Self only, and only while still a current member of that huddle. Leaders
+ * use the flags API (status values, never bodies); coaches/HUB use
+ * aggregates.
  *
  * @param int $viewer_user_id  Viewer's WP user ID.
  * @param int $subject_user_id Whose progress.
@@ -154,8 +161,9 @@ function jlife_huddles_can_write_private_note( $viewer_user_id, $author_user_id 
  * @return bool
  */
 function jlife_huddles_can_read_progress( $viewer_user_id, $subject_user_id, $dt_group_id ) {
-	unset( $dt_group_id );
-	return $viewer_user_id > 0 && (int) $viewer_user_id === (int) $subject_user_id;
+	return $viewer_user_id > 0
+		&& (int) $viewer_user_id === (int) $subject_user_id
+		&& jlife_huddles_is_member( $viewer_user_id, $dt_group_id );
 }
 
 /**
