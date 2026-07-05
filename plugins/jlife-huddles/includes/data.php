@@ -257,7 +257,7 @@ function jlife_huddles_get_progress_aggregate( $viewer_user_id, $dt_group_id ) {
 		),
 		ARRAY_A
 	);
-	$agg = array(
+	$agg  = array(
 		'completed' => 0,
 		'started'   => 0,
 	);

@@ -268,7 +268,7 @@ class Test_Access_Control extends WP_UnitTestCase {
 	 * Deleting an account purges the user's private notes and progress.
 	 */
 	public function test_account_deletion_purges_private_data() {
-		$victim  = self::factory()->user->create( array( 'role' => 'subscriber' ) );
+		$victim = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		self::$membership[ self::G1 ]['member_user_ids'][] = $victim;
 
 		$note_id = jlife_huddles_save_private_note( $victim, self::G1, 'lsn-delete', 'sẽ bị xóa cùng tài khoản' );
