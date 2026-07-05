@@ -4,6 +4,12 @@ node_modules/
 # PHP / Composer (per-plugin vendor dirs, when composer.json lands)
 vendor/
 
+# Per-plugin composer.lock: plugin test deps resolve fresh against the CI
+# platform pin (php 8.2) — committing a lock resolved on a dev machine's PHP
+# re-introduces the platform-mismatch bug fixed in #28. The root composer.lock
+# (dev tooling) stays tracked.
+plugins/*/composer.lock
+
 # Local source/reference artifacts - do not commit copied third-party content
 /source-artifacts/
 
