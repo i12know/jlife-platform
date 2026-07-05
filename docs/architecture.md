@@ -155,7 +155,7 @@ All follow the D.T starter-plugin conventions where they touch D.T; all strings 
 | ID | Question | Doc section |
 |---|---|---|
 | S1 | Subdirectory multisite + D.T: any conflicts? Cache/PWA config? | §1, §8 |
-| S2 | Vietnamese completeness across D.T theme, mobile app, target plugins | analysis §1.4 |
+| S2 | Vietnamese completeness across D.T theme, mobile app, target plugins: core D.T theme/mobile app look technically complete; Magic Links, Groups Tile, and Mobile App plugin need Vietnamese translation work before Vietnamese-facing use | analysis §1.4, [spike S2](spikes/S2-vietnamese-audit.md) |
 | S3 | Do huddles map to D.T groups without awkward workarounds? Custom tile viability? | §5 |
 | S4 | Can Magic Links carry the lesson+response participant flow? | §3 |
 | S5 | Discussion/notes privacy model — custom table design, capability checks, admin-visibility honesty | §5 |
