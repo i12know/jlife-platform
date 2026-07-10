@@ -1,0 +1,16 @@
+{
+  // Workspace-scoped only: these bindings apply when this folder is open in
+  // VS Code and do not affect JSON handling in any other project. See
+  // content/schemas/README.md "Editing tools" for why (JSON prose fields are
+  // hard to author/translate by hand; this is the low-friction first step).
+  "json.schemas": [
+    {
+      "fileMatch": ["content/pilot-lessons/lesson-*.json", "content/schemas/examples/example-lesson.json"],
+      "url": "./content/schemas/lesson.schema.json"
+    },
+    {
+      "fileMatch": ["content/pilot-lessons/series-*.json", "content/schemas/examples/example-series.json"],
+      "url": "./content/schemas/series.schema.json"
+    }
+  ]
+}

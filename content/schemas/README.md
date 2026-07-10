@@ -32,6 +32,32 @@ The validator is dependency-free and enforces the invariants below; CI (#16) can
 7. List the `lesson_id` in the series file's `lessons` array; `order` must match its position there.
 8. Run the validator.
 
+## Editing tools
+
+These are JSON files with long Markdown prose packed into string fields (`teaching`,
+`leader_notes`, …) — readable by machines, uncomfortable for humans, and a bad fit for
+Word (it will "helpfully" rewrite quotes/formatting and there is no lossless path back
+to valid JSON — see the S6 round-trip guarantee in [content/README.md](../README.md)).
+
+**For reading and light edits — VS Code, schema-validated (set up for this repo):**
+Opening this repo in VS Code auto-binds `content/pilot-lessons/*.json` and
+`content/schemas/examples/*.json` to the matching schema (`.vscode/settings.json`,
+workspace-scoped — it does not change how VS Code handles JSON in any other project
+on your machine). You get inline red squiggles on schema violations, field
+descriptions on hover, and autocomplete for enum values (`translation_status`,
+`phase_mapping_status`) and ID patterns — catching mistakes before you even run
+`npm run content:validate`.
+
+**For heavier prose authoring/translation — author in Markdown, convert to JSON.**
+The `\n\n`-escaped strings are painful to write and risky to hand-edit (one stray `"`
+breaks the file). [Obsidian](https://obsidian.md/) (free) is a strong fit *because*
+the authored sections are already plain Markdown, not rich text — frontmatter for the
+metadata fields (`lesson_id`, `translation_status`, `primary_gospel_event_id`, …),
+Markdown body for `teaching`/`reflection_questions`/etc., edited with live preview. A
+translator only ever touches prose under a heading, never JSON syntax. There is no
+`.md` ⇄ `.json` converter yet for this schema — if you want to work this way, ask
+before starting a translation pass so the tooling exists first.
+
 ## Key conventions
 
 ### Scripture references (shared with #6)
