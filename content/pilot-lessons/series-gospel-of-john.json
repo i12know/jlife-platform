@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "series_id": "ser-gospel-of-john",
+  "title": "Gospel of John in Four Readings",
+  "description": "A 4-week pilot for reading the whole Gospel of John in four large movements. Each week, participants read the assigned chapters in their own Bible, then come to huddle ready to discuss one big question raised by the text.\n\nThis series is written for new believers, seekers, and mixed huddles where people may be curious, convinced, confused, or cautious. The goal is not to answer every question in one meeting, but to help people see Jesus clearly through John's witness and respond honestly to him.",
+  "source_language": "en",
+  "translation_status": "draft",
+  "source_attribution": "Original content authored for the J-Life pilot; drafted with AI assistance, pending theology and language review.",
+  "rights_note": "Original work. Contains no copyrighted material; Scripture appears as references only, never quoted text.",
+  "lessons": [
+    "lsn-john-01-the-word",
+    "lsn-john-02-judgment",
+    "lsn-john-03-the-way",
+    "lsn-john-04-eternal-life"
+  ]
+}

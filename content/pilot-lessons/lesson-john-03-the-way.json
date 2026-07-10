@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "lsn-john-03-the-way",
+  "series_id": "ser-gospel-of-john",
+  "order": 3,
+  "title": "Is Jesus the Only Way to God?",
+  "source_language": "en",
+  "translation_status": "draft",
+  "source_attribution": null,
+  "rights_note": null,
+  "primary_gospel_event_id": "r1922-149",
+  "related_gospel_event_ids": [
+    "r1922-118",
+    "r1922-119",
+    "r1922-128a",
+    "r1922-128b",
+    "r1922-130",
+    "r1922-141",
+    "r1922-145",
+    "r1922-146",
+    "r1922-147",
+    "r1922-150"
+  ],
+  "phase": null,
+  "sub_phase": null,
+  "phase_mapping_status": "pending",
+  "scripture_reference": [
+    {
+      "book": "John",
+      "chapter_start": 11,
+      "verse_start": null,
+      "chapter_end": 15,
+      "verse_end": null,
+      "display": "John 11-15",
+      "deep_link": null
+    }
+  ],
+  "teaching": "This week, read John 11-15 in your own Bible. As you read, watch how John answers the question: Is Jesus the only way to God? Pay attention to the rising tension. Jesus gives life, receives worship, enters Jerusalem as King, serves his disciples, prepares them for his departure, and speaks about access to the Father.\n\nThe anchor passage is John 14. Jesus comforts troubled disciples by speaking of the Father's house, his own departure, and the way to the Father. He does not present himself as one helpful guide among many. He presents himself as the personal way by which people come to know and come to the Father.\n\nJohn 11 prepares us for that claim. Jesus raises Lazarus from the dead and reveals that life is not merely a future hope or a religious idea. Life is bound to Jesus himself. John 12 shows that Jesus' path to glory goes through being lifted up in death. John 13 shows the humility of the Lord who washes feet and loves his own even as betrayal and failure are near. John 15 then describes life with Jesus as abiding in him, like branches receiving life from the vine.\n\nThe exclusive claim of Jesus can sound narrow in a pluralistic world. But in John, the claim is not rooted in Christian arrogance. It is rooted in who Jesus is and what he alone does. If he reveals the Father, defeats death, bears sin, and gives life, then he is not merely one option on a shelf of spiritual choices.\n\nAs you read, ask: What would have to be true about Jesus for his exclusive claim to be good news?",
+  "outside_the_box": "In the ancient world, a household was not just a building. It meant belonging, identity, protection, and access through relationship. When Jesus speaks about the Father's house in John 14, he is not offering vague spirituality. He is speaking about bringing his people into the Father's presence as family. That makes his claim deeply relational. The question is not only which path we prefer, but who has the right and ability to bring us home to God.",
+  "reflection_questions": [
+    {
+      "id": "q01",
+      "text": "In John 11-15, what does Jesus do or say that makes his exclusive claim understandable?"
+    },
+    {
+      "id": "q02",
+      "text": "Why do many people today struggle with the claim that Jesus is the only way to God?"
+    },
+    {
+      "id": "q03",
+      "text": "How does Jesus' humility in John 13 shape the way Christians should speak about his exclusive claim?"
+    },
+    {
+      "id": "q04",
+      "text": "What does abiding in Jesus in John 15 add to your understanding of coming to God through him?"
+    }
+  ],
+  "live_it_out": "This week, practice explaining Jesus' exclusive claim in a humble and personal way. Write a short answer to this sentence: *I believe Jesus is the way to God because...* Keep it under five sentences and be ready to share it.",
+  "prayer_prompt": "Ask Jesus to deepen your trust in him as the way to the Father. Pray for humility to speak about him without pride and courage to not hide what he says about himself.",
+  "huddle_discussion_prompts": [
+    {
+      "id": "p01",
+      "text": "Invite each person to share one moment from John 11-15 that made Jesus' identity clearer."
+    },
+    {
+      "id": "p02",
+      "text": "Discuss q02 honestly. Let participants name the emotional and cultural weight of this question before moving toward answers."
+    },
+    {
+      "id": "p03",
+      "text": "Use q03 to connect truth and posture. How should foot-washing love shape the way we speak about exclusive truth?"
+    },
+    {
+      "id": "p04",
+      "text": "Ask volunteers to share their five-sentence answer from the live_it_out practice, if they are comfortable."
+    }
+  ],
+  "leader_notes": "This discussion can drift into comparison of religions. Keep bringing the group back to John's presentation of Jesus. The central question is not whether Christians feel superior to others. The question is whether Jesus is who John says he is. Help participants hold conviction and humility together. John 13 is important for tone: the Lord who claims unique access to the Father also kneels to serve. If seekers are present, do not pressure them to resolve everything immediately. Invite them to keep looking at Jesus. Preview next week by explaining that John 16-21 will ask how a person receives eternal life through the crucified and risen Christ."
+}
