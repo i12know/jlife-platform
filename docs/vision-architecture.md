@@ -52,46 +52,102 @@ vision builds *on* these, not beside them.
 
 ## 3. The SMS Devotional Challenge (vayhub) — Analysis
 
-> ⚠️ **Review note:** vayhub.us sits behind Cloudflare bot protection, so this
-> analysis could not be verified by automated fetch. It is based on the
-> owner's description (daily SMS with a link to that day's lesson page, a
-> rules page for the challenge) and the URL structure (`/rdpt22/rules`,
-> `/rdpt22/gea09-2`). **Owner: please correct anything mischaracterized here
-> during review.**
+> ✅ **Verified 2026-07-10** against the live site (`/rdpt22/rules`,
+> `/rdpt22/devotionals`, `/rdpt22/gea09-5`) through a real-browser session on
+> the owner's own site — Cloudflare's bot gate blocks server-side fetches but
+> not a real browser, so the account below is now **observed, not inferred**.
+> The earlier draft guessed a per-person "SMS with a link"; the reality is
+> **team group texts, with reflections posted back into the group chat** —
+> corrected throughout §3.1–§3.2. Owner-clarified same day (not visible from
+> the site): the admin sends every team's daily text himself, one member per
+> team posts the team's web comment to fulfill the day, and the admin tracks
+> participation by being in every group chat.
 
-### 3.1 What the current system appears to be
+### 3.1 What the current system actually is (observed)
 
-- A **campaign** (`rdpt22`) with published rules and a defined duration.
-- **Daily cadence**: each participant receives an SMS containing a link.
-- The link opens a **mobile-friendly lesson page** (`gea09-2` — notably a
-  *content-shaped* identifier, essentially a gospel-event/lesson ID much like
-  our own `lesson_id`/`gospel_event_id` convention).
-- Participation is **self-reported / socially accountable** via the rules;
-  the page itself does not know who is reading it.
+- A **10-week campaign** (`rdpt22`, the "Daily Reading Challenge") running
+  **5 days a week**, started **09/08/25**, with a published rules page and a
+  first-week grace period.
+- **Team-based, not individual.** Participants form **teams of 4–8**. Each day
+  the **admin (the pastor) personally sends each team's group chat** a link to
+  that day's devotional page — and "group chat" means whatever app each team
+  lives in, so the same message is **hand-copied across SMS, FB Messenger,
+  Zalo, …** every morning. Members read it, then **text their reflections
+  back into the group chat**. The reflection loop lives in chat, not on the
+  website. Separately, **one designated member posts the team's daily entry as
+  a website comment** — the rules frame this as Tiebreaker 1 ("one entry per
+  team per day"), but in practice it is how a team fulfills the day's
+  requirement, which is why the observed comments read as one-per-team,
+  sometimes relayed ("(from Sean)", "Tina").
+- **Competitive vs. non-competitive members.** Everyone may start competitive,
+  but missing participation drops a member to non-competitive; a team needs
+  **≥4 competitive members** to qualify for the prize (a shared KBBQ meal).
+  Winning is judged on *consistent, meaningful* daily reflection from **all**
+  members before midnight — meaningfulness is **human-judged** (screenshots and
+  activity photos count), with tiebreakers by (1) posting the team's reflection
+  as a **website comment**, (2) Sunday attendance, (3) random draw.
+- The **lesson page** (e.g. `GeA09-5: The Warrior's Bow`, dated) is a mobile
+  WordPress/Divi page: nav (Devotionals · Rules · **Tiếng Việt**), the passage
+  (full **NIV84 text rendered inline**), a short teaching, one combined
+  *"Reflect, Share & Prayer"* prompt, prev/next links, an article star-rating,
+  and a **wpDiscuz comment thread**. The slug is a **content-shaped ID**
+  (`GeA09-5`), exactly our `gospel_event_id`/`lesson_id` convention.
+- **The page does not know who is reading it — but the pastor does.** The
+  site's only identity signal is the hand-signed comment thread; the *actual*
+  per-person tracking layer is the **admin being a member of every team's
+  group chat**, noticing each day who reflected and who went silent, and
+  flipping competitive status accordingly. The system works — but its
+  dispatcher, its progress tracker, and its "who needs encouragement" radar
+  are all **one person reading every thread every day**, which caps how many
+  teams can run.
+
+Two observations that matter for the platform:
+
+- **Bible text is embedded, not referenced.** vayhub renders the full NIV84
+  passage on each page. The platform's invariant is the opposite — references
+  plus licensed deep links until a text license lands (§2, invariant 3). NIV84
+  is licensed text (Biblica/Zondervan), so under the register-first discipline
+  (§7 row 7) a migration needs an NIV rights row — a sibling question to
+  VIE2010 (#3), not covered by it — and must *resolve* text rights, not copy
+  the current pages verbatim.
+- **Bilingual already exists** (the `Tiếng Việt` nav), matching the platform's
+  Vietnamese-first posture (S2): the challenge is already living the bilingual
+  reality the platform assumes.
 
 ### 3.2 Is it similar to a D.T magic link? (the direct answer)
 
-**The user experience is nearly identical; the identity model is fundamentally
-different — and that difference is exactly what the platform adds.**
+**The reading habit is identical (text → tap → today's devotion); the identity
+model — and where the reflection lives — is fundamentally different, and that
+difference is exactly what the platform adds.**
 
-| Property | vayhub SMS link (as understood) | S4 magic link |
+| Property | vayhub challenge (verified) | S4 magic link |
 |---|---|---|
-| Delivery | SMS → tap → mobile page | Same (SMS/Zalo/email → tap → STUDY page) |
+| Delivery | **Admin hand-texts each team's group chat** a link to the day's public page — re-copied per app (SMS, Messenger, Zalo) — reflections replied in-thread; one member posts the team's web comment | Per-person link via `jlife-dispatch` — API-sent or leader-relayed through any app (§5.2) → tap → personal STUDY page |
 | Login required | No | No |
 | Cookie/app dependence | None | None (token in URL/form — survives in-app browsers) |
 | URL identifies | **The content** (same URL for everyone) | **The person + huddle + lesson** (unique per participant) |
-| Platform knows who read/responded | No | Yes (contact-scoped, auditable `use_count`/`last_used`) |
-| Progress/streaks per person | Manual/honor system | Automatic (`progress` table, leader flags, aggregates) |
+| Platform knows who read/responded | The *site* doesn't; **the admin does** — by reading every team's chat daily | Yes (contact-scoped, auditable `use_count`/`last_used`) — no human needs to sit in every thread |
+| Progress/streaks per person | Admin's daily observation of each group chat; competitive→non-competitive flipped **by hand** | Automatic (`progress` table, leader flags, aggregates) |
+| Scoring | Human-judged "meaningful" reflection from all members before midnight | Completion/streaks automatic; *meaningfulness* still human (a leader flag, not a metric) |
 | Revocation/expiry | Page stays up for anyone | Per-person revoke + TTL; regeneration invalidates old links |
 | Forwarding risk | None (nothing personal behind it) | Real and *measured* (S4): a forwarded link can read/overwrite that person's leader-visible response — mitigated by scope, revocation, and the S4/S5 sensitivity rule |
 
-So: your instinct is right — the *habit* your church already has (receive a
-text, tap, read today's devotion on your phone) is precisely the habit the
-magic-link flow was built to serve. What the platform adds is that the same
-tap becomes **known**: streaks, completion, a leader who can see who may need
-encouragement, and an aggregate tile for the pastor — without asking anyone
-to create an account on day one. The anonymous broadcast link (vayhub-style)
-remains available as the bottom rung of the ladder below.
+So: your instinct is right — the *habit* your church already has (a daily text,
+a tap to today's devotion, a reflection shared with your people) is precisely
+the habit the magic-link flow was built to serve. Today that habit runs on
+**two jobs the pastor does by hand**: sending every team's daily group text,
+and reading every thread to know who reflected and who went quiet. Those are,
+almost exactly, `jlife-dispatch` (§5.2) and the `progress`/aggregate surface —
+the platform's addition is to absorb both, so the same tap becomes **known**:
+streaks, completion, and competitive/non-competitive status computed
+automatically, any team's leader (not only the one person in every chat) able
+to see who may need encouragement, and an aggregate tile for the pastor —
+without asking anyone to create an account on day one, and without the
+challenge's size being capped by one person's reading capacity. One thing the
+platform should *not* pretend to automate is the rules' notion of a
+*meaningful* reflection: that stays a human (leader) judgment, surfaced as a
+flag, not a score. The anonymous broadcast page (vayhub-style) remains
+available as the bottom rung of the ladder below.
 
 ### 3.3 The identity ladder (a core vision concept)
 
@@ -112,6 +168,12 @@ Rung 3  Leader/coach account       → + D.T HUB, flags, aggregates (exists)
 A challenge can start a person at rung 0 or 1 and invite them up the ladder;
 the gate already refuses higher-sensitivity surfaces to lower rungs
 (`jlife_huddles_link_actor_can()` is the enforcement point, tested in CI).
+
+vayhub today lives entirely at **rung 0** — the group chat plus the self-signed
+web comments. Its "competitive vs. non-competitive" member status is exactly the
+kind of per-person state that appears *for free* once the same challenge runs at
+rung 1 (`jlife_challenge_enrollment`, §5.1), instead of depending on one person
+reading every team's group chat every day.
 
 ## 4. Target Architecture (the dream, drawn)
 
@@ -180,38 +242,93 @@ challenge {
   rules_page              rendered from the series/challenge doc (≈ /rules)
   scoring (optional)      individual streaks; team totals (rdpt22-style teams
                           map to D.T groups, so team standings reuse the
-                          aggregate surface — counts only, never content)
+                          aggregate surface — counts only, never content).
+                          A per-day entry may carry a leader "counts as
+                          meaningful" flag — rdpt22 scores meaning, not mere
+                          presence, and that judgment stays human (§3.2).
 }
 ```
+
+The verified `rdpt22` shape (§3.1) validates this design directly: its cadence
+is `weekdays` over 10 weeks, its teams are 4–8 people that map cleanly to D.T
+groups, and its "grace period" is just a `start_date` offset. The one field it
+adds is a **member status** — rdpt22's *competitive vs. non-competitive*, where
+missing a day downgrades you. Model it on the enrollment row (default
+`competitive`, auto-downgrade on a missed-cadence gap, leader-restorable), and a
+team's prize-eligibility (`≥4 competitive`) becomes a computed aggregate rather
+than a hand-count.
 
 New tables (same conventions as S5: gate-checked data API, utf8mb4,
 `dt_group_id` where huddle-scoped): `jlife_challenges`,
 `jlife_challenge_enrollment` (person ↔ challenge, rung of the identity
-ladder, streak counters). Daily unlock is computed (start_date + cadence),
-not scheduled per-row, so a late joiner sees the right "today."
+ladder, streak counters, **member status**). Daily unlock is computed
+(start_date + cadence), not scheduled per-row, so a late joiner sees the right
+"today."
 
 Progress rows reuse the existing `jlife_progress` table — a challenge is
 *not* a new privacy domain; the S5 matrix applies unchanged.
 
 ### 5.2 `jlife-dispatch` — messages out
 
-One module owns "send participant X a message containing link Y at time Z":
+One module owns "send participant X a message containing link Y at time Z" —
+the job the pastor currently performs by hand for every team, every morning,
+**re-copied across SMS, FB Messenger, Zalo, and whatever app each team lives
+in** (§3.1). That fan-out reality drives the core design rule: **compose once,
+transport many** — and the human relay is a *first-class transport*, not a
+failure mode.
 
-- **Provider adapters**: SMS (Twilio or similar), email (SMTP), Zalo OA
-  (Vietnam contexts), with a dry-run/log provider for dev. WhatsApp later via
-  the same interface.
+- **Compose/transport split.** Dispatch composes a message exactly once —
+  `(recipient, template, minted link)` — with no knowledge of how it will
+  travel. Transports are registered through a WordPress filter
+  (`jlife_dispatch_transports`), so a new chat app in vogue means writing one
+  adapter, never touching compose, templates, scheduling, or the log.
+- **Two classes of transport, same interface:**
+  - **API transports** — machine-sent where an API exists: SMS (Twilio or
+    similar), email (SMTP), Zalo OA (Vietnam contexts), WhatsApp later; plus
+    a dry-run/log transport for dev.
+  - **Relay transports** — human-sent where no API exists or none is worth
+    its compliance cost (personal FB Messenger, ad-hoc group chats). The
+    platform renders a **dispatch sheet**: the day's ready-to-send message
+    per team/participant with per-item copy buttons, prefill deep links
+    (`sms:?body=…`, `zalo.me`, `m.me`), and — on mobile — the **OS share
+    sheet**, which forwards to every app installed today *and every app not
+    invented yet*. The relayer taps once per group instead of retyping N
+    times; the sheet marks each item sent.
+  - **Link shape follows the destination** (S4 rule, systematized): a
+    **group chat** receives the day's *shared* link (rung-0 public page or a
+    team page) — never a batch of personal tokens, which would hand every
+    member every other member's bearer credential. **Personal** magic links
+    travel one-to-one only: API transport or a per-person DM share from the
+    sheet. The sheet enforces this by construction — group items compose
+    with the shared link, person items with the personal one.
+- **Leaders are senders, not just the admin.** A huddle leader (or challenge
+  team captain) sees the dispatch sheet for *their own* people only — the
+  same S3 scoping as everything else — so daily delivery decentralizes with
+  the huddles instead of funneling through one person's phone.
+- **Per-contact channel preference** recorded on the D.T contact at
+  enrollment (`sms | zalo | messenger | email | leader-relay`), so compose
+  routes each person to the transport that actually reaches them.
 - **Batch minting** via the bridge: a challenge morning-run mints/refreshes
-  scoped magic links and hands `(phone, url, template)` tuples to the adapter.
+  scoped magic links and hands `(recipient, url, template)` tuples to each
+  transport.
+- **Dispatch log**: every send records `(recipient, channel, sent_by
+  api|human, timestamp)` regardless of transport, so "did everyone get
+  today's link?" is answerable — and the link's own `use_count` answers "did
+  they tap it?"
 - **Templates** are translatable strings in the plugin text domain
   (Vietnamese-first, per S2's custom-strings finding).
-- **Send-time rules**: per-audience local send hour, quiet hours, opt-out
-  keyword handling (STOP/HELP) recorded on the D.T contact.
+- **Send-time rules** (API transports): per-audience local send hour, quiet
+  hours, opt-out keyword handling (STOP/HELP) recorded on the D.T contact.
 
 > **Compliance flag (decision item, not optional):** bulk SMS to US numbers
 > requires A2P 10DLC campaign registration through the provider, documented
 > opt-in consent, and honored opt-outs (TCPA). Since the church already runs
 > SMS challenges, existing consent practice should be reviewed and recorded
 > when this module is specified. Zalo OA has its own verification process.
+> **Relay transports sidestep this initially**: a leader personally sharing a
+> link into their own group chat is exactly what happens today, not bulk A2P
+> traffic — so Phase B can ship relay-first and add API transports as
+> registration and budget land.
 
 ### 5.3 ChMeetings integration (the reserved seam, activated)
 
@@ -255,7 +372,16 @@ reading challenges):
   series tagged `life-of-jesus`, optional otherwise; add an optional
   `canonical_passage` key (normalized book/chapter range) as the non-gospel
   spine. Validator + JSON schema change only — S6 proved the round-trip
-  machinery never inspects these fields.
+  machinery never inspects these fields. **Prerequisite:** the Phase A
+  schema-version-tolerance item — without it the v1.1 bump is a flag-day for
+  every existing file instead of an additive change.
+- Note this change is **not** needed for Gospel read-through series: the #7
+  pilot (4 lessons spanning John 1–5 / 6–10 / 11–15 / 16–21, one apologetic
+  theme each) fits schema v1.0 as-is — each lesson anchors on one Robertson
+  event (e.g. `r1922-002` Logos, `r1922-149` "I am the way") and carries the
+  chapter span as a whole-chapter `scripture_reference`. `canonical_passage`
+  is for content the harmony genuinely doesn't cover (Genesis, Psalms,
+  whole-Bible plans).
 - `gospel_phase` taxonomy gains sibling taxonomies rather than being bent
   (e.g., `curriculum_track`). The harmony dataset remains the spine for
   Jesus-centered curricula and the SonLife phases (#21).
@@ -352,7 +478,32 @@ ends with a reviewable exit criterion; phases can overlap where noted.
 - #21 phase mapping (ministry), #7 pilot lessons (Vietnamese authoring +
   review), #17 staging/ops workflow, #1–#3 rights records.
 - Vietnamese reader pass (S2 follow-up) + S5 privacy-wording approval.
-- **Exit:** one real huddle completes a 5–7 week series on staging/production;
+- **Substrate hardening** — a code review of the pilot plugins against this
+  vision (2026-07-10) found the bones sound (signed `user_id` anticipates
+  account claim; the single gate and string `lesson_id` keys carry challenges
+  unchanged) and five adjustments that are cheap now but become live-data
+  migrations after launch:
+  1. **Hash magic-link tokens** (bearer token is currently stored cleartext in
+     HUB contact meta) and move link state to a dedicated
+     `jlife_magic_links` table supporting **multiple concurrent scoped links
+     per contact** — one contact meta key cannot hold a huddle link and a
+     challenge link at once, and §5.2 batch minting collides with it.
+     Must land before real links circulate; a later switch voids them all.
+  2. **Move link responses out of the `jlife_s4_responses` option** (spike
+     posture, read-modify-write race, ungated) into a gated `jlife_responses`
+     table before real reflections accumulate.
+  3. **Widen the token scope shape**: optional `challenge_id`, `lesson_id`
+     optional and resolvable to "today" via cadence — so one link serves a
+     whole challenge and late joiners land on the right day.
+  4. **Decision:** non-huddle challenge audiences materialize as D.T groups
+     (what rdpt22 teams already are) rather than a sentinel `dt_group_id` —
+     `dt_group_id NOT NULL` sits inside every unique key, so this is the
+     moment to choose.
+  5. **Schema-version tolerance:** validator/importer accept a known-versions
+     list instead of hardcoding `"1.0"`, so the §5.5 v1.1 bump is additive,
+     not a flag-day.
+- **Exit:** one real huddle completes the pilot series (per #7: minimum 4
+  lessons — the 4-week Gospel-of-John read-through) on staging/production;
   feedback captured.
 
 ### Phase B — Challenge engine MVP ("rdpt on J-Life")
@@ -360,12 +511,28 @@ ends with a reviewable exit criterion; phases can overlap where noted.
   audit, cost model at church scale (~N texts/day × challenge length), Zalo
   OA feasibility for VN-side audiences.
 - Build `jlife-challenges` (enrollment, cadence unlock, streaks; teams via
-  D.T groups) and `jlife-dispatch` (one SMS provider + email + dry-run).
+  D.T groups) and `jlife-dispatch` **relay-first**: the compose layer, the
+  leader dispatch sheet (copy / prefill / share-sheet), the dispatch log, and
+  the dry-run transport — then one API transport (SMS or email) behind the
+  same interface once S8 settles provider and consent. Relay mode alone
+  already beats today's hand-copying across apps.
 - Reuse the pilot series or a whole-Bible reading plan as the first content.
+- **Design constraint from the verified rdpt22 (§3.1):** the challenge's
+  social engine is the **team-visible reflection** in the group chat — not a
+  private response to a leader. The S4 response surface is leader-visible, and
+  team-visible threads sit at rung 2 (claimed account) in the S5 matrix. So
+  Phase B must either (a) keep the existing group chat alongside per-person
+  links (platform tracks reading/streaks; chat keeps carrying the reflections),
+  or (b) decide — matrix first, per the S5 discipline — whether a
+  challenge-team thread can be opened to rung-1 link actors. Do not ship a
+  version that quietly downgrades a shared reflection into a private form.
 - **Exit:** a church devotional challenge runs end-to-end on the platform —
-  daily SMS with per-person magic links, streaks visible to the participant,
-  aggregates to the challenge admin — matching or beating the vayhub UX.
-  Run it in parallel with the old system once as a shadow test.
+  a daily message with per-person magic links reaching every team through its
+  own app (leader-relayed or API-sent), streaks visible to the participant,
+  aggregates to the challenge admin — matching or beating the rdpt22 UX
+  *including its team reflection loop*, and **nobody hand-copies the same
+  message across SMS, Messenger, and Zalo**. Run it in parallel with the old
+  system once as a shadow test.
 
 ### Phase C — ChMeetings roster integration
 - **S7 spike: ChMeetings API/export reality** — what the API (or scheduled
@@ -425,7 +592,7 @@ ends with a reviewable exit criterion; phases can overlap where noted.
 | # | Risk / decision | Phase | Posture |
 |---|---|---|---|
 | 1 | ChMeetings API capability unknown | C (S7) | Spike before design; fallback = scheduled CSV export sync |
-| 2 | SMS compliance (A2P 10DLC, TCPA consent, opt-out) & per-message cost | B (S8) | Legal/ops review with provider onboarding; budget model before launch |
+| 2 | SMS compliance (A2P 10DLC, TCPA consent, opt-out) & per-message cost | B (S8) | Legal/ops review with provider onboarding; budget model before launch. Relay-first dispatch (§5.2) ships without it — API transports wait for registration, not vice versa |
 | 3 | Magic-link forwarding at church scale | B+ | Already measured (S4); mitigations: scope, revoke, sensitivity rule, participant-facing warning; monitor `use_count` anomalies |
 | 4 | Vietnamese quality on target plugins | B/D | Native review then upstream contribution (S2 gap list) |
 | 5 | Notes access after huddle removal / account deletion retention | D | Product decision + export flow (5.7) before wide launch |
@@ -439,6 +606,7 @@ ends with a reviewable exit criterion; phases can overlap where noted.
 
 It is not a commitment, a schedule, or a replacement for
 [architecture.md](architecture.md). It is the shared picture to argue with.
-The intended lifecycle: review → correct the vayhub assumptions (§3) → agree
-or amend the phase order → cut Phase B/C spike issues (S7, S8) in the tracker
-→ retire sections into architecture.md as they become real.
+The intended lifecycle: review (the vayhub account in §3 is now verified
+against the live site, 2026-07-10) → agree or amend the phase order → cut
+Phase B/C spike issues (S7, S8) in the tracker → retire sections into
+architecture.md as they become real.
