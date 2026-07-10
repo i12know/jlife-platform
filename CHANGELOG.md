@@ -11,6 +11,13 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 ### Added
 
 - Added the S2 Vietnamese localization audit covering Disciple.Tools theme, mobile app, and target plugin translation gaps.
+- Added the draft vision-architecture document covering church-wide scale-out: the verified vayhub `rdpt22` challenge analysis, the identity ladder, `jlife-challenges`/`jlife-dispatch` designs (relay-first dispatch), ChMeetings integration scheduling, RP Pathway App convergence, and a phased roadmap with Phase A substrate-hardening items.
+- Added the draft 4-lesson Gospel of John pilot series in the portable content schema (English source text; Vietnamese translation, theology review, and field rendering still pending under issue #7).
+- Added workspace-scoped VS Code JSON-schema bindings for pilot lesson and series files, and documented content editing tool options in the schemas README.
+
+### Changed
+
+- Aligned the pilot lesson scope from 5-7 to 4-7 lessons across the PRD, architecture, pilot-context, and roadmap documents.
 
 ## 0.0.0 - 2026-07-05
 

@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "lsn-john-01-the-word",
+  "series_id": "ser-gospel-of-john",
+  "order": 1,
+  "title": "Is God's Word Real?",
+  "source_language": "en",
+  "translation_status": "draft",
+  "source_attribution": null,
+  "rights_note": null,
+  "primary_gospel_event_id": "r1922-002",
+  "related_gospel_event_ids": [
+    "r1922-026",
+    "r1922-027",
+    "r1922-028",
+    "r1922-029",
+    "r1922-030",
+    "r1922-031",
+    "r1922-032",
+    "r1922-033",
+    "r1922-034",
+    "r1922-035",
+    "r1922-036",
+    "r1922-038",
+    "r1922-049"
+  ],
+  "phase": null,
+  "sub_phase": null,
+  "phase_mapping_status": "pending",
+  "scripture_reference": [
+    {
+      "book": "John",
+      "chapter_start": 1,
+      "verse_start": null,
+      "chapter_end": 5,
+      "verse_end": null,
+      "display": "John 1-5",
+      "deep_link": null
+    }
+  ],
+  "teaching": "This week, read John 1-5 in your own Bible. As you read, watch how John answers the question: Is God's Word real? Do not only look for religious ideas. Look for witnesses, signs, conversations, and claims that point to Jesus as God's self-revelation.\n\nJohn 1:1-18 is the anchor passage for this lesson. John begins before Bethlehem, before Galilee, and before the public ministry of Jesus. He presents Jesus as the eternal Word through whom God makes himself known. That means Christianity does not begin with human beings reaching upward to guess what God is like. It begins with God speaking and coming near.\n\nIn John 1-5, the question of God's Word becomes personal. John the Baptist points away from himself and toward Jesus. Early disciples come and see. Jesus reveals glory at Cana. He speaks with Nicodemus about new birth and with the Samaritan woman about living water. He heals, confronts empty religion, and then explains that several witnesses testify about him.\n\nPay special attention to John 5. Jesus does not ask people to believe without reason. He appeals to testimony: John the Baptist, his works, the Father, and the Scriptures. Yet he also exposes a danger: people can study religious words while refusing the One to whom those words point.\n\nAs you read, ask: If God has truly spoken in Jesus, what kind of response would be honest?",
+  "outside_the_box": "In John's Gospel, the word *sign* matters. A sign is not merely a miracle that impresses people. It points beyond itself to the identity and mission of Jesus. Turning water to wine, cleansing the temple, speaking with outsiders, healing the sick, and claiming divine authority are not random scenes. John arranges them as testimony. He wants readers to weigh the evidence, listen to the witnesses, and decide whether Jesus is merely a teacher or God's own Word made known in history.",
+  "reflection_questions": [
+    {
+      "id": "q01",
+      "text": "As you read John 1-5, what witnesses or signs most strongly point you toward Jesus?"
+    },
+    {
+      "id": "q02",
+      "text": "Where do you see people misunderstanding Jesus? What does that reveal about the difficulty of recognizing God's Word?"
+    },
+    {
+      "id": "q03",
+      "text": "John 5 warns that people can handle Scripture while missing Jesus. Where might that danger show up today?"
+    },
+    {
+      "id": "q04",
+      "text": "If Jesus really reveals God, what is one belief or habit in your life that should be reexamined?"
+    }
+  ],
+  "live_it_out": "Before the next huddle, reread John 5 slowly. Make two columns in your journal: *Witnesses to Jesus* and *Reasons people resist Jesus*. Write at least three observations in each column, then bring one observation to share.",
+  "prayer_prompt": "Ask God to help you receive his Word honestly, not just analyze it from a distance. Pray for eyes to see Jesus clearly and for courage to follow where the truth leads.",
+  "huddle_discussion_prompts": [
+    {
+      "id": "p01",
+      "text": "Begin by asking each person to name one scene from John 1-5 that stayed with them. Keep the first round observational, not argumentative."
+    },
+    {
+      "id": "p02",
+      "text": "Invite participants to share their answer to q01. Ask what kind of witness or sign was most compelling to them and why."
+    },
+    {
+      "id": "p03",
+      "text": "Discuss q03 carefully. How can religious familiarity make someone less open to Jesus rather than more open?"
+    },
+    {
+      "id": "p04",
+      "text": "Close by asking: What would it look like this week to treat Jesus not merely as a subject to study, but as God's Word to receive?"
+    }
+  ],
+  "leader_notes": "Some participants may equate trusting Scripture with ignoring questions. Do not push them toward shallow certainty. Let John model a better path: testimony, signs, honest inquiry, and personal response. Keep returning to Jesus as the center of the question. If someone raises manuscript, canon, or translation issues, acknowledge the question, but do not let the huddle become a technical debate. Land the lesson by asking whether John 1-5 gives us reason to take Jesus seriously as God's self-revelation. Preview next week by noting that John 6-10 will show why people resist Jesus even when they see much evidence."
+}

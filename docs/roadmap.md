@@ -33,7 +33,7 @@ Engineering proceeds in parallel using original placeholder content and referenc
 
 | Workstream | Deliverables |
 |---|---|
-| Content | 5–7 original Vietnamese life-of-Jesus lessons in the portable schema (Markdown/JSON in `/content/pilot-lessons/`), theology + language reviewed |
+| Content | 4–7 original Vietnamese life-of-Jesus lessons in the portable schema (Markdown/JSON in `/content/pilot-lessons/`), theology + language reviewed |
 | Delivery | Distributed as PDF/Doc/simple static page — no accounts, no platform |
 | Learning | Field observation notes: huddle rhythm, discussion patterns, leader pain points, vocabulary; decision memo: *is custom software justified?* |
 

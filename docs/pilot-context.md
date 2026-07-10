@@ -28,7 +28,7 @@ The first pilot should be treated as a **time-bound discipleship training huddle
 This means:
 
 -   **Discipleship**: the goal is formation in the life and way of Jesus.
--   **Training**: the pilot uses a limited sequence of lessons, likely 5-7 lessons.
+-   **Training**: the pilot uses a limited sequence of lessons, likely 4-7 lessons.
 -   **Huddle**: the experience is relational and discussion-based, not merely a class or content library.
 -   **Time-bound**: the pilot has a defined beginning and ending so it can be evaluated.
 
@@ -113,7 +113,7 @@ A pastor or coach may review aggregate progress and support the huddle leader, b
 Recommended rhythm:
 
 -   weekly meetings
--   5-7 weeks total
+-   4-7 weeks total
 -   75-90 minutes per meeting
 -   one lesson per meeting
 -   participants read and respond before the meeting
@@ -329,7 +329,7 @@ The pilot does not need to prove every future feature.
 
 ### For Issue #7: Pilot Lessons
 
--   Which 5-7 life-of-Jesus events should be selected?
+-   Which 4-7 life-of-Jesus events should be selected?
 -   Should each lesson be one week?
 -   What format is easiest for the first field test: static page, PDF, printable document, or platform page?
 -   Who provides theological review?
@@ -338,7 +338,7 @@ The pilot does not need to prove every future feature.
 
 ## Initial Recommendation
 
-The first pilot should begin with a simple 5-7 week Vietnamese J-Life huddle.
+The first pilot should begin with a simple 4-7 week Vietnamese J-Life huddle.
 
 Recommended starting posture:
 

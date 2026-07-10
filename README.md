@@ -13,6 +13,7 @@ This repository is starting as a planning and prototype space. The first source 
 - [Content Rights Register](docs/content-rights.md) — rights inventory and handling rules
 - [Integration Boundaries](docs/integration-boundaries.md) — data ownership and sync rules across ChMeetings, Disciple.Tools, and the study surface
 - [Dev Environment](docs/dev-environment.md) — reproducible local multisite (wp-env + Docker): quickstart, Windows disk-space guidance, verify script
+- [Vision Architecture](docs/vision-architecture.md) — draft long-term design: church-wide disciplemaking, SMS/challenge engine, ChMeetings integration, identity ladder, phased roadmap
 - [Changelog](CHANGELOG.md) - dated summary of meaningful repository milestones and MVP-facing changes
 
 ## Current Direction
