@@ -13,15 +13,16 @@ conclusions in [spikes/](spikes/).
 ## 1. The Vision in One Paragraph
 
 Grow the J-Life platform from a single Vietnamese pilot huddle into the
-**disciplemaking backbone of a whole church**: any member can be invited into
-a devotional challenge or a huddle by a text message; any curriculum — Life of
-Jesus, other books of the Bible, licensed studies like Knowing Him — can be
-published as a portable series; leaders and pastors see engagement and
-multiplication through Disciple.Tools; the church roster stays authoritative
-in ChMeetings; and the whole thing runs on the identity, privacy, and content
-machinery the six spikes already proved. The unit of movement is not the
-platform — it is a person reading Scripture today and a leader who knows to
-follow up tomorrow.
+**disciplemaking backbone of a whole church**: a newcomer finds their place on
+a visual **pathway map** (the RP Pathway App — §5.6) and taps one next step;
+any member can be invited into a devotional challenge or a huddle by a text
+message; any curriculum — Life of Jesus, other books of the Bible, licensed
+studies like Knowing Him — can be published as a portable series; leaders and
+pastors see engagement and multiplication through Disciple.Tools; the church
+roster stays authoritative in ChMeetings; and the whole thing runs on the
+identity, privacy, and content machinery the six spikes already proved. The
+unit of movement is not the platform — it is a person reading Scripture today
+and a leader who knows to follow up tomorrow.
 
 ## 2. What We Already Have (the proven substrate)
 
@@ -261,7 +262,79 @@ reading challenges):
 - Rights stay per-series (already true) — licensed (Knowing Him), original,
   and public-domain series coexist in one catalog.
 
-### 5.6 Participant data dignity (carrying an S5 review note forward)
+### 5.6 RP Pathway App — the journey map becomes the front door
+
+> Source: [i12know/rp-pathway-app](https://github.com/i12know/rp-pathway-app)
+> — an interactive discipleship pathway map for the church (8 waypoints from
+> *meeting-jesus* to *multiply-community* across upward/inward/outward stages,
+> each with tracks, prerequisites, and ChMeetings signup forms; generated as a
+> WordPress image-map plugin from a canonical `rp-pathway-waypoints.json`).
+
+**The convergence is not a coincidence to engineer — it already exists.** The
+pathway app's own PRD stubs "Disciple.Tools Integration (Phase 4)" with
+exactly the design J-Life has already built and tested: ChMeetings as system
+of record for people, D.T mirroring contacts with `chmeetings_person_id` as
+the canonical key, cohort/mentoring workflows in D.T, magic-link micro-apps,
+and summary progress writing back to ChMeetings. In other words: **J-Life is
+the RP Pathway's Phase 4, already implemented; the RP Pathway is the front
+door J-Life doesn't have yet.** The two apps are halves of one system:
+
+| Layer | Owned by | What it answers |
+|---|---|---|
+| **Journey map** (pathway app) | RP Pathway | "Where am I? What's my one next step?" |
+| **Walking surface** (series/challenges/huddles) | J-Life STUDY | "What do I read/do today, with whom?" |
+| **Relationships & oversight** | J-Life HUB (D.T) | "Who walks with whom? Where are the bottlenecks?" |
+| **Roster & signups of record** | ChMeetings | "Who is in our church? Who signed up?" |
+
+**Concrete integration joins** (each small, because both codebases practice
+the same stable-ID discipline):
+
+1. **Track → series deep link.** The pathway's `track_id` CTA today points at
+   a ChMeetings form (`cta_url`). When a track has a J-Life series behind it,
+   the CTA gains a second action: the ChMeetings form remains the signup of
+   record, and the confirmation (or the dispatch engine) sends the
+   participant a **magic link into the series/challenge** — the map flows
+   straight onto the walking surface. A one-file mapping registry
+   (`track_id ↔ series_id/challenge_id`) lives in the content repo, versioned
+   like everything else.
+2. **Verified completion feed.** The pathway PRD distinguishes *self-attested*
+   vs *leader-verified* completion, and hard-gates Companion eligibility on
+   verified. J-Life's `jlife_progress` + leader flags are precisely a
+   leader-verified completion source: the bridge can push "track completed
+   (verified)" summaries to the ChMeetings *My Pathway* profile fields — the
+   pathway app's Phase 4 stub asked for exactly this write-back, and
+   integration-boundaries.md already classifies it as the deliberate,
+   reviewed aggregate exception (counts/flags only, never content).
+3. **Companions = the leader pipeline.** The pathway's Companion concept (a
+   member qualified to walk others through a track they completed) maps onto
+   the D.T structures S3 reserved: Companions-in-training as a D.T **Team**
+   or leader cohort, companion↔learner matches as D.T group/contact
+   assignments in HUB, giving matching a home with the privacy model already
+   attached — instead of a parallel matching system.
+4. **The map is the rung-0/rung-1 surface.** The pathway app is deliberately
+   guest-friendly (no login) — it *is* the identity ladder's ground floor
+   (§3.3). A guest explores the map anonymously, signs up via ChMeetings
+   form (rung 0→1 via roster sync), and receives a magic link; account claim
+   (§5.4) comes only when they need discussion or private notes.
+5. **Taxonomies stay siblings.** The pathway's upward/inward/outward stages
+   and the SonLife 5 phases are different lenses on the journey; per §5.5
+   both live as per-series/track tags rather than being force-merged. A
+   J-Life series can carry both a `gospel_phase` and a `pathway_waypoint`
+   tag; the map and the catalog stay consistent without either owning the
+   other's theology.
+6. **Deployment reality:** the pathway app is a generated WordPress plugin —
+   it can be installed on the STUDY subsite as-is (eventually as STUDY's
+   front page), sharing the multisite, caching split, and bilingual EN/VI
+   posture both projects independently chose.
+
+**What deliberately stays separate:** the pathway app keeps shipping on its
+own repo/cadence (its JSON → generated-plugin pipeline is self-contained);
+ChMeetings forms remain the signup mechanism (J-Life never becomes a signup
+system of record); and nothing in the pathway's guest surface ever reads
+huddle threads, notes, or progress detail — it consumes at most the same
+aggregate/flag shapes as the HUB tile.
+
+### 5.7 Participant data dignity (carrying an S5 review note forward)
 
 Before church-wide launch: an **export-my-data** flow (own notes/responses,
 Markdown/PDF) and a defined grace window or export prompt when someone leaves
@@ -301,20 +374,28 @@ ends with a reviewable exit criterion; phases can overlap where noted.
   vision; nothing else depends on its internals, only on its outcome.*
 - Build bridge `chm-sync` (one-way, idempotent, logged, dry-run mode);
   activation is per-context per the boundary doc.
+- **Shared with RP Pathway:** S7 also covers reading pathway signups and *My
+  Pathway* profile fields, and scopes the verified-completion write-back
+  (§5.6 join 2) — one spike serves both apps' ChMeetings needs.
 - **Exit:** inviting an existing ministry group to a challenge requires zero
   manual roster entry; boundary doc audit passes (nothing flows to
-  ChMeetings).
+  ChMeetings beyond the reviewed aggregate exception).
 
 ### Phase D — Church-wide launch surface
 - Account-claim flow (5.4) + huddle discussion/notes UI over the S5 data API
   (REST endpoints; gate functions are the PR review checklist).
-- Participant data dignity items (5.6). Coach dashboards via D.T sharing
+- Participant data dignity items (5.7). Coach dashboards via D.T sharing
   patterns (S3). D.T mobile app rollout to leaders (S2 noted it's
   leader-facing and Vietnamese-complete).
 - Localization: contribute Vietnamese PO files upstream for Magic Links /
   Groups Tile / Mobile App plugin after native review (S2 gap list).
-- **Exit:** a member with no prior platform contact can go text → reader →
-  responder → account → huddle member without staff intervention.
+- **RP Pathway joins land here:** pathway map installed on STUDY as the
+  front door; `track_id ↔ series_id` registry live so track CTAs hand off to
+  magic-link challenges (§5.6 join 1); verified-completion feed to *My
+  Pathway* (join 2); Companion pipeline modeled in D.T (join 3).
+- **Exit:** a member with no prior platform contact can go map → signup →
+  text → reader → responder → account → huddle member without staff
+  intervention.
 
 ### Phase E — Catalog expansion
 - Content-schema generalization (5.5); Knowing Him series onboarded under its
@@ -347,10 +428,12 @@ ends with a reviewable exit criterion; phases can overlap where noted.
 | 2 | SMS compliance (A2P 10DLC, TCPA consent, opt-out) & per-message cost | B (S8) | Legal/ops review with provider onboarding; budget model before launch |
 | 3 | Magic-link forwarding at church scale | B+ | Already measured (S4); mitigations: scope, revoke, sensitivity rule, participant-facing warning; monitor `use_count` anomalies |
 | 4 | Vietnamese quality on target plugins | B/D | Native review then upstream contribution (S2 gap list) |
-| 5 | Notes access after huddle removal / account deletion retention | D | Product decision + export flow (5.6) before wide launch |
+| 5 | Notes access after huddle removal / account deletion retention | D | Product decision + export flow (5.7) before wide launch |
 | 6 | Public challenge pages under load / bot abuse | B | Cache rung-0 pages at CDN (S1 caching split); rate-limit token endpoints; consider the same class of protection vayhub uses (Cloudflare) — noting it blocks bots, as this analysis experienced firsthand |
 | 7 | Rights: Knowing Him confirmation recording (#1), VIE2010 (#3), Harmony Bible path (#2) | A/E | Register-first discipline; no content ships ahead of its row |
 | 8 | Volunteer maintainer bus-factor | all | CI gates, this docs corpus, boring-technology bias (WordPress, PO files, JSON) |
+| 9 | RP Pathway ↔ J-Life ID drift (`track_id` ↔ `series_id`, waypoint tags) | C/D | One versioned mapping-registry file, validated in CI like all content; both repos keep their stable-ID disciplines |
+| 10 | Two definitions of "completion" (pathway self-attested vs J-Life leader-verified) | D | Adopt the pathway's own `completion confidence` vocabulary end-to-end; J-Life feeds only the *verified* tier |
 
 ## 8. What This Document Is Not
 
