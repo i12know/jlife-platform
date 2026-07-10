@@ -152,7 +152,7 @@ The MVP should validate whether Vietnamese partners actually need a custom syste
 
 - Vietnamese interface foundation.
 - Mobile web/PWA experience.
-- A small pilot study set, likely 5-7 life-of-Jesus lessons.
+- A small pilot study set, likely 4-7 life-of-Jesus lessons.
 - Study reader with sections: Scripture reference, short reading/teaching, reflection questions, application, prayer, and huddle discussion prompts.
 - Private huddle creation.
 - Invite link or invite code.
@@ -189,7 +189,7 @@ The MVP should validate whether Vietnamese partners actually need a custom syste
 
 ### Phase 1: Content Pilot Without Full Platform
 
-- Prepare 5-7 Vietnamese lessons for a pilot small-group context.
+- Prepare 4-7 Vietnamese lessons for a pilot small-group context.
 - Test by PDF, Google Doc, printed guide, or simple static webpage.
 - Observe huddle patterns, discussion needs, leader pain points, and vocabulary.
 - Decide whether custom software is justified.
@@ -470,7 +470,7 @@ Recommended first GitHub issues:
 - Confirm permission/contact path for Harmony Bible.
 - Research Vietnamese Bible translation rights.
 - Define pilot users and huddle workflow.
-- Draft first 5-7 pilot lessons.
+- Draft first 4-7 pilot lessons.
 - Define content schema.
 - Sketch mobile study reader flow.
 - Sketch private huddle discussion flow.
@@ -527,7 +527,7 @@ Possible measures:
 4. Identify the first pilot audience and huddle leader.
 5. Contact rights holders for Knowing Him and Harmony Bible before reproducing or translating content.
 6. Research Vietnamese Bible text rights.
-7. Draft a 5-7 lesson Vietnamese pilot before building a full platform.
+7. Draft a 4-7 lesson Vietnamese pilot before building a full platform.
 8. After pilot feedback and the architecture spike, decide whether to build the WordPress/Disciple.Tools MVP or document why an exception stack is required.
 
 ## 19. Draft Decision Log
@@ -597,7 +597,7 @@ New features should favor plugin/extension patterns over modifying Disciple.Tool
 
 ### 20.5 Revised MVP Implications
 
-The MVP should still begin with field validation and 5-7 pilot lessons, but the first technical spike should answer these architecture questions before any full build:
+The MVP should still begin with field validation and 4-7 pilot lessons, but the first technical spike should answer these architecture questions before any full build:
 
 - Should the first prototype use two WordPress surfaces: a Disciple.Tools site/subsite for private disciplemaking workflow and a separate content site/subsite for study UX?
 - Can Harmony Bible provide an approved API, export, embed path, or licensing agreement for Vietnamese display?

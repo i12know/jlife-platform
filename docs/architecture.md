@@ -74,7 +74,7 @@ Principles:
 Custom post types and taxonomies (in the `jlife-studies` plugin, so content survives theme changes):
 
 ```text
-CPT: jlife_series          (a study, e.g. a 5–7 lesson pilot)
+CPT: jlife_series          (a study, e.g. a 4–7 lesson pilot)
 CPT: jlife_lesson          (ordered within a series)
   └ sections stored as structured blocks/meta:
       scripture_reference   (references only — text fetched/linked per rights)
