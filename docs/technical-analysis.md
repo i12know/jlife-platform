@@ -37,9 +37,11 @@ This document analyzes the proposed stack — WordPress multisite running the Di
 
 ### 1.4 Vietnamese Localization (verified findings)
 
-- The Disciple.Tools theme ships a **Vietnamese translation** (`vi.po` / `vi.mo` in `dt-assets/translation/`). The `vi.po` file is ~203 KB — the same order as French (~196 KB), Spanish (~194 KB), and Korean (~195 KB), which suggests substantial coverage, not a stub. **Exact completion percentage must still be verified** on `translate.disciple.tools` (Weblate), and plugin/mobile-app translations are tracked separately and are typically less complete.
-- Translations are volunteer-driven via Weblate; we can contribute missing Vietnamese strings upstream — a good early, low-risk contribution that also builds relationship with the D.T community.
-- WordPress core, by contrast, has a mature `vi` locale. The content subsite (normal WordPress) has no localization risk; the D.T subsite has *moderate, fixable* localization risk.
+- Spike S2 verified that the Disciple.Tools theme has a substantial Vietnamese translation (`vi.po` / `vi.mo` in `dt-assets/translation/`): 1302/1302 non-fuzzy strings translated by file count on the upstream `develop` branch.
+- The Disciple.Tools mobile app also ships `languages/vi.json`, with 78/78 non-empty leaf strings by file count. The Team Module ships `disciple-tools-team-module-vi.po`, with 13/13 non-fuzzy strings translated.
+- The planned Magic Links, Groups Tile, and Mobile App plugin surfaces do **not** currently ship Vietnamese translation files in the upstream repositories checked during S2. They have templates and/or other locale files, so they need Vietnamese contribution work before Vietnamese-facing use.
+- The public `translate.disciple.tools` API did not expose the expected D.T theme/plugin/mobile-app Weblate components during S2; the reliable contribution path is therefore upstream PO/JSON changes through the relevant repositories or authenticated Weblate access once confirmed.
+- WordPress core, by contrast, has a mature `vi` locale. The content subsite (normal WordPress) has no localization risk; the D.T subsite has *moderate, fixable* plugin-specific localization risk.
 - Custom fields and tiles we add via plugins carry their own translation burden; every custom field label we create must go through our translation-review workflow.
 
 ### 1.5 Harmony Bible (harmony-bible.com)
@@ -112,8 +114,8 @@ Disciple.Tools expects ministry workers as users and disciples as contact record
 |---|---|
 | D.T is a WP theme; plugins-first extension model | **Verified** (repo docs) |
 | `disciple-tools-multisite` actively maintained (v1.17.0, 2026-06) | **Verified** |
-| D.T theme ships Vietnamese translation comparable in size to major languages | **Verified** (`vi.po` ~203 KB in repo); exact % **unverified** |
-| D.T mobile app / plugins Vietnamese coverage | **Unverified** — audit in spike S2 |
+| D.T theme ships Vietnamese translation comparable in size to major languages | **Verified in S2** (`vi.po` 1302/1302 non-fuzzy strings translated by file count) |
+| D.T mobile app / plugins Vietnamese coverage | **Mixed, verified in S2** — mobile app and Team Module have Vietnamese files; Magic Links, Groups Tile, and Mobile App plugin do not |
 | Harmony Bible: 7 languages, no Vietnamese, no public API | **Verified** (site inspection) |
 | Knowing Him: free 50-day Sonlife study, 4 sections/day, 42 videos, no VN, no groups | **Verified** (site + Sonlife store) |
 | Huddles map cleanly to D.T groups without workarounds | **Assumption** — spike S3 |

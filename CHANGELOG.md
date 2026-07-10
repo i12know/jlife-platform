@@ -10,7 +10,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Added
 
-- Placeholder for the next development changes.
+- Added the S2 Vietnamese localization audit covering Disciple.Tools theme, mobile app, and target plugin translation gaps.
 
 ## 0.0.0 - 2026-07-05
 
