@@ -374,7 +374,9 @@ reading challenges):
   spine. Validator + JSON schema change only — S6 proved the round-trip
   machinery never inspects these fields. **Prerequisite:** the Phase A
   schema-version-tolerance item — without it the v1.1 bump is a flag-day for
-  every existing file instead of an additive change.
+  every existing file instead of an additive change. **Scheduled as Phase E1
+  (v2.0.0), the first post-1.0 epoch** — ahead of the challenge engine, per
+  the amended phase order in §6.
 - Note this change is **not** needed for Gospel read-through series: the #7
   pilot (4 lessons spanning John 1–5 / 6–10 / 11–15 / 16–21, one apologetic
   theme each) fits schema v1.0 as-is — each lesson anchors on one Robertson
@@ -474,7 +476,17 @@ S5).
 Numbering continues the existing spike convention (S1–S6 done). Each phase
 ends with a reviewable exit criterion; phases can overlap where noted.
 
-### Phase A — Finish the pilot (current work, prerequisite for everything)
+**Version ladder** (of record in [roadmap.md §Versioning](roadmap.md)): each
+phase exit below carries its target release. Order as amended in review
+(2026-07-11): **A → E1 → B → C → D → F**. Catalog generalization (E1) is
+promoted to the first post-1.0 epoch so general Bible curricula are supported
+before further Life-of-Christ-harmony-specific work — the church's real
+challenges are whole-Bible reading plans (§3.1), and the challenge engine must
+not ship before the content model can carry the church's actual curriculum.
+The rights-gated remainder of old Phase E (now E2) leaves the epoch ladder and
+ships as minor releases whenever its rights rows land.
+
+### Phase A — Finish the pilot (current work, prerequisite for everything) → v1.0.0
 - #21 phase mapping (ministry), #7 pilot lessons (Vietnamese authoring +
   review), #17 staging/ops workflow, #1–#3 rights records.
 - Vietnamese reader pass (S2 follow-up) + S5 privacy-wording approval.
@@ -504,9 +516,27 @@ ends with a reviewable exit criterion; phases can overlap where noted.
      not a flag-day.
 - **Exit:** one real huddle completes the pilot series (per #7: minimum 4
   lessons — the 4-week Gospel-of-John read-through) on staging/production;
-  feedback captured.
+  feedback captured. This exit is the **v1.0.0** release; earlier 0.x
+  milestones (pilot content, walking skeleton + hardening, feature-complete
+  staging, pilot launch) are tabled in roadmap.md §Versioning.
 
-### Phase B — Challenge engine MVP ("rdpt on J-Life")
+### Phase E1 — Catalog generalization (promoted ahead of Phase B) → v2.0.0
+
+- Content-schema generalization (§5.5) as its own epoch: schema v1.1 with the
+  `canonical_passage` spine, `primary_gospel_event_id` required only for
+  `life-of-jesus`-tagged series, and sibling taxonomies (`curriculum_track`)
+  rather than bending `gospel_phase`. Validator, importer, and JSON schema
+  updates; authoring guide for lay content teams.
+- The pilot's John series needs none of this (it fits v1.0 as-is), which is
+  why E1 sits *after* v1.0 rather than blocking the pilot — but it sits
+  *before* the challenge engine because the church's real devotional
+  challenges are whole-Bible reading plans the v1.0 schema cannot express.
+- Depends on the Phase A schema-version-tolerance hardening item (#5 above):
+  with it, v1.1 is additive; without it, a flag-day.
+- **Exit:** a general-Bible (non-gospel) series authors, validates, imports,
+  and renders with zero platform special-casing.
+
+### Phase B — Challenge engine MVP ("rdpt on J-Life") → v3.0.0
 - **S8 spike: dispatch deliverability** — provider choice, A2P 10DLC/consent
   audit, cost model at church scale (~N texts/day × challenge length), Zalo
   OA feasibility for VN-side audiences.
@@ -516,7 +546,8 @@ ends with a reviewable exit criterion; phases can overlap where noted.
   the dry-run transport — then one API transport (SMS or email) behind the
   same interface once S8 settles provider and consent. Relay mode alone
   already beats today's hand-copying across apps.
-- Reuse the pilot series or a whole-Bible reading plan as the first content.
+- First content: the church's whole-Bible reading plan — expressible now that
+  E1 landed; the pilot John series remains available as a fallback.
 - **Design constraint from the verified rdpt22 (§3.1):** the challenge's
   social engine is the **team-visible reflection** in the group chat — not a
   private response to a leader. The S4 response surface is leader-visible, and
@@ -534,7 +565,7 @@ ends with a reviewable exit criterion; phases can overlap where noted.
   message across SMS, Messenger, and Zalo**. Run it in parallel with the old
   system once as a shadow test.
 
-### Phase C — ChMeetings roster integration
+### Phase C — ChMeetings roster integration → v4.0.0
 - **S7 spike: ChMeetings API/export reality** — what the API (or scheduled
   export) actually provides, auth model, rate limits, field mapping to D.T
   contacts, dedupe strategy. *This is the highest-uncertainty item in the
@@ -548,7 +579,7 @@ ends with a reviewable exit criterion; phases can overlap where noted.
   manual roster entry; boundary doc audit passes (nothing flows to
   ChMeetings beyond the reviewed aggregate exception).
 
-### Phase D — Church-wide launch surface
+### Phase D — Church-wide launch surface → v5.0.0
 - Account-claim flow (5.4) + huddle discussion/notes UI over the S5 data API
   (REST endpoints; gate functions are the PR review checklist).
 - Participant data dignity items (5.7). Coach dashboards via D.T sharing
@@ -564,16 +595,18 @@ ends with a reviewable exit criterion; phases can overlap where noted.
   text → reader → responder → account → huddle member without staff
   intervention.
 
-### Phase E — Catalog expansion
-- Content-schema generalization (5.5); Knowing Him series onboarded under its
-  recorded license (#1); whole-Bible/topical tracks; VIE2010 rendering if #3
-  lands a license, else references+links continue.
-- Authoring guide for lay content teams; translation workflow exercised at
-  catalog scale.
-- **Exit:** ≥3 series of different rights profiles live; a non-gospel series
-  runs a challenge with zero platform changes.
+### Phase E2 — Licensed catalog & harmony enrichment (rights-gated minor releases, not an epoch)
+- The rights-dependent half of old Phase E: Knowing Him series onboarded under
+  its recorded license (#1); VIE2010 rendering if #3 lands a license, else
+  references+links continue; harmony enrichment (#21 SonLife phase mapping,
+  gospel-event browsing) as ministry review completes.
+- These ship as **minor releases** on whatever major is current, the moment
+  each rights row / theological review lands — content gates should never
+  hold a capability epoch hostage. Register-first discipline (§7 row 7)
+  unchanged. Translation workflow exercised at catalog scale as series land.
+- **Exit (rolling):** ≥3 series of different rights profiles live.
 
-### Phase F — Multiplication beyond one congregation (optional horizon)
+### Phase F — Multiplication beyond one congregation (optional horizon) → v6.0.0
 - The *other* multisite axis: sibling networks or subsites per congregation/
   language mission, each with its own HUB, sharing the content catalog repo.
   Governance, theming, and data isolation review before any second tenant.
@@ -597,7 +630,7 @@ ends with a reviewable exit criterion; phases can overlap where noted.
 | 4 | Vietnamese quality on target plugins | B/D | Native review then upstream contribution (S2 gap list) |
 | 5 | Notes access after huddle removal / account deletion retention | D | Product decision + export flow (5.7) before wide launch |
 | 6 | Public challenge pages under load / bot abuse | B | Cache rung-0 pages at CDN (S1 caching split); rate-limit token endpoints; consider the same class of protection vayhub uses (Cloudflare) — noting it blocks bots, as this analysis experienced firsthand |
-| 7 | Rights: Knowing Him confirmation recording (#1), VIE2010 (#3), Harmony Bible path (#2) | A/E | Register-first discipline; no content ships ahead of its row |
+| 7 | Rights: Knowing Him confirmation recording (#1), VIE2010 (#3), Harmony Bible path (#2) | A/E2 | Register-first discipline; no content ships ahead of its row |
 | 8 | Volunteer maintainer bus-factor | all | CI gates, this docs corpus, boring-technology bias (WordPress, PO files, JSON) |
 | 9 | RP Pathway ↔ J-Life ID drift (`track_id` ↔ `series_id`, waypoint tags) | C/D | One versioned mapping-registry file, validated in CI like all content; both repos keep their stable-ID disciplines |
 | 10 | Two definitions of "completion" (pathway self-attested vs J-Life leader-verified) | D | Adopt the pathway's own `completion confidence` vocabulary end-to-end; J-Life feeds only the *verified* tier |
@@ -607,6 +640,8 @@ ends with a reviewable exit criterion; phases can overlap where noted.
 It is not a commitment, a schedule, or a replacement for
 [architecture.md](architecture.md). It is the shared picture to argue with.
 The intended lifecycle: review (the vayhub account in §3 is now verified
-against the live site, 2026-07-10) → agree or amend the phase order → cut
-Phase B/C spike issues (S7, S8) in the tracker → retire sections into
-architecture.md as they become real.
+against the live site, 2026-07-10) → agree or amend the phase order (amended
+2026-07-11: catalog-first, E1 before B, version ladder recorded in roadmap.md
+§Versioning) → cut spike issues in the tracker (done: S7 → #33, S8 → #34;
+both deferred until after v1.0) → retire sections into architecture.md as
+they become real.
