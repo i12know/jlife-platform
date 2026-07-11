@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 This project is still pre-release. Until the first tagged release, dated entries describe meaningful repository milestones and MVP-facing changes merged to `main`.
 
-The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project intends to use semantic versioning once releases begin.
+The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project intends to use semantic versioning once releases begin. The version ladder of record — pilot milestones as 0.x, v1.0.0 at pilot completion, post-1.0 majors as capability epochs — is defined in [docs/roadmap.md §Versioning](docs/roadmap.md#versioning).
 
 ## Unreleased
 
@@ -15,9 +15,12 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 - Added the draft 4-lesson Gospel of John pilot series in the portable content schema (English source text; Vietnamese translation, theology review, and field rendering still pending under issue #7).
 - Added workspace-scoped VS Code JSON-schema bindings for pilot lesson and series files, and documented content editing tool options in the schemas README.
 
+- Added the versioning roadmap (`docs/roadmap.md` §Versioning): 0.x pilot milestones, v1.0.0 at Phase A exit, and post-1.0 capability epochs in catalog-first order (2.0 catalog generalization → 3.0 challenge engine → 4.0 ChMeetings → 5.0 church-wide launch → 6.0 multiplication), with licensed content shipping as rights-gated minor releases.
+
 ### Changed
 
 - Aligned the pilot lesson scope from 5-7 to 4-7 lessons across the PRD, architecture, pilot-context, and roadmap documents.
+- Amended the vision-architecture phase order per owner review: catalog generalization (Phase E1) promoted ahead of the challenge engine so general Bible curricula are supported before further Life-of-Christ-harmony-specific work; the rights-gated catalog remainder (Phase E2) ships as minor releases.
 
 ## 0.0.0 - 2026-07-05
 

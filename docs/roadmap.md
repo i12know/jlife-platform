@@ -103,6 +103,57 @@ Tech:   Spikes S1–S6 ────────► gate Phase 2b architecture
         Content workflow ────► depends on S6
 ```
 
+## Versioning
+
+The ladder of record for platform releases (CHANGELOG entries roll under these
+version headings; [vision-architecture.md §6](vision-architecture.md) carries
+the same tags on its phases). **Principle: pre-1.0 minors track pilot
+milestones; post-1.0 majors are capability epochs** — each adds a
+plugin/surface or a schema capability, usually with a privacy-matrix or
+validator decision. Licensed *content* (Knowing Him #1, VIE2010 #3) and
+ministry work (#21 SonLife phase mapping) are **not** epochs: they land as
+minor releases whenever their rights/review gates clear, in whatever epoch is
+current (register-first discipline unchanged).
+
+### 0.x — getting the pilot off the ground (vision Phase A ≙ Phases 1–2b above)
+
+| Version | Milestone | Exit test |
+|---|---|---|
+| **0.1.0** | Pilot content release (#7 done) | 4 approved Vietnamese lessons + field-usable PDF/print rendering; deliverable with no platform |
+| **0.2.0** | Walking skeleton (M1) + substrate hardening | One lesson readable in a huddle end-to-end on staging; the five hardening items (vision §6 Phase A) land here, before real participant data — including schema-version tolerance, which is what lets 2.0's schema v1.1 be additive |
+| **0.3.0** | Feature-complete staging (M2) | Reader, huddles, magic links, privacy gate, Vietnamese reader pass, privacy wording approved, ops workflow (#17) |
+| **0.9.0** | Pilot launch (M3, release-candidate posture) | One trusted huddle live on production |
+| **1.0.0** | **Phase A exit** (M4) | Pilot huddle completes the 4-lesson Gospel of John series on production; retrospective captured. The John series fits schema v1.0 as-is, so 1.0 does not wait for catalog generalization |
+
+1.x minors: pilot-feedback fixes, more huddles on the same feature set.
+
+### Post-1.0 majors — capability epochs, catalog-first
+
+| Version | Epoch | Vision phase | Exit test |
+|---|---|---|---|
+| **2.0.0** | **Catalog generalization** — general Bible curricula before further Life-of-Christ-harmony-specific work | E1 (moved up) | Content schema v1.1 (`canonical_passage` spine; `primary_gospel_event_id` required only for `life-of-jesus`-tagged series; sibling taxonomies); a general-Bible series authors, validates, imports, and renders with zero platform special-casing |
+| **3.0.0** | **Challenge engine** (`jlife-challenges` + relay-first `jlife-dispatch`; S8 #34 runs during this cycle) | B | An rdpt-style challenge runs end-to-end on the church's real whole-Bible reading curriculum, team reflection loop included; nobody hand-copies messages across apps; shadow test vs. the existing system |
+| **4.0.0** | **ChMeetings roster** (S7 #33 first) | C | Zero manual roster entry to invite an existing ministry group; boundary-doc audit passes |
+| **5.0.0** | **Church-wide launch surface** (account claim, discussion/notes UI, RP Pathway front door, Companions, data dignity) | D | Map → signup → text → reader → account → huddle with no staff intervention |
+| **6.0.0** | **Multiplication** (optional horizon) | F | Second-community playbook proven in days |
+
+The Life-of-Christ harmony remains the spine for Jesus-centered curricula —
+nothing is removed — but it is no longer the gate for the catalog: general
+curricula come first; harmony-specific enrichment (E2: licensed series,
+harmony browser, #21 phases) follows demand and rights as minor releases.
+
+### Independent version tracks (never conflated with the platform version)
+
+- **Content `schema_version`**: `1.0` today → `1.1` in the 2.0.0 epoch; additive because of the 0.2.0 tolerance item.
+- **Portable content**: versioned by git + per-series rights rows.
+- **Upstream WP/D.T versions**: external; tracked via the #17 ops workflow.
+
+### Release mechanics
+
+- Tag `main` when a milestone's exit criterion is met; roll the CHANGELOG `Unreleased` section under the dated version heading.
+- Every tag requires green CI and the PRD §21 public-repo safety scan.
+- 0.x may break anything; post-1.0: majors = epochs, minors = additive features/content within an epoch, patches = fixes.
+
 ## Standing Rules (all phases)
 
 - No copyrighted Knowing Him, Harmony Bible, Sonlife, or Bible-text content in the repo or platform without documented permission.
