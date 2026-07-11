@@ -14,6 +14,7 @@ This repository is starting as a planning and prototype space. The first source 
 - [Integration Boundaries](docs/integration-boundaries.md) — data ownership and sync rules across ChMeetings, Disciple.Tools, and the study surface
 - [Dev Environment](docs/dev-environment.md) — reproducible local multisite (wp-env + Docker): quickstart, Windows disk-space guidance, verify script
 - [Vision Architecture](docs/vision-architecture.md) — draft long-term design: church-wide disciplemaking, SMS/challenge engine, ChMeetings integration, identity ladder, phased roadmap
+- [Team Structure](docs/team.md) — roles and working model: hub-and-rings around the owner, review protocols, human-only lanes vs AI-run build lanes
 - [Changelog](CHANGELOG.md) - dated summary of meaningful repository milestones and MVP-facing changes
 
 ## Current Direction

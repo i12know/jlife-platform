@@ -631,7 +631,7 @@ ships as minor releases whenever its rights rows land.
 | 5 | Notes access after huddle removal / account deletion retention | D | Product decision + export flow (5.7) before wide launch |
 | 6 | Public challenge pages under load / bot abuse | B | Cache rung-0 pages at CDN (S1 caching split); rate-limit token endpoints; consider the same class of protection vayhub uses (Cloudflare) — noting it blocks bots, as this analysis experienced firsthand |
 | 7 | Rights: Knowing Him confirmation recording (#1), VIE2010 (#3), Harmony Bible path (#2) | A/E2 | Register-first discipline; no content ships ahead of its row |
-| 8 | Volunteer maintainer bus-factor | all | CI gates, this docs corpus, boring-technology bias (WordPress, PO files, JSON) |
+| 8 | Volunteer maintainer bus-factor | all | CI gates, this docs corpus, boring-technology bias (WordPress, PO files, JSON); roles and co-maintainer plan in [team.md](team.md) |
 | 9 | RP Pathway ↔ J-Life ID drift (`track_id` ↔ `series_id`, waypoint tags) | C/D | One versioned mapping-registry file, validated in CI like all content; both repos keep their stable-ID disciplines |
 | 10 | Two definitions of "completion" (pathway self-attested vs J-Life leader-verified) | D | Adopt the pathway's own `completion confidence` vocabulary end-to-end; J-Life feeds only the *verified* tier |
 
