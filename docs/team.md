@@ -39,8 +39,27 @@ between sessions, boring technology, and fail-closed access control.
 
 | Lane | Mandate | Routed by | Anchors |
 |---|---|---|---|
-| **Platform engineering** | Plugins, privacy gate, CI. The S5 discipline — matrix first, gate function, CI tests — is the merge checklist that makes AI output safe | `engineering`, `privacy` | #36–#39 |
+| **Platform engineering** | Plugins, privacy gate, CI. The S5 discipline — matrix first, gate function, CI tests — is the merge checklist that makes AI output safe (roles within: see below) | `engineering`, `privacy` | #36–#39 |
 | **Content toolsmith** | Schemas, validators, Markdown⇄JSON converter, authoring guides. Customer: the Vietnamese language lead — every tool exists so Ring 1 works in prose, never JSON | `engineering`, `content` | #40, #42 |
+
+### Inside the platform-engineering lane
+
+The lane is not one AI session doing everything — it is four human-equivalent
+roles with different LLM requirements. The **characteristics column is the
+spec**; the Example column is a snapshot (re-pick at each version-gate review).
+
+| Role (human equivalent) | LLM characteristics needed | Example (today) | How to run it |
+|---|---|---|---|
+| **Architect / design reviewer** — the staff engineer who says no | Deepest reasoning tier; long context (the whole docs corpus + plugins in one window); pushes back instead of agreeing; reviews every privacy-matrix change against the S5 discipline | Claude Opus 4.8 (`claude-opus-4-8`); Fable-class for the hardest long-horizon design work | Plan/review mode, not bulk codegen; feed it the docs corpus; high effort setting; it drafts decisions, the owner decides |
+| **Implementer** — the plugin developer | Strong agentic coding: writes PHP/WordPress code to spec, runs tests itself, iterates on CI failures; literal instruction-following | Claude Sonnet 5 (`claude-sonnet-5`) — near-Opus coding at ~⅓ the cost; step up to Opus-class for gnarly gate/schema work | One issue per session, fresh session per issue; conventions live in the repo, not chat memory; small PRs; CI is the arbiter |
+| **Adversarial tester** — the QA who assumes the worst | Literal-minded coverage discipline; writes negative-path access-control tests; must **not** share context with the implementer | Same coding class (Sonnet 5) — the differentiator is session separation, not model choice | Separate session given the spec/privacy matrix but not the implementation chat; prompt it to report *every* finding and filter downstream — never "only high-severity" |
+| **Chronicler** — the tech writer | High instruction-following, low reasoning demand: CHANGELOG entries, spike write-ups, cross-doc consistency sweeps | Haiku-class (`claude-haiku-4-5`), or the tail of an implementer session | Runs at the end of every merge; the docs corpus IS the team's memory, so this role is what keeps every other Ring 2 session interchangeable |
+
+Usage rules for the lane: **author ≠ reviewer** — the session that wrote the
+code never approves it. The repo docs corpus is the **only shared memory**
+between sessions — a decision not written down does not exist for the next
+session. The **S5 checklist rides every merge** regardless of which model
+produced the diff.
 
 ## Ring 3 — stewards (part-time human, phased in)
 

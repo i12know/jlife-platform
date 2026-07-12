@@ -21,6 +21,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 - Aligned the pilot lesson scope from 5-7 to 4-7 lessons across the PRD, architecture, pilot-context, and roadmap documents.
 - Amended the vision-architecture phase order per owner review: catalog generalization (Phase E1) promoted ahead of the challenge engine so general Bible curricula are supported before further Life-of-Christ-harmony-specific work; the rights-gated catalog remainder (Phase E2) ships as minor releases.
+- Expanded the team document's Ring 2 platform-engineering lane into a four-role matrix (architect/design reviewer, implementer, adversarial tester, chronicler) with the LLM characteristics each role needs, example model classes, per-role usage guidance, and lane rules (author ≠ reviewer, docs corpus as shared memory, S5 checklist on every merge).
 
 ## 0.0.0 - 2026-07-05
 
