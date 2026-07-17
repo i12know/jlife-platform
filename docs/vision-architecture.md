@@ -570,6 +570,19 @@ ships as minor releases whenever its rights rows land.
   export) actually provides, auth model, rate limits, field mapping to D.T
   contacts, dedupe strategy. *This is the highest-uncertainty item in the
   vision; nothing else depends on its internals, only on its outcome.*
+  > ✅ **Largely pre-answered 2026-07-17** by the shared portfolio skill
+  > [i12know/vay-chmeetings-skill](https://github.com/i12know/vay-chmeetings-skill)
+  > (v0.1.3, verified against ChMeetings 2026.5; tenant scoping live-probed
+  > 2026-07-16): a documented REST API exists (Scalar/OpenAPI; People CRUD,
+  > Groups read-only — sufficient for our one-way direction), auth is a
+  > per-tenant API key, **outbound webhooks exist** (People
+  > created/updated/deleted) so event-driven sync is possible and the
+  > scheduled-CSV fallback is likely unnecessary, and person **merges orphan
+  > external IDs as plain 404s** — `chm_person_id` handling must follow the
+  > skill's retire-never-delete repair workflow. S7 narrows to J-Life
+  > specifics: RP-tenant key issuance, the `CHM_FIELDS` map → D.T contact
+  > fields, webhook signature verification (undocumented upstream), and the
+  > shared-tenant scope line with rp-pathway-app.
 - Build bridge `chm-sync` (one-way, idempotent, logged, dry-run mode);
   activation is per-context per the boundary doc.
 - **Shared with RP Pathway:** S7 also covers reading pathway signups and *My
@@ -624,7 +637,7 @@ ships as minor releases whenever its rights rows land.
 
 | # | Risk / decision | Phase | Posture |
 |---|---|---|---|
-| 1 | ChMeetings API capability unknown | C (S7) | Spike before design; fallback = scheduled CSV export sync |
+| 1 | ChMeetings API capability unknown | C (S7) | ~~Spike before design; fallback = scheduled CSV export sync~~ **Downgraded 2026-07-17:** API capability documented and largely live-verified in [vay-chmeetings-skill](https://github.com/i12know/vay-chmeetings-skill); residual S7 scope is J-Life-specific (field map, webhook signatures, RP-tenant key, merge-orphan handling) — see Phase C note |
 | 2 | SMS compliance (A2P 10DLC, TCPA consent, opt-out) & per-message cost | B (S8) | Legal/ops review with provider onboarding; budget model before launch. Relay-first dispatch (§5.2) ships without it — API transports wait for registration, not vice versa |
 | 3 | Magic-link forwarding at church scale | B+ | Already measured (S4); mitigations: scope, revoke, sensitivity rule, participant-facing warning; monitor `use_count` anomalies |
 | 4 | Vietnamese quality on target plugins | B/D | Native review then upstream contribution (S2 gap list) |

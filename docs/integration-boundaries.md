@@ -21,7 +21,7 @@ This document pre-commits the data-ownership and sync boundaries between the pla
 - `wp_users.ID` — one network-wide identity per leader/participant-with-account.
 - `dt_contact_id` — D.T contact for every participant and leader; stored in user meta on the network and as `jlife_user_id` on the contact.
 - `dt_group_id` — D.T group for every huddle; stored on all STUDY-side huddle structures.
-- `chm_person_id` / `chm_group_id` — ChMeetings external IDs, stored on D.T records **only** when a ChMeetings context is activated; isolated behind a `CHM_FIELDS`-style mapping module per the portfolio pattern.
+- `chm_person_id` / `chm_group_id` — ChMeetings external IDs, stored on D.T records **only** when a ChMeetings context is activated; isolated behind a `CHM_FIELDS`-style mapping module per the portfolio pattern — now formalized in the shared [vay-chmeetings-skill](https://github.com/i12know/vay-chmeetings-skill) (read it before any ChMeetings work; note its merge-orphan rule: a ChMeetings person merge 404s the losing ID, so stored `chm_person_id`s are retired, never trusted as deletion evidence).
 - `gospel_event_id` / `gospel_phase` — content-side reference keys for future Harmony Bible joins.
 
 ## 3. Data Ownership Map

@@ -8,6 +8,7 @@ This repository is starting as a planning and prototype space. The first source 
 
 - [Product Requirements](docs/PRD.md)
 - [Technical Analysis](docs/technical-analysis.md) — verified findings on Disciple.Tools, the multisite plugin, Harmony Bible, Knowing Him, and Vietnamese localization
+- [Disciple.Tools Landscape](docs/disciple-tools-landscape.md) — living map of the full D.T ecosystem (theme framework, ~41 plugins) rated for J-Life relevance, with decision deltas and a refresh protocol
 - [Architecture](docs/architecture.md) — proposed two-subsite multisite design, identity model, content model, and custom plugins
 - [Roadmap](docs/roadmap.md) — phased development plan with spikes, milestones, and exit criteria
 - [Content Rights Register](docs/content-rights.md) — rights inventory and handling rules
