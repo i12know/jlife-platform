@@ -168,7 +168,34 @@ invalidate its membership mirror and trigger syncs on change instead of on read.
 Not urgent at pilot scale; becomes relevant when Phase C sync and Phase D
 dashboards care about freshness.
 
-### 4.5 Confirmations (no change, more confidence)
+### 4.5 Mobile app posture: consume, don't fork (Phase D; horizon note for F)
+
+An owner-commissioned deep-research pass on the D.T mobile-app fork ecosystem
+(archived verbatim: [research/2026-07-17-dt-mobile-app-ecosystem-review.md](research/2026-07-17-dt-mobile-app-ecosystem-review.md))
+found the native-app lineage stale — upstream repo quiet since 2023-08 with 110
+open issues; the most modern fork (`jhenterprise`, Expo 49/RN 0.72) last touched
+2024-05, zero-star, build health unverified — while the plugin ecosystem stays
+very active (§3). Decision, per the participant-identity split that governs all
+mobile strategy (technical-analysis §3):
+
+- **Participants:** PWA + magic links on STUDY, unchanged. No native app — the
+  no-install, in-app-browser-safe delivery model is the foundation of Phases
+  B–D and is spike-proven (S4).
+- **Leaders (Phase D):** consume the **official store app** as a product. New
+  concrete gate before rollout: install against staging HUB and verify
+  login/JWT, contacts/groups, Vietnamese rendering; the mobile-app **plugin**'s
+  CI covers PHP 8.2 but its header claims only "Tested up to: 5.1", so WP 7.0
+  compatibility is validated in staging, never assumed. Fallback ladder if the
+  official app fails the gate: D.T responsive web → Home Screen plugin →
+  magic-link leader apps — all zero-maintenance for us. **No fork adoption.**
+- **Watch item:** the fork map in the archived report is the recorded
+  archaeology; do not redo it. If a native app ever becomes genuinely necessary
+  (Phase F-era: e.g. push notifications essential *and* SMS/Zalo insufficient),
+  the comparison to run is **fresh Expo app consuming `dt-posts/v2`** vs.
+  forking — the API contract is the part that transfers; 2023-era RN
+  scaffolding is the part that rots.
+
+### 4.6 Confirmations (no change, more confidence)
 
 - Plugins-first extension model: the starter-template ecosystem is bigger and
   healthier than the analysis assumed — fork pressure stays low.

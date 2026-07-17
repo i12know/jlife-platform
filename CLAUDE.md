@@ -25,6 +25,16 @@ deliberately, never incidentally).
   [docs/disciple-tools-landscape.md](docs/disciple-tools-landscape.md) — refresh
   it per its §8 protocol before phase spikes.
 
+## Docs tiers
+
+The corpus has three tiers; don't mix them when ingesting:
+
+1. **Curated docs** (`docs/*.md`) — authoritative; what to trust and load.
+2. **Spike records** (`docs/spikes/`) — dated, live-verified evidence.
+3. **Research archive** (`docs/research/`) — raw inputs kept verbatim for
+   provenance. **Not authoritative; do not load by default.** Read a file
+   there only when re-examining the decision it fed; rules in its README.
+
 ## Repository safety (PRD §21)
 
 This repo may become public. Never commit partner-identifying information, real
