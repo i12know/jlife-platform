@@ -16,6 +16,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 - Added workspace-scoped VS Code JSON-schema bindings for pilot lesson and series files, and documented content editing tool options in the schemas README.
 - Added the versioning roadmap (`docs/roadmap.md` §Versioning): 0.x pilot milestones, v1.0.0 at Phase A exit, and post-1.0 capability epochs in catalog-first order (2.0 catalog generalization → 3.0 challenge engine → 4.0 ChMeetings → 5.0 church-wide launch → 6.0 multiplication), with licensed content shipping as rights-gated minor releases.
 - Added the team structure document (`docs/team.md`): hub-and-rings working model around the owner, per-ring review protocols, human-only lanes (theology, native-reader review, rights, privacy postures) vs AI-run build lanes, cadence, and the bus-factor plan.
+- Added the Disciple.Tools landscape document (`docs/disciple-tools-landscape.md`): a living, relevance-rated map of the full D.T ecosystem beyond the pilot slice — documentation sources, theme-framework capabilities (custom post types, field registration, API hooks, custom tables, site-to-site auth), the ~41-plugin directory, proposed decision deltas (Magic Link/Twilio dispatch adopt-vs-build for S8, Prayer Campaigns study before the challenge engine, site-to-site link as the S7 auth candidate), and a refresh protocol for keeping the map current as D.T and J-Life evolve.
 
 ### Changed
 
