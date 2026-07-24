@@ -1,8 +1,10 @@
 # Integration Boundaries and Data Ownership
 
 Status: Draft for review
+
 Created: 2026-07-03
-Related: [PRD.md](PRD.md) §13/§20, [architecture.md](architecture.md)
+
+Related: [PRD.md](PRD.md) §13/§20, [architecture.md](architecture.md), [domain-architecture.md](domain-architecture.md)
 
 This document pre-commits the data-ownership and sync boundaries between the platform's systems so that later integration work (especially ChMeetings) cannot quietly erode the privacy model. Change this document deliberately, with review — not incidentally, in code.
 
@@ -16,13 +18,33 @@ This document pre-commits the data-ownership and sync boundaries between the pla
 | **Harmony Bible** (external) | Gospel chronology reference | Phase/event outline and source-text layer — referenced by ID/deep link only until licensed otherwise |
 | **Knowing Him** (external) | Study content source (pending license) | Its own content; no runtime integration |
 
+### 1.1 Deployment and tenant context
+
+The current STUDY/HUB pair is a tenant-level implementation inside the broader model defined in [domain-architecture.md](domain-architecture.md).
+
+For VAY Hub, one participating ChMeetings Diocese church organization normally maps to one isolated J-Life tenant, such as the RP organization mapping to `rp.vayhub.org` and the GLA organization mapping to `gla.vayhub.org`. The mapping is explicit configuration, not inferred from a subdomain name.
+
+Every external identity and synchronization decision must therefore retain:
+
+- organization deployment context, such as VAY Hub
+- local J-Life tenant context
+- external CRM organization context
+- external person or group ID
+
+A ChMeetings person ID without its Diocese organization and tenant context is insufficient for authorization or routing.
+
 ## 2. Identity Keys
 
-- `wp_users.ID` — one network-wide identity per leader/participant-with-account.
+- `deployment_id` — identifies the independently governed J-Life deployment, such as VAY Hub. This is a conceptual contract until implementation chooses its storage format.
+- `tenant_id` — identifies the local church workspace within the deployment. This is a conceptual contract until implementation chooses its storage format.
+- `chm_organization_id` — identifies the corresponding ChMeetings Diocese church organization when the ChMeetings adapter is active.
+- `wp_users.ID` — one network-wide identity per leader/participant-with-account inside the applicable WordPress network.
 - `dt_contact_id` — D.T contact for every participant and leader; stored in user meta on the network and as `jlife_user_id` on the contact.
 - `dt_group_id` — D.T group for every huddle; stored on all STUDY-side huddle structures.
-- `chm_person_id` / `chm_group_id` — ChMeetings external IDs, stored on D.T records **only** when a ChMeetings context is activated; isolated behind a `CHM_FIELDS`-style mapping module per the portfolio pattern — now formalized in the shared [vay-chmeetings-skill](https://github.com/i12know/vay-chmeetings-skill) (read it before any ChMeetings work; note its merge-orphan rule: a ChMeetings person merge 404s the losing ID, so stored `chm_person_id`s are retired, never trusted as deletion evidence).
+- `chm_person_id` / `chm_group_id` — ChMeetings external IDs, stored on D.T records **only** when a ChMeetings context is activated and always interpreted with `chm_organization_id` and tenant context; isolated behind a `CHM_FIELDS`-style mapping module per the portfolio pattern — now formalized in the shared [vay-chmeetings-skill](https://github.com/i12know/vay-chmeetings-skill) (read it before any ChMeetings work; note its merge-orphan rule: a ChMeetings person merge 404s the losing ID, so stored `chm_person_id`s are retired, never trusted as deletion evidence).
 - `gospel_event_id` / `gospel_phase` — content-side reference keys for future Harmony Bible joins.
+
+The same person may participate in more than one church. A tenant-local `dt_contact_id` is therefore a local representation, not proof of a globally unique person. Cross-tenant reconciliation must not grant cross-tenant record access.
 
 ## 3. Data Ownership Map
 
@@ -42,11 +64,12 @@ This document pre-commits the data-ownership and sync boundaries between the pla
 ## 4. Sync Rules
 
 1. **ChMeetings → D.T is the only default direction**, narrow and explicit: approved contacts/groups and external IDs, per an approved field map. Idempotent writes, mock-mode tests by default, structured logs — the established portfolio pattern.
-2. **Any D.T → ChMeetings back-sync requires**: its own data map, consent/security review, and field-level approval. None is planned.
-3. **STUDY → HUB** carries only: contact/group linkage, membership mirror, and progress aggregates. Discussion text, note text, and prayer text never cross.
-4. **HUB → STUDY** carries only: huddle roster and leader assignment (so STUDY can enforce thread access).
-5. All cross-system reads/writes go through the `jlife-bridge` (or future `jlife-chm-sync`) plugin interfaces with capability checks — no theme-level or ad-hoc queries across boundaries.
-6. Webhooks, if ever added, must be idempotent, fast-acknowledging, secret-verified, and PII-minimal.
+2. **Every ChMeetings sync is tenant-aware**: resolve deployment, tenant, and `chm_organization_id` before reading or writing a local D.T record. Do not route by person ID or subdomain alone.
+3. **Any D.T → ChMeetings back-sync requires**: its own data map, consent/security review, and field-level approval. None is planned.
+4. **STUDY → HUB** carries only: contact/group linkage, membership mirror, and progress aggregates. Discussion text, note text, and prayer text never cross.
+5. **HUB → STUDY** carries only: huddle roster and leader assignment (so STUDY can enforce thread access).
+6. All cross-system reads/writes go through the `jlife-bridge` (or future `jlife-chm-sync`) plugin interfaces with capability checks — no theme-level or ad-hoc queries across boundaries.
+7. Webhooks, if ever added, must be idempotent, fast-acknowledging, secret-verified, PII-minimal, and routed through the configured tenant/organization mapping.
 
 ## 5. Authentication Boundaries
 
@@ -54,13 +77,17 @@ This document pre-commits the data-ownership and sync boundaries between the pla
 - Leaders hold one account with per-subsite roles; HUB role limited to own groups (D.T multiplier pattern).
 - ChMeetings credentials/authentication are never reused for platform login; no shared passwords, no SSO with ChMeetings unless a future review approves one.
 - Magic-link tokens are revocable, expiring, and scoped to a single person + surface.
+- Authentication in one tenant does not imply authorization in another tenant, even when infrastructure or a WordPress user directory is shared.
 
 ## 6. Deletion and Data Requests
 
 - Account deletion removes: WP user, STUDY notes/progress/thread authorship (content anonymized or deleted per policy), and flags the D.T contact for archive per ministry retention policy.
 - A participant's private notes are deleted outright — they exist nowhere else by design (Section 3).
 - Backups age out on a defined schedule so deletion is eventually complete there too; document the window in the privacy policy.
+- Tenant departure requires an approved export, credential revocation, retention decision, and documented deletion schedule; it must not be handled as an ordinary user deletion.
 
 ## 7. Admin Visibility Honesty
 
 "Private" means not visible to other participants, huddle leaders, coaches, HUB users, ChMeetings, or normal exports. WordPress super admins, database operators, backup operators, and incident responders may still technically access stored data unless a later phase adds application-layer encryption. The product copy and privacy policy must say this plainly.
+
+Technical platform administration and ministry-record access are separate responsibilities. An operator's ability to patch, back up, or restore a tenant does not by itself authorize ordinary reading of that tenant's pastoral or disciplemaking records.

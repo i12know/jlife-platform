@@ -10,6 +10,8 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Added
 
+- Added the canonical J-Life domain architecture defining the organization-neutral framework, independently governed deployments, isolated church tenants, public-site boundary, VAY ChMeetings Diocese mapping, identity scopes, integration adapters, and repository responsibilities.
+- Added ADR 0001 accepting the multi-deployment tenant model: VAY Hub under `vayhub.org`, church tenants such as `rp.vayhub.org` and `gla.vayhub.org`, and a possible independently governed SonLife Hub deployment rather than placing SonLife under VAY.
 - Added the S2 Vietnamese localization audit covering Disciple.Tools theme, mobile app, and target plugin translation gaps.
 - Added the draft vision-architecture document covering church-wide scale-out: the verified vayhub `rdpt22` challenge analysis, the identity ladder, `jlife-challenges`/`jlife-dispatch` designs (relay-first dispatch), ChMeetings integration scheduling, RP Pathway App convergence, and a phased roadmap with Phase A substrate-hardening items.
 - Added the draft 4-lesson Gospel of John pilot series in the portable content schema (English source text; Vietnamese translation, theology review, and field rendering still pending under issue #7).
@@ -23,6 +25,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Changed
 
+- Clarified that the current STUDY/HUB WordPress multisite design is a tenant-level implementation inside the broader framework/deployment/tenant domain architecture.
 - Downgraded vision risk #1 (ChMeetings API capability unknown) and narrowed the S7 spike scope: the shared `vay-chmeetings-skill` documents and largely live-verifies the ChMeetings API (REST + OpenAPI, per-tenant API keys, People/Groups/Events, outbound webhooks, merge-orphan 404 semantics); residual S7 work is J-Life-specific (field map to D.T contacts, webhook signature verification, RP-tenant key, merge-orphan handling). Cross-referenced the skill from the integration-boundaries identity-keys section.
 - Aligned the pilot lesson scope from 5-7 to 4-7 lessons across the PRD, architecture, pilot-context, and roadmap documents.
 - Amended the vision-architecture phase order per owner review: catalog generalization (Phase E1) promoted ahead of the challenge engine so general Bible curricula are supported before further Life-of-Christ-harmony-specific work; the rights-gated catalog remainder (Phase E2) ships as minor releases.
