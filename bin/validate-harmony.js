@@ -15,6 +15,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const JSON_FILE = path.join(ROOT, 'content', 'harmony', 'robertson-1922-outline.json');
 const CSV_FILE = path.join(ROOT, 'content', 'harmony', 'robertson-1922-outline.review.csv');
+const WORD_COUNTS_FILE = path.join(ROOT, 'content', 'harmony', 'kjv-word-counts.json');
 
 const EVENT_ID = /^r1922-[0-9]{3}[ab]?$/;
 const PHASE_MAPPING_STATUSES = ['pending', 'proposed', 'approved'];
@@ -124,6 +125,40 @@ function parseCsv(text) {
     }
   }
   check('CSV content in sync with JSON (ids, order, titles, refs)', synced);
+
+  // bin/build-reading-plan.js needs a word count for every verse any event
+  // references — catch a gap here rather than at reading-plan build time.
+  const wordCountsDoc = JSON.parse(fs.readFileSync(WORD_COUNTS_FILE, 'utf8'));
+  const verseCounts = wordCountsDoc.verse_word_counts;
+  function lastVerseOfChapter(book, chapter) {
+    let max = 0;
+    for (const key of Object.keys(verseCounts[book] || {})) {
+      const [c, v] = key.split(':').map(Number);
+      if (c === chapter) max = Math.max(max, v);
+    }
+    return max;
+  }
+  let wordCoverageOk = true;
+  const missing = [];
+  for (const ev of events) {
+    for (const ref of ev.scripture_refs || []) {
+      if (!verseCounts[ref.book]) { missing.push(`${ev.gospel_event_id}: no book "${ref.book}"`); continue; }
+      const vStart = ref.verse_start === null ? 1 : ref.verse_start;
+      const vEnd = ref.verse_end === null ? lastVerseOfChapter(ref.book, ref.chapter_end) : ref.verse_end;
+      for (let ch = ref.chapter_start; ch <= ref.chapter_end; ch++) {
+        const vs = ch === ref.chapter_start ? vStart : 1;
+        const ve = ch === ref.chapter_end ? vEnd : lastVerseOfChapter(ref.book, ch);
+        for (let v = vs; v <= ve; v++) {
+          if (verseCounts[ref.book][`${ch}:${v}`] === undefined) {
+            missing.push(`${ev.gospel_event_id}: ${ref.book} ${ch}:${v}`);
+          }
+        }
+      }
+    }
+  }
+  wordCoverageOk = missing.length === 0;
+  check('kjv-word-counts.json covers every scripture_ref verse (bin/build-reading-plan.js input)',
+    wordCoverageOk, wordCoverageOk ? '' : `${missing.length} missing, e.g. ${missing.slice(0, 5).join('; ')} — run bin/generate-kjv-word-counts.js`);
 
   console.log(failures === 0 ? '\nHarmony dataset checks passed.' : `\n${failures} check(s) FAILED.`);
   process.exit(failures === 0 ? 0 : 1);

@@ -8,6 +8,7 @@ Gospel harmony dataset sourced from Robertson 1922 (public domain).
 |---|---|
 | `robertson-1922-outline.json` | Machine-readable dataset — all 184 Robertson sections |
 | `robertson-1922-outline.review.csv` | Human-reviewable CSV for audit and comparison tooling |
+| `kjv-word-counts.json` | Per-verse word counts (KJV, public domain) for every book the harmony references — see below |
 
 ## Source
 
@@ -55,6 +56,35 @@ Each `scripture_refs` entry is a structured object:
 All 185 events carry `"phase": null, "sub_phase": null, "phase_mapping_status": "pending"`.
 
 Mapping the 184 Robertson sections onto the 5 SonLife phases is ministry judgment, not data entry, and is deferred to issue #21 (`ministry-discernment` + `theological-review`). The `phase` and `sub_phase` fields are present in the schema so downstream consumers can reference them now; they will be populated once the ministry review is complete.
+
+## Daily reading plans
+
+`bin/build-reading-plan.js` generates a daily reading plan from this dataset, balanced by
+Scripture **word count** (not verse or section count — a pericope's verse length varies a
+lot, words track actual reading time more closely). Since each harmony section lists the
+parallel Gospel accounts of the same event, two reading styles are supported:
+
+- `--style=parallel` — read every parallel account listed per section (comparative harmony:
+  how the Gospels tell the same event differently).
+- `--style=primary` — read one account per section, the longest parallel (continuous
+  narrative: the story once, without repeats).
+
+A day always gets one or more whole sections, never part of one — the days are the
+contiguous split of the 185 sections into `--days` groups that minimizes the heaviest day's
+word count.
+
+```
+node bin/build-reading-plan.js --style=parallel --days=184
+node bin/build-reading-plan.js --style=primary --days=90 --out=my-plan.json
+```
+
+`kjv-word-counts.json` stores integer word counts per verse only — never verse text, per
+[content-rights.md §4](../../docs/content-rights.md) ("References only — never paste
+Scripture text"). It's derived from the public-domain KJV (Project Gutenberg #10; see
+[content-rights.md §3](../../docs/content-rights.md) for why English KJV/public-domain text
+needs no rights clearance). Regenerate it with `node bin/generate-kjv-word-counts.js` if the
+harmony dataset ever references a book/chapter it doesn't yet cover — `bin/validate-harmony.js`
+checks coverage.
 
 ## Validation
 
