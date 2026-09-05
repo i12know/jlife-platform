@@ -23,9 +23,9 @@
  * Either way, the atomic unit is never split across days — a day gets one
  * or more whole units. Days are assigned by walking the units in
  * Robertson's order and finding the contiguous split into exactly --days
- * groups that minimizes the heaviest day's word count (a standard
- * "paginate into k balanced parts" DP) — the most even plan a reader could
- * ask for without breaking a unit in half.
+ * groups that minimizes each day's squared deviation from the average
+ * (least squares) — so every day is pulled toward the target length, not
+ * just the worst one.
  *
  * --from=N and --to=N (Robertson section numbers, 1-184, inclusive) restrict
  * the plan to a subrange — e.g. a Christmas-to-Easter plan that starts at
@@ -162,14 +162,23 @@ function buildUnits(events, subDoc, verseCounts, style, granularity) {
 }
 
 // Split `weights` (n positive numbers, in order) into exactly `days`
-// contiguous groups minimizing the maximum group sum. Classic DP:
-// dp[i][k] = min-possible max-group-sum splitting the first i items into k
-// groups. O(n^2 * days); n=185 here so this is instant.
+// contiguous groups, minimizing the total squared deviation of each group's
+// sum from the target (total / days).
+//
+// Least squares, not min-max: minimizing only the heaviest day leaves the
+// objective blind once that day hits its floor (the heaviest indivisible
+// unit), so every partition under that ceiling scores the same and a
+// 20-word day can sit next to a 900-word day at "optimal" cost. Penalizing
+// squared deviation pulls *every* day toward the average instead.
+//
+// dp[i][k] = min total cost of splitting the first i units into k groups.
+// O(n^2 * days); n is a few hundred here, so this is instant.
 function balancedPartition(weights, days) {
   const n = weights.length;
   const prefix = [0];
   for (const w of weights) prefix.push(prefix[prefix.length - 1] + w);
   const rangeSum = (i, j) => prefix[j] - prefix[i]; // sum of weights[i..j-1]
+  const target = prefix[n] / days;
 
   const INF = Infinity;
   const dp = Array.from({ length: n + 1 }, () => new Array(days + 1).fill(INF));
@@ -179,7 +188,8 @@ function balancedPartition(weights, days) {
     for (let k = 1; k <= days; k++) {
       for (let j = k - 1; j < i; j++) {
         if (dp[j][k - 1] === INF) continue;
-        const candidate = Math.max(dp[j][k - 1], rangeSum(j, i));
+        const deviation = rangeSum(j, i) - target;
+        const candidate = dp[j][k - 1] + deviation * deviation;
         if (candidate < dp[i][k]) {
           dp[i][k] = candidate;
           choice[i][k] = j;
@@ -188,7 +198,7 @@ function balancedPartition(weights, days) {
     }
   }
   if (dp[n][days] === INF) {
-    throw new Error(`cannot split ${n} sections into ${days} non-empty groups`);
+    throw new Error(`cannot split ${n} units into ${days} non-empty groups`);
   }
   // Reconstruct boundaries.
   const bounds = [];
@@ -268,6 +278,8 @@ function main() {
   const maxDay = Math.max(...dayTotals);
   const minDay = Math.min(...dayTotals);
   const avgDay = grandTotal / plan.length;
+  const stdev = Math.sqrt(dayTotals.reduce((a, b) => a + (b - avgDay) ** 2, 0) / plan.length);
+  const heaviestUnit = Math.max(...units.map((u) => u.words));
 
   console.log(`Style: ${args.style === 'parallel' ? 'comparative harmony (all parallel accounts)' : 'continuous narrative (longest account per section)'}`);
   console.log(`Granularity: ${granularity}${granularity === 'subsection' ? ' (35 sections split into lettered pieces)' : ''}`);
@@ -275,7 +287,10 @@ function main() {
     console.log(`Range: §${fromSection}-§${toSection}`);
   }
   console.log(`Units: ${units.length}  |  Days: ${plan.length}  |  Total words: ${grandTotal}`);
-  console.log(`Per-day words — avg: ${avgDay.toFixed(0)}  min: ${minDay}  max: ${maxDay}  (spread: ${(((maxDay - minDay) / avgDay) * 100).toFixed(1)}% of average)`);
+  console.log(`Per-day words — avg: ${avgDay.toFixed(0)}  min: ${minDay}  max: ${maxDay}  stdev: ${stdev.toFixed(0)} (${((stdev / avgDay) * 100).toFixed(0)}% of avg)`);
+  if (maxDay >= heaviestUnit) {
+    console.log(`Note: the heaviest day is bounded below by one indivisible ${granularity} of ${heaviestUnit} words.`);
+  }
   console.log('');
   for (const d of plan) {
     const titles = d.sections.map((s) => `§${s.robertson_section} ${s.title}`).join('; ');

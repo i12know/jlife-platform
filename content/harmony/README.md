@@ -99,7 +99,10 @@ parallel Gospel accounts of the same event, two reading styles are supported:
   narrative: the story once, without repeats).
 
 A day always gets one or more whole units, never part of one — the days are the contiguous
-split of the units into `--days` groups that minimizes the heaviest day's word count.
+split of the units into `--days` groups that minimizes the total squared deviation from the
+average day length (least squares), so every day is pulled toward the target rather than only
+capping the heaviest one. Because units are never split, the longest day is still bounded
+below by the longest single unit in range; the tool reports that floor when a day hits it.
 
 `--granularity` picks the atomic unit: `section` (default, Robertson's 185 sections) or
 `subsection` (255 units — the 35 sections `subsections.json` subdivides are split into their
