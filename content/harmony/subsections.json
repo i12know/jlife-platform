@@ -1,0 +1,2460 @@
+{
+  "source": {
+    "title": "Section subdivisions of the Robertson 1922 harmony",
+    "description": "Split points (verse boundaries) that subdivide 35 of Robertson's 184 sections into lettered subsections. 34 follow Robert L. Thomas & Stanley N. Gundry's NIV/NASB Harmony of the Gospels numbering (their editorial split of Robertson's longer sections, e.g. their §8 -> §8a/§8b/§8c); one (§44a/§44b) is SonLife's own teaching-tradition split, not part of Thomas & Gundry's numbering (see the per-entry subsection_source field).",
+    "derivation": "Verse boundaries only — no Thomas & Gundry or SonLife text is reproduced here. Cross-verified against two independently sourced transcriptions of the Thomas & Gundry split points and against content/harmony/robertson-1922-outline.json, which remains the untouched canonical Robertson dataset; this file is an additive overlay on it, not a replacement.",
+    "rights_note": "Independently choosing (or verifying) subdivision split points needs no rights clearance — see docs/content-rights.md §3 point 4. Subsection titles are original phrasing from a SonLife ministry resource, used under the project's existing SonLife relationship (docs/content-rights.md §1)."
+  },
+  "subsections": [
+    {
+      "subsection_id": "r1922-008a",
+      "gospel_event_id": "r1922-008",
+      "letter": "a",
+      "title": "John’s birth",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 1,
+          "verse_start": 57,
+          "chapter_end": 1,
+          "verse_end": 66,
+          "display": "Luke 1:57-66"
+        }
+      ],
+      "words": 195,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-008b",
+      "gospel_event_id": "r1922-008",
+      "letter": "b",
+      "title": "Zechariah’s prophetic song",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 1,
+          "verse_start": 67,
+          "chapter_end": 1,
+          "verse_end": 79,
+          "display": "Luke 1:67-79"
+        }
+      ],
+      "words": 215,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-008c",
+      "gospel_event_id": "r1922-008",
+      "letter": "c",
+      "title": "John’s growth and early life",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 1,
+          "verse_start": 80,
+          "chapter_end": 1,
+          "verse_end": 80,
+          "display": "Luke 1:80"
+        }
+      ],
+      "words": 22,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-032a",
+      "gospel_event_id": "r1922-032",
+      "letter": "a",
+      "title": "Early response to Jesus’ miracles",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 2,
+          "verse_start": 23,
+          "chapter_end": 2,
+          "verse_end": 25,
+          "display": "John 2:23-25"
+        }
+      ],
+      "words": 55,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-032b",
+      "gospel_event_id": "r1922-032",
+      "letter": "b",
+      "title": "Nicodemus’ interview with Jesus",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 3,
+          "verse_start": 1,
+          "chapter_end": 3,
+          "verse_end": 21,
+          "display": "John 3:1-21"
+        }
+      ],
+      "words": 468,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-035a",
+      "gospel_event_id": "r1922-035",
+      "letter": "a",
+      "title": "Discussion with a Samaritan woman",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 4,
+          "verse_start": 5,
+          "chapter_end": 4,
+          "verse_end": 26,
+          "display": "John 4:5-26"
+        }
+      ],
+      "words": 474,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-035b",
+      "gospel_event_id": "r1922-035",
+      "letter": "b",
+      "title": "Challenge of a spiritual harvest",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 4,
+          "verse_start": 27,
+          "chapter_end": 4,
+          "verse_end": 38,
+          "display": "John 4:27-38"
+        }
+      ],
+      "words": 225,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-035c",
+      "gospel_event_id": "r1922-035",
+      "letter": "c",
+      "title": "Evangelization of Sychar",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 4,
+          "verse_start": 39,
+          "chapter_end": 4,
+          "verse_end": 42,
+          "display": "John 4:39-42"
+        }
+      ],
+      "words": 91,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-047a",
+      "gospel_event_id": "r1922-047",
+      "letter": "a",
+      "title": "Call of Matthew",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 9,
+          "verse_start": 9,
+          "chapter_end": 9,
+          "verse_end": 9,
+          "display": "Matthew 9:9"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 2,
+          "verse_start": 13,
+          "chapter_end": 2,
+          "verse_end": 14,
+          "display": "Mark 2:13-14"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 5,
+          "verse_start": 27,
+          "chapter_end": 5,
+          "verse_end": 28,
+          "display": "Luke 5:27-28"
+        }
+      ],
+      "words": 117,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-047b",
+      "gospel_event_id": "r1922-047",
+      "letter": "b",
+      "title": "Banquet at Matthew’s house",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 9,
+          "verse_start": 10,
+          "chapter_end": 9,
+          "verse_end": 13,
+          "display": "Matthew 9:10-13"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 2,
+          "verse_start": 15,
+          "chapter_end": 2,
+          "verse_end": 17,
+          "display": "Mark 2:15-17"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 5,
+          "verse_start": 29,
+          "chapter_end": 5,
+          "verse_end": 32,
+          "display": "Luke 5:29-32"
+        }
+      ],
+      "words": 271,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-049a",
+      "gospel_event_id": "r1922-049",
+      "letter": "a",
+      "title": "Jesus heals an invalid on the Sabbath",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 5,
+          "verse_start": 1,
+          "chapter_end": 5,
+          "verse_end": 9,
+          "display": "John 5:1-9"
+        }
+      ],
+      "words": 197,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-049b",
+      "gospel_event_id": "r1922-049",
+      "letter": "b",
+      "title": "Effort to kill Jesus for breaking the Sabbath\nand saying He was equal with God",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 5,
+          "verse_start": 10,
+          "chapter_end": 5,
+          "verse_end": 18,
+          "display": "John 5:10-18"
+        }
+      ],
+      "words": 188,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-049c",
+      "gospel_event_id": "r1922-049",
+      "letter": "c",
+      "title": "The Son’s equality with the Father",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 5,
+          "verse_start": 19,
+          "chapter_end": 5,
+          "verse_end": 47,
+          "display": "John 5:19-47"
+        }
+      ],
+      "words": 616,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-054a",
+      "gospel_event_id": "r1922-054",
+      "letter": "a",
+      "title": "Setting of the sermon",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 5,
+          "verse_start": 1,
+          "chapter_end": 5,
+          "verse_end": 2,
+          "display": "Matthew 5:1-2"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 17,
+          "chapter_end": 6,
+          "verse_end": 19,
+          "display": "Luke 6:17-19"
+        }
+      ],
+      "words": 110,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-054b",
+      "gospel_event_id": "r1922-054",
+      "letter": "b",
+      "title": "Blessings/woes about inheriting the kingdom",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 5,
+          "verse_start": 3,
+          "chapter_end": 5,
+          "verse_end": 12,
+          "display": "Matthew 5:3-12"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 20,
+          "chapter_end": 6,
+          "verse_end": 26,
+          "display": "Luke 6:20-26"
+        }
+      ],
+      "words": 303,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-054c",
+      "gospel_event_id": "r1922-054",
+      "letter": "c",
+      "title": "Responsibility while awaiting the kingdom",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 5,
+          "verse_start": 13,
+          "chapter_end": 5,
+          "verse_end": 16,
+          "display": "Matthew 5:13-16"
+        }
+      ],
+      "words": 106,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-054d",
+      "gospel_event_id": "r1922-054",
+      "letter": "d",
+      "title": "Law, righteousness and the kingdom",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 5,
+          "verse_start": 17,
+          "chapter_end": 5,
+          "verse_end": 20,
+          "display": "Matthew 5:17-20"
+        }
+      ],
+      "words": 122,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-054e",
+      "gospel_event_id": "r1922-054",
+      "letter": "e",
+      "title": "Six contrasts in interpreting the law",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 5,
+          "verse_start": 21,
+          "chapter_end": 5,
+          "verse_end": 48,
+          "display": "Matthew 5:21-48"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 27,
+          "chapter_end": 6,
+          "verse_end": 30,
+          "display": "Luke 6:27-30"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 32,
+          "chapter_end": 6,
+          "verse_end": 36,
+          "display": "Luke 6:32-36"
+        }
+      ],
+      "words": 879,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-054f",
+      "gospel_event_id": "r1922-054",
+      "letter": "f",
+      "title": "Avoid three hypocritical “acts of\nrighteousness”",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 6,
+          "verse_start": 1,
+          "chapter_end": 6,
+          "verse_end": 18,
+          "display": "Matthew 6:1-18"
+        }
+      ],
+      "words": 401,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-054g",
+      "gospel_event_id": "r1922-054",
+      "letter": "g",
+      "title": "Three prohibitions against avarice, harsh\njudgment and unwise exposure of sacred\nthings",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 6,
+          "verse_start": 19,
+          "chapter_end": 7,
+          "verse_end": 6,
+          "display": "Matthew 6:19-7:6"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 37,
+          "chapter_end": 6,
+          "verse_end": 42,
+          "display": "Luke 6:37-42"
+        }
+      ],
+      "words": 716,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-054h",
+      "gospel_event_id": "r1922-054",
+      "letter": "h",
+      "title": "Application and conclusion",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 7,
+          "verse_start": 7,
+          "chapter_end": 7,
+          "verse_end": 27,
+          "display": "Matthew 7:7-27"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 31,
+          "chapter_end": 6,
+          "verse_end": 31,
+          "display": "Luke 6:31"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 6,
+          "verse_start": 43,
+          "chapter_end": 6,
+          "verse_end": 49,
+          "display": "Luke 6:43-49"
+        }
+      ],
+      "words": 680,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-054i",
+      "gospel_event_id": "r1922-054",
+      "letter": "i",
+      "title": "Reaction of the crowds",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 7,
+          "verse_start": 28,
+          "chapter_end": 8,
+          "verse_end": 1,
+          "display": "Matthew 7:28-8:1"
+        }
+      ],
+      "words": 43,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064a",
+      "gospel_event_id": "r1922-064",
+      "letter": "a",
+      "title": "Setting of the parables",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 1,
+          "chapter_end": 13,
+          "verse_end": 3,
+          "display": "Matthew 13:1-3a"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 4,
+          "verse_start": 1,
+          "chapter_end": 4,
+          "verse_end": 2,
+          "display": "Mark 4:1-2"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 8,
+          "verse_start": 4,
+          "chapter_end": 8,
+          "verse_end": 4,
+          "display": "Luke 8:4"
+        }
+      ],
+      "words": 126,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064b",
+      "gospel_event_id": "r1922-064",
+      "letter": "b",
+      "title": "Parable of the soils",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 3,
+          "chapter_end": 13,
+          "verse_end": 23,
+          "display": "Matthew 13:3b-23"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 4,
+          "verse_start": 3,
+          "chapter_end": 4,
+          "verse_end": 25,
+          "display": "Mark 4:3-25"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 8,
+          "verse_start": 5,
+          "chapter_end": 8,
+          "verse_end": 18,
+          "display": "Luke 8:5-18"
+        }
+      ],
+      "words": 1358,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064c",
+      "gospel_event_id": "r1922-064",
+      "letter": "c",
+      "title": "Parable of the seed’s spontaneous growth",
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 4,
+          "verse_start": 26,
+          "chapter_end": 4,
+          "verse_end": 29,
+          "display": "Mark 4:26-29"
+        }
+      ],
+      "words": 79,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064d",
+      "gospel_event_id": "r1922-064",
+      "letter": "d",
+      "title": "Parable of the weeds",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 24,
+          "chapter_end": 13,
+          "verse_end": 30,
+          "display": "Matthew 13:24-30"
+        }
+      ],
+      "words": 167,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064e",
+      "gospel_event_id": "r1922-064",
+      "letter": "e",
+      "title": "Parable of the mustard tree",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 31,
+          "chapter_end": 13,
+          "verse_end": 32,
+          "display": "Matthew 13:31-32"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 4,
+          "verse_start": 30,
+          "chapter_end": 4,
+          "verse_end": 32,
+          "display": "Mark 4:30-32"
+        }
+      ],
+      "words": 145,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064f",
+      "gospel_event_id": "r1922-064",
+      "letter": "f",
+      "title": "Parable of the leavened loaf",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 33,
+          "chapter_end": 13,
+          "verse_end": 35,
+          "display": "Matthew 13:33-35"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 4,
+          "verse_start": 33,
+          "chapter_end": 4,
+          "verse_end": 34,
+          "display": "Mark 4:33-34"
+        }
+      ],
+      "words": 122,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064g",
+      "gospel_event_id": "r1922-064",
+      "letter": "g",
+      "title": "Parable of the weeds explained",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 36,
+          "chapter_end": 13,
+          "verse_end": 43,
+          "display": "Matthew 13:36-43"
+        }
+      ],
+      "words": 179,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064h",
+      "gospel_event_id": "r1922-064",
+      "letter": "h",
+      "title": "Parable of the hidden treasure",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 44,
+          "chapter_end": 13,
+          "verse_end": 44,
+          "display": "Matthew 13:44"
+        }
+      ],
+      "words": 37,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064i",
+      "gospel_event_id": "r1922-064",
+      "letter": "i",
+      "title": "Parable of the valuable pearl",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 45,
+          "chapter_end": 13,
+          "verse_end": 46,
+          "display": "Matthew 13:45-46"
+        }
+      ],
+      "words": 34,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064j",
+      "gospel_event_id": "r1922-064",
+      "letter": "j",
+      "title": "Parable of the net",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 47,
+          "chapter_end": 13,
+          "verse_end": 50,
+          "display": "Matthew 13:47-50"
+        }
+      ],
+      "words": 84,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-064k",
+      "gospel_event_id": "r1922-064",
+      "letter": "k",
+      "title": "Parable of the house owner",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 13,
+          "verse_start": 51,
+          "chapter_end": 13,
+          "verse_end": 53,
+          "display": "Matthew 13:51-53"
+        }
+      ],
+      "words": 67,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-070a",
+      "gospel_event_id": "r1922-070",
+      "letter": "a",
+      "title": "Shortage of workers",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 9,
+          "verse_start": 35,
+          "chapter_end": 9,
+          "verse_end": 38,
+          "display": "Matthew 9:35-38"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 6,
+          "chapter_end": 6,
+          "verse_end": 6,
+          "display": "Mark 6:6b-6b"
+        }
+      ],
+      "words": 103,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-070b",
+      "gospel_event_id": "r1922-070",
+      "letter": "b",
+      "title": "Commissioning of the Twelve",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 10,
+          "verse_start": 1,
+          "chapter_end": 10,
+          "verse_end": 42,
+          "display": "Matthew 10:1-42"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 7,
+          "chapter_end": 6,
+          "verse_end": 11,
+          "display": "Mark 6:7-11"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 1,
+          "chapter_end": 9,
+          "verse_end": 5,
+          "display": "Luke 9:1-5"
+        }
+      ],
+      "words": 1143,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-070c",
+      "gospel_event_id": "r1922-070",
+      "letter": "c",
+      "title": "Workers sent out",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 11,
+          "verse_start": 1,
+          "chapter_end": 11,
+          "verse_end": 1,
+          "display": "Matthew 11:1"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 12,
+          "chapter_end": 6,
+          "verse_end": 13,
+          "display": "Mark 6:12-13"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 6,
+          "chapter_end": 9,
+          "verse_end": 6,
+          "display": "Luke 9:6"
+        }
+      ],
+      "words": 69,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-071a",
+      "gospel_event_id": "r1922-071",
+      "letter": "a",
+      "title": "Antipas’ mistaken identification of Jesus",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 14,
+          "verse_start": 1,
+          "chapter_end": 14,
+          "verse_end": 2,
+          "display": "Matthew 14:1-2"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 14,
+          "chapter_end": 6,
+          "verse_end": 16,
+          "display": "Mark 6:14-16"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 7,
+          "chapter_end": 9,
+          "verse_end": 9,
+          "display": "Luke 9:7-9"
+        }
+      ],
+      "words": 183,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-071b",
+      "gospel_event_id": "r1922-071",
+      "letter": "b",
+      "title": "Earlier imprisonment and beheading of John",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 14,
+          "verse_start": 3,
+          "chapter_end": 14,
+          "verse_end": 12,
+          "display": "Matthew 14:3-12"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 17,
+          "chapter_end": 6,
+          "verse_end": 29,
+          "display": "Mark 6:17-29"
+        }
+      ],
+      "words": 492,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-072a",
+      "gospel_event_id": "r1922-072",
+      "letter": "a",
+      "title": "Return of the workers",
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 30,
+          "chapter_end": 6,
+          "verse_end": 30,
+          "display": "Mark 6:30"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 10,
+          "chapter_end": 9,
+          "verse_end": 10,
+          "display": "Luke 9:10a-10a"
+        }
+      ],
+      "words": 39,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-072b",
+      "gospel_event_id": "r1922-072",
+      "letter": "b",
+      "title": "Withdrawal from Galilee",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 14,
+          "verse_start": 13,
+          "chapter_end": 14,
+          "verse_end": 14,
+          "display": "Matthew 14:13-14"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 31,
+          "chapter_end": 6,
+          "verse_end": 34,
+          "display": "Mark 6:31-34"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 10,
+          "chapter_end": 9,
+          "verse_end": 11,
+          "display": "Luke 9:10b-11"
+        },
+        {
+          "book": "John",
+          "chapter_start": 6,
+          "verse_start": 1,
+          "chapter_end": 6,
+          "verse_end": 3,
+          "display": "John 6:1-3"
+        }
+      ],
+      "words": 250,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-072c",
+      "gospel_event_id": "r1922-072",
+      "letter": "c",
+      "title": "Feeding the five thousand",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 14,
+          "verse_start": 15,
+          "chapter_end": 14,
+          "verse_end": 21,
+          "display": "Matthew 14:15-21"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 6,
+          "verse_start": 35,
+          "chapter_end": 6,
+          "verse_end": 44,
+          "display": "Mark 6:35-44"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 9,
+          "verse_start": 12,
+          "chapter_end": 9,
+          "verse_end": 17,
+          "display": "Luke 9:12-17"
+        },
+        {
+          "book": "John",
+          "chapter_start": 6,
+          "verse_start": 4,
+          "chapter_end": 6,
+          "verse_end": 13,
+          "display": "John 6:4-13"
+        }
+      ],
+      "words": 732,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-076a",
+      "gospel_event_id": "r1922-076",
+      "letter": "a",
+      "title": "Discourse on the true bread of life",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 6,
+          "verse_start": 22,
+          "chapter_end": 6,
+          "verse_end": 59,
+          "display": "John 6:22-59"
+        }
+      ],
+      "words": 855,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-076b",
+      "gospel_event_id": "r1922-076",
+      "letter": "b",
+      "title": "Defection among the disciples",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 6,
+          "verse_start": 60,
+          "chapter_end": 6,
+          "verse_end": 71,
+          "display": "John 6:60-71"
+        }
+      ],
+      "words": 228,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-079a",
+      "gospel_event_id": "r1922-079",
+      "letter": "a",
+      "title": "Healings in Decapolis",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 15,
+          "verse_start": 29,
+          "chapter_end": 15,
+          "verse_end": 31,
+          "display": "Matthew 15:29-31"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 7,
+          "verse_start": 31,
+          "chapter_end": 7,
+          "verse_end": 37,
+          "display": "Mark 7:31-37"
+        }
+      ],
+      "words": 243,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-079b",
+      "gospel_event_id": "r1922-079",
+      "letter": "b",
+      "title": "Feeding the four thousand in Decapolis",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 15,
+          "verse_start": 32,
+          "chapter_end": 15,
+          "verse_end": 38,
+          "display": "Matthew 15:32-38"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 8,
+          "verse_start": 1,
+          "chapter_end": 8,
+          "verse_end": 9,
+          "display": "Mark 8:1-9a"
+        }
+      ],
+      "words": 346,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-081a",
+      "gospel_event_id": "r1922-081",
+      "letter": "a",
+      "title": "Warning on error of Pharisees/Sadducees/\nHerodians",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 16,
+          "verse_start": 5,
+          "chapter_end": 16,
+          "verse_end": 12,
+          "display": "Matthew 16:5-12"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 8,
+          "verse_start": 13,
+          "chapter_end": 8,
+          "verse_end": 21,
+          "display": "Mark 8:13-21"
+        }
+      ],
+      "words": 335,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-081b",
+      "gospel_event_id": "r1922-081",
+      "letter": "b",
+      "title": "Healing a blind man at Bethsaida",
+      "scripture_refs": [
+        {
+          "book": "Mark",
+          "chapter_start": 8,
+          "verse_start": 22,
+          "chapter_end": 8,
+          "verse_end": 26,
+          "display": "Mark 8:22-26"
+        }
+      ],
+      "words": 114,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-096a",
+      "gospel_event_id": "r1922-096",
+      "letter": "a",
+      "title": "Mixed reaction to Jesus’ teaching and miracles",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 7,
+          "verse_start": 11,
+          "chapter_end": 7,
+          "verse_end": 31,
+          "display": "John 7:11-31"
+        }
+      ],
+      "words": 422,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-096b",
+      "gospel_event_id": "r1922-096",
+      "letter": "b",
+      "title": "Frustrated attempt to arrest Jesus",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 7,
+          "verse_start": 32,
+          "chapter_end": 7,
+          "verse_end": 52,
+          "display": "John 7:32-52"
+        }
+      ],
+      "words": 387,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-099a",
+      "gospel_event_id": "r1922-099",
+      "letter": "a",
+      "title": "Jesus’ relationship to God the Father",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 8,
+          "verse_start": 21,
+          "chapter_end": 8,
+          "verse_end": 30,
+          "display": "John 8:21-30"
+        }
+      ],
+      "words": 235,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-099b",
+      "gospel_event_id": "r1922-099",
+      "letter": "b",
+      "title": "Jesus’ relationship to Abraham/attempted\nstoning",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 8,
+          "verse_start": 31,
+          "chapter_end": 8,
+          "verse_end": 59,
+          "display": "John 8:31-59"
+        }
+      ],
+      "words": 630,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-100a",
+      "gospel_event_id": "r1922-100",
+      "letter": "a",
+      "title": "Healing of a man born blind",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 9,
+          "verse_start": 1,
+          "chapter_end": 9,
+          "verse_end": 7,
+          "display": "John 9:1-7"
+        }
+      ],
+      "words": 148,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-100b",
+      "gospel_event_id": "r1922-100",
+      "letter": "b",
+      "title": "Response of the blind man’s neighbors",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 9,
+          "verse_start": 8,
+          "chapter_end": 9,
+          "verse_end": 12,
+          "display": "John 9:8-12"
+        }
+      ],
+      "words": 100,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-100c",
+      "gospel_event_id": "r1922-100",
+      "letter": "c",
+      "title": "Examination/excommunication of blind man",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 9,
+          "verse_start": 13,
+          "chapter_end": 9,
+          "verse_end": 34,
+          "display": "John 9:13-34"
+        }
+      ],
+      "words": 490,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-100d",
+      "gospel_event_id": "r1922-100",
+      "letter": "d",
+      "title": "Jesus’ identification of himself to the blind\nman",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 9,
+          "verse_start": 35,
+          "chapter_end": 9,
+          "verse_end": 38,
+          "display": "John 9:35-38"
+        }
+      ],
+      "words": 68,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-100e",
+      "gospel_event_id": "r1922-100",
+      "letter": "e",
+      "title": "Spiritual blindness of the Pharisees",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 9,
+          "verse_start": 39,
+          "chapter_end": 9,
+          "verse_end": 41,
+          "display": "John 9:39-41"
+        }
+      ],
+      "words": 70,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-101a",
+      "gospel_event_id": "r1922-101",
+      "letter": "a",
+      "title": "Allegory of the good shepherd and the thief",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 10,
+          "verse_start": 1,
+          "chapter_end": 10,
+          "verse_end": 18,
+          "display": "John 10:1-18"
+        }
+      ],
+      "words": 400,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-101b",
+      "gospel_event_id": "r1922-101",
+      "letter": "b",
+      "title": "Further division among the Jews",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 10,
+          "verse_start": 19,
+          "chapter_end": 10,
+          "verse_end": 21,
+          "display": "John 10:19-21"
+        }
+      ],
+      "words": 50,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-102a",
+      "gospel_event_id": "r1922-102",
+      "letter": "a",
+      "title": "Commissioning of the Seventy",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 10,
+          "verse_start": 1,
+          "chapter_end": 10,
+          "verse_end": 16,
+          "display": "Luke 10:1-16"
+        }
+      ],
+      "words": 354,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-102b",
+      "gospel_event_id": "r1922-102",
+      "letter": "b",
+      "title": "Return of the Seventy",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 10,
+          "verse_start": 17,
+          "chapter_end": 10,
+          "verse_end": 24,
+          "display": "Luke 10:17-24"
+        }
+      ],
+      "words": 223,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-108a",
+      "gospel_event_id": "r1922-108",
+      "letter": "a",
+      "title": "Warning to the disciples about hypocrisy",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 12,
+          "verse_start": 1,
+          "chapter_end": 12,
+          "verse_end": 12,
+          "display": "Luke 12:1-12"
+        }
+      ],
+      "words": 297,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-108b",
+      "gospel_event_id": "r1922-108",
+      "letter": "b",
+      "title": "Warning about greed and trust in wealth",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 12,
+          "verse_start": 13,
+          "chapter_end": 12,
+          "verse_end": 34,
+          "display": "Luke 12:13-34"
+        }
+      ],
+      "words": 478,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-108c",
+      "gospel_event_id": "r1922-108",
+      "letter": "c",
+      "title": "Warning about being unprepared for the Son \nof Man’s coming",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 12,
+          "verse_start": 35,
+          "chapter_end": 12,
+          "verse_end": 48,
+          "display": "Luke 12:35-48"
+        }
+      ],
+      "words": 370,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-108d",
+      "gospel_event_id": "r1922-108",
+      "letter": "d",
+      "title": "Warning about the coming division",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 12,
+          "verse_start": 49,
+          "chapter_end": 12,
+          "verse_end": 53,
+          "display": "Luke 12:49-53"
+        }
+      ],
+      "words": 116,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-108e",
+      "gospel_event_id": "r1922-108",
+      "letter": "e",
+      "title": "Warning against failing to discern the time",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 12,
+          "verse_start": 54,
+          "chapter_end": 12,
+          "verse_end": 59,
+          "display": "Luke 12:54-59"
+        }
+      ],
+      "words": 146,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-113a",
+      "gospel_event_id": "r1922-113",
+      "letter": "a",
+      "title": "Question about salvation and entering the\nkingdom",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 13,
+          "verse_start": 22,
+          "chapter_end": 13,
+          "verse_end": 30,
+          "display": "Luke 13:22-30"
+        }
+      ],
+      "words": 222,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-113b",
+      "gospel_event_id": "r1922-113",
+      "letter": "b",
+      "title": "Anticipation of Jesus’ death and sorrow over\nJerusalem",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 13,
+          "verse_start": 31,
+          "chapter_end": 13,
+          "verse_end": 35,
+          "display": "Luke 13:31-35"
+        }
+      ],
+      "words": 156,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-117a",
+      "gospel_event_id": "r1922-117",
+      "letter": "a",
+      "title": "Parable to teach the proper use of money",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 16,
+          "verse_start": 1,
+          "chapter_end": 16,
+          "verse_end": 13,
+          "display": "Luke 16:1-13"
+        }
+      ],
+      "words": 341,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-117b",
+      "gospel_event_id": "r1922-117",
+      "letter": "b",
+      "title": "Story to teach the danger of wealth",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 16,
+          "verse_start": 14,
+          "chapter_end": 16,
+          "verse_end": 31,
+          "display": "Luke 16:14-31"
+        }
+      ],
+      "words": 411,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-117c",
+      "gospel_event_id": "r1922-117",
+      "letter": "c",
+      "title": "Four lessons on discipleship",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 17,
+          "verse_start": 1,
+          "chapter_end": 17,
+          "verse_end": 10,
+          "display": "Luke 17:1-10"
+        }
+      ],
+      "words": 257,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-118a",
+      "gospel_event_id": "r1922-118",
+      "letter": "a",
+      "title": "Sickness and death of Lazarus",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 11,
+          "verse_start": 1,
+          "chapter_end": 11,
+          "verse_end": 16,
+          "display": "John 11:1-16"
+        }
+      ],
+      "words": 301,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-118b",
+      "gospel_event_id": "r1922-118",
+      "letter": "b",
+      "title": "Lazarus raised from the dead",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 11,
+          "verse_start": 17,
+          "chapter_end": 11,
+          "verse_end": 44,
+          "display": "John 11:17-44"
+        }
+      ],
+      "words": 560,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-120a",
+      "gospel_event_id": "r1922-120",
+      "letter": "a",
+      "title": "Healing of 10 lepers in Samaria and Galilee",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 17,
+          "verse_start": 11,
+          "chapter_end": 17,
+          "verse_end": 21,
+          "display": "Luke 17:11-21"
+        }
+      ],
+      "words": 207,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-120b",
+      "gospel_event_id": "r1922-120",
+      "letter": "b",
+      "title": "Instructions regarding the Son of Man’s\ncoming",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 17,
+          "verse_start": 22,
+          "chapter_end": 17,
+          "verse_end": 37,
+          "display": "Luke 17:22-37"
+        }
+      ],
+      "words": 345,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-124a",
+      "gospel_event_id": "r1922-124",
+      "letter": "a",
+      "title": "Riches and the kingdom",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 19,
+          "verse_start": 16,
+          "chapter_end": 19,
+          "verse_end": 30,
+          "display": "Matthew 19:16-30"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 10,
+          "verse_start": 17,
+          "chapter_end": 10,
+          "verse_end": 31,
+          "display": "Mark 10:17-31"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 18,
+          "verse_start": 18,
+          "chapter_end": 18,
+          "verse_end": 30,
+          "display": "Luke 18:18-30"
+        }
+      ],
+      "words": 989,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-124b",
+      "gospel_event_id": "r1922-124",
+      "letter": "b",
+      "title": "Parable of the landowner’s sovereignty",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 20,
+          "verse_start": 1,
+          "chapter_end": 20,
+          "verse_end": 16,
+          "display": "Matthew 20:1-16"
+        }
+      ],
+      "words": 338,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-125a",
+      "gospel_event_id": "r1922-125",
+      "letter": "a",
+      "title": "Third prediction of Jesus’ death and\nresurrection",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 20,
+          "verse_start": 17,
+          "chapter_end": 20,
+          "verse_end": 19,
+          "display": "Matthew 20:17-19"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 10,
+          "verse_start": 32,
+          "chapter_end": 10,
+          "verse_end": 34,
+          "display": "Mark 10:32-34"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 18,
+          "verse_start": 31,
+          "chapter_end": 18,
+          "verse_end": 34,
+          "display": "Luke 18:31-34"
+        }
+      ],
+      "words": 269,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-125b",
+      "gospel_event_id": "r1922-125",
+      "letter": "b",
+      "title": "Warning against ambitious pride",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 20,
+          "verse_start": 20,
+          "chapter_end": 20,
+          "verse_end": 28,
+          "display": "Matthew 20:20-28"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 10,
+          "verse_start": 35,
+          "chapter_end": 10,
+          "verse_end": 45,
+          "display": "Mark 10:35-45"
+        }
+      ],
+      "words": 521,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-127a",
+      "gospel_event_id": "r1922-127",
+      "letter": "a",
+      "title": "Salvation of Zacchaeus",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 19,
+          "verse_start": 1,
+          "chapter_end": 19,
+          "verse_end": 10,
+          "display": "Luke 19:1-10"
+        }
+      ],
+      "words": 209,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-127b",
+      "gospel_event_id": "r1922-127",
+      "letter": "b",
+      "title": "Parable to teach responsibility while the \nkingdom is delayed",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 19,
+          "verse_start": 11,
+          "chapter_end": 19,
+          "verse_end": 28,
+          "display": "Luke 19:11-28"
+        }
+      ],
+      "words": 394,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-129a",
+      "gospel_event_id": "r1922-129",
+      "letter": "a",
+      "title": "Cursing of the fig tree having leaves but no \nfigs",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 21,
+          "verse_start": 18,
+          "chapter_end": 21,
+          "verse_end": 19,
+          "display": "Matthew 21:18-19a"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 11,
+          "verse_start": 12,
+          "chapter_end": 11,
+          "verse_end": 14,
+          "display": "Mark 11:12-14"
+        }
+      ],
+      "words": 125,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-129b",
+      "gospel_event_id": "r1922-129",
+      "letter": "b",
+      "title": "Second cleansing of the temple",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 21,
+          "verse_start": 12,
+          "chapter_end": 21,
+          "verse_end": 13,
+          "display": "Matthew 21:12-13"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 11,
+          "verse_start": 15,
+          "chapter_end": 11,
+          "verse_end": 18,
+          "display": "Mark 11:15-18"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 19,
+          "verse_start": 45,
+          "chapter_end": 19,
+          "verse_end": 48,
+          "display": "Luke 19:45-48"
+        }
+      ],
+      "words": 255,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-130a",
+      "gospel_event_id": "r1922-130",
+      "letter": "a",
+      "title": "Request of some Greeks to see Jesus and \nnecessity of the Son of Man’s being lifted up",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 12,
+          "verse_start": 20,
+          "chapter_end": 12,
+          "verse_end": 36,
+          "display": "John 12:20-36a"
+        }
+      ],
+      "words": 354,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-130b",
+      "gospel_event_id": "r1922-130",
+      "letter": "b",
+      "title": "Responses to Jesus and Jesus’ responses to \ncrowds",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 12,
+          "verse_start": 36,
+          "chapter_end": 12,
+          "verse_end": 50,
+          "display": "John 12:36b-50"
+        }
+      ],
+      "words": 308,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-132a",
+      "gospel_event_id": "r1922-132",
+      "letter": "a",
+      "title": "Questioning of Jesus’ authority by the chief\npriests, teachers of the Law and elders",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 21,
+          "verse_start": 23,
+          "chapter_end": 21,
+          "verse_end": 27,
+          "display": "Matthew 21:23-27"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 11,
+          "verse_start": 27,
+          "chapter_end": 11,
+          "verse_end": 33,
+          "display": "Mark 11:27-33"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 20,
+          "verse_start": 1,
+          "chapter_end": 20,
+          "verse_end": 8,
+          "display": "Luke 20:1-8"
+        }
+      ],
+      "words": 470,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-132b",
+      "gospel_event_id": "r1922-132",
+      "letter": "b",
+      "title": "Jesus’ response with his own question and 3\nparables",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 21,
+          "verse_start": 28,
+          "chapter_end": 22,
+          "verse_end": 14,
+          "display": "Matthew 21:28-22:14"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 12,
+          "verse_start": 1,
+          "chapter_end": 12,
+          "verse_end": 12,
+          "display": "Mark 12:1-12"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 20,
+          "verse_start": 9,
+          "chapter_end": 20,
+          "verse_end": 19,
+          "display": "Luke 20:9-19"
+        }
+      ],
+      "words": 1275,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-137a",
+      "gospel_event_id": "r1922-137",
+      "letter": "a",
+      "title": "Seven woes against the teachers of the Law",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 23,
+          "verse_start": 1,
+          "chapter_end": 23,
+          "verse_end": 36,
+          "display": "Matthew 23:1-36"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 12,
+          "verse_start": 38,
+          "chapter_end": 12,
+          "verse_end": 40,
+          "display": "Mark 12:38-40"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 20,
+          "verse_start": 45,
+          "chapter_end": 20,
+          "verse_end": 47,
+          "display": "Luke 20:45-47"
+        }
+      ],
+      "words": 874,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-137b",
+      "gospel_event_id": "r1922-137",
+      "letter": "b",
+      "title": "Jesus’ sorrow over Jerusalem",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 23,
+          "verse_start": 37,
+          "chapter_end": 23,
+          "verse_end": 39,
+          "display": "Matthew 23:37-39"
+        }
+      ],
+      "words": 73,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-139a",
+      "gospel_event_id": "r1922-139",
+      "letter": "a",
+      "title": "Setting of the discourse",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 24,
+          "verse_start": 1,
+          "chapter_end": 24,
+          "verse_end": 3,
+          "display": "Matthew 24:1-3"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 13,
+          "verse_start": 1,
+          "chapter_end": 13,
+          "verse_end": 4,
+          "display": "Mark 13:1-4"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 21,
+          "verse_start": 5,
+          "chapter_end": 21,
+          "verse_end": 7,
+          "display": "Luke 21:5-7"
+        }
+      ],
+      "words": 262,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-139b",
+      "gospel_event_id": "r1922-139",
+      "letter": "b",
+      "title": "Beginning of birth pains",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 24,
+          "verse_start": 4,
+          "chapter_end": 24,
+          "verse_end": 14,
+          "display": "Matthew 24:4-14"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 13,
+          "verse_start": 5,
+          "chapter_end": 13,
+          "verse_end": 13,
+          "display": "Mark 13:5-13"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 21,
+          "verse_start": 8,
+          "chapter_end": 21,
+          "verse_end": 19,
+          "display": "Luke 21:8-19"
+        }
+      ],
+      "words": 655,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-139c",
+      "gospel_event_id": "r1922-139",
+      "letter": "c",
+      "title": "Abomination of desolation/subsequent\ndistress",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 24,
+          "verse_start": 15,
+          "chapter_end": 24,
+          "verse_end": 28,
+          "display": "Matthew 24:15-28"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 13,
+          "verse_start": 14,
+          "chapter_end": 13,
+          "verse_end": 23,
+          "display": "Mark 13:14-23"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 21,
+          "verse_start": 20,
+          "chapter_end": 21,
+          "verse_end": 24,
+          "display": "Luke 21:20-24"
+        }
+      ],
+      "words": 613,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-139d",
+      "gospel_event_id": "r1922-139",
+      "letter": "d",
+      "title": "Coming of the Son of Man",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 24,
+          "verse_start": 29,
+          "chapter_end": 24,
+          "verse_end": 31,
+          "display": "Matthew 24:29-31"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 13,
+          "verse_start": 24,
+          "chapter_end": 13,
+          "verse_end": 27,
+          "display": "Mark 13:24-27"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 21,
+          "verse_start": 25,
+          "chapter_end": 21,
+          "verse_end": 27,
+          "display": "Luke 21:25-27"
+        }
+      ],
+      "words": 270,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-139e",
+      "gospel_event_id": "r1922-139",
+      "letter": "e",
+      "title": "Signs of nearness but unknown time",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 24,
+          "verse_start": 32,
+          "chapter_end": 24,
+          "verse_end": 41,
+          "display": "Matthew 24:32-41"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 13,
+          "verse_start": 28,
+          "chapter_end": 13,
+          "verse_end": 32,
+          "display": "Mark 13:28-32"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 21,
+          "verse_start": 28,
+          "chapter_end": 21,
+          "verse_end": 33,
+          "display": "Luke 21:28-33"
+        }
+      ],
+      "words": 402,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-139f",
+      "gospel_event_id": "r1922-139",
+      "letter": "f",
+      "title": "Five parables on watchfulness and faithfulness",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 24,
+          "verse_start": 42,
+          "chapter_end": 25,
+          "verse_end": 30,
+          "display": "Matthew 24:42-25:30"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 13,
+          "verse_start": 33,
+          "chapter_end": 13,
+          "verse_end": 37,
+          "display": "Mark 13:33-37"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 21,
+          "verse_start": 34,
+          "chapter_end": 21,
+          "verse_end": 36,
+          "display": "Luke 21:34-36"
+        }
+      ],
+      "words": 986,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-139g",
+      "gospel_event_id": "r1922-139",
+      "letter": "g",
+      "title": "Judgment at the Son of Man’s coming",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 25,
+          "verse_start": 31,
+          "chapter_end": 25,
+          "verse_end": 46,
+          "display": "Matthew 25:31-46"
+        }
+      ],
+      "words": 378,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-150a",
+      "gospel_event_id": "r1922-150",
+      "letter": "a",
+      "title": "The vine and the branches",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 15,
+          "verse_start": 1,
+          "chapter_end": 15,
+          "verse_end": 17,
+          "display": "John 15:1-17"
+        }
+      ],
+      "words": 375,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-150b",
+      "gospel_event_id": "r1922-150",
+      "letter": "b",
+      "title": "Opposition from the world",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 15,
+          "verse_start": 18,
+          "chapter_end": 16,
+          "verse_end": 4,
+          "display": "John 15:18-16:4"
+        }
+      ],
+      "words": 329,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-150c",
+      "gospel_event_id": "r1922-150",
+      "letter": "c",
+      "title": "Coming and ministry of the Spirit",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 16,
+          "verse_start": 5,
+          "chapter_end": 16,
+          "verse_end": 15,
+          "display": "John 16:5-15"
+        }
+      ],
+      "words": 216,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-150d",
+      "gospel_event_id": "r1922-150",
+      "letter": "d",
+      "title": "Prediction of joy over his resurrection",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 16,
+          "verse_start": 16,
+          "chapter_end": 16,
+          "verse_end": 22,
+          "display": "John 16:16-22"
+        }
+      ],
+      "words": 222,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-150e",
+      "gospel_event_id": "r1922-150",
+      "letter": "e",
+      "title": "Promise of answered prayer and peace",
+      "scripture_refs": [
+        {
+          "book": "John",
+          "chapter_start": 16,
+          "verse_start": 23,
+          "chapter_end": 16,
+          "verse_end": 33,
+          "display": "John 16:23-33"
+        }
+      ],
+      "words": 260,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-167a",
+      "gospel_event_id": "r1922-167",
+      "letter": "a",
+      "title": "Certification of death and procurement of\nbody",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 57,
+          "chapter_end": 27,
+          "verse_end": 58,
+          "display": "Matthew 27:57-58"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 42,
+          "chapter_end": 15,
+          "verse_end": 45,
+          "display": "Mark 15:42-45"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 50,
+          "chapter_end": 23,
+          "verse_end": 52,
+          "display": "Luke 23:50-52"
+        },
+        {
+          "book": "John",
+          "chapter_start": 19,
+          "verse_start": 31,
+          "chapter_end": 19,
+          "verse_end": 38,
+          "display": "John 19:31-38"
+        }
+      ],
+      "words": 381,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-167b",
+      "gospel_event_id": "r1922-167",
+      "letter": "b",
+      "title": "Jesus’ body placed in tomb",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 27,
+          "verse_start": 59,
+          "chapter_end": 27,
+          "verse_end": 60,
+          "display": "Matthew 27:59-60"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 15,
+          "verse_start": 46,
+          "chapter_end": 15,
+          "verse_end": 46,
+          "display": "Mark 15:46"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 23,
+          "verse_start": 53,
+          "chapter_end": 23,
+          "verse_end": 54,
+          "display": "Luke 23:53-54"
+        },
+        {
+          "book": "John",
+          "chapter_start": 19,
+          "verse_start": 39,
+          "chapter_end": 19,
+          "verse_end": 42,
+          "display": "John 19:39-42"
+        }
+      ],
+      "words": 216,
+      "subsection_source": "thomas-gundry"
+    },
+    {
+      "subsection_id": "r1922-044a",
+      "gospel_event_id": "r1922-044",
+      "letter": "a",
+      "title": "Tour of Galilee with Simon and others",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 4,
+          "verse_start": 23,
+          "chapter_end": 4,
+          "verse_end": 25,
+          "display": "Matthew 4:23-25"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 35,
+          "chapter_end": 1,
+          "verse_end": 39,
+          "display": "Mark 1:35-39"
+        },
+        {
+          "book": "Luke",
+          "chapter_start": 4,
+          "verse_start": 42,
+          "chapter_end": 4,
+          "verse_end": 44,
+          "display": "Luke 4:42-44"
+        }
+      ],
+      "words": 245,
+      "subsection_source": "sonlife"
+    },
+    {
+      "subsection_id": "r1922-044b",
+      "gospel_event_id": "r1922-044",
+      "letter": "b",
+      "title": "Second call to the disciples (Peter's great catch)",
+      "scripture_refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 5,
+          "verse_start": 1,
+          "chapter_end": 5,
+          "verse_end": 11,
+          "display": "Luke 5:1-11"
+        }
+      ],
+      "words": 269,
+      "subsection_source": "sonlife"
+    }
+  ],
+  "overrides": [
+    {
+      "gospel_event_id": "r1922-041",
+      "scripture_refs": [
+        {
+          "book": "Matthew",
+          "chapter_start": 4,
+          "verse_start": 18,
+          "chapter_end": 4,
+          "verse_end": 22,
+          "display": "Matthew 4:18-22"
+        },
+        {
+          "book": "Mark",
+          "chapter_start": 1,
+          "verse_start": 16,
+          "chapter_end": 1,
+          "verse_end": 20,
+          "display": "Mark 1:16-20"
+        }
+      ],
+      "words": 202,
+      "note": "Luke 5:1-11 moved to r1922-044b per SonLife's teaching tradition (not a Thomas & Gundry numbered split); Robertson's own r1922-041 record is untouched and still lists it.",
+      "subsection_source": "sonlife"
+    }
+  ]
+}

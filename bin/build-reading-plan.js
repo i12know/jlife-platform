@@ -11,21 +11,31 @@
  *   --style=primary    read one account per section: the longest parallel
  *                       (continuous narrative — the story once, no repeats)
  *
- * Sections are the atomic unit: a day gets one or more whole sections,
- * never part of one, so the narrative inside a section always reads
- * together. Days are assigned by walking the 185 sections in Robertson's
- * order and finding the contiguous split into exactly --days groups that
- * minimizes the heaviest day's word count (a standard "paginate into k
- * balanced parts" DP) — the most even plan a reader could ask for without
- * breaking a section in half.
+ * Two granularities for the atomic reading unit:
+ *   --granularity=section     (default) Robertson's 185 sections
+ *   --granularity=subsection  185 sections, but the 35 sections
+ *                             content/harmony/subsections.json subdivides
+ *                             are split into their lettered pieces instead
+ *                             — finer-grained, so a plan with few days
+ *                             doesn't get stuck with one huge day wherever
+ *                             a section (like the Olivet Discourse) is long.
+ *
+ * Either way, the atomic unit is never split across days — a day gets one
+ * or more whole units. Days are assigned by walking the units in
+ * Robertson's order and finding the contiguous split into exactly --days
+ * groups that minimizes the heaviest day's word count (a standard
+ * "paginate into k balanced parts" DP) — the most even plan a reader could
+ * ask for without breaking a unit in half.
  *
  * Usage:
  *   node bin/build-reading-plan.js --style=parallel --days=184
  *   node bin/build-reading-plan.js --style=primary --days=90 --out=plan.json
+ *   node bin/build-reading-plan.js --style=parallel --days=90 --granularity=subsection
  *
- * Dependency-free. Reads content/harmony/robertson-1922-outline.json and
- * content/harmony/kjv-word-counts.json (regenerate the latter with
- * bin/generate-kjv-word-counts.js if it's missing a needed book/chapter).
+ * Dependency-free. Reads content/harmony/robertson-1922-outline.json,
+ * content/harmony/subsections.json, and content/harmony/kjv-word-counts.json
+ * (regenerate the latter with bin/generate-kjv-word-counts.js if it's
+ * missing a needed book/chapter).
  */
 'use strict';
 
@@ -34,6 +44,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const HARMONY_FILE = path.join(ROOT, 'content', 'harmony', 'robertson-1922-outline.json');
+const SUBSECTIONS_FILE = path.join(ROOT, 'content', 'harmony', 'subsections.json');
 const WORD_COUNTS_FILE = path.join(ROOT, 'content', 'harmony', 'kjv-word-counts.json');
 
 function parseArgs(argv) {
@@ -51,7 +62,7 @@ function parseArgs(argv) {
 function usageError(msg) {
   console.error(`Error: ${msg}`);
   console.error('');
-  console.error('Usage: node bin/build-reading-plan.js --style=parallel|primary --days=N [--out=path.json]');
+  console.error('Usage: node bin/build-reading-plan.js --style=parallel|primary --days=N [--granularity=section|subsection] [--out=path.json]');
   process.exit(1);
 }
 
@@ -89,27 +100,59 @@ function wordsInRange(verseCounts, ref) {
   return total;
 }
 
-// For each harmony event, resolve which scripture_refs count toward the
-// chosen style, and the total word count for the day-planning weight.
-function annotateEvents(events, verseCounts, style) {
-  return events.map((e) => {
-    const refWords = e.scripture_refs.map((r) => ({ ref: r, words: wordsInRange(verseCounts, r) }));
-    let chosen;
-    if (style === 'parallel') {
-      chosen = refWords;
-    } else {
-      const maxWords = Math.max(...refWords.map((r) => r.words));
-      chosen = refWords.filter((r) => r.words === maxWords).slice(0, 1);
+// Resolve which of a unit's scripture_refs count toward the chosen style,
+// and the resulting word count for the day-planning weight. Shared by both
+// whole sections and subsections since they use the same ref shape.
+function wordsForStyle(refs, verseCounts, style) {
+  const refWords = refs.map((r) => ({ ref: r, words: wordsInRange(verseCounts, r) }));
+  let chosen;
+  if (style === 'parallel') {
+    chosen = refWords;
+  } else {
+    const maxWords = Math.max(...refWords.map((r) => r.words));
+    chosen = refWords.filter((r) => r.words === maxWords).slice(0, 1);
+  }
+  const words = chosen.reduce((a, b) => a + b.words, 0);
+  return { words, scripture_refs: chosen.map((c) => c.ref.display) };
+}
+
+// Build the ordered list of atomic reading units. In "section" granularity
+// this is just the 185 Robertson events. In "subsection" granularity, the
+// 35 sections content/harmony/subsections.json subdivides are replaced by
+// their lettered pieces (and r1922-041's one-off override is applied),
+// while every other section passes through unchanged.
+function buildUnits(events, subDoc, verseCounts, style, granularity) {
+  if (granularity === 'section') {
+    return events.map((e) => {
+      const { words, scripture_refs } = wordsForStyle(e.scripture_refs, verseCounts, style);
+      return { unit_id: e.gospel_event_id, section_label: e.robertson_section, title: e.title, words, scripture_refs };
+    });
+  }
+
+  const subsByParent = new Map();
+  for (const s of subDoc.subsections) {
+    if (!subsByParent.has(s.gospel_event_id)) subsByParent.set(s.gospel_event_id, []);
+    subsByParent.get(s.gospel_event_id).push(s);
+  }
+  for (const list of subsByParent.values()) list.sort((a, b) => a.letter.localeCompare(b.letter));
+  const overrideByParent = new Map(subDoc.overrides.map((o) => [o.gospel_event_id, o]));
+
+  const units = [];
+  for (const e of events) {
+    const subs = subsByParent.get(e.gospel_event_id);
+    if (subs) {
+      for (const s of subs) {
+        const { words, scripture_refs } = wordsForStyle(s.scripture_refs, verseCounts, style);
+        units.push({ unit_id: s.subsection_id, section_label: `${e.robertson_section}${s.letter}`, title: s.title, words, scripture_refs });
+      }
+      continue;
     }
-    const words = chosen.reduce((a, b) => a + b.words, 0);
-    return {
-      gospel_event_id: e.gospel_event_id,
-      robertson_section: e.robertson_section,
-      title: e.title,
-      words,
-      scripture_refs: chosen.map((c) => c.ref.display),
-    };
-  });
+    const override = overrideByParent.get(e.gospel_event_id);
+    const refs = override ? override.scripture_refs : e.scripture_refs;
+    const { words, scripture_refs } = wordsForStyle(refs, verseCounts, style);
+    units.push({ unit_id: e.gospel_event_id, section_label: e.robertson_section, title: e.title, words, scripture_refs });
+  }
+  return units;
 }
 
 // Split `weights` (n positive numbers, in order) into exactly `days`
@@ -164,31 +207,36 @@ function main() {
   if (!Number.isInteger(days) || days < 1) {
     usageError('--days must be a positive integer');
   }
+  const granularity = args.granularity || 'section';
+  if (!['section', 'subsection'].includes(granularity)) {
+    usageError('--granularity must be "section" or "subsection"');
+  }
 
   const harmony = JSON.parse(fs.readFileSync(HARMONY_FILE, 'utf8'));
+  const subDoc = JSON.parse(fs.readFileSync(SUBSECTIONS_FILE, 'utf8'));
   const wordCountsDoc = JSON.parse(fs.readFileSync(WORD_COUNTS_FILE, 'utf8'));
   const verseCounts = wordCountsDoc.verse_word_counts;
 
   const events = harmony.events;
-  if (days > events.length) {
-    usageError(`--days=${days} exceeds ${events.length} sections; a day cannot be empty and sections aren't split across days`);
+  const units = buildUnits(events, subDoc, verseCounts, args.style, granularity);
+  if (days > units.length) {
+    usageError(`--days=${days} exceeds ${units.length} ${granularity}s; a day cannot be empty and units aren't split across days`);
   }
 
-  const annotated = annotateEvents(events, verseCounts, args.style);
-  const weights = annotated.map((e) => e.words);
+  const weights = units.map((u) => u.words);
   const bounds = balancedPartition(weights, days);
 
   const plan = bounds.map(([start, end], idx) => {
-    const daySections = annotated.slice(start, end);
-    const totalWords = daySections.reduce((a, b) => a + b.words, 0);
+    const dayUnits = units.slice(start, end);
+    const totalWords = dayUnits.reduce((a, b) => a + b.words, 0);
     return {
       day: idx + 1,
       total_words: totalWords,
-      sections: daySections.map((s) => ({
-        gospel_event_id: s.gospel_event_id,
-        robertson_section: s.robertson_section,
-        title: s.title,
-        scripture_refs: s.scripture_refs,
+      sections: dayUnits.map((u) => ({
+        gospel_event_id: u.unit_id,
+        robertson_section: u.section_label,
+        title: u.title,
+        scripture_refs: u.scripture_refs,
       })),
     };
   });
@@ -200,7 +248,8 @@ function main() {
   const avgDay = grandTotal / plan.length;
 
   console.log(`Style: ${args.style === 'parallel' ? 'comparative harmony (all parallel accounts)' : 'continuous narrative (longest account per section)'}`);
-  console.log(`Sections: ${events.length}  |  Days: ${plan.length}  |  Total words: ${grandTotal}`);
+  console.log(`Granularity: ${granularity}${granularity === 'subsection' ? ' (35 sections split into lettered pieces)' : ''}`);
+  console.log(`Units: ${units.length}  |  Days: ${plan.length}  |  Total words: ${grandTotal}`);
   console.log(`Per-day words — avg: ${avgDay.toFixed(0)}  min: ${minDay}  max: ${maxDay}  (spread: ${(((maxDay - minDay) / avgDay) * 100).toFixed(1)}% of average)`);
   console.log('');
   for (const d of plan) {
@@ -212,10 +261,12 @@ function main() {
     const outPath = path.resolve(process.cwd(), args.out);
     const output = {
       style: args.style,
+      granularity,
       days: plan.length,
       total_words: grandTotal,
       source: {
         harmony: 'content/harmony/robertson-1922-outline.json',
+        subsections: 'content/harmony/subsections.json',
         word_counts: 'content/harmony/kjv-word-counts.json (KJV, public domain — see docs/content-rights.md §3)',
       },
       plan,

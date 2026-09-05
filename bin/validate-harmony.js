@@ -16,14 +16,26 @@ const ROOT = path.join(__dirname, '..');
 const JSON_FILE = path.join(ROOT, 'content', 'harmony', 'robertson-1922-outline.json');
 const CSV_FILE = path.join(ROOT, 'content', 'harmony', 'robertson-1922-outline.review.csv');
 const WORD_COUNTS_FILE = path.join(ROOT, 'content', 'harmony', 'kjv-word-counts.json');
+const SUBSECTIONS_FILE = path.join(ROOT, 'content', 'harmony', 'subsections.json');
 
 const EVENT_ID = /^r1922-[0-9]{3}[ab]?$/;
+const SUBSECTION_ID = /^r1922-[0-9]{3}[a-z]$/;
+const SUBSECTION_SOURCES = ['thomas-gundry', 'sonlife'];
 const PHASE_MAPPING_STATUSES = ['pending', 'proposed', 'approved'];
 
 let failures = 0;
 function check(name, ok, detail = '') {
   if (!ok) failures++;
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? ` — ${detail}` : ''}`);
+}
+
+function refShapeOk(ref) {
+  return ref && typeof ref === 'object' &&
+    typeof ref.book === 'string' && Number.isInteger(ref.chapter_start) &&
+    (ref.verse_start === null || Number.isInteger(ref.verse_start)) &&
+    Number.isInteger(ref.chapter_end) &&
+    (ref.verse_end === null || Number.isInteger(ref.verse_end)) &&
+    typeof ref.display === 'string';
 }
 
 // Minimal RFC-4180 CSV parser (fields may be quoted and contain commas/newlines).
@@ -71,12 +83,7 @@ function parseCsv(text) {
       check(`${ev.gospel_event_id} has scripture refs`, false);
     }
     for (const ref of ev.scripture_refs || []) {
-      const ok = typeof ref.book === 'string' && Number.isInteger(ref.chapter_start) &&
-        (ref.verse_start === null || Number.isInteger(ref.verse_start)) &&
-        Number.isInteger(ref.chapter_end) &&
-        (ref.verse_end === null || Number.isInteger(ref.verse_end)) &&
-        typeof ref.display === 'string';
-      if (!ok) check(`${ev.gospel_event_id} ref shape`, false, JSON.stringify(ref));
+      if (!refShapeOk(ref)) check(`${ev.gospel_event_id} ref shape`, false, JSON.stringify(ref));
     }
     // Phase posture (issue #21 workflow): null phase means unreviewed
     // (status "pending") — unless the mapper deliberately left a
@@ -138,11 +145,9 @@ function parseCsv(text) {
     }
     return max;
   }
-  let wordCoverageOk = true;
-  const missing = [];
-  for (const ev of events) {
-    for (const ref of ev.scripture_refs || []) {
-      if (!verseCounts[ref.book]) { missing.push(`${ev.gospel_event_id}: no book "${ref.book}"`); continue; }
+  function missingVerseCoverage(label, refs, missing) {
+    for (const ref of refs || []) {
+      if (!verseCounts[ref.book]) { missing.push(`${label}: no book "${ref.book}"`); continue; }
       const vStart = ref.verse_start === null ? 1 : ref.verse_start;
       const vEnd = ref.verse_end === null ? lastVerseOfChapter(ref.book, ref.chapter_end) : ref.verse_end;
       for (let ch = ref.chapter_start; ch <= ref.chapter_end; ch++) {
@@ -150,15 +155,75 @@ function parseCsv(text) {
         const ve = ch === ref.chapter_end ? vEnd : lastVerseOfChapter(ref.book, ch);
         for (let v = vs; v <= ve; v++) {
           if (verseCounts[ref.book][`${ch}:${v}`] === undefined) {
-            missing.push(`${ev.gospel_event_id}: ${ref.book} ${ch}:${v}`);
+            missing.push(`${label}: ${ref.book} ${ch}:${v}`);
           }
         }
       }
     }
   }
-  wordCoverageOk = missing.length === 0;
+  const missing = [];
+  for (const ev of events) missingVerseCoverage(ev.gospel_event_id, ev.scripture_refs, missing);
   check('kjv-word-counts.json covers every scripture_ref verse (bin/build-reading-plan.js input)',
-    wordCoverageOk, wordCoverageOk ? '' : `${missing.length} missing, e.g. ${missing.slice(0, 5).join('; ')} — run bin/generate-kjv-word-counts.js`);
+    missing.length === 0, missing.length === 0 ? '' : `${missing.length} missing, e.g. ${missing.slice(0, 5).join('; ')} — run bin/generate-kjv-word-counts.js`);
+
+  // content/harmony/subsections.json (#T&G subdivisions overlay) — additive on
+  // top of the untouched Robertson dataset above, so validate it separately.
+  const eventIds = new Set(ids);
+  const subDoc = JSON.parse(fs.readFileSync(SUBSECTIONS_FILE, 'utf8'));
+  check('subsections.json source attribution block present',
+    subDoc.source && subDoc.source.title && subDoc.source.rights_note);
+
+  const subIds = subDoc.subsections.map((s) => s.subsection_id);
+  check('all subsection_ids unique', new Set(subIds).size === subIds.length);
+
+  const missingSub = [];
+  const byParent = {};
+  let subShapeOk = true;
+  for (const s of subDoc.subsections) {
+    const idOk = SUBSECTION_ID.test(s.subsection_id) && s.subsection_id === `${s.gospel_event_id}${s.letter}`;
+    const parentOk = eventIds.has(s.gospel_event_id);
+    const refsOk = Array.isArray(s.scripture_refs) && s.scripture_refs.length > 0 && s.scripture_refs.every(refShapeOk);
+    const wordsOk = typeof s.words === 'number' && s.words >= 0;
+    const titleOk = typeof s.title === 'string' && s.title.length > 0;
+    const sourceOk = SUBSECTION_SOURCES.includes(s.subsection_source);
+    if (!(idOk && parentOk && refsOk && wordsOk && titleOk && sourceOk)) {
+      subShapeOk = false;
+      check(`${s.subsection_id || '(missing id)'} shape valid`, false,
+        `id=${idOk} parent=${parentOk} refs=${refsOk} words=${wordsOk} title=${titleOk} source=${sourceOk}`);
+    }
+    (byParent[s.gospel_event_id] = byParent[s.gospel_event_id] || []).push(s.letter);
+    missingVerseCoverage(s.subsection_id, s.scripture_refs, missingSub);
+  }
+  check('every subsection has valid shape (id/parent/refs/words/title/source)', subShapeOk);
+
+  let letterSequenceOk = true;
+  for (const [parent, letters] of Object.entries(byParent)) {
+    const sorted = [...letters].sort();
+    const expected = sorted.map((_, i) => String.fromCharCode(97 + i));
+    if (JSON.stringify(sorted) !== JSON.stringify(expected)) {
+      letterSequenceOk = false;
+      check(`${parent} subsection letters contiguous from 'a'`, false, `got [${sorted.join(',')}]`);
+    }
+  }
+  check("every split parent's subsection letters run a, b, c, ... with no gaps", letterSequenceOk);
+
+  let overridesOk = true;
+  for (const o of subDoc.overrides || []) {
+    const parentOk = eventIds.has(o.gospel_event_id);
+    const refsOk = Array.isArray(o.scripture_refs) && o.scripture_refs.length > 0 && o.scripture_refs.every(refShapeOk);
+    const noteOk = typeof o.note === 'string' && o.note.length > 0;
+    const sourceOk = SUBSECTION_SOURCES.includes(o.subsection_source);
+    if (!(parentOk && refsOk && noteOk && sourceOk)) {
+      overridesOk = false;
+      check(`override ${o.gospel_event_id || '(missing id)'} shape valid`, false,
+        `parent=${parentOk} refs=${refsOk} note=${noteOk} source=${sourceOk}`);
+    } else {
+      missingVerseCoverage(`override ${o.gospel_event_id}`, o.scripture_refs, missingSub);
+    }
+  }
+  check('every override has valid shape (parent/refs/note/source)', overridesOk);
+  check('kjv-word-counts.json covers every subsections.json verse',
+    missingSub.length === 0, missingSub.length === 0 ? '' : `${missingSub.length} missing, e.g. ${missingSub.slice(0, 5).join('; ')}`);
 
   console.log(failures === 0 ? '\nHarmony dataset checks passed.' : `\n${failures} check(s) FAILED.`);
   process.exit(failures === 0 ? 0 : 1);
