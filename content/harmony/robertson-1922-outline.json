@@ -839,7 +839,7 @@
           "verse_start": 23,
           "chapter_end": 3,
           "verse_end": 21,
-          "display": "John 2:23–3:21"
+          "display": "John 2:23-3:21"
         }
       ],
       "phase": null,
@@ -1561,7 +1561,7 @@
           "verse_start": null,
           "chapter_end": 7,
           "verse_end": null,
-          "display": "Matthew 5–7"
+          "display": "Matthew 5-7"
         },
         {
           "book": "Luke",
@@ -2065,7 +2065,7 @@
           "verse_start": 35,
           "chapter_end": 11,
           "verse_end": 1,
-          "display": "Matthew 9:35–11:1"
+          "display": "Matthew 9:35-11:1"
         },
         {
           "book": "Luke",
@@ -2384,7 +2384,7 @@
           "verse_start": 31,
           "chapter_end": 8,
           "verse_end": 9,
-          "display": "Mark 7:31–8:9"
+          "display": "Mark 7:31-8:9"
         },
         {
           "book": "Matthew",
@@ -2423,7 +2423,7 @@
           "verse_start": 39,
           "chapter_end": 16,
           "verse_end": 4,
-          "display": "Matthew 15:39–16:4"
+          "display": "Matthew 15:39-16:4"
         }
       ],
       "phase": null,
@@ -2555,7 +2555,7 @@
           "verse_start": 38,
           "chapter_end": 9,
           "verse_end": 1,
-          "display": "Mark 8:38–9:1"
+          "display": "Mark 8:38-9:1"
         },
         {
           "book": "Matthew",
@@ -2982,7 +2982,7 @@
           "verse_start": 53,
           "chapter_end": 8,
           "verse_end": 11,
-          "display": "John 7:53–8:11"
+          "display": "John 7:53-8:11"
         }
       ],
       "phase": null,
@@ -3442,7 +3442,7 @@
           "verse_start": 1,
           "chapter_end": 17,
           "verse_end": 10,
-          "display": "Luke 16:1–17:10"
+          "display": "Luke 16:1-17:10"
         }
       ],
       "phase": null,
@@ -3635,7 +3635,7 @@
           "verse_start": 16,
           "chapter_end": 20,
           "verse_end": 16,
-          "display": "Matthew 19:16–20:16"
+          "display": "Matthew 19:16-20:16"
         },
         {
           "book": "Luke",
@@ -3767,7 +3767,7 @@
           "verse_start": 55,
           "chapter_end": 12,
           "verse_end": 1,
-          "display": "John 11:55–12:1"
+          "display": "John 11:55-12:1"
         },
         {
           "book": "John",
@@ -3962,7 +3962,7 @@
           "verse_start": 27,
           "chapter_end": 12,
           "verse_end": 12,
-          "display": "Mark 11:27–12:12"
+          "display": "Mark 11:27-12:12"
         },
         {
           "book": "Matthew",
@@ -3970,7 +3970,7 @@
           "verse_start": 23,
           "chapter_end": 22,
           "verse_end": 14,
-          "display": "Matthew 21:23–22:14"
+          "display": "Matthew 21:23-22:14"
         },
         {
           "book": "Luke",
@@ -4227,7 +4227,7 @@
           "verse_start": null,
           "chapter_end": 25,
           "verse_end": null,
-          "display": "Matthew 24–25"
+          "display": "Matthew 24-25"
         },
         {
           "book": "Luke",
@@ -4648,7 +4648,7 @@
           "verse_start": null,
           "chapter_end": 16,
           "verse_end": null,
-          "display": "John 15–16"
+          "display": "John 15-16"
         }
       ],
       "phase": null,
@@ -5149,7 +5149,7 @@
           "verse_start": 39,
           "chapter_end": 19,
           "verse_end": 16,
-          "display": "John 18:39–19:16"
+          "display": "John 18:39-19:16"
         }
       ],
       "phase": null,
