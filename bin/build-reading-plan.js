@@ -27,10 +27,16 @@
  * "paginate into k balanced parts" DP) — the most even plan a reader could
  * ask for without breaking a unit in half.
  *
+ * --from=N and --to=N (Robertson section numbers, 1-184, inclusive) restrict
+ * the plan to a subrange — e.g. a Christmas-to-Easter plan that starts at
+ * the Nativity and stops short of the resurrection. Defaults to the full
+ * 1-184 range.
+ *
  * Usage:
  *   node bin/build-reading-plan.js --style=parallel --days=184
  *   node bin/build-reading-plan.js --style=primary --days=90 --out=plan.json
  *   node bin/build-reading-plan.js --style=parallel --days=90 --granularity=subsection
+ *   node bin/build-reading-plan.js --style=primary --days=94 --granularity=subsection --from=10 --to=168
  *
  * Dependency-free. Reads content/harmony/robertson-1922-outline.json,
  * content/harmony/subsections.json, and content/harmony/kjv-word-counts.json
@@ -62,7 +68,7 @@ function parseArgs(argv) {
 function usageError(msg) {
   console.error(`Error: ${msg}`);
   console.error('');
-  console.error('Usage: node bin/build-reading-plan.js --style=parallel|primary --days=N [--granularity=section|subsection] [--out=path.json]');
+  console.error('Usage: node bin/build-reading-plan.js --style=parallel|primary --days=N [--granularity=section|subsection] [--from=N] [--to=N] [--out=path.json]');
   process.exit(1);
 }
 
@@ -218,9 +224,25 @@ function main() {
   const verseCounts = wordCountsDoc.verse_word_counts;
 
   const events = harmony.events;
-  const units = buildUnits(events, subDoc, verseCounts, args.style, granularity);
+  let units = buildUnits(events, subDoc, verseCounts, args.style, granularity);
+
+  const fromSection = args.from !== undefined ? Number(args.from) : 1;
+  const toSection = args.to !== undefined ? Number(args.to) : 184;
+  if (!Number.isInteger(fromSection) || !Number.isInteger(toSection) || fromSection < 1 || toSection > 184 || fromSection > toSection) {
+    usageError('--from and --to must be integers with 1 <= from <= to <= 184 (Robertson section numbers)');
+  }
+  if (args.from !== undefined || args.to !== undefined) {
+    units = units.filter((u) => {
+      const n = Number(/^r1922-(\d+)/.exec(u.unit_id)[1]);
+      return n >= fromSection && n <= toSection;
+    });
+    if (units.length === 0) {
+      usageError(`no ${granularity}s found in range §${fromSection}-§${toSection}`);
+    }
+  }
+
   if (days > units.length) {
-    usageError(`--days=${days} exceeds ${units.length} ${granularity}s; a day cannot be empty and units aren't split across days`);
+    usageError(`--days=${days} exceeds ${units.length} ${granularity}s in range; a day cannot be empty and units aren't split across days`);
   }
 
   const weights = units.map((u) => u.words);
@@ -249,6 +271,9 @@ function main() {
 
   console.log(`Style: ${args.style === 'parallel' ? 'comparative harmony (all parallel accounts)' : 'continuous narrative (longest account per section)'}`);
   console.log(`Granularity: ${granularity}${granularity === 'subsection' ? ' (35 sections split into lettered pieces)' : ''}`);
+  if (args.from !== undefined || args.to !== undefined) {
+    console.log(`Range: §${fromSection}-§${toSection}`);
+  }
   console.log(`Units: ${units.length}  |  Days: ${plan.length}  |  Total words: ${grandTotal}`);
   console.log(`Per-day words — avg: ${avgDay.toFixed(0)}  min: ${minDay}  max: ${maxDay}  (spread: ${(((maxDay - minDay) / avgDay) * 100).toFixed(1)}% of average)`);
   console.log('');
@@ -262,6 +287,7 @@ function main() {
     const output = {
       style: args.style,
       granularity,
+      range: { from: fromSection, to: toSection },
       days: plan.length,
       total_words: grandTotal,
       source: {
