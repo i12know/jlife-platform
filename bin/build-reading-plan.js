@@ -32,14 +32,25 @@
  * the Nativity and stops short of the resurrection. Defaults to the full
  * 1-184 range.
  *
+ * Under --style=primary, each unit's non-chosen parallel accounts aren't
+ * discarded — every output carries them as "other" reading: CSV gets a
+ * Parallel Reading / Parallel Words column pair (day-level, deduplicated),
+ * JSON carries other_scripture_refs / other_words per section and
+ * total_other_words per day. Always empty under --style=parallel, since
+ * that style already includes every account in the main reading. This
+ * lets a --style=primary plan stay the day-balancing weight (so the
+ * schedule itself doesn't change) while still surfacing what a reader
+ * could optionally read afterward to compare Gospels on a given day.
+ *
  * --out=path.json writes the plan as JSON; --out=path.csv writes a CSV
- * instead (Day, Sections, Scripture, Words — or with a Date column first
- * if --start-date=YYYY-MM-DD is given, one calendar day per plan day).
- * The CSV uses plain ASCII glue characters (# for a section number, a
- * hyphen to join labels and titles) rather than the console output's § and
- * —, on top of the UTF-8 BOM already written for whatever Unicode
- * punctuation survives in the section titles themselves: fewer non-ASCII
- * bytes in a file destined for Excel is just fewer ways for it to get
+ * instead (Day, Sections, Scripture, Words, Parallel Reading, Parallel
+ * Words — or with a Date column first if --start-date=YYYY-MM-DD is
+ * given, one calendar day per plan day). The CSV uses plain ASCII glue
+ * characters (# for a section number, a hyphen to join labels and titles)
+ * rather than the console output's § and —, on top of the UTF-8 BOM
+ * already written for whatever Unicode punctuation survives in the
+ * section titles themselves: fewer non-ASCII bytes in a file destined for
+ * Excel is just fewer ways for it to get
  * mangled if a BOM ever gets stripped along the way (a copy-paste, a
  * re-save, another tool concatenating files).
  *
@@ -121,17 +132,30 @@ function wordsInRange(verseCounts, ref) {
 // Resolve which of a unit's scripture_refs count toward the chosen style,
 // and the resulting word count for the day-planning weight. Shared by both
 // whole sections and subsections since they use the same ref shape.
+//
+// Also returns the *other* refs -- the parallel accounts --style=primary
+// left out (always empty under --style=parallel, since that style already
+// includes every account) -- so a plan can optionally surface them as
+// further reading without changing the day-balancing weight, which stays
+// keyed on the chosen refs only.
 function wordsForStyle(refs, verseCounts, style) {
   const refWords = refs.map((r) => ({ ref: r, words: wordsInRange(verseCounts, r) }));
-  let chosen;
+  let chosen, other;
   if (style === 'parallel') {
     chosen = refWords;
+    other = [];
   } else {
     const maxWords = Math.max(...refWords.map((r) => r.words));
-    chosen = refWords.filter((r) => r.words === maxWords).slice(0, 1);
+    const idx = refWords.findIndex((r) => r.words === maxWords);
+    chosen = refWords.slice(idx, idx + 1);
+    other = refWords.filter((_, i) => i !== idx);
   }
   const words = chosen.reduce((a, b) => a + b.words, 0);
-  return { words, scripture_refs: chosen.map((c) => c.ref.display) };
+  const otherWords = other.reduce((a, b) => a + b.words, 0);
+  return {
+    words, scripture_refs: chosen.map((c) => c.ref.display),
+    other_words: otherWords, other_scripture_refs: other.map((c) => c.ref.display),
+  };
 }
 
 // Build the ordered list of atomic reading units. In "section" granularity
@@ -142,8 +166,8 @@ function wordsForStyle(refs, verseCounts, style) {
 function buildUnits(events, subDoc, verseCounts, style, granularity) {
   if (granularity === 'section') {
     return events.map((e) => {
-      const { words, scripture_refs } = wordsForStyle(e.scripture_refs, verseCounts, style);
-      return { unit_id: e.gospel_event_id, section_label: e.robertson_section, title: e.title, words, scripture_refs };
+      const w = wordsForStyle(e.scripture_refs, verseCounts, style);
+      return { unit_id: e.gospel_event_id, section_label: e.robertson_section, title: e.title, ...w };
     });
   }
 
@@ -160,15 +184,15 @@ function buildUnits(events, subDoc, verseCounts, style, granularity) {
     const subs = subsByParent.get(e.gospel_event_id);
     if (subs) {
       for (const s of subs) {
-        const { words, scripture_refs } = wordsForStyle(s.scripture_refs, verseCounts, style);
-        units.push({ unit_id: s.subsection_id, section_label: `${e.robertson_section}${s.letter}`, title: s.title, words, scripture_refs });
+        const w = wordsForStyle(s.scripture_refs, verseCounts, style);
+        units.push({ unit_id: s.subsection_id, section_label: `${e.robertson_section}${s.letter}`, title: s.title, ...w });
       }
       continue;
     }
     const override = overrideByParent.get(e.gospel_event_id);
     const refs = override ? override.scripture_refs : e.scripture_refs;
-    const { words, scripture_refs } = wordsForStyle(refs, verseCounts, style);
-    units.push({ unit_id: e.gospel_event_id, section_label: e.robertson_section, title: e.title, words, scripture_refs });
+    const w = wordsForStyle(refs, verseCounts, style);
+    units.push({ unit_id: e.gospel_event_id, section_label: e.robertson_section, title: e.title, ...w });
   }
   return units;
 }
@@ -283,14 +307,18 @@ function main() {
   const plan = bounds.map(([start, end], idx) => {
     const dayUnits = units.slice(start, end);
     const totalWords = dayUnits.reduce((a, b) => a + b.words, 0);
+    const totalOtherWords = dayUnits.reduce((a, b) => a + b.other_words, 0);
     return {
       day: idx + 1,
       total_words: totalWords,
+      total_other_words: totalOtherWords,
       sections: dayUnits.map((u) => ({
         gospel_event_id: u.unit_id,
         robertson_section: u.section_label,
         title: u.title,
         scripture_refs: u.scripture_refs,
+        other_scripture_refs: u.other_scripture_refs,
+        other_words: u.other_words,
       })),
     };
   });
@@ -352,14 +380,15 @@ function main() {
 function writeCsv(outPath, plan, startDate, dateForDay) {
   const csvField = (v) => `"${String(v).replace(/"/g, '""')}"`;
   const header = startDate === null
-    ? ['Day', 'Sections', 'Scripture', 'Words']
-    : ['Date', 'Day', 'Sections', 'Scripture', 'Words'];
+    ? ['Day', 'Sections', 'Scripture', 'Words', 'Parallel Reading', 'Parallel Words']
+    : ['Date', 'Day', 'Sections', 'Scripture', 'Words', 'Parallel Reading', 'Parallel Words'];
   const rows = [header];
   for (const d of plan) {
     const sectionLabels = d.sections.map((s) => `#${s.robertson_section}`).join(', ');
     const titles = d.sections.map((s) => s.title).join('; ');
     const refs = [...new Set(d.sections.flatMap((s) => s.scripture_refs))].join('; ');
-    const row = [sectionLabels + ' - ' + titles, refs, d.total_words];
+    const parallelRefs = [...new Set(d.sections.flatMap((s) => s.other_scripture_refs))].join('; ');
+    const row = [sectionLabels + ' - ' + titles, refs, d.total_words, parallelRefs, d.total_other_words];
     rows.push(startDate === null ? [d.day, ...row] : [dateForDay(d.day - 1), d.day, ...row]);
   }
   const csv = rows.map((r) => r.map(csvField).join(',')).join('\n');
