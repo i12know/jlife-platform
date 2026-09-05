@@ -111,10 +111,24 @@ a whole-section outlier like the Olivet Discourse (§139, ~3,566 words on its ow
 `parallel` style) no longer has to be one day by itself — it splits into its own 7 lettered
 pieces like everything else.
 
+`--from=N`/`--to=N` (Robertson section numbers, 1-184 inclusive) restrict the plan to a
+subrange — e.g. a Christmas-to-Easter plan that starts at the Nativity and stops short of the
+resurrection appearances, left for Easter morning.
+
+`--out=path.json` writes the plan as JSON; `--out=path.csv` writes a CSV instead (add
+`--start-date=YYYY-MM-DD` for a `Date` column mapping each plan day to a calendar day). The
+CSV deliberately uses plain ASCII glue characters — `#` for a section number, a hyphen to join
+labels and titles — rather than the console output's `§` and `—`: a `.csv` with no encoding
+hint is a coin flip in Excel (it often guesses Windows-1252 instead of UTF-8), and fewer
+non-ASCII bytes in the file is fewer ways for that to go wrong even with the UTF-8 BOM the
+writer still includes for whatever Unicode punctuation survives in the titles themselves.
+
 ```
 node bin/build-reading-plan.js --style=parallel --days=184
 node bin/build-reading-plan.js --style=primary --days=90 --out=my-plan.json
 node bin/build-reading-plan.js --style=parallel --days=90 --granularity=subsection
+node bin/build-reading-plan.js --style=primary --days=94 --granularity=subsection \
+  --from=10 --to=168 --start-date=2026-12-24 --out=my-plan.csv
 ```
 
 `kjv-word-counts.json` stores integer word counts per verse only — never verse text, per

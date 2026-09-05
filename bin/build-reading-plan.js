@@ -32,11 +32,23 @@
  * the Nativity and stops short of the resurrection. Defaults to the full
  * 1-184 range.
  *
+ * --out=path.json writes the plan as JSON; --out=path.csv writes a CSV
+ * instead (Day, Sections, Scripture, Words — or with a Date column first
+ * if --start-date=YYYY-MM-DD is given, one calendar day per plan day).
+ * The CSV uses plain ASCII glue characters (# for a section number, a
+ * hyphen to join labels and titles) rather than the console output's § and
+ * —, on top of the UTF-8 BOM already written for whatever Unicode
+ * punctuation survives in the section titles themselves: fewer non-ASCII
+ * bytes in a file destined for Excel is just fewer ways for it to get
+ * mangled if a BOM ever gets stripped along the way (a copy-paste, a
+ * re-save, another tool concatenating files).
+ *
  * Usage:
  *   node bin/build-reading-plan.js --style=parallel --days=184
  *   node bin/build-reading-plan.js --style=primary --days=90 --out=plan.json
  *   node bin/build-reading-plan.js --style=parallel --days=90 --granularity=subsection
- *   node bin/build-reading-plan.js --style=primary --days=94 --granularity=subsection --from=10 --to=168
+ *   node bin/build-reading-plan.js --style=primary --days=94 --granularity=subsection --from=10 --to=168 \
+ *     --start-date=2026-12-24 --out=plan.csv
  *
  * Dependency-free. Reads content/harmony/robertson-1922-outline.json,
  * content/harmony/subsections.json, and content/harmony/kjv-word-counts.json
@@ -68,7 +80,7 @@ function parseArgs(argv) {
 function usageError(msg) {
   console.error(`Error: ${msg}`);
   console.error('');
-  console.error('Usage: node bin/build-reading-plan.js --style=parallel|primary --days=N [--granularity=section|subsection] [--from=N] [--to=N] [--out=path.json]');
+  console.error('Usage: node bin/build-reading-plan.js --style=parallel|primary --days=N [--granularity=section|subsection] [--from=N] [--to=N] [--start-date=YYYY-MM-DD] [--out=path.json|path.csv]');
   process.exit(1);
 }
 
@@ -227,6 +239,16 @@ function main() {
   if (!['section', 'subsection'].includes(granularity)) {
     usageError('--granularity must be "section" or "subsection"');
   }
+  let startDate = null;
+  if (args['start-date'] !== undefined) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(args['start-date'])) {
+      usageError('--start-date must be YYYY-MM-DD');
+    }
+    const [y, m, d] = args['start-date'].split('-').map(Number);
+    startDate = Date.UTC(y, m - 1, d);
+    if (Number.isNaN(startDate)) usageError('--start-date is not a valid calendar date');
+  }
+  const dateForDay = (dayIdx) => new Date(startDate + dayIdx * 86400000).toISOString().slice(0, 10);
 
   const harmony = JSON.parse(fs.readFileSync(HARMONY_FILE, 'utf8'));
   const subDoc = JSON.parse(fs.readFileSync(SUBSECTIONS_FILE, 'utf8'));
@@ -247,7 +269,7 @@ function main() {
       return n >= fromSection && n <= toSection;
     });
     if (units.length === 0) {
-      usageError(`no ${granularity}s found in range §${fromSection}-§${toSection}`);
+      usageError(`no ${granularity}s found in range #${fromSection}-#${toSection}`);
     }
   }
 
@@ -284,7 +306,7 @@ function main() {
   console.log(`Style: ${args.style === 'parallel' ? 'comparative harmony (all parallel accounts)' : 'continuous narrative (longest account per section)'}`);
   console.log(`Granularity: ${granularity}${granularity === 'subsection' ? ' (35 sections split into lettered pieces)' : ''}`);
   if (args.from !== undefined || args.to !== undefined) {
-    console.log(`Range: §${fromSection}-§${toSection}`);
+    console.log(`Range: #${fromSection}-#${toSection}`);
   }
   console.log(`Units: ${units.length}  |  Days: ${plan.length}  |  Total words: ${grandTotal}`);
   console.log(`Per-day words — avg: ${avgDay.toFixed(0)}  min: ${minDay}  max: ${maxDay}  stdev: ${stdev.toFixed(0)} (${((stdev / avgDay) * 100).toFixed(0)}% of avg)`);
@@ -293,28 +315,55 @@ function main() {
   }
   console.log('');
   for (const d of plan) {
-    const titles = d.sections.map((s) => `§${s.robertson_section} ${s.title}`).join('; ');
+    const titles = d.sections.map((s) => `#${s.robertson_section} ${s.title}`).join('; ');
     console.log(`Day ${d.day} (${d.total_words}w): ${titles}`);
   }
 
   if (args.out) {
     const outPath = path.resolve(process.cwd(), args.out);
-    const output = {
-      style: args.style,
-      granularity,
-      range: { from: fromSection, to: toSection },
-      days: plan.length,
-      total_words: grandTotal,
-      source: {
-        harmony: 'content/harmony/robertson-1922-outline.json',
-        subsections: 'content/harmony/subsections.json',
-        word_counts: 'content/harmony/kjv-word-counts.json (KJV, public domain — see docs/content-rights.md §3)',
-      },
-      plan,
-    };
-    fs.writeFileSync(outPath, JSON.stringify(output, null, 2) + '\n');
+    if (outPath.toLowerCase().endsWith('.csv')) {
+      writeCsv(outPath, plan, startDate, dateForDay);
+    } else {
+      const output = {
+        style: args.style,
+        granularity,
+        range: { from: fromSection, to: toSection },
+        days: plan.length,
+        total_words: grandTotal,
+        start_date: args['start-date'] || null,
+        source: {
+          harmony: 'content/harmony/robertson-1922-outline.json',
+          subsections: 'content/harmony/subsections.json',
+          word_counts: 'content/harmony/kjv-word-counts.json (KJV, public domain - see docs/content-rights.md #3)',
+        },
+        plan: startDate === null ? plan : plan.map((d) => ({ date: dateForDay(d.day - 1), ...d })),
+      };
+      fs.writeFileSync(outPath, JSON.stringify(output, null, 2) + '\n');
+    }
     console.log(`\nWrote ${path.relative(process.cwd(), outPath)}`);
   }
+}
+
+// CSV export, deliberately ASCII-only glue characters (# and -, not the
+// Unicode § and — the console output uses) so the file survives Excel's
+// habit of guessing Windows-1252 on a .csv with no encoding hint. A UTF-8
+// BOM is still written since section titles themselves may carry Unicode
+// punctuation (curly quotes, etc.) that a BOM-less file would still mangle.
+function writeCsv(outPath, plan, startDate, dateForDay) {
+  const csvField = (v) => `"${String(v).replace(/"/g, '""')}"`;
+  const header = startDate === null
+    ? ['Day', 'Sections', 'Scripture', 'Words']
+    : ['Date', 'Day', 'Sections', 'Scripture', 'Words'];
+  const rows = [header];
+  for (const d of plan) {
+    const sectionLabels = d.sections.map((s) => `#${s.robertson_section}`).join(', ');
+    const titles = d.sections.map((s) => s.title).join('; ');
+    const refs = [...new Set(d.sections.flatMap((s) => s.scripture_refs))].join('; ');
+    const row = [sectionLabels + ' - ' + titles, refs, d.total_words];
+    rows.push(startDate === null ? [d.day, ...row] : [dateForDay(d.day - 1), d.day, ...row]);
+  }
+  const csv = rows.map((r) => r.map(csvField).join(',')).join('\n');
+  fs.writeFileSync(outPath, '﻿' + csv + '\n');
 }
 
 main();
