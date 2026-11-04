@@ -9,11 +9,11 @@
 
 Both exported source tables contain **exactly 104 consecutive days** (Day 1 = 2026-12-20; Day 104 = 2027-04-02). The two sources intentionally differ in the Scripture passages for a given day. **Do not merge, overwrite, swap, or mechanically combine them.** Preserve the Day and Date mapping and use stable IDs. One participant has one scored day regardless of whether they consult the supplementary passages.
 
-## Provenance / originals (Google Drive; access may be restricted)
+## Provenance / originals
 
-- Primary Excel workbook: [2026-12-20to2027-04-02_Life-and-Teachings-of-Jesus_Bible-Reading-Plan.xlsx](https://docs.google.com/spreadsheets/d/1VD5ZHjyaHWsy14NKImOLYJhOKbjeV74p/edit).
-- Supplemental Excel workbook: [2026-12-20to2027-04-02_harmony-parallel-reading-plan.xlsx](https://docs.google.com/spreadsheets/d/1td6-j-n98qJQzVkvvZ7JgPNUQErJYVpu/edit).
-- Both originals were created 2026-09-06 and remain in the Drive folder `2026-12-20to2027-04-02_Life-and-Teachings-of-Jesus`.
+- Primary Excel workbook: `2026-12-20to2027-04-02_Life-and-Teachings-of-Jesus_Bible-Reading-Plan.xlsx`.
+- Supplemental Excel workbook: `2026-12-20to2027-04-02_harmony-parallel-reading-plan.xlsx`.
+- Both originals were created 2026-09-06 and are held privately by the project owner (folder `2026-12-20to2027-04-02_Life-and-Teachings-of-Jesus`). They are deliberately not linked here because this repository is public; ask the owner for access.
 
 The CSV data are text exports retaining the column content returned by the authenticated Drive reader. They include an unnamed leading row-index column from the export. **Preserve source values but normalize types explicitly in the importer**, not via spreadsheet floating-point inference. Do not import the unnamed column as a source ID.
 
