@@ -10,6 +10,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Added
 
+- Added a manual GitHub Actions deploy for the `latoc.vayhub.org` development/pilot staging site (Option C: WordPress multisite, STUDY site only, `jlife-studies` + `jlife-huddles`, no Disciple.Tools or `jlife-bridge`), with a pre-deploy database backup that blocks the deploy if it fails; runbook in `docs/staging-latoc.md`.
 - Added a cloud-session dev runtime (`bin/cloud-dev.sh`, `npm run cloud:*`) that builds the same multisite + Disciple.Tools network without `wp-env`'s Docker builds, so sandboxed sessions can run setup, seed, verify, and every plugin's PHPUnit suite; documented in `docs/dev-environment.md` §7a.
 - Added the canonical J-Life domain architecture defining the organization-neutral framework, independently governed deployments, isolated church tenants, public-site boundary, VAY ChMeetings Diocese mapping, identity scopes, integration adapters, and repository responsibilities.
 - Added ADR 0001 accepting the multi-deployment tenant model: VAY Hub under `vayhub.org`, church tenants such as `rp.vayhub.org` and `gla.vayhub.org`, and a possible independently governed SonLife Hub deployment rather than placing SonLife under VAY.
