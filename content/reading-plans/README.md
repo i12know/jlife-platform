@@ -19,7 +19,7 @@ The CSV data are text exports retaining the column content returned by the authe
 
 ## Review flags before implementing an importer
 
-- **Section numbers are strings, not decimals.** In the primary CSV, Day 53 is shown as `4.4` between surrounding `4.39` / `4.41`-era sections and likely represents `4.40`; Day 81 is shown as `5.2` after `5.19` and likely represents `5.20`. These are **unconfirmed spreadsheet-coercion ambiguities**. Do not silently "fix" or ingest them as the earlier sections. Confirm against the original curriculum and ask the owner to approve corrections in a separate source-data change.
+- **Section identifiers are strings, not decimals.** The owner explicitly confirmed that primary Day 53 must use `4.40` (not `4.4`) and Day 81 must use `5.20` (not `5.2`); both values are corrected in this PR. Preserve the trailing zeros when parsing, storing, displaying, and exporting section IDs. The original Drive workbook has not been modified as part of this GitHub correction.
 - The supplemental plan includes additional parallel accounts, and daily word counts are therefore not directly comparable with the primary readings.
 - The source is a schedule of references, short headings, section IDs, estimated word counts and notes; **it is not a license to republish PlusNothing or Harmony Bible text**. Follow `docs/content-rights.md`; use approved Bible links rather than copying translation text.
 - Audit Scripture reference syntaxes (including cross-chapter ranges and partial verses) before generating deep links; do not discard unusual citations.
