@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run cloud:*)",
+      "Bash(bash bin/cloud-dev.sh:*)",
+      "Bash(npm run content:validate)"
+    ]
+  }
+}
