@@ -124,6 +124,47 @@ Acceptance procedure for a new Docker-equipped machine:
 3. Manually: log into HUB as `leader1` — the D.T UI should be in Vietnamese; log into STUDY as `participant1` — no HUB access.
 4. Report any FAIL lines on issue #15; fixes land in `bin/` scripts, not in manual steps.
 
+## 7a. Cloud sessions (Claude Code on the web and similar sandboxes)
+
+Cloud sandboxes can pull Docker images but cannot finish `wp-env`'s Docker *builds*: packages fetched inside the build don't trust the sandbox's TLS-intercepting proxy. [`bin/cloud-dev.sh`](../bin/cloud-dev.sh) builds the **same network** without `wp-env`:
+
+- MariaDB in a Docker container (image pull only; Docker Hub is reached through the `mirror.gcr.io` pull-through mirror to avoid shared-IP rate limits)
+- the host PHP built-in server, with [`bin/cloud-dev-router.php`](../bin/cloud-dev-router.php) reproducing the subdirectory-multisite rewrites
+- WP-CLI pinned to 2.11.0 and checked against its published SHA-512
+- the unchanged `bin/setup.js`, `seed.js` and `verify.js`. `JLIFE_DEV_RUNTIME=cloud` makes [`bin/lib.js`](../bin/lib.js) call WP-CLI directly instead of `wp-env run cli`.
+
+| Command | What it does |
+|---|---|
+| `npm run cloud:up` | Start Docker if needed, MariaDB, WordPress (pinned version), multisite + D.T + seed, then `verify` |
+| `npm run cloud:test` | Download the matching WordPress PHPUnit suite, `composer install` per plugin, run every plugin's PHPUnit suite |
+| `npm run cloud:wp -- <args>` | Arbitrary WP-CLI against the cloud network |
+| `npm run cloud:status` / `cloud:down` / `cloud:destroy` | Inspect, stop (keep data), or delete the network |
+
+The same accounts and URLs as §3 apply (`http://localhost:8888/`). State lives in `.cloud-dev/` (git-ignored).
+
+**Differences from `wp-env`:** the host PHP version is used (8.3 in Claude Code cloud images; CI stays on **8.2** and remains the authoritative test run), and the `jlife-*` plugins are symlinked rather than volume-mounted.
+
+**Cloud environment setup script (optional).** Pasting this into the cloud environment's setup script lets each new session start with Docker ready:
+
+```bash
+mkdir -p /etc/docker
+echo '{"registry-mirrors":["https://mirror.gcr.io"]}' > /etc/docker/daemon.json
+```
+
+**Permission allow-list (added by the owner).** In Claude Code's Auto mode, a safety check blocks downloading and running WordPress/WP-CLI unless the repo allows these commands. Claude may not write its own permission file, so the owner commits `.claude/settings.json`:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run cloud:*)",
+      "Bash(bash bin/cloud-dev.sh:*)",
+      "Bash(npm run content:validate)"
+    ]
+  }
+}
+```
+
 ## 8. Troubleshooting
 
 | Symptom | Fix |
