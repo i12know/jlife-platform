@@ -4,7 +4,7 @@
 
 ## Authoritative role of each file
 
-1. `2026-12-20_life-and-teachings-of-jesus_primary.csv` — **canonical daily assignments for ALL Bible Marathon participants**. Based on the PlusNothing `Life and Teachings of Jesus` arrangement; use its `Date`, `Day`, `Scripture (PlusNothing)`, `Titles`, and `PlusNothing Sections` as the reference schedule, subject to the owner's final source-data approval.
+1. `2026-12-20_life-and-teachings-of-jesus_primary.csv` — **canonical daily assignments for ALL Bible Marathon participants**. Based on the PlusNothing `Life and Teachings of Jesus` arrangement; use its `Date`, `Day`, `Scripture (PlusNothing)`, `Titles`, and `PlusNothing Sections` as the reference schedule, as confirmed by the project owner.
 2. `2026-12-20_harmony-parallel_supplemental.csv` — **optional deeper study**. Robertson parallel accounts and references enrich discussion, including for the SonLife pastors' group. It is **not** a separate scoring curriculum, and it must not add extra reading requirements or points for anyone.
 
 Both exported source tables contain **exactly 104 consecutive days** (Day 1 = 2026-12-20; Day 104 = 2027-04-02). The two sources intentionally differ in the Scripture passages for a given day. **Do not merge, overwrite, swap, or mechanically combine them.** Preserve the Day and Date mapping and use stable IDs. One participant has one scored day regardless of whether they consult the supplementary passages.
@@ -21,13 +21,13 @@ The CSV data are text exports retaining the column content returned by the authe
 
 - **Section identifiers are strings, not decimals.** The owner explicitly confirmed that primary Day 53 must use `4.40` (not `4.4`) and Day 81 must use `5.20` (not `5.2`); both values are corrected in this PR. Preserve the trailing zeros when parsing, storing, displaying, and exporting section IDs. The original Drive workbook has not been modified as part of this GitHub correction.
 - The supplemental plan includes additional parallel accounts, and daily word counts are therefore not directly comparable with the primary readings.
-- The source is a schedule of references, short headings, section IDs, estimated word counts and notes; **it is not a license to republish PlusNothing or Harmony Bible text**. Follow `docs/content-rights.md`; use approved Bible links rather than copying translation text.
+- **Rights scope (owner decision):** The plan contains Scripture references, day/date assignments, factual chronology, section identifiers, ordinary short headings, word counts and notes. The presence of a PlusNothing or Robertson source reference **does not by itself create a permission prerequisite** for using this reading schedule. Referencing biblical passages and factual events is distinct from reproducing a publisher's expressive text. Some creative selection/arrangement can be protected in appropriate circumstances; review any substantial verbatim third-party expression if actually included. **Do not reproduce third-party Bible translation text, substantive commentary, essays, maps, images, or other licensed material without the applicable rights.** Follow `docs/content-rights.md`; link to authorized Bible sources instead of copying translation text. The current reference-only schedules may proceed through technical validation and import without a blanket PlusNothing license gate.
 - Audit Scripture reference syntaxes (including cross-chapter ranges and partial verses) before generating deep links; do not discard unusual citations.
-- The CSV is a faithful data handoff. Confirm the preferred source order and edge cases with the owner before calling it publication-ready.
+- The CSV is a faithful data handoff. The owner has **approved the primary/supplemental roles** and confirmed the Day 53 `4.40` and Day 81 `5.20` corrections. Remaining pre-publication review is technical integrity (including Bible links and parser edge cases), provenance/attribution, and any **actual copied expressive content**; it is not a blanket license-approval milestone for reference-only data.
 
 ## Build implications
 
 - Update draft plan D11 in #49: **do not generate a fresh split of Robertson's 185 sections**. Import the existing primary 104-day curriculum and expose the supplemental parallels as optional enrichment.
 - For the Nov 20 demonstration, use the *actual* Day 1 primary passage (**John 1:1-18**) and optionally show Day 1 parallel references (**Luke 1:1-4; John 1:1-18**).
 - Keep all participants on one scoring calendar with one daily SOAP. Optional advanced commentary/pastor discussion does not increase points.
-- This change only supplies reference data for review, not code and not a finalized decision about third-party rights or Bible translation deep-link targets.
+- This change only supplies reference data for review, not app code. The reference-only reading schedule is approved for development use without seeking an arrangement license; verify rights separately if the app later includes third-party expressive content or Bible translation text, and confirm Bible deep-link targets.
