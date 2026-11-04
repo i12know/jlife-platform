@@ -1,0 +1,47 @@
+# Bible Translation Quotation Permissions (J-Life reference)
+
+**Verified:** 2026-11-04. **Scope:** U.S.-oriented publication of limited Scripture quotations within J-Life studies, sermons, SOAP resources, websites and apps. **Maintainer:** update this file when publishers revise their terms and record the exact translation, edition, media type and date checked.
+
+## Read this first
+
+- Many publishers explicitly permit limited quotation **without requesting separate written permission**. Those are **publisher-granted quotation guidelines**; the numeric limits are *not* a statutory definition of U.S. fair use. Legal fair use is a separate, fact-specific doctrine and has no universal 500-verse rule.
+- A reference such as `John 1:1-18`, or a link to a publisher-approved Bible page, is **not reproduced Bible translation text** and does not consume a verse allowance. J-Life's 104-day schedule is reference-only and does **not** require a Bible-text license just to import/display those references.
+- Never assume the 500/1,000-verse allowance is **per page, day, participant, chapter, or request**. The relevant publisher's definition of the quoted *work/product/publication* and the **aggregate across a website/app** may control. Do not split 104 daily pages to evade a limit. Check percentage, book-completeness, form/media, attribution, and any restrictions on Bible-reference works, apps, hosting, stored text, or AI.
+- A quotation exception is **not** permission to host/republish the whole Bible, download a bulk corpus, scrape YouVersion, or redistribute another publisher's digital edition. If the app intends to serve large amounts of passage text, use an approved Bible API, publisher license, or links.
+- These guidelines are edition-, language-, and publisher-specific; **do not transfer permission from one Bible society/translation to another**. Copyright notices must follow the exact publisher instructions, which may change. Read the linked source before publishing.
+
+## Verified publisher-specific guidelines
+
+| Translation | Published no-separate-request allowance | Conditions that matter for J-Life | Status / primary source |
+|---|---|---|---|
+| **ESV** (English Standard Version, Crossway) | **Up to 500 verses** for print, digital and audio quotations. | Must be **less than half of any biblical book**, and **less than 25% of the quoted work**. Crossway excludes quotations in a **commentary or other biblical reference work** from its standard allowance. Its 2025 notice requires copyright credit and restricts Creative Commons redistribution / translation. **Do not assume a full study-platform reader qualifies merely because it is a nonprofit.** | **Verified**: https://www.crossway.org/permissions/ |
+| **ERV** (Holy Bible: Easy-to-Read Version, Bible League International) | **Up to 1,000 verses** without written permission. | No complete book; no more than **50% of the quoting work**; copyright acknowledgement (short `ERV` mark is allowed for certain not-for-sale church materials). The publisher's broader digital distribution agreement **requires written permission for server hosting of electronic Bible copies**, and directs website text uses for clarification. Small editorial quotations are distinguishable from a served Bible text product; review actual website/app usage instead of treating 1,000 as a hosting license. | **Verified with website caveat**: https://www.bibleleague.org/license-agreement/ and https://ebible.org/engerv/copyright.htm |
+| **NASB** (New American Standard Bible, Lockman Foundation) | **Up to 1,000 verses** without express written permission. | No complete book; no more than **50% of the quoting work**; no more than 1,000 verses stored in an electronic retrieval system. For webpages/apps, use the **full copyright notice and clickable Lockman link**. Lockman separately provides an AI-output policy; it does not authorize bulk scraping/training. | **Verified**: https://www.lockman.org/permission-to-quote-copyright-trademark-information/ |
+| **NIV and other Biblica-controlled translations** | Biblica's general rule permits **up to 500 verses** without written permission. | No complete book; **less than 25%** of the new product/publication; proper copyright acknowledgement. For a media platform, limits apply to the **platform as a whole**, not individual posts/episodes. Biblica additionally describes express licensing via approved partners for qualifying **noncommercial apps/sites without AI/ML features**; this is a separate workflow, not a blanket quote permission. Confirm the actual translation and its edition are covered. | **Verified for Biblica-controlled text**: https://www.biblica.com/permissions/ |
+| **VIE2010 / RVV11** (Kinh Thanh Tieng Viet Ban Hieu Dinh 2010) | **No verified 500-verse permission located** as of this review. | The translation is **© 2010 United Bible Societies** and marked **reserved** in Scripture metadata; Bible Society Vietnam is a publisher. UBS's public **Spanish-language** guidelines mention 500 verses, but those are **explicitly scoped to Spanish translations** and cannot be assumed to cover VIE2010. YouVersion's authorization to display VIE2010 is not transferable to J-Life. Keep **references + direct Bible links** available without delay; seek the version-specific quotation terms before treating any quota as pre-authorized for J-Life's own displayed text. | **Unverified verse limit; inquiry open (#3)**: https://arc.dbs.org/data/scripture/VIEVRV/index.html ; https://www.bible.com/versions/151-vie2010-kinh-thanh-tieng-viet-ban-hieu-dinh-2010 ; https://ubscopyrights.org/index.php/pages/view/rules ; https://biblevietnam.org/ |
+
+**Name collision:** ERV here means the *Easy-to-Read Version* from Bible League International, **not** the nineteenth-century English Revised Version.
+
+## Implementation decisions for J-Life
+
+1. **Default reading experience:** Display the daily book/chapter/verse references, short original introductions, and direct links to the publisher-authorized Bible reading page. This remains permitted regardless of which of the above numerical quotation policies is confirmed. See also YouVersion's copyright FAQ: https://help.youversion.com/l/en/article/o8t2xmy9q2-copyright
+2. **Editorial snippets in lessons or SOAP guidance:** When adding *actual verse wording*, record `version`, `edition`, `copyright source`, `use type`, `quoted verse ranges`, `copyright notice`, `source URL`, `review date`, and (where required) `permission/license`. Check total amount in the relevant product/publication and the publisher's exclusions. Do not apply a universal 500-verse threshold.
+3. **Reading passages in full inside J-Life:** Treat this as a **digital Bible text distribution/reader feature**, not automatically as isolated quotations. Recheck rights and an approved source/API and/or ask the holder before enabling it. For the 104-day marathon, links are the launch-safe default.
+4. **Avoid automatically copying Scripture text from online sites** into GitHub, database seed files, email reminders, logs, or cached app assets unless the specific use is within verified terms. A deep link is different from republishing text.
+5. **Attribution:** Include full publisher copyright notices where required. Short version labels are permitted only in the narrower contexts a publisher identifies. Use the exact current notice linked above; do not reuse one translation's language for another.
+6. **VIE2010 follow-up:** Existing [Issue #3](https://github.com/i12know/jlife-platform/issues/3) should request the specific **VIE2010/RVV11 verse quotation threshold (if any), percentage/book limits, digital app/website allowances, and required credit wording** from Bible Society Vietnam / UBS. Bible Society Vietnam lists `info@biblevietnam.org` on its [official site](https://biblevietnam.org/). Ask for these *narrow quotation rules* separately from rights to host the full translation. Document the written answer here and in `docs/content-rights.md` before treating a numerical VIE2010 allowance as verified.
+7. **Review triggers:** Any translation change, edition change, growth beyond cumulative limits, paid/commercial distribution, user-facing app/API text rendering, commentary/reference-work classification, or AI-based text reproduction triggers a fresh check.
+
+## Sources and provenance (checked 2026-11-04)
+
+- Crossway official ESV permissions: https://www.crossway.org/permissions/
+- Bible League International ERV license: https://www.bibleleague.org/license-agreement/
+- Easy-to-Read Version copyright notice: https://ebible.org/engerv/copyright.htm
+- Lockman Foundation official NASB permission: https://www.lockman.org/permission-to-quote-copyright-trademark-information/
+- Biblica official permission guidelines: https://www.biblica.com/permissions/
+- UBS official quotation guidelines **for Spanish editions only**: https://ubscopyrights.org/index.php/pages/view/rules
+- VIE2010 reserved copyright record: https://arc.dbs.org/data/scripture/VIEVRV/index.html
+- Bible Society Vietnam: https://biblevietnam.org/
+- YouVersion copyright FAQ (linking allowed; rights are version-specific): https://help.youversion.com/l/en/article/o8t2xmy9q2-copyright
+
+**Record status:** 500 verses (ESV/Biblica) and 1,000 verses (ERV/NASB) are **verified with conditions**; VIE2010's proposed 500-verse allowance is **not established from a version-specific rights-holder statement**. Do not promote it to an approved exception until independently confirmed.
