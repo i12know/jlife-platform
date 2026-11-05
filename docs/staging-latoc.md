@@ -71,3 +71,6 @@ The first run creates the network admin `latoc-admin` with a random password, sa
   - WordPress 7.0 multisite installed; the front page serves "J-Life (staging)" with `noindex, nofollow`.
   - **Bug found:** the script's strict `umask 077` also applied to the WordPress files, so Apache returned 403 ("Server unable to read htaccess file") for `/wp-admin/` and every CSS/JS file.
   - Fixed by resetting web permissions on every run: directories 755, files 644, `wp-config.php` 600. Re-run the workflow to apply it.
+- **2026-11-05, second run** (after #54): verified from the cloud session in a phone-size browser. Home 200; `/wp-admin/` redirects to the login page; login page fully styled; CSS/JS 200; `/hub/` 404 (no Disciple.Tools, as intended); no `jlife-bridge`.
+- **2026-11-05, third run** ([run 41978189194](https://github.com/i12know/jlife-platform/actions/runs/41978189194), after #67): both 104-day reading plans imported. Day pages verified on latoc: Days 1, 38, 53, 71 and 104 return 200 with the expected passages and links. The magic-link probe (`/?jlife_token=…`) does not answer.
+- From #68 on, the deploy itself fails if `jlife-bridge` is active or the magic-link route answers.
