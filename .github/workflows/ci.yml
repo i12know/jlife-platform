@@ -69,6 +69,12 @@ jobs:
       - name: Install jlife-studies test dependencies
         run: composer install --no-interaction --no-progress
         working-directory: plugins/jlife-studies
+      - name: Install jlife-challenges test dependencies
+        run: composer install --no-interaction --no-progress
+        working-directory: plugins/jlife-challenges
+      - name: Install jlife-auth test dependencies
+        run: composer install --no-interaction --no-progress
+        working-directory: plugins/jlife-auth
       - name: Start wp-env
         run: npx wp-env start
       # wp-env only downloads the WP PHPUnit suite during its configure
@@ -80,6 +86,10 @@ jobs:
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-huddles vendor/bin/phpunit
       - name: Run jlife-studies test suite
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-studies vendor/bin/phpunit
+      - name: Run jlife-challenges test suite
+        run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-challenges vendor/bin/phpunit
+      - name: Run jlife-auth test suite
+        run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-auth vendor/bin/phpunit
 
   dependency-audit:
     # Advisory checks (#57). Non-blocking for now: findings show as warnings
@@ -103,7 +113,7 @@ jobs:
         run: composer audit --locked || echo "::warning::composer audit reported vulnerabilities"
       - name: composer audit (plugin test dependencies)
         run: |
-          for p in plugins/jlife-huddles plugins/jlife-studies; do
+          for p in plugins/jlife-huddles plugins/jlife-studies plugins/jlife-challenges plugins/jlife-auth; do
             (cd "$p" && composer install --no-interaction --no-progress --quiet && composer audit) \
               || echo "::warning::composer audit reported vulnerabilities in $p"
           done

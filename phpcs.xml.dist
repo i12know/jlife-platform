@@ -22,6 +22,8 @@
 				<element value="jlife-studies"/>
 				<element value="jlife-huddles"/>
 				<element value="jlife-bridge"/>
+				<element value="jlife-challenges"/>
+				<element value="jlife-auth"/>
 			</property>
 		</properties>
 	</rule>

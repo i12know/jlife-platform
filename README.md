@@ -15,6 +15,8 @@ This repository is starting as a planning and prototype space. The first source 
 - [Content Rights Register](docs/content-rights.md) — rights inventory and handling rules
 - [Bible Quotation Permissions](docs/bible-quotation-permissions.md) — publisher quotation allowances (confirmed / conditional / unverified) and how quotation differs from hosting or API display
 - [YouVersion Platform research note](docs/youversion-platform.md) — what the Platform API/SDKs provide, licensing unknowns, and links vs. iframe vs. licensed integration
+- [Challenges Engine Design](docs/challenges-engine-design.md) — design for the Bible Marathon scoring engine (M5, #60): tables, day/scoring rules, privacy-matrix rows, required tests
+- [latoc Staging Runbook](docs/staging-latoc.md) — deploy, admin login, backups, restore and rollback for the staging site
 - [Integration Boundaries](docs/integration-boundaries.md) — data ownership and sync rules across ChMeetings, Disciple.Tools, and the study surface
 - [Architecture Decisions](docs/adr/) — durable records explaining important design choices, beginning with the multi-deployment tenant model
 - [Dev Environment](docs/dev-environment.md) — reproducible local multisite (wp-env + Docker): quickstart, Windows disk-space guidance, verify script
