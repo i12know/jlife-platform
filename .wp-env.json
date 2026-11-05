@@ -12,6 +12,7 @@
     ".htaccess": "./config/wp-env/htaccess-multisite",
     "wp-content/plugins/jlife-studies": "./plugins/jlife-studies",
     "wp-content/plugins/jlife-huddles": "./plugins/jlife-huddles",
+    "wp-content/plugins/jlife-challenges": "./plugins/jlife-challenges",
     "wp-content/plugins/jlife-bridge": "./plugins/jlife-bridge"
   }
 }

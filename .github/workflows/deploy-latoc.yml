@@ -32,7 +32,7 @@ jobs:
           tar -czf "$RUNNER_TEMP/jlife-plugins.tgz" -C plugins \
             --exclude=vendor --exclude=tests --exclude='composer.*' \
             --exclude='phpunit.xml*' --exclude='.phpunit.result.cache' \
-            jlife-studies jlife-huddles \
+            jlife-studies jlife-huddles jlife-challenges \
             -C "$GITHUB_WORKSPACE/content" reading-plans/2026-12-20_life-and-teachings-of-jesus_primary.json \
             reading-plans/2026-12-20_harmony-parallel_supplemental.json
           tar -tzf "$RUNNER_TEMP/jlife-plugins.tgz" | head -50
