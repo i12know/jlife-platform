@@ -19,11 +19,15 @@ jobs:
         run: node bin/validate-harmony.js
       - name: Validate series/lesson content against /content/schemas
         run: node bin/validate-content.js
+      - name: Validate reading plans (CSV sync, calendar, section IDs, references, links)
+        run: node bin/validate-reading-plans.js
+      - name: Unit tests for reading-plan parsing and Bible links
+        run: node --test bin/test/*.test.js
       # No app JS/CSS yet — bin/ holds Node tooling, so a syntax check is the
       # applicable lint. Swap in eslint/stylelint when plugin JS/CSS lands.
       - name: Syntax-check Node tooling
         run: |
-          for f in bin/*.js; do node --check "$f"; done
+          for f in bin/*.js bin/content-lib/*.js bin/test/*.js; do node --check "$f"; done
 
   php-lint:
     name: PHPCS + PHPStan
@@ -62,6 +66,9 @@ jobs:
       - name: Install plugin test dependencies
         run: composer install --no-interaction --no-progress
         working-directory: plugins/jlife-huddles
+      - name: Install jlife-studies test dependencies
+        run: composer install --no-interaction --no-progress
+        working-directory: plugins/jlife-studies
       - name: Start wp-env
         run: npx wp-env start
       # wp-env only downloads the WP PHPUnit suite during its configure
@@ -71,3 +78,5 @@ jobs:
         run: node bin/ensure-wp-tests.js
       - name: Run jlife-huddles test suite
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-huddles vendor/bin/phpunit
+      - name: Run jlife-studies test suite
+        run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-studies vendor/bin/phpunit

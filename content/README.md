@@ -9,6 +9,7 @@ Study content lives here as portable, rights-aware files. The WordPress database
 | `schemas/` | JSON/Markdown schema definitions + a documented example lesson | #5 |
 | `pilot-lessons/` | The 5–7 Vietnamese pilot lessons | #7 |
 | `harmony/` | `gospel_event` outline dataset from the public-domain Robertson (1922) harmony | #6 |
+| `reading-plans/` | The owner's 104-day Bible Marathon schedules (CSV source), generated plan JSON with Bible links, and link settings ([README](reading-plans/README.md)) | PR #50, #59 |
 
 ## Rules (enforced at review)
 

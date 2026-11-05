@@ -31,3 +31,21 @@ The CSV data are text exports retaining the column content returned by the authe
 - For the Nov 20 demonstration, use the *actual* Day 1 primary passage (**John 1:1-18**) and optionally show Day 1 parallel references (**Luke 1:1-4; John 1:1-18**).
 - Keep all participants on one scoring calendar with one daily SOAP. Optional advanced commentary/pastor discussion does not increase points.
 - This change only supplies reference data for review, not app code. The reference-only reading schedule is approved for development use without seeking an arrangement license; verify rights separately if the app later includes third-party expressive content or Bible translation text, and confirm Bible deep-link targets.
+
+## Generated plan JSON, links and import (#59)
+
+The CSVs above stay the source. `npm run plans:build` turns each plan in [`plans.json`](plans.json) into a portable JSON file next to its CSV:
+
+- **Days:** `day_id` (`d001`…`d104`, shared by both plans), day number, calendar date, title, and section IDs **as strings** (`4.40` stays `4.40`).
+- **Harmony:** Robertson labels and their `r1922-NNN` events; lettered sub-sections such as `#54a` link to the parent event.
+- **References:** each reference exactly as written in the CSV, plus parsed segments (half-verse letters kept).
+- **Links:** pre-built Bible links per language from [`bible-links.json`](bible-links.json). English ERV is one Bible Gateway link with all passages, plus one per passage. Vietnamese VIE2010 is one Bible.com link per passage. Chapter-crossing ranges are split; half-verse letters are dropped only in links. **No Bible text.** The rules come from the owner's link tests on #59.
+
+| Command | What it does |
+|---|---|
+| `npm run plans:build` | Regenerate the JSON after a CSV, `plans.json` or `bible-links.json` change |
+| `npm run content:validate` | Includes `bin/validate-reading-plans.js`. Checks the JSON is in sync with its CSV, 104 days from Dec 20 to Apr 2, unique `day_id`s, primary section IDs in order (catches a `4.40` → `4.4` regression), every reference parsed, Harmony events present, links for every language, Bible.com links never crossing a chapter, and the supplemental plan aligned day-for-day |
+| `npm run test:js` | Unit tests for the reference parser and link builder, including the owner-tested Day 1 and Day 38 links |
+| `wp jlife reading-plan import content/reading-plans/*.json` | Upserts one public page per day at `/reading/<plan>-d###/`. The primary plan is imported first; the supplemental plan attaches to the same day as a collapsed "optional parallel readings" section and never creates pages of its own. The latoc deploy runs this automatically |
+
+Changing the Bible site or translation for a language is an edit to `bible-links.json` followed by `npm run plans:build`; no code change.

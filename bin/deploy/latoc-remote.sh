@@ -133,6 +133,11 @@ for plugin in "${PLUGINS[@]}"; do
   mv "${stage}/${plugin}" "${dest}"
   rm -rf "${dest}.old"
 done
+# Reading-plan JSON (#59) travels in the same bundle; keep the latest copy.
+if [ -d "${stage}/reading-plans" ]; then
+  rm -rf "${STATE_DIR}/reading-plans"
+  mv "${stage}/reading-plans" "${STATE_DIR}/reading-plans"
+fi
 rm -rf "${stage}" "${BUNDLE}"
 
 # The strict umask above protects ~/.latoc (backups, admin password). Web
@@ -151,6 +156,12 @@ wp plugin deactivate jlife-bridge >/dev/null 2>&1 || true
 log "Hardening staging settings"
 wp option update blog_public 0 >/dev/null # discourage search engines
 wp rewrite structure '/%postname%/' >/dev/null
+
+if ls "${STATE_DIR}"/reading-plans/*.json >/dev/null 2>&1; then
+  log "Importing reading plans"
+  wp jlife reading-plan import "${STATE_DIR}"/reading-plans/*.json
+fi
+wp rewrite flush >/dev/null
 
 log "Status"
 printf 'WordPress %s; network installed: %s\n' "$(wp core version)" \

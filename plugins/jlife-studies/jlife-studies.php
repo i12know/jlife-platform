@@ -20,10 +20,13 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/includes/content-types.php';
 require_once __DIR__ . '/includes/content-io.php';
 require_once __DIR__ . '/includes/reader.php';
+require_once __DIR__ . '/includes/reading-plans.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once __DIR__ . '/includes/class-jlife-content-command.php';
 	WP_CLI::add_command( 'jlife content', 'Jlife_Content_Command' );
+	require_once __DIR__ . '/includes/class-jlife-reading-plan-command.php';
+	WP_CLI::add_command( 'jlife reading-plan', 'Jlife_Reading_Plan_Command' );
 }
 
 /**
