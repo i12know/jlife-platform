@@ -23,11 +23,11 @@ jobs:
         run: node bin/validate-reading-plans.js
       - name: Unit tests for reading-plan parsing and Bible links
         run: node --test bin/test/*.test.js
-      # No app JS/CSS yet — bin/ holds Node tooling, so a syntax check is the
-      # applicable lint. Swap in eslint/stylelint when plugin JS/CSS lands.
-      - name: Syntax-check Node tooling
+      # Syntax check for Node tooling and the small, dependency-free plugin
+      # scripts. Swap in eslint/stylelint if plugin JS/CSS grows.
+      - name: Syntax-check JavaScript
         run: |
-          for f in bin/*.js bin/content-lib/*.js bin/test/*.js; do node --check "$f"; done
+          for f in bin/*.js bin/content-lib/*.js bin/test/*.js plugins/*/assets/*.js; do node --check "$f"; done
 
   php-lint:
     name: PHPCS + PHPStan
