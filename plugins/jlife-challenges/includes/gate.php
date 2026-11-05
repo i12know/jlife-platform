@@ -97,7 +97,9 @@ function jlife_challenges_can_read_feed( $viewer_user_id, $group_id ) {
  * @return bool
  */
 function jlife_challenges_needs_guardian_consent( $enrollment ) {
-	$required = (bool) apply_filters( 'jlife_challenges_require_guardian_consent', (bool) get_option( 'jlife_challenges_require_guardian_consent', true ) );
+	// Option values are '1' (default) or '0'; update_option( ..., false ) on a
+	// missing option is a no-op in WordPress, so booleans are not used.
+	$required = (bool) apply_filters( 'jlife_challenges_require_guardian_consent', '0' !== (string) get_option( 'jlife_challenges_require_guardian_consent', '1' ) );
 	return $required && 'minor' === $enrollment['age_band'] && empty( $enrollment['guardian_consent'] );
 }
 

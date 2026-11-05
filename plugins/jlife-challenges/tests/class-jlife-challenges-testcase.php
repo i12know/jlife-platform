@@ -83,7 +83,7 @@ abstract class Jlife_Challenges_TestCase extends WP_UnitTestCase {
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $this->u['a'], $this->g['g1'] ) );
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $this->u['b'], $this->g['g1'] ) );
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $this->u['c'], $this->g['g2'] ) );
-		$this->at( '2026-12-20 18:00:00' ); // Day 1, 10:00 AM Pacific.
+		$this->set_now( '2026-12-20 18:00:00' ); // Day 1, 10:00 AM Pacific.
 	}
 
 	/**
@@ -108,7 +108,7 @@ abstract class Jlife_Challenges_TestCase extends WP_UnitTestCase {
 	 *
 	 * @param string $utc 'Y-m-d H:i:s' in UTC.
 	 */
-	protected function at( $utc ) {
+	protected function set_now( $utc ) {
 		$this->now = new DateTimeImmutable( $utc, new DateTimeZone( 'UTC' ) );
 	}
 

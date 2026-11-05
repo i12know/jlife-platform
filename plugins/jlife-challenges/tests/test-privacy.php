@@ -72,7 +72,7 @@ class Test_Privacy extends Jlife_Challenges_TestCase {
 	 */
 	public function test_history_after_campaign_end() {
 		$id = jlife_challenges_submit( $this->u['a'], $this->campaign, null, $this->soap() )['entry_id'];
-		$this->at( '2027-06-01 18:00:00' );
+		$this->set_now( '2027-06-01 18:00:00' );
 		$this->assertIsArray( jlife_challenges_get_entry( $this->u['a'], $id ) );
 		$this->assertSame( 1, jlife_challenges_progress( $this->u['a'], $this->u['a'], $this->campaign )['points'] );
 		$this->assertSame( 0, jlife_challenges_current_day( $this->campaign_row() ) );

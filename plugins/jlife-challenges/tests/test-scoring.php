@@ -60,7 +60,7 @@ class Test_Scoring extends Jlife_Challenges_TestCase {
 	 * After the grace window (D1) the entry is stored but earns no point, with a reason.
 	 */
 	public function test_late_submission_records_no_point_with_reason() {
-		$this->at( '2026-12-22 08:00:00' ); // Dec 22, 12:00 AM PST = Day 3.
+		$this->set_now( '2026-12-22 08:00:00' ); // Dec 22, 12:00 AM PST = Day 3.
 		$r = jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $this->soap() );
 		$this->assertSame( 0, $r['points'] );
 		$this->assertSame( 'late_no_point', $r['status'] );
@@ -71,7 +71,7 @@ class Test_Scoring extends Jlife_Challenges_TestCase {
 	 * The grace day itself still earns the point.
 	 */
 	public function test_next_day_still_earns_point() {
-		$this->at( '2026-12-22 07:59:00' ); // Dec 21, 11:59 PM PST.
+		$this->set_now( '2026-12-22 07:59:00' ); // Dec 21, 11:59 PM PST.
 		$this->assertSame( 1, jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $this->soap() )['points'] );
 	}
 
@@ -79,7 +79,7 @@ class Test_Scoring extends Jlife_Challenges_TestCase {
 	 * Backfill (D2) is allowed for formation but scores nothing.
 	 */
 	public function test_backfill_allowed_without_point() {
-		$this->at( '2026-12-29 20:00:00' ); // Day 10.
+		$this->set_now( '2026-12-29 20:00:00' ); // Day 10.
 		$r = jlife_challenges_submit( $this->u['a'], $this->campaign, 'd003', $this->soap() );
 		$this->assertIsArray( $r );
 		$this->assertSame( 0, $r['points'] );
@@ -101,7 +101,7 @@ class Test_Scoring extends Jlife_Challenges_TestCase {
 	 */
 	public function test_late_edit_keeps_point() {
 		jlife_challenges_submit( $this->u['a'], $this->campaign, null, $this->soap( 'v1' ) );
-		$this->at( '2027-01-05 20:00:00' );
+		$this->set_now( '2027-01-05 20:00:00' );
 		$r = jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $this->soap( 'v2' ) );
 		$this->assertSame( 1, $r['points'] );
 		$this->assertSame( 'earned', $r['status'] );

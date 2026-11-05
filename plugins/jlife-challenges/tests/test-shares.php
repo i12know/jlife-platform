@@ -163,7 +163,7 @@ class Test_Shares extends Jlife_Challenges_TestCase {
 	 * D19 option (b): turning the consent requirement off lets minors share.
 	 */
 	public function test_guardian_consent_requirement_is_a_setting() {
-		update_option( 'jlife_challenges_require_guardian_consent', false );
+		update_option( 'jlife_challenges_require_guardian_consent', '0' );
 		$teen = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		jlife_challenges_enroll( $this->u['organizer'], $teen, $this->g['g1'], 'minor' );
 		$entry = jlife_challenges_submit( $teen, $this->campaign, null, $this->soap() )['entry_id'];
