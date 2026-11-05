@@ -38,6 +38,26 @@ The first run creates the network admin `latoc-admin` with a random password, sa
 3. **Immediately** change that user's email to a real mailbox (it starts as a placeholder `admin@latoc.vayhub.org`) and set your own password.
 4. Delete `~/.latoc/admin-password`.
 
+## Test drive campaign
+
+The deploy has a **test_campaign** choice (default `none`):
+
+- **create** makes a "TEST Bible Marathon" whose Day 1 is today (Pacific),
+  using the real 104-day plan, with one "Test Group". The join link is
+  emailed to the site admin address and saved to `~/.latoc/test-invite.txt`
+  (0600, readable via File Manager); it is never printed in the workflow log.
+  Running **create** again keeps the same campaign and issues a new link (the
+  old one stops working).
+- **remove** deletes every test campaign (campaign keys starting `test-`)
+  with its groups, enrollments, SOAP entries and revisions, points, shares and
+  audit rows, and deletes participant accounts that were only ever in a test
+  campaign, so testers start fresh. Staff accounts and anything in a real
+  campaign are untouched. Run it before inviting real participants (by the
+  Dec 5 shadow pilot at the latest). The pre-deploy backup still holds the
+  test data if it is ever needed.
+
+The same commands exist on the server: `wp jlife test-campaign create|remove|status`.
+
 ## Backups and restore
 
 - Every deploy writes `~/.latoc/backups/<UTC timestamp>.sql.gz`; the 10 most recent are kept.

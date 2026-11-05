@@ -8,7 +8,7 @@
 # Inputs (environment, from a 0600 env file the workflow uploads and this
 # script deletes):
 #   WP_PATH, SITE_URL, WP_VERSION, DB_NAME, DB_USER, DB_PASSWORD
-# Optional: DB_HOST (localhost), PHP_BIN (cPanel ea-php82), STATE_DIR (~/.latoc),
+# Optional: TEST_CAMPAIGN (none|create|remove), DB_HOST (localhost), PHP_BIN (cPanel ea-php82), STATE_DIR (~/.latoc),
 #   BUNDLE (the uploaded plugin tarball, $STATE_DIR/jlife-plugins.tgz)
 #
 # Never prints secrets. The first-install admin password is written to
@@ -165,6 +165,22 @@ if ls "${STATE_DIR}"/reading-plans/*.json >/dev/null 2>&1; then
   wp jlife reading-plan import "${STATE_DIR}"/reading-plans/*.json
 fi
 wp rewrite flush >/dev/null
+
+# Staging test drive (never printed: the invite goes by email and to an
+# owner-only file in ${STATE_DIR}).
+case "${TEST_CAMPAIGN:-none}" in
+  create)
+    log "Test campaign: create"
+    wp jlife test-campaign create --save-to="${STATE_DIR}/test-invite.txt"
+    ;;
+  remove)
+    log "Test campaign: remove"
+    wp jlife test-campaign remove
+    rm -f "${STATE_DIR}/test-invite.txt"
+    ;;
+  none) ;;
+  *) die "Unknown TEST_CAMPAIGN: ${TEST_CAMPAIGN}" ;;
+esac
 
 log "Status"
 printf 'WordPress %s; network installed: %s\n' "$(wp core version)" \

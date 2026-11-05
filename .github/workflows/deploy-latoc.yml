@@ -4,6 +4,18 @@ name: Deploy latoc staging
 # only merged code can reach its secrets. Runbook: docs/staging-latoc.md.
 on:
   workflow_dispatch:
+    inputs:
+      test_campaign:
+        description: >-
+          Test drive: "create" makes a TEST Bible Marathon starting today and
+          emails the invite link to the site admin address (run again for a
+          new link); "remove" deletes all test data and test-only accounts.
+        type: choice
+        options:
+          - none
+          - create
+          - remove
+        default: none
 
 permissions:
   contents: read
@@ -68,6 +80,7 @@ jobs:
           DB_NAME: ${{ secrets.LATOC_DB_NAME }}
           DB_USER: ${{ secrets.LATOC_DB_USER }}
           DB_PASSWORD: ${{ secrets.LATOC_DB_PASSWORD }}
+          TEST_CAMPAIGN: ${{ inputs.test_campaign }}
         run: |
           scp -q "$RUNNER_TEMP/jlife-plugins.tgz" latoc:.latoc/jlife-plugins.tgz
           scp -q bin/deploy/latoc-remote.sh latoc:.latoc/latoc-remote.sh
@@ -80,6 +93,7 @@ jobs:
             printf 'DB_NAME=%q\n' "$DB_NAME"
             printf 'DB_USER=%q\n' "$DB_USER"
             printf 'DB_PASSWORD=%q\n' "$DB_PASSWORD"
+            printf 'TEST_CAMPAIGN=%q\n' "$TEST_CAMPAIGN"
           } | ssh latoc 'umask 077; cat > ~/.latoc/deploy.env'
 
       - name: Install or update on the server

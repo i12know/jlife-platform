@@ -29,6 +29,12 @@ require_once __DIR__ . '/includes/lifecycle.php';
 require_once __DIR__ . '/includes/views.php';
 require_once __DIR__ . '/includes/screens.php';
 require_once __DIR__ . '/includes/rest.php';
+require_once __DIR__ . '/includes/test-campaign.php';
+
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once __DIR__ . '/includes/class-jlife-test-campaign-command.php';
+	WP_CLI::add_command( 'jlife test-campaign', 'Jlife_Test_Campaign_Command' );
+}
 
 register_activation_hook( __FILE__, 'jlife_challenges_activate' );
 
