@@ -26,8 +26,20 @@ require_once __DIR__ . '/includes/soap.php';
 require_once __DIR__ . '/includes/scores.php';
 require_once __DIR__ . '/includes/shares.php';
 require_once __DIR__ . '/includes/lifecycle.php';
+require_once __DIR__ . '/includes/views.php';
+require_once __DIR__ . '/includes/screens.php';
+require_once __DIR__ . '/includes/rest.php';
 
-register_activation_hook( __FILE__, 'jlife_challenges_install_tables' );
+register_activation_hook( __FILE__, 'jlife_challenges_activate' );
+
+/**
+ * Create the tables, register the screen routes and flush rewrite rules once.
+ */
+function jlife_challenges_activate() {
+	jlife_challenges_install_tables();
+	jlife_challenges_add_rewrites();
+	flush_rewrite_rules();
+}
 
 add_action( 'init', 'jlife_challenges_load_textdomain' );
 
