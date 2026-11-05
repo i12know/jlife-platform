@@ -31,17 +31,35 @@ Rule of the repo: **do not publish or commit third-party copyrighted expression 
 
 ## 2. Vietnamese Bible Text Options
 
-Legal status must be verified per translation before any verse text is rendered by the platform. Working notes (all **unverified — verify before use**):
+**Quotation vs. distribution (last verified 2026-11-05).** Publisher quotation allowances, per-translation status (**confirmed / conditional / unverified**), and the five distinct uses are documented in [Bible Translation Quotation Permissions](bible-quotation-permissions.md). Licensed display through an API is covered in the [YouVersion Platform research note](youversion-platform.md). In short:
+- A 500- or 1,000-verse allowance is a **conditional publisher permission**, not statutory fair use and **not a Bible-reader license**.
+- **References and links need no permission** and remain the launch default ([#49](https://github.com/i12know/jlife-platform/issues/49) D12; [PR #50](https://github.com/i12know/jlife-platform/pull/50) schedules).
+
+| Translation | Status (2026-11-05) | J-Life decision |
+|---|---|---|
+| **ESV** | **Confirmed:** 500 verses; not more than one-half of a book; under 25% of the work; excludes commentaries/reference works; 2025 notice (Crossway) | Limited attributed quotes within those conditions; links otherwise |
+| **NASB** | **Confirmed:** 1,000 verses; no complete book; at most 50%; at most 1,000 verses stored electronically; full notice + clickable lockman.org link on web/apps | Limited attributed quotes within those conditions |
+| **ERV** (Easy-to-Read Version) | **Conditional:** 1,000 verses / 50% / no complete book, **but Bible League requires written permission to host ERV on a server or use it on a website** | Links for the marathon. ERV text on a J-Life page needs Bible League's written permission or an authorized API that carries ERV |
+| **NIV** (Biblica) | **Unverified:** publisher pages couldn't be read in this review | Don't rely on a NIV allowance until a person confirms it at the source |
+| **VIE2010 / RVV11** | **Unverified:** no public quotation rule; UBS's 500-verse rule is **Spanish-only** | References and links. Ask Bible Society of Vietnam / UBS for the quotation rule and, separately, app display rights (#3) |
+
+The options below are larger-scale ways to *show* Vietnamese text in J-Life, separate from occasional quotation.
 
 | Option | Notes |
 |---|---|
-| **References only + link out** (to YouVersion/Bible.com or another licensed app) | Zero rights risk; MVP default. Weakest reading UX. VIE2010 deep links work today: `bible.com/bible/151/{BOOK}.{CH}.{VS}.VIE2010`. |
+| **References only + link out** (to YouVersion/Bible.com or another licensed app) | Zero rights risk; **the launch default.** Weakest reading UX. VIE2010 deep links work today: `bible.com/bible/151/{BOOK}.{CH}.{VS}.VIE2010`. |
 | Bản Truyền Thống 1925 (Cadman) — `VIE1925` on YouVersion (id 193) | Published pre-1930, commonly treated as public domain in the US; verify status and text-source quality for Vietnam use. Archaic language may not serve young readers. |
-| **Bản Hiệu Đính 2010 (`VIE2010` / RVV11) — preferred candidate** | Full name: *Kinh Thánh Tiếng Việt Bản Hiệu Đính 2010*, also marketed in English as the Revised Vietnamese Version (RVV11). These are **one and the same translation** — YouVersion version id **151** serves both codes. It is the 2010 revision of the 1925 Bible into current Vietnamese, © 2010 **United Bible Societies**, published locally by the **Bible Society of Vietnam**; the copyright notice is "All rights reserved. Used by permission," with no public quotation-limit terms — licensing goes through UBS/Bible Society of Vietnam. Widely trusted, modern language, free to read on YouVersion. **Investigated 2026-07-03:** no self-serve license exists; rendering its text in our platform requires either (a) permission from UBS / Bible Society of Vietnam, or (b) serving it through a Scripture API that already carries a UBS distribution agreement (see API.Bible row). |
+| **Bản Hiệu Đính 2010 (`VIE2010` / RVV11) — preferred candidate** | Full name: *Kinh Thánh Tiếng Việt Bản Hiệu Đính 2010*, also marketed in English as the Revised Vietnamese Version (RVV11). These are **one and the same translation** — YouVersion version id **151** serves both codes. It is the 2010 revision of the 1925 Bible into current Vietnamese, © 2010 **United Bible Societies**, published locally by the **Bible Society of Vietnam**; the copyright notice is "All rights reserved. Used by permission," with no public quotation-limit terms — licensing goes through UBS/Bible Society of Vietnam. Widely trusted, modern language, free to read on YouVersion. **Reviewed 2026-11-05:** no public quotation allowance; UBS's Spanish-language rule does not apply. In-app display needs permission or an authorized API that actually licenses VIE2010 to our app. |
 | Bản Dịch 2011 (`BD2011`, YouVersion id 19) / Bản Dịch Mới (NVB) / Bản Phổ Thông | Independent modern translations with individual license holders; fallback candidates if UBS terms stall. |
-| **API.Bible (American Bible Society) or similar licensed Scripture API** | Serves texts from the UBS-managed Digital Bible Library with per-app access requests — the likeliest legitimate route to render VIE2010 verse text without holding our own UBS license. **Whether VIE2010 is actually offered through API.Bible could not be confirmed without registering an API key — verify by signing up and requesting access.** YouVersion's own API is partner-only. |
+| **API.Bible (American Bible Society) or similar licensed Scripture API** | Serves texts from the UBS-managed Digital Bible Library with per-app access requests — a likely legitimate route to render VIE2010 verse text without holding our own UBS license. **Whether VIE2010 is actually offered through API.Bible could not be confirmed without registering an API key — verify by signing up and requesting access.** |
+| **YouVersion Platform** (corrected 2026-11-05: no longer "partner-only") | Public developer platform: free App Key, Bible text through REST/SDKs, with licenses accepted in the Platform portal. **ERV and VIE2010 availability to our app is unverified**, and their publishers aren't on its public publisher list. The license text, prize/non-commercial question, rate limits and caching rules are unread or unpublished. See the [research note](youversion-platform.md) §2 for the post-App-Key checks. |
 
-Decision needed by Phase 2b M1 (walking skeleton): which option the study reader implements first. Recommendation: **references + VIE2010 deep links to YouVersion for the pilot** (zero rights risk, modern trusted translation), while in parallel (a) registering for API.Bible to confirm whether VIE2010 is servable there, and (b) opening a permission conversation with UBS / Bible Society of Vietnam for in-app rendering.
+**Decision:** **references + deep links for the pilot and the Dec 20 marathon** (no translation text reproduced). In parallel, and **not as a launch prerequisite**:
+- (a) the YouVersion App Key checks
+- (b) checking API.Bible availability
+- (c) asking UBS / Bible Society of Vietnam **two separate questions**: what modest quotations of VIE2010 are allowed, and what rights in-app display would need
+
+None of these block the reference-only reading schedule.
 
 ## 3. Public-Domain Gospel Harmony Foundation (note for technical contributors)
 
