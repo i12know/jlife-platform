@@ -15,6 +15,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- custom tables are this plugin's data layer; every query goes through the gate; WordPress has no API for them.
+
 const JLIFE_CHALLENGES_FIELDS     = array( 'scripture', 'observation', 'application', 'prayer' );
 const JLIFE_CHALLENGES_FIELD_MAX  = 10000;
 const JLIFE_CHALLENGES_LATE_RULE  = 'after_grace_window';
@@ -80,7 +82,6 @@ function jlife_challenges_resolve_day( $campaign_id, $day_key ) {
  */
 function jlife_challenges_find_entry( $user_id, $campaign_id, $day_key ) {
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'soap_entries' ) . ' WHERE user_id = %d AND campaign_id = %d AND day_key = %s', (int) $user_id, (int) $campaign_id, (string) $day_key ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	return $row ? $row : null;
 }
@@ -126,7 +127,6 @@ function jlife_challenges_save_draft( $user_id, $campaign_id, $day_key, $fields 
 		return new WP_Error( 'jlife_already_submitted', __( 'This entry is already submitted. Use Save changes instead.', 'jlife-challenges' ) );
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$wpdb->update(
 		jlife_challenges_table( 'soap_entries' ),
 		array_merge( jlife_challenges_clean_fields( $fields ), array( 'updated' => current_time( 'mysql', true ) ) ),
@@ -182,7 +182,6 @@ function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $fields ) {
 	if ( $first ) {
 		$update['submitted'] = $now;
 	}
-	// phpcs:disable WordPress.DB.DirectDatabaseQuery -- custom tables; no WP API exists.
 	$wpdb->update( jlife_challenges_table( 'soap_entries' ), $update, array( 'id' => (int) $entry['id'] ) );
 	$wpdb->insert(
 		jlife_challenges_table( 'soap_revisions' ),
@@ -195,7 +194,6 @@ function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $fields ) {
 			)
 		)
 	);
-	// phpcs:enable
 
 	$result = array(
 		'entry_id'         => (int) $entry['id'],
@@ -226,7 +224,7 @@ function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id )
 	global $wpdb;
 	$on_time = jlife_challenges_is_on_time( $campaign, $index );
 	$day_key = jlife_challenges_day_key( $index );
-	// phpcs:disable WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix; INSERT IGNORE relies on the UNIQUE key.
+	// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix; INSERT IGNORE relies on the UNIQUE key.
 	$wpdb->query(
 		$wpdb->prepare(
 			'INSERT IGNORE INTO ' . jlife_challenges_table( 'score_ledger' ) . " (campaign_id, user_id, day_key, entry_id, points, status, reason, source, created) VALUES (%d, %d, %s, %d, %d, %s, %s, 'platform', %s)",
@@ -241,7 +239,7 @@ function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id )
 		)
 	);
 	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT points, status, reason FROM ' . jlife_challenges_table( 'score_ledger' ) . ' WHERE campaign_id = %d AND user_id = %d AND day_key = %s', (int) $campaign['id'], (int) $user_id, $day_key ), ARRAY_A );
-	// phpcs:enable
+	// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
 	return array(
 		'points' => (int) ( $row['points'] ?? 0 ),
 		'status' => (string) ( $row['status'] ?? '' ),
@@ -258,8 +256,9 @@ function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id )
  */
 function jlife_challenges_get_entry( $viewer_user_id, $entry_id ) {
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
-	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'soap_entries' ) . ' WHERE id = %d', (int) $entry_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'soap_entries' ) . ' WHERE id = %d', (int) $entry_id ), ARRAY_A );
+	// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
 	if ( ! $row || ! jlife_challenges_can_read_entry( $viewer_user_id, $row ) ) {
 		return jlife_challenges_denied();
 	}

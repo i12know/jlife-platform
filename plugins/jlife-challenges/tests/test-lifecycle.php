@@ -81,7 +81,13 @@ class Test_Lifecycle extends Jlife_Challenges_TestCase {
 	public function test_membership_changes_are_audited() {
 		jlife_challenges_move_member( $this->u['organizer'], $this->u['b'], $this->g['g2'] );
 		global $wpdb;
-		$detail = $wpdb->get_var( "SELECT detail FROM " . jlife_challenges_table( 'audit_log' ) . " WHERE action = 'member_moved' ORDER BY id DESC LIMIT 1" ); // phpcs:ignore WordPress.DB
-		$this->assertSame( array( 'from_group' => (int) $this->g['g1'], 'to_group' => (int) $this->g['g2'] ), json_decode( (string) $detail, true ) );
+		$detail = $wpdb->get_var( 'SELECT detail FROM ' . jlife_challenges_table( 'audit_log' ) . " WHERE action = 'member_moved' ORDER BY id DESC LIMIT 1" ); // phpcs:ignore WordPress.DB
+		$this->assertSame(
+			array(
+				'from_group' => (int) $this->g['g1'],
+				'to_group'   => (int) $this->g['g2'],
+			),
+			json_decode( (string) $detail, true )
+		);
 	}
 }

@@ -10,6 +10,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- custom tables are this plugin's data layer; every query goes through the gate; WordPress has no API for them.
+
 const JLIFE_CHALLENGES_AGE_BANDS = array( 'adult', 'minor' );
 
 /**
@@ -44,7 +46,6 @@ function jlife_challenges_create_campaign( $actor, $args ) {
 		return new WP_Error( 'jlife_campaign_invalid', 'Invalid timezone.' );
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$ok = $wpdb->insert(
 		jlife_challenges_table( 'campaigns' ),
 		array(
@@ -76,7 +77,6 @@ function jlife_challenges_create_campaign( $actor, $args ) {
  */
 function jlife_challenges_get_campaign( $campaign_id ) {
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'campaigns' ) . ' WHERE id = %d', (int) $campaign_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	return $row ? $row : null;
 }
@@ -89,7 +89,6 @@ function jlife_challenges_get_campaign( $campaign_id ) {
  */
 function jlife_challenges_get_group( $group_id ) {
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'groups' ) . ' WHERE id = %d', (int) $group_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	return $row ? $row : null;
 }
@@ -121,7 +120,6 @@ function jlife_challenges_create_group( $actor, $campaign_id, $name ) {
 		return new WP_Error( 'jlife_group_invalid', 'Group name required.' );
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$ok = $wpdb->insert(
 		jlife_challenges_table( 'groups' ),
 		array(
@@ -163,7 +161,6 @@ function jlife_challenges_reset_invite( $actor, $group_id, $days = 60 ) {
 		$code .= $alphabet[ random_int( 0, strlen( $alphabet ) - 1 ) ];
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$wpdb->update(
 		jlife_challenges_table( 'groups' ),
 		array(
@@ -187,7 +184,6 @@ function jlife_challenges_reset_invite( $actor, $group_id, $days = 60 ) {
  */
 function jlife_challenges_get_enrollment( $campaign_id, $user_id ) {
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'enrollments' ) . ' WHERE campaign_id = %d AND user_id = %d', (int) $campaign_id, (int) $user_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	return $row ? $row : null;
 }
@@ -221,7 +217,6 @@ function jlife_challenges_write_enrollment( $actor, $user_id, $group, $age_band 
 		'joined'      => $now,
 		'left_at'     => null,
 	);
-	// phpcs:disable WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	if ( $existing ) {
 		$wpdb->update( jlife_challenges_table( 'enrollments' ), $data, array( 'id' => (int) $existing['id'] ) );
 		$id = (int) $existing['id'];
@@ -229,7 +224,6 @@ function jlife_challenges_write_enrollment( $actor, $user_id, $group, $age_band 
 		$wpdb->insert( jlife_challenges_table( 'enrollments' ), $data );
 		$id = (int) $wpdb->insert_id;
 	}
-	// phpcs:enable
 	jlife_challenges_audit( $actor, 'enrolled', 'enrollment', $id, $campaign_id, array( 'group_id' => (int) $group['id'] ) );
 	return $id;
 }
@@ -264,7 +258,6 @@ function jlife_challenges_group_for_invite( $code ) {
 		return null;
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$group = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'groups' ) . " WHERE invite_hash = %s AND status = 'active'", jlife_challenges_hash_invite( $code ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	if ( ! $group || ( $group['invite_expires'] && strtotime( $group['invite_expires'] . ' UTC' ) < time() ) ) {
 		return null;
@@ -280,7 +273,6 @@ function jlife_challenges_group_for_invite( $code ) {
  */
 function jlife_challenges_user_enrollments( $user_id ) {
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	return (array) $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'enrollments' ) . " WHERE user_id = %d AND status = 'active'", (int) $user_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 }
 
@@ -320,7 +312,6 @@ function jlife_challenges_move_member( $actor, $user_id, $new_group_id ) {
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$wpdb->update( jlife_challenges_table( 'enrollments' ), array( 'group_id' => (int) $new_group_id ), array( 'id' => (int) $e['id'] ), array( '%d' ), array( '%d' ) );
 	jlife_challenges_audit(
 		$actor,
@@ -350,7 +341,6 @@ function jlife_challenges_remove_member( $actor, $campaign_id, $user_id ) {
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$wpdb->update(
 		jlife_challenges_table( 'enrollments' ),
 		array(
@@ -377,7 +367,6 @@ function jlife_challenges_record_guardian_consent( $actor, $campaign_id, $user_i
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$wpdb->update( jlife_challenges_table( 'enrollments' ), array( 'guardian_consent' => current_time( 'mysql', true ) ), array( 'id' => (int) $e['id'] ) );
 	jlife_challenges_audit( $actor, 'guardian_consent_recorded', 'enrollment', (int) $e['id'], (int) $campaign_id );
 	return true;
@@ -397,7 +386,6 @@ function jlife_challenges_record_consent( $user_id, $campaign_id, $version ) {
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$wpdb->update(
 		jlife_challenges_table( 'enrollments' ),
 		array(
@@ -428,7 +416,6 @@ function jlife_challenges_membership_source( $membership, $group_id ) {
 		return $membership;
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$members = $wpdb->get_col( $wpdb->prepare( 'SELECT user_id FROM ' . jlife_challenges_table( 'enrollments' ) . " WHERE group_id = %d AND status = 'active'", (int) $group_id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	return array(
 		'exists'          => 'active' === $group['status'],

@@ -11,6 +11,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- custom tables are this plugin's data layer; every query goes through the gate; WordPress has no API for them.
+
 /**
  * Read a share row (no gate; internal).
  *
@@ -19,7 +21,6 @@ defined( 'ABSPATH' ) || exit;
  */
 function jlife_challenges_find_share( $share_id ) {
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'group_shares' ) . ' WHERE id = %d', (int) $share_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	return $row ? $row : null;
 }
@@ -58,7 +59,7 @@ function jlife_challenges_share( $user_id, $entry_id, $fields ) {
 	$now      = current_time( 'mysql', true );
 	$group_id = (int) $enrollment['group_id'];
 	$t        = jlife_challenges_table( 'group_shares' );
-	// phpcs:disable WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table; name from $wpdb->prefix; UNIQUE (entry_id, group_id) makes this an upsert.
+	// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table; name from $wpdb->prefix; UNIQUE (entry_id, group_id) makes this an upsert.
 	$wpdb->query(
 		$wpdb->prepare(
 			"INSERT INTO {$t} (entry_id, user_id, group_id, campaign_id, day_key, fields, scripture, observation, application, prayer, status, hidden_reason, created, updated)
@@ -79,7 +80,7 @@ function jlife_challenges_share( $user_id, $entry_id, $fields ) {
 		)
 	);
 	$id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$t} WHERE entry_id = %d AND group_id = %d", (int) $entry_id, $group_id ) );
-	// phpcs:enable
+	// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	return $id > 0 ? $id : new WP_Error( 'jlife_db', 'Could not share.' );
 }
 
@@ -96,7 +97,6 @@ function jlife_challenges_unshare( $user_id, $share_id ) {
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$wpdb->update(
 		jlife_challenges_table( 'group_shares' ),
 		array(
@@ -128,7 +128,6 @@ function jlife_challenges_hide_share( $actor, $share_id, $reason ) {
 	}
 	$reason = mb_substr( sanitize_text_field( (string) $reason ), 0, 200 );
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$wpdb->update(
 		jlife_challenges_table( 'group_shares' ),
 		array(
@@ -183,9 +182,8 @@ function jlife_challenges_group_feed( $viewer_user_id, $campaign_id, $limit = 50
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND status = 'shared' ORDER BY day_key DESC, updated DESC LIMIT %d", (int) $e['group_id'], max( 1, (int) $limit ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
-	$out = array();
+	$out  = array();
 	foreach ( $rows as $r ) {
 		$fields = array();
 		foreach ( explode( ',', (string) $r['fields'] ) as $f ) {
@@ -218,6 +216,5 @@ function jlife_challenges_my_shares( $user_id, $campaign_id ) {
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	return $wpdb->get_results( $wpdb->prepare( 'SELECT id, entry_id, group_id, day_key, fields, status, hidden_reason, updated FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE user_id = %d AND campaign_id = %d AND status <> 'removed' ORDER BY day_key DESC", (int) $user_id, (int) $campaign_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 }

@@ -85,11 +85,11 @@ function jlife_auth_send_page( $title, $body ) {
  * Message box.
  *
  * @param string $text  Message.
- * @param string $class jl-err|jl-ok.
+ * @param string $kind  jl-err|jl-ok.
  * @return string
  */
-function jlife_auth_box( $text, $class = 'jl-err' ) {
-	return '' === $text ? '' : '<p class="' . esc_attr( $class ) . '" role="alert">' . esc_html( $text ) . '</p>';
+function jlife_auth_box( $text, $kind = 'jl-err' ) {
+	return '' === $text ? '' : '<p class="' . esc_attr( $kind ) . '" role="alert">' . esc_html( $text ) . '</p>';
 }
 
 /**
@@ -248,7 +248,7 @@ function jlife_auth_page_consent() {
 		__( 'We will email you each day\'s reading. You can turn reminders off at any time.', 'jlife-auth' ),
 		__( 'You can delete your account and everything you have written at any time.', 'jlife-auth' ),
 	);
-	$list = '';
+	$list   = '';
 	foreach ( $points as $p ) {
 		$list .= '<li>' . esc_html( $p ) . '</li>';
 	}
