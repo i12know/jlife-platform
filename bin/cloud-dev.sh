@@ -90,7 +90,7 @@ ensure_wordpress() {
   if [ ! -f "${WP_DIR}/wp-includes/version.php" ]; then
     log "Downloading WordPress ${WP_VERSION}"
     mkdir -p "${WP_DIR}"
-    wp_cli core download --version="${WP_VERSION}" --skip-content --force
+    wp_cli core download --version="${WP_VERSION}" --force
     mkdir -p "${WP_DIR}/wp-content/plugins" "${WP_DIR}/wp-content/themes" "${WP_DIR}/wp-content/uploads"
   fi
   if [ ! -f "${WP_DIR}/wp-config.php" ]; then
