@@ -1,0 +1,17 @@
+{
+    "name": "i12know/jlife-auth",
+    "description": "Test dependencies for the jlife-auth plugin. Installed per-plugin so vendor/ is inside the wp-env plugin mapping and phpunit is runnable from the tests-cli container.",
+    "license": "GPL-2.0-or-later",
+    "require-dev": {
+        "phpunit/phpunit": "^9.6",
+        "yoast/phpunit-polyfills": "^4.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.32"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}

@@ -28,6 +28,7 @@ updates:
       - /plugins/jlife-huddles
       - /plugins/jlife-studies
       - /plugins/jlife-challenges
+      - /plugins/jlife-auth
     schedule:
       interval: monthly
     open-pull-requests-limit: 3

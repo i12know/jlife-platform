@@ -30,7 +30,7 @@ DB_HOST="${DB_HOST:-localhost}"
 PHP_BIN="${PHP_BIN:-/opt/cpanel/ea-php82/root/usr/bin/php}"
 WP_CLI_VERSION="2.11.0"
 WP_CLI="${STATE_DIR}/wp-cli-${WP_CLI_VERSION}.phar"
-PLUGINS=(jlife-studies jlife-huddles jlife-challenges) # jlife-bridge stays off at launch (#49 M2)
+PLUGINS=(jlife-studies jlife-huddles jlife-challenges jlife-auth) # jlife-bridge stays off at launch (#49 M2)
 
 log() { printf '\n==> %s\n' "$*"; }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }

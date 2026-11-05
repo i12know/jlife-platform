@@ -246,13 +246,42 @@ function jlife_challenges_join_with_code( $user_id, $code, $age_band ) {
 	if ( $user_id < 1 ) {
 		return jlife_challenges_denied();
 	}
+	$group = jlife_challenges_group_for_invite( $code );
+	if ( ! $group ) {
+		return new WP_Error( 'jlife_invite_invalid', __( 'That invite code is not valid. Please ask your group for a new one.', 'jlife-challenges' ) );
+	}
+	return jlife_challenges_write_enrollment( $user_id, $user_id, $group, $age_band );
+}
+
+/**
+ * The active, unexpired group an invite code opens, or null.
+ *
+ * @param string $code Invite code (any case).
+ * @return array|null Group row.
+ */
+function jlife_challenges_group_for_invite( $code ) {
+	if ( '' === trim( (string) $code ) ) {
+		return null;
+	}
 	global $wpdb;
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 	$group = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'groups' ) . " WHERE invite_hash = %s AND status = 'active'", jlife_challenges_hash_invite( $code ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	if ( ! $group || ( $group['invite_expires'] && strtotime( $group['invite_expires'] . ' UTC' ) < time() ) ) {
-		return new WP_Error( 'jlife_invite_invalid', __( 'That invite code is not valid. Please ask your group for a new one.', 'jlife-challenges' ) );
+		return null;
 	}
-	return jlife_challenges_write_enrollment( $user_id, $user_id, $group, $age_band );
+	return $group;
+}
+
+/**
+ * A user's active enrollments across campaigns.
+ *
+ * @param int $user_id User.
+ * @return array[] Enrollment rows.
+ */
+function jlife_challenges_user_enrollments( $user_id ) {
+	global $wpdb;
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
+	return (array) $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'enrollments' ) . " WHERE user_id = %d AND status = 'active'", (int) $user_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 }
 
 /**
