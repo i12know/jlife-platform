@@ -20,3 +20,7 @@ plugins/*/composer.lock
 *.log
 .DS_Store
 Thumbs.db
+
+# Cloud-session dev runtime (bin/cloud-dev.sh): WordPress copy, WP-CLI, logs
+/.cloud-dev/
+.phpunit.result.cache

@@ -1,0 +1,94 @@
+name: Deploy latoc staging
+
+# Manual only. The latoc-staging environment is restricted to `main`, so
+# only merged code can reach its secrets. Runbook: docs/staging-latoc.md.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-latoc
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to latoc.vayhub.org
+    runs-on: ubuntu-latest
+    environment:
+      name: latoc-staging
+      url: https://latoc.vayhub.org/
+    env:
+      SITE_URL: https://latoc.vayhub.org
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the plugin bundle
+        run: |
+          WP_VERSION="$(jq -r '.core' .wp-env.json | sed 's/.*#//')"
+          [ -n "$WP_VERSION" ] || { echo "No pinned WordPress version"; exit 1; }
+          echo "WP_VERSION=$WP_VERSION" >> "$GITHUB_ENV"
+          tar -czf "$RUNNER_TEMP/jlife-plugins.tgz" -C plugins \
+            --exclude=vendor --exclude=tests --exclude='composer.*' \
+            --exclude='phpunit.xml*' --exclude='.phpunit.result.cache' \
+            jlife-studies jlife-huddles
+          tar -tzf "$RUNNER_TEMP/jlife-plugins.tgz" | head -50
+
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.LATOC_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.LATOC_SSH_KNOWN_HOSTS }}
+          SSH_HOST: ${{ secrets.LATOC_SSH_HOST }}
+          SSH_USER: ${{ secrets.LATOC_SSH_USER }}
+          SSH_PORT: ${{ secrets.LATOC_SSH_PORT }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/latoc
+          chmod 600 ~/.ssh/latoc
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host latoc
+            HostName $SSH_HOST
+            User $SSH_USER
+            Port ${SSH_PORT:-22}
+            IdentityFile ~/.ssh/latoc
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            BatchMode yes
+            ConnectTimeout 30
+          EOF
+          ssh latoc 'echo "SSH OK"; mkdir -p ~/.latoc && chmod 700 ~/.latoc'
+
+      - name: Upload bundle, script and settings
+        env:
+          WP_PATH: ${{ secrets.LATOC_WP_PATH }}
+          DB_NAME: ${{ secrets.LATOC_DB_NAME }}
+          DB_USER: ${{ secrets.LATOC_DB_USER }}
+          DB_PASSWORD: ${{ secrets.LATOC_DB_PASSWORD }}
+        run: |
+          scp -q "$RUNNER_TEMP/jlife-plugins.tgz" latoc:.latoc/jlife-plugins.tgz
+          scp -q bin/deploy/latoc-remote.sh latoc:.latoc/latoc-remote.sh
+          # Settings travel over stdin into a 0600 file the script deletes,
+          # so the database password never appears on a command line.
+          {
+            printf 'WP_PATH=%q\n' "$WP_PATH"
+            printf 'SITE_URL=%q\n' "$SITE_URL"
+            printf 'WP_VERSION=%q\n' "$WP_VERSION"
+            printf 'DB_NAME=%q\n' "$DB_NAME"
+            printf 'DB_USER=%q\n' "$DB_USER"
+            printf 'DB_PASSWORD=%q\n' "$DB_PASSWORD"
+          } | ssh latoc 'umask 077; cat > ~/.latoc/deploy.env'
+
+      - name: Install or update on the server
+        run: ssh latoc 'bash ~/.latoc/latoc-remote.sh'
+
+      - name: Smoke test over HTTPS
+        run: |
+          code="$(curl -sS -o /dev/null -w '%{http_code}' -L "$SITE_URL/")"
+          echo "Front page: HTTP $code"
+          [ "$code" = "200" ]
+
+      - name: Remove SSH material
+        if: always()
+        run: rm -rf ~/.ssh

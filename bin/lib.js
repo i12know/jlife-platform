@@ -42,8 +42,41 @@ function wpEnv(args, opts = {}) {
   return res;
 }
 
+/**
+ * Cloud-session runtime (bin/cloud-dev.sh): WP-CLI runs directly on the host
+ * PHP against a local WordPress copy instead of inside wp-env's container.
+ */
+function wpCloud(args, opts = {}) {
+  const res = spawnSync(
+    'php',
+    [
+      '-d',
+      'memory_limit=512M',
+      process.env.JLIFE_CLOUD_WP_CLI,
+      `--path=${process.env.JLIFE_CLOUD_WP_PATH}`,
+      '--allow-root',
+      ...args,
+    ],
+    {
+      stdio: opts.capture ? ['ignore', 'pipe', 'pipe'] : 'inherit',
+      encoding: 'utf8',
+    }
+  );
+  if (res.error) {
+    console.error(`Failed to launch WP-CLI: ${res.error.message}`);
+    process.exit(1);
+  }
+  if (res.status !== 0 && !opts.allowFail) {
+    console.error(`\nCommand failed: wp ${args.join(' ')}`);
+    if (opts.capture && res.stderr) console.error(res.stderr);
+    process.exit(res.status === null ? 1 : res.status);
+  }
+  return res;
+}
+
 /** Run a wp-cli command inside the development container. Exits on failure. */
 function wp(args, opts = {}) {
+  if (process.env.JLIFE_DEV_RUNTIME === 'cloud') return wpCloud(args, opts);
   return wpEnv(['run', 'cli', '--', 'wp', ...args], opts);
 }
 
