@@ -134,7 +134,15 @@ for plugin in "${PLUGINS[@]}"; do
   rm -rf "${dest}.old"
 done
 rm -rf "${stage}" "${BUNDLE}"
-find "${WP_PATH}/wp-content/plugins" -maxdepth 1 -name 'jlife-*' -exec chmod -R u=rwX,go=rX {} +
+
+# The strict umask above protects ~/.latoc (backups, admin password). Web
+# files must be world-readable or Apache cannot serve wp-admin/, CSS or JS
+# ("Server unable to read htaccess file" 403s). Reset them on every run;
+# wp-config.php stays owner-only (PHP runs as the account owner on cPanel).
+log "Setting web file permissions"
+find "${WP_PATH}" -type d ! -perm 755 -exec chmod 755 {} +
+find "${WP_PATH}" -type f ! -name wp-config.php ! -perm 644 -exec chmod 644 {} +
+chmod 600 "${WP_PATH}/wp-config.php"
 
 wp plugin activate "${PLUGINS[@]}" >/dev/null
 # Never active at launch, even if a copy is present from a manual upload.

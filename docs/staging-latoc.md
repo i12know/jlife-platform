@@ -67,4 +67,7 @@ The first run creates the network admin `latoc-admin` with a random password, sa
   - the backup contained all tables
   - a run with backups unavailable stopped before changing anything
   - no secret appeared in any log
-- The first real run against the host has not happened yet; record its result here.
+- **2026-11-04, first real run** ([run 41937755437](https://github.com/i12know/jlife-platform/actions/runs/41937755437)), green in 27 s:
+  - WordPress 7.0 multisite installed; the front page serves "J-Life (staging)" with `noindex, nofollow`.
+  - **Bug found:** the script's strict `umask 077` also applied to the WordPress files, so Apache returned 403 ("Server unable to read htaccess file") for `/wp-admin/` and every CSS/JS file.
+  - Fixed by resetting web permissions on every run: directories 755, files 644, `wp-config.php` 600. Re-run the workflow to apply it.
