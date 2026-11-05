@@ -1,0 +1,32 @@
+# Dependency update PRs (#57). Weekly, small batches; every PR runs CI and
+# is reviewed by the owner before merge. Security updates are raised as soon
+# as an advisory lands.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # Plugin test dependencies (PHPUnit). No lock files by design (#28), so
+  # these PRs only move version constraints.
+  - package-ecosystem: composer
+    directories:
+      - /plugins/jlife-huddles
+      - /plugins/jlife-studies
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3

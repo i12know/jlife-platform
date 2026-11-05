@@ -152,6 +152,9 @@ chmod 600 "${WP_PATH}/wp-config.php"
 wp plugin activate "${PLUGINS[@]}" >/dev/null
 # Never active at launch, even if a copy is present from a manual upload.
 wp plugin deactivate jlife-bridge >/dev/null 2>&1 || true
+if wp plugin is-active jlife-bridge >/dev/null 2>&1; then
+  die "jlife-bridge (magic links) is active; it must stay off until #37/#38 land."
+fi
 
 log "Hardening staging settings"
 wp option update blog_public 0 >/dev/null # discourage search engines

@@ -22,7 +22,7 @@ jobs:
     env:
       SITE_URL: https://latoc.vayhub.org
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build the plugin bundle
         run: |
@@ -90,6 +90,12 @@ jobs:
           code="$(curl -sS -o /dev/null -w '%{http_code}' -L "$SITE_URL/")"
           echo "Front page: HTTP $code"
           [ "$code" = "200" ]
+          # Magic links (jlife-bridge) must stay off until #37/#38 (#57).
+          if curl -sS -L "$SITE_URL/?jlife_token=deploy-probe" | grep -q "Please ask your huddle leader for a new one"; then
+            echo "::error::The magic-link route answered; jlife-bridge must be inactive."
+            exit 1
+          fi
+          echo "Magic-link route: off"
 
       - name: Remove SSH material
         if: always()
