@@ -38,6 +38,7 @@ function jlife_bridge_get_group_membership( $dt_group_id ) {
 	$group = get_post( $dt_group_id );
 	if ( $group && 'groups' === $group->post_type ) {
 		$exists = true;
+
 		$assigned = get_post_meta( $dt_group_id, 'assigned_to', true );
 		if ( is_string( $assigned ) && 0 === strpos( $assigned, 'user-' ) ) {
 			$leaders[] = (int) substr( $assigned, 5 );
