@@ -22,7 +22,7 @@ jobs:
     env:
       SITE_URL: https://latoc.vayhub.org
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Build the plugin bundle
         run: |
