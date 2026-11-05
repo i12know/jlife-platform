@@ -42,6 +42,9 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		return $html;
 	}
 
+	/**
+	 * Import creates one page per day; re-import updates instead of duplicating.
+	 */
 	public function test_import_creates_one_page_per_day_and_is_idempotent() {
 		$this->assertSame( 3, jlife_studies_import_reading_plan( $this->fixture( 'primary' ) ) );
 		$this->assertSame( 3, jlife_studies_import_reading_plan( $this->fixture( 'primary' ) ) );
@@ -56,6 +59,9 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		$this->assertSame( 3, $count, 're-import must update, not duplicate' );
 	}
 
+	/**
+	 * Section IDs keep trailing zeros ("4.40") and dates stay calendar dates.
+	 */
 	public function test_section_ids_survive_as_strings() {
 		jlife_studies_import_reading_plan( $this->fixture( 'primary' ) );
 		$day53 = jlife_studies_get_reading_day( 'rpl-life-and-teachings-of-jesus-2026', 'd053' );
@@ -65,6 +71,9 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		$this->assertSame( '2027-02-10', $day53['day']['date'] );
 	}
 
+	/**
+	 * The supplemental plan needs its primary plan and attaches to the same days without pages of its own.
+	 */
 	public function test_supplemental_requires_primary_and_attaches_to_its_days() {
 		$err = jlife_studies_import_reading_plan( $this->fixture( 'supplemental' ) );
 		$this->assertWPError( $err );
@@ -78,6 +87,9 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		$this->assertNull( jlife_studies_find_reading_day( 'rpl-harmony-parallel-2026', 'd001' ), 'supplemental plans create no pages of their own' );
 	}
 
+	/**
+	 * Malformed plan documents are rejected.
+	 */
 	public function test_invalid_documents_are_rejected() {
 		$doc            = $this->fixture( 'primary' );
 		$doc['plan_id'] = 'Not An ID';
@@ -90,6 +102,9 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		$this->assertWPError( jlife_studies_import_reading_plan( array( 'schema_version' => '2.0' ) ) );
 	}
 
+	/**
+	 * The day page shows source references and the owner-tested links, opening in new tabs.
+	 */
 	public function test_day_page_shows_references_and_links_in_new_tabs() {
 		jlife_studies_import_reading_plan( $this->fixture( 'primary' ) );
 		jlife_studies_import_reading_plan( $this->fixture( 'supplemental' ) );
@@ -108,6 +123,9 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		$this->assertStringContainsString( '<details class="jlife-supplemental">', $html, 'parallel readings collapsed and optional' );
 	}
 
+	/**
+	 * Imported text is escaped on output.
+	 */
 	public function test_day_page_escapes_titles_and_references() {
 		$doc                                      = $this->fixture( 'primary' );
 		$doc['days'][0]['passages'][0]['display'] = '<script>alert(1)</script>';
