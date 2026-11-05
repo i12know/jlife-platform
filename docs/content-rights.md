@@ -4,7 +4,7 @@ Status: Living document — update whenever a rights conversation advances
 Created: 2026-07-03
 Related: [PRD.md](PRD.md) §12, [roadmap.md](roadmap.md)
 
-Rule of the repo: **nothing ships — and nothing is committed to this repository — that we do not have documented rights to use.** References, IDs, and deep links are always permitted; copied text, translations of copyrighted works, images, maps, video, and audio are not, until the corresponding row below says so.
+Rule of the repo: **do not publish or commit third-party copyrighted expression without appropriate rights.** Bare Scripture references, factual chronology, bibliographic identifiers, ordinary short headings, and deep links do **not** require a blanket publisher license merely because an existing curriculum helped organize the readings. Original selection and arrangement may receive limited protection where sufficiently creative, so do not copy substantial proprietary expressive compilations without review. For actual reproduced text, translations of copyrighted works, images, maps, video or audio, document the relevant rights before publishing.
 
 **Standing context (2026-07-03):** existing ministry relationships may make several rights conversations relationship-based rather than cold external negotiations. The register is kept anyway, for three reasons: (1) written confirmations protect future volunteers and partners; (2) related organizations still need explicit coordination before content or platform data is reused; (3) Vietnamese Bible text is owned outside the project and requires its own permission path.
 
@@ -15,11 +15,19 @@ Rule of the repo: **nothing ships — and nothing is committed to this repositor
 | Knowing Him 50-day study text | SonLife (author Mark Edwards) | Approval to translate/adapt into Vietnamese | Existing ministry relationship; obtain written OK for the record | **Written confirmation pending** |
 | Knowing Him 42 Israel videos | SonLife (hosted on Vimeo) | Vietnamese subtitles/embed approval (Phase 5 at earliest) | Separate scope from text; obtain written OK for the record | **Written confirmation pending** |
 | Harmony Bible chronology, outline, essays, map | Founders Passion / Harmony Bible | Preferred: they add Vietnamese to their platform; fallback: data export/API for our content subsite; default until then: deep links only | Relationship-based coordination path; their platform has no Vietnamese and no export/API today | **Not yet coordinated** |
+| **Bible Marathon 104-day reference schedules (PR #50)** | Owner-created 104-day assignments, using PlusNothing section references and Robertson Gospel-harmony references | Publish daily dates, Scripture citations, factual event labels, section IDs, short titles, and links; keep the standard and optional parallel plans distinct | Owner-provided schedule; cite PlusNothing and Robertson as source references; no copied Bible translation passages or substantive third-party study prose in the CSVs | **Reference-only schedule cleared to proceed to technical import; no blanket arrangement-license gate.** Check rights only for newly included protectable expressive material |
 | SonLife/J-Life framework language & diagrams (incl. 5-phase model names) | SonLife | Use of phase names/framework vocabulary in Vietnamese materials | Existing ministry relationship | **Likely allowed — document in writing** |
 | Vietnamese Bible text | Varies by translation (see §2) | Render verses in lessons, or link out | Per-translation; **VIE2010 (UBS / Bible Society of Vietnam) identified as preferred candidate** | **Candidate chosen — license path open** |
 | Original J-Life_VN Vietnamese lessons | Project team / sponsoring organization | Full rights; choose our own license | Internal decision (recommend: keep content © while code is GPL-compatible) | **Decision open** |
 | UI translations we contribute to D.T Weblate | Community (D.T license terms) | Contribute upstream freely | translate.disciple.tools | Allowed, no blocker |
 | Maps/imagery for lessons | Varies | Only openly licensed or licensed assets (e.g., Mapbox under our key, CC-licensed imagery) | Per-asset log below | Standing rule |
+
+## 1a. Bible Marathon (PR #50): scope of publication review
+
+- **Cleared for development/import:** the owner's 104-day primary Scripture-reference schedule and optional parallel-reference schedule. Scripture citations, chronological biblical events, dates, IDs, and ordinary short labels are not treated as proprietary book text; no permission request is imposed solely for referencing PlusNothing or Robertson. Credit their role as sources and retain provenance.
+- **Narrow review if added later:** substantial quotations or translations of third-party study commentary, distinctive narrative explanations, illustrations/maps, or other protected expressive content; and any unusually creative third-party compilation that is substantially reproduced. The protection, if any, is limited to original expression, not the underlying facts or Scripture locations.
+- **Bible text remains a separate question:** link to licensed online Bible pages, or secure permission/a suitable license before rendering copyrighted Bible translation verses inside J-Life. Do not infer a Bible-text license from use of reading references.
+- **Status:** this is a documented, scope-limited project decision for the data in PR #50. It is **not** a declaration that all possible arrangements are unprotected or that all future content is licensed. No content-rights hold on the Nov 20 proof-of-concept or the existing reference-only schedule. Data/parser testing, hosting and security approvals remain their own milestones.
 
 ## 2. Vietnamese Bible Text Options
 
