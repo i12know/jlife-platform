@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
  * Read leader/member WP user IDs for a huddle from the HUB group record.
  *
  * @param int $dt_group_id D.T group post ID on HUB.
- * @return array|null { leader_user_ids, member_user_ids } or null if HUB unavailable.
+ * @return array|null { exists, leader_user_ids, member_user_ids } or null if HUB unavailable.
  */
 function jlife_bridge_get_group_membership( $dt_group_id ) {
 	$hub = jlife_bridge_hub_blog_id();
@@ -33,9 +33,12 @@ function jlife_bridge_get_group_membership( $dt_group_id ) {
 
 	$leaders = array();
 	$members = array();
+	$exists  = false;
 
 	$group = get_post( $dt_group_id );
 	if ( $group && 'groups' === $group->post_type ) {
+		$exists = true;
+
 		$assigned = get_post_meta( $dt_group_id, 'assigned_to', true );
 		if ( is_string( $assigned ) && 0 === strpos( $assigned, 'user-' ) ) {
 			$leaders[] = (int) substr( $assigned, 5 );
@@ -62,6 +65,7 @@ function jlife_bridge_get_group_membership( $dt_group_id ) {
 	restore_current_blog();
 
 	return array(
+		'exists'          => $exists,
 		'leader_user_ids' => $leaders,
 		'member_user_ids' => $members,
 	);

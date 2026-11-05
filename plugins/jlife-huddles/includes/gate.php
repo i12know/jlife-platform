@@ -29,15 +29,21 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Resolve huddle membership as WP user IDs.
  *
+ * `exists` is true only when the membership source confirms the group: an
+ * explicit `exists => true`, or at least one leader or member. Unknown or
+ * unavailable groups report false, so admin-only paths fail closed (#48).
+ *
  * @param int $dt_group_id D.T group (huddle) ID.
- * @return array { leader_user_ids: int[], member_user_ids: int[] }
+ * @return array { exists: bool, leader_user_ids: int[], member_user_ids: int[] }
  */
 function jlife_huddles_group_membership( $dt_group_id ) {
 	/**
 	 * Supply membership for a huddle. Production: jlife-bridge reads the
 	 * D.T group live. Tests: fixtures. Null means "unknown" → fail closed.
+	 * Sources should set `exists` => true for a confirmed group with no
+	 * members yet, and may set `exists` => false for a missing group.
 	 *
-	 * @param array|null $membership { leader_user_ids, member_user_ids } or null.
+	 * @param array|null $membership { exists?, leader_user_ids, member_user_ids } or null.
 	 * @param int        $dt_group_id D.T group ID.
 	 */
 	$membership = apply_filters( 'jlife_huddles_group_membership', null, (int) $dt_group_id );
@@ -48,14 +54,37 @@ function jlife_huddles_group_membership( $dt_group_id ) {
 
 	if ( ! is_array( $membership ) ) {
 		return array(
+			'exists'          => false,
 			'leader_user_ids' => array(),
 			'member_user_ids' => array(),
 		);
 	}
+	$leaders = array_map( 'intval', isset( $membership['leader_user_ids'] ) ? (array) $membership['leader_user_ids'] : array() );
+	$members = array_map( 'intval', isset( $membership['member_user_ids'] ) ? (array) $membership['member_user_ids'] : array() );
+	if ( array_key_exists( 'exists', $membership ) ) {
+		$exists = true === $membership['exists'];
+	} else {
+		$exists = ! empty( $leaders ) || ! empty( $members );
+	}
 	return array(
-		'leader_user_ids' => array_map( 'intval', isset( $membership['leader_user_ids'] ) ? (array) $membership['leader_user_ids'] : array() ),
-		'member_user_ids' => array_map( 'intval', isset( $membership['member_user_ids'] ) ? (array) $membership['member_user_ids'] : array() ),
+		'exists'          => $exists,
+		'leader_user_ids' => $leaders,
+		'member_user_ids' => $members,
 	);
+}
+
+/**
+ * Is the huddle confirmed to exist by its membership source?
+ *
+ * Gates site-admin moderation reads: an admin may read a confirmed huddle,
+ * never an unknown or unavailable one (#48 finding 2).
+ *
+ * @param int $dt_group_id D.T group ID.
+ * @return bool
+ */
+function jlife_huddles_group_exists( $dt_group_id ) {
+	$m = jlife_huddles_group_membership( $dt_group_id );
+	return true === $m['exists'];
 }
 
 /**
@@ -102,8 +131,9 @@ function jlife_huddles_can_read_thread( $user_id, $dt_group_id, $lesson_id = '' 
 	if ( jlife_huddles_is_member( $user_id, $dt_group_id ) ) {
 		return true;
 	}
-	// Site admins can read (moderation; disclosed), never silently write.
-	return $user_id > 0 && user_can( $user_id, 'manage_options' );
+	// Site admins can read a confirmed huddle (moderation; disclosed), never
+	// write, and never read an unknown one (#48: fail closed).
+	return $user_id > 0 && user_can( $user_id, 'manage_options' ) && jlife_huddles_group_exists( $dt_group_id );
 }
 
 /**
@@ -188,7 +218,7 @@ function jlife_huddles_can_read_progress_aggregate( $viewer_user_id, $dt_group_i
 	if ( jlife_huddles_is_leader( $viewer_user_id, $dt_group_id ) ) {
 		return true;
 	}
-	return $viewer_user_id > 0 && user_can( $viewer_user_id, 'manage_options' );
+	return $viewer_user_id > 0 && user_can( $viewer_user_id, 'manage_options' ) && jlife_huddles_group_exists( $dt_group_id );
 }
 
 /**

@@ -10,8 +10,8 @@ jobs:
     name: Content validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
       # Validators are dependency-free; no npm install needed.
@@ -33,7 +33,7 @@ jobs:
     name: PHPCS + PHPStan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
@@ -52,8 +52,8 @@ jobs:
     name: PHPUnit (wp-env)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
@@ -80,3 +80,31 @@ jobs:
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-huddles vendor/bin/phpunit
       - name: Run jlife-studies test suite
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-studies vendor/bin/phpunit
+
+  dependency-audit:
+    # Advisory checks (#57). Non-blocking for now: findings show as warnings
+    # on the run; Dependabot raises the fix PRs. Make blocking once clean.
+    name: Dependency audit (advisory)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: npm audit
+        run: npm audit --audit-level=high || echo "::warning::npm audit reported vulnerabilities"
+      - name: composer audit (root tooling)
+        run: composer audit --locked || echo "::warning::composer audit reported vulnerabilities"
+      - name: composer audit (plugin test dependencies)
+        run: |
+          for p in plugins/jlife-huddles plugins/jlife-studies; do
+            (cd "$p" && composer install --no-interaction --no-progress --quiet && composer audit) \
+              || echo "::warning::composer audit reported vulnerabilities in $p"
+          done
+

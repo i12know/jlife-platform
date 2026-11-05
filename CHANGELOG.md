@@ -10,6 +10,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Added
 
+- Added security prerequisites (#57): `SECURITY.md` (private vulnerability reporting), Dependabot for Actions/npm/Composer, an advisory dependency-audit CI job, and deploy checks that keep `jlife-bridge` magic links off on latoc.
 - Added the 104-day reading-plan import (#59): a dependency-free Scripture-reference parser and Bible-link builder (English ERV via one Bible Gateway link per day, Vietnamese VIE2010 via Bible.com per passage, chapter-crossing ranges split), generated plan JSON from the owner's CSV schedules, a CI validator and unit tests, and a `wp jlife reading-plan import` command that publishes one reference-only page per day with the optional parallel readings attached; the latoc deploy imports the plans.
 - Added a manual GitHub Actions deploy for the `latoc.vayhub.org` development/pilot staging site (Option C: WordPress multisite, STUDY site only, `jlife-studies` + `jlife-huddles`, no Disciple.Tools or `jlife-bridge`), with a pre-deploy database backup that blocks the deploy if it fails; runbook in `docs/staging-latoc.md`.
 - Added a cloud-session dev runtime (`bin/cloud-dev.sh`, `npm run cloud:*`) that builds the same multisite + Disciple.Tools network without `wp-env`'s Docker builds, so sandboxed sessions can run setup, seed, verify, and every plugin's PHPUnit suite; documented in `docs/dev-environment.md` §7a.
@@ -28,6 +29,8 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Changed
 
+- Site-admin moderation reads of huddle threads and progress aggregates now require a group the membership source confirms exists; unknown or unavailable groups fail closed for everyone (#48 finding 2, #57). Membership sources report `exists`; the bridge sets it from the D.T group record.
+- CI and deploy workflows move to `actions/checkout@v5` / `actions/setup-node@v5` (Node 24 runtime).
 - Clarified that the current STUDY/HUB WordPress multisite design is a tenant-level implementation inside the broader framework/deployment/tenant domain architecture.
 - Downgraded vision risk #1 (ChMeetings API capability unknown) and narrowed the S7 spike scope: the shared `vay-chmeetings-skill` documents and largely live-verifies the ChMeetings API (REST + OpenAPI, per-tenant API keys, People/Groups/Events, outbound webhooks, merge-orphan 404 semantics); residual S7 work is J-Life-specific (field map to D.T contacts, webhook signature verification, RP-tenant key, merge-orphan handling). Cross-referenced the skill from the integration-boundaries identity-keys section.
 - Aligned the pilot lesson scope from 5-7 to 4-7 lessons across the PRD, architecture, pilot-context, and roadmap documents.

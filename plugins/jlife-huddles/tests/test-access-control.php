@@ -21,6 +21,7 @@ class Test_Access_Control extends WP_UnitTestCase {
 
 	const G1 = 801; // Huddle One (fixture dt_group_id).
 	const G2 = 802; // Huddle Two.
+	const G3 = 803; // Huddle Three: confirmed to exist, no members yet.
 
 	/**
 	 * Fixture users, keyed by role-in-matrix.
@@ -67,6 +68,11 @@ class Test_Access_Control extends WP_UnitTestCase {
 			self::G2 => array(
 				'leader_user_ids' => array( self::$u['leader2'] ),
 				'member_user_ids' => array( self::$u['other'] ),
+			),
+			self::G3 => array(
+				'exists'          => true,
+				'leader_user_ids' => array(),
+				'member_user_ids' => array(),
 			),
 		);
 		add_filter( 'jlife_huddles_group_membership', array( $this, 'fixture_membership' ), 10, 2 );
@@ -242,6 +248,42 @@ class Test_Access_Control extends WP_UnitTestCase {
 		$this->assertWPError( jlife_huddles_save_private_note( self::$u['member1'], 999, 'lsn-x', 'x' ) );
 		$this->assertFalse( jlife_huddles_can_read_progress( self::$u['member1'], self::$u['member1'], 999 ) );
 		$this->assertWPError( jlife_huddles_get_progress_flags( self::$u['leader1'], 999, 'lsn-x' ) );
+
+		// #48 finding 2: site-admin access applies only to a confirmed group.
+		$this->assertFalse( jlife_huddles_group_exists( 999 ), 'unknown group is not confirmed' );
+		$this->assertFalse( jlife_huddles_can_read_thread( self::$u['admin'], 999 ), 'admin denied thread read on unknown group' );
+		$this->assertWPError( jlife_huddles_get_thread_posts( self::$u['admin'], 999, 'lsn-x' ), 'admin denied thread posts on unknown group' );
+		$this->assertFalse( jlife_huddles_can_read_progress_aggregate( self::$u['admin'], 999 ), 'admin denied aggregate on unknown group' );
+		$this->assertWPError( jlife_huddles_get_progress_aggregate( self::$u['admin'], 999 ), 'admin denied aggregate data on unknown group' );
+	}
+
+	/**
+	 * A confirmed group with no members is not "unknown": admins keep their
+	 * disclosed moderation read, everyone else is still denied.
+	 */
+	public function test_confirmed_empty_group_admin_only() {
+		$this->assertTrue( jlife_huddles_group_exists( self::G3 ) );
+		$this->assertTrue( jlife_huddles_group_exists( self::G1 ), 'a group with members counts as confirmed' );
+		$this->assertTrue( jlife_huddles_can_read_thread( self::$u['admin'], self::G3 ), 'admin moderation read on a confirmed group' );
+		$this->assertTrue( jlife_huddles_can_read_progress_aggregate( self::$u['admin'], self::G3 ) );
+		$this->assertFalse( jlife_huddles_can_read_thread( self::$u['member1'], self::G3 ), 'non-member still denied' );
+		$this->assertFalse( jlife_huddles_can_read_thread( 0, self::G3 ), 'anonymous still denied' );
+		$this->assertFalse( jlife_huddles_can_write_thread( self::$u['admin'], self::G3 ), 'admin still never writes' );
+	}
+
+	/**
+	 * A membership source that explicitly reports a missing group fails
+	 * closed even if it returns an array.
+	 */
+	public function test_explicitly_missing_group_fails_closed() {
+		self::$membership[804] = array(
+			'exists'          => false,
+			'leader_user_ids' => array(),
+			'member_user_ids' => array(),
+		);
+		$this->assertFalse( jlife_huddles_group_exists( 804 ) );
+		$this->assertFalse( jlife_huddles_can_read_thread( self::$u['admin'], 804 ) );
+		$this->assertFalse( jlife_huddles_can_read_progress_aggregate( self::$u['admin'], 804 ) );
 	}
 
 	// ── S4 magic-link rule ──────────────────────────────────────────────
