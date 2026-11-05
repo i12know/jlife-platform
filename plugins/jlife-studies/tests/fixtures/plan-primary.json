@@ -1,0 +1,337 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "rpl-life-and-teachings-of-jesus-2026",
+  "role": "primary",
+  "title": "Life and Teachings of Jesus: 104-Day Bible Marathon",
+  "start_date": "2026-12-20",
+  "end_date": "2027-04-02",
+  "day_count": 3,
+  "source_file": "content/reading-plans/2026-12-20_life-and-teachings-of-jesus_primary.csv (test fixture: days 1, 38, 53)",
+  "source_attribution": "Owner-created 104-day schedule (2026-09-06) following the PlusNothing Life and Teachings of Jesus arrangement; Robertson (1922) harmony sections as cross-references.",
+  "rights_note": "Reference-only schedule: dates, Scripture citations, section IDs and short titles; no Bible or study text. Cleared for import per docs/content-rights.md §1a (PR #50).",
+  "links_config": {
+    "en": {
+      "label": "English",
+      "provider": "bible_gateway",
+      "version": "ERV"
+    },
+    "vi": {
+      "label": "Tiếng Việt",
+      "provider": "bible_com",
+      "version_id": 151,
+      "version_code": "VIE2010"
+    }
+  },
+  "days": [
+    {
+      "day_id": "d001",
+      "day": 1,
+      "date": "2026-12-20",
+      "title": "The Beginning",
+      "titles": [
+        "The Beginning"
+      ],
+      "plusnothing_sections": [
+        "1.1"
+      ],
+      "robertson_sections": [
+        "2"
+      ],
+      "gospel_event_ids": [
+        "r1922-002"
+      ],
+      "passages": [
+        {
+          "display": "John 1:1-18",
+          "refs": [
+            {
+              "book": "John",
+              "chapter_start": 1,
+              "verse_start": 1,
+              "verse_start_part": null,
+              "chapter_end": 1,
+              "verse_end": 18,
+              "verse_end_part": null,
+              "display": "John 1:1-18"
+            }
+          ]
+        }
+      ],
+      "word_count": 310,
+      "notes": "John 1:1-18",
+      "links": {
+        "en": {
+          "provider": "bible_gateway",
+          "version": "ERV",
+          "combined": {
+            "label": "John 1:1-18",
+            "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=ERV"
+          },
+          "passages": [
+            {
+              "label": "John 1:1-18",
+              "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=ERV"
+            }
+          ]
+        },
+        "vi": {
+          "provider": "bible_com",
+          "version": "VIE2010",
+          "combined": null,
+          "passages": [
+            {
+              "label": "John 1:1-18",
+              "url": "https://www.bible.com/bible/151/JHN.1.1-18.VIE2010"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "day_id": "d038",
+      "day": 38,
+      "date": "2027-01-26",
+      "title": "Jesus Feeds More Than Five Thousand | Jesus Walks on the Water | Jesus Heals Many Sick People",
+      "titles": [
+        "Jesus Feeds More Than Five Thousand",
+        "Jesus Walks on the Water",
+        "Jesus Heals Many Sick People"
+      ],
+      "plusnothing_sections": [
+        "4.4",
+        "4.5",
+        "4.6"
+      ],
+      "robertson_sections": [
+        "72b",
+        "72c",
+        "73",
+        "74",
+        "75"
+      ],
+      "gospel_event_ids": [
+        "r1922-072",
+        "r1922-073",
+        "r1922-074",
+        "r1922-075"
+      ],
+      "passages": [
+        {
+          "display": "Mark 6:30-37",
+          "refs": [
+            {
+              "book": "Mark",
+              "chapter_start": 6,
+              "verse_start": 30,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 37,
+              "verse_end_part": null,
+              "display": "Mark 6:30-37"
+            }
+          ]
+        },
+        {
+          "display": "John 6:8-15a",
+          "refs": [
+            {
+              "book": "John",
+              "chapter_start": 6,
+              "verse_start": 8,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 15,
+              "verse_end_part": "a",
+              "display": "John 6:8-15a"
+            }
+          ]
+        },
+        {
+          "display": "Mark 6:45",
+          "refs": [
+            {
+              "book": "Mark",
+              "chapter_start": 6,
+              "verse_start": 45,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 45,
+              "verse_end_part": null,
+              "display": "Mark 6:45"
+            }
+          ]
+        },
+        {
+          "display": "Matthew 14:23a",
+          "refs": [
+            {
+              "book": "Matthew",
+              "chapter_start": 14,
+              "verse_start": 23,
+              "verse_start_part": "a",
+              "chapter_end": 14,
+              "verse_end": 23,
+              "verse_end_part": "a",
+              "display": "Matthew 14:23a"
+            }
+          ]
+        },
+        {
+          "display": "Matthew 14:23b-33",
+          "refs": [
+            {
+              "book": "Matthew",
+              "chapter_start": 14,
+              "verse_start": 23,
+              "verse_start_part": "b",
+              "chapter_end": 14,
+              "verse_end": 33,
+              "verse_end_part": null,
+              "display": "Matthew 14:23b-33"
+            }
+          ]
+        },
+        {
+          "display": "Mark 6:53-56",
+          "refs": [
+            {
+              "book": "Mark",
+              "chapter_start": 6,
+              "verse_start": 53,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 56,
+              "verse_end_part": null,
+              "display": "Mark 6:53-56"
+            }
+          ]
+        }
+      ],
+      "word_count": 772,
+      "notes": null,
+      "links": {
+        "en": {
+          "provider": "bible_gateway",
+          "version": "ERV",
+          "combined": {
+            "label": "Mark 6:30-37; John 6:8-15; Mark 6:45; Matthew 14:23-33; Mark 6:53-56",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+6:30-37;John+6:8-15;Mark+6:45;Matthew+14:23-33;Mark+6:53-56&version=ERV"
+          },
+          "passages": [
+            {
+              "label": "Mark 6:30-37",
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:30-37&version=ERV"
+            },
+            {
+              "label": "John 6:8-15",
+              "url": "https://www.biblegateway.com/passage/?search=John+6:8-15&version=ERV"
+            },
+            {
+              "label": "Mark 6:45",
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:45&version=ERV"
+            },
+            {
+              "label": "Matthew 14:23-33",
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+14:23-33&version=ERV"
+            },
+            {
+              "label": "Mark 6:53-56",
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:53-56&version=ERV"
+            }
+          ]
+        },
+        "vi": {
+          "provider": "bible_com",
+          "version": "VIE2010",
+          "combined": null,
+          "passages": [
+            {
+              "label": "Mark 6:30-37",
+              "url": "https://www.bible.com/bible/151/MRK.6.30-37.VIE2010"
+            },
+            {
+              "label": "John 6:8-15",
+              "url": "https://www.bible.com/bible/151/JHN.6.8-15.VIE2010"
+            },
+            {
+              "label": "Mark 6:45",
+              "url": "https://www.bible.com/bible/151/MRK.6.45.VIE2010"
+            },
+            {
+              "label": "Matthew 14:23-33",
+              "url": "https://www.bible.com/bible/151/MAT.14.23-33.VIE2010"
+            },
+            {
+              "label": "Mark 6:53-56",
+              "url": "https://www.bible.com/bible/151/MRK.6.53-56.VIE2010"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "day_id": "d053",
+      "day": 53,
+      "date": "2027-02-10",
+      "title": "Jesus Sends Out Seventy-two of His Followers",
+      "titles": [
+        "Jesus Sends Out Seventy-two of His Followers"
+      ],
+      "plusnothing_sections": [
+        "4.40"
+      ],
+      "robertson_sections": [
+        "102a"
+      ],
+      "gospel_event_ids": [
+        "r1922-102"
+      ],
+      "passages": [
+        {
+          "display": "Luke 10:1-24",
+          "refs": [
+            {
+              "book": "Luke",
+              "chapter_start": 10,
+              "verse_start": 1,
+              "verse_start_part": null,
+              "chapter_end": 10,
+              "verse_end": 24,
+              "verse_end_part": null,
+              "display": "Luke 10:1-24"
+            }
+          ]
+        }
+      ],
+      "word_count": 577,
+      "notes": null,
+      "links": {
+        "en": {
+          "provider": "bible_gateway",
+          "version": "ERV",
+          "combined": {
+            "label": "Luke 10:1-24",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+10:1-24&version=ERV"
+          },
+          "passages": [
+            {
+              "label": "Luke 10:1-24",
+              "url": "https://www.biblegateway.com/passage/?search=Luke+10:1-24&version=ERV"
+            }
+          ]
+        },
+        "vi": {
+          "provider": "bible_com",
+          "version": "VIE2010",
+          "combined": null,
+          "passages": [
+            {
+              "label": "Luke 10:1-24",
+              "url": "https://www.bible.com/bible/151/LUK.10.1-24.VIE2010"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

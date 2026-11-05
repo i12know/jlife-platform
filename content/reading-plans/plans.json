@@ -1,0 +1,47 @@
+{
+  "plans": [
+    {
+      "plan_id": "rpl-life-and-teachings-of-jesus-2026",
+      "role": "primary",
+      "title": "Life and Teachings of Jesus: 104-Day Bible Marathon",
+      "source_csv": "2026-12-20_life-and-teachings-of-jesus_primary.csv",
+      "start_date": "2026-12-20",
+      "end_date": "2027-04-02",
+      "day_count": 104,
+      "columns": {
+        "date": "Date",
+        "day": "Day",
+        "titles": "Titles",
+        "scripture": "Scripture (PlusNothing)",
+        "plusnothing_sections": "PlusNothing Sections",
+        "robertson_sections": "Robertson Sections (reference)",
+        "words": "Words",
+        "notes": "Notes"
+      },
+      "source_attribution": "Owner-created 104-day schedule (2026-09-06) following the PlusNothing Life and Teachings of Jesus arrangement; Robertson (1922) harmony sections as cross-references.",
+      "rights_note": "Reference-only schedule: dates, Scripture citations, section IDs and short titles; no Bible or study text. Cleared for import per docs/content-rights.md §1a (PR #50)."
+    },
+    {
+      "plan_id": "rpl-harmony-parallel-2026",
+      "role": "supplemental",
+      "primary_plan_id": "rpl-life-and-teachings-of-jesus-2026",
+      "title": "Harmony of the Gospels: optional parallel readings",
+      "source_csv": "2026-12-20_harmony-parallel_supplemental.csv",
+      "start_date": "2026-12-20",
+      "end_date": "2027-04-02",
+      "day_count": 104,
+      "columns": {
+        "date": "Date",
+        "day": "Day",
+        "titles": "Titles",
+        "scripture": "Scripture (Harmony - Parallel Accounts)",
+        "plusnothing_sections": "PlusNothing Sections (reference)",
+        "robertson_sections": "Robertson Sections",
+        "words": "Words",
+        "notes": "Notes"
+      },
+      "source_attribution": "Owner-created optional parallel-reading schedule (2026-09-06) following Robertson's 1922 Harmony of the Gospels (public domain), aligned day-for-day with the primary plan.",
+      "rights_note": "Reference-only schedule: dates, Scripture citations, section IDs and short titles; no Bible or study text. Optional enrichment; never adds points. Cleared for import per docs/content-rights.md §1a (PR #50)."
+    }
+  ]
+}

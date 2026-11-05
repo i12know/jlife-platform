@@ -1,0 +1,629 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "rpl-harmony-parallel-2026",
+  "role": "supplemental",
+  "primary_plan_id": "rpl-life-and-teachings-of-jesus-2026",
+  "title": "Harmony of the Gospels: optional parallel readings",
+  "start_date": "2026-12-20",
+  "end_date": "2027-04-02",
+  "day_count": 3,
+  "source_file": "content/reading-plans/2026-12-20_harmony-parallel_supplemental.csv (test fixture: days 1, 38, 53)",
+  "source_attribution": "Owner-created optional parallel-reading schedule (2026-09-06) following Robertson's 1922 Harmony of the Gospels (public domain), aligned day-for-day with the primary plan.",
+  "rights_note": "Reference-only schedule: dates, Scripture citations, section IDs and short titles; no Bible or study text. Optional enrichment; never adds points. Cleared for import per docs/content-rights.md §1a (PR #50).",
+  "links_config": {
+    "en": {
+      "label": "English",
+      "provider": "bible_gateway",
+      "version": "ERV"
+    },
+    "vi": {
+      "label": "Tiếng Việt",
+      "provider": "bible_com",
+      "version_id": 151,
+      "version_code": "VIE2010"
+    }
+  },
+  "days": [
+    {
+      "day_id": "d001",
+      "day": 1,
+      "date": "2026-12-20",
+      "title": "In the Dedication Luke Explains His Method of Research | In His Introduction John Pictures Christ as the Word (Logos)",
+      "titles": [
+        "In the Dedication Luke Explains His Method of Research",
+        "In His Introduction John Pictures Christ as the Word (Logos)"
+      ],
+      "plusnothing_sections": [
+        "1.1"
+      ],
+      "robertson_sections": [
+        "1",
+        "2"
+      ],
+      "gospel_event_ids": [
+        "r1922-001",
+        "r1922-002"
+      ],
+      "passages": [
+        {
+          "display": "Luke 1:1-4",
+          "refs": [
+            {
+              "book": "Luke",
+              "chapter_start": 1,
+              "verse_start": 1,
+              "verse_start_part": null,
+              "chapter_end": 1,
+              "verse_end": 4,
+              "verse_end_part": null,
+              "display": "Luke 1:1-4"
+            }
+          ]
+        },
+        {
+          "display": "John 1:1-18",
+          "refs": [
+            {
+              "book": "John",
+              "chapter_start": 1,
+              "verse_start": 1,
+              "verse_start_part": null,
+              "chapter_end": 1,
+              "verse_end": 18,
+              "verse_end_part": null,
+              "display": "John 1:1-18"
+            }
+          ]
+        }
+      ],
+      "word_count": 392,
+      "notes": "folded in: #1",
+      "links": {
+        "en": {
+          "provider": "bible_gateway",
+          "version": "ERV",
+          "combined": {
+            "label": "Luke 1:1-4; John 1:1-18",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+1:1-4;John+1:1-18&version=ERV"
+          },
+          "passages": [
+            {
+              "label": "Luke 1:1-4",
+              "url": "https://www.biblegateway.com/passage/?search=Luke+1:1-4&version=ERV"
+            },
+            {
+              "label": "John 1:1-18",
+              "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=ERV"
+            }
+          ]
+        },
+        "vi": {
+          "provider": "bible_com",
+          "version": "VIE2010",
+          "combined": null,
+          "passages": [
+            {
+              "label": "Luke 1:1-4",
+              "url": "https://www.bible.com/bible/151/LUK.1.1-4.VIE2010"
+            },
+            {
+              "label": "John 1:1-18",
+              "url": "https://www.bible.com/bible/151/JHN.1.1-18.VIE2010"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "day_id": "d038",
+      "day": 38,
+      "date": "2027-01-26",
+      "title": "Withdrawal from Galilee | Feeding the five thousand | The Prevention of the Revolutionary Purpose to Proclaim Jesus King (A Political Messiah) | The Peril to the Twelve in the Storm at Sea and Christ's Coming to Them on the Water in the Darkness | The Reception at Gennesaret",
+      "titles": [
+        "Withdrawal from Galilee",
+        "Feeding the five thousand",
+        "The Prevention of the Revolutionary Purpose to Proclaim Jesus King (A Political Messiah)",
+        "The Peril to the Twelve in the Storm at Sea and Christ's Coming to Them on the Water in the Darkness",
+        "The Reception at Gennesaret"
+      ],
+      "plusnothing_sections": [
+        "4.4",
+        "4.5",
+        "4.6"
+      ],
+      "robertson_sections": [
+        "72b",
+        "72c",
+        "73",
+        "74",
+        "75"
+      ],
+      "gospel_event_ids": [
+        "r1922-072",
+        "r1922-073",
+        "r1922-074",
+        "r1922-075"
+      ],
+      "passages": [
+        {
+          "display": "Matthew 14:13-14",
+          "refs": [
+            {
+              "book": "Matthew",
+              "chapter_start": 14,
+              "verse_start": 13,
+              "verse_start_part": null,
+              "chapter_end": 14,
+              "verse_end": 14,
+              "verse_end_part": null,
+              "display": "Matthew 14:13-14"
+            }
+          ]
+        },
+        {
+          "display": "Mark 6:31-34",
+          "refs": [
+            {
+              "book": "Mark",
+              "chapter_start": 6,
+              "verse_start": 31,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 34,
+              "verse_end_part": null,
+              "display": "Mark 6:31-34"
+            }
+          ]
+        },
+        {
+          "display": "Luke 9:10b-11",
+          "refs": [
+            {
+              "book": "Luke",
+              "chapter_start": 9,
+              "verse_start": 10,
+              "verse_start_part": "b",
+              "chapter_end": 9,
+              "verse_end": 11,
+              "verse_end_part": null,
+              "display": "Luke 9:10b-11"
+            }
+          ]
+        },
+        {
+          "display": "John 6:1-3",
+          "refs": [
+            {
+              "book": "John",
+              "chapter_start": 6,
+              "verse_start": 1,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 3,
+              "verse_end_part": null,
+              "display": "John 6:1-3"
+            }
+          ]
+        },
+        {
+          "display": "Matthew 14:15-21",
+          "refs": [
+            {
+              "book": "Matthew",
+              "chapter_start": 14,
+              "verse_start": 15,
+              "verse_start_part": null,
+              "chapter_end": 14,
+              "verse_end": 21,
+              "verse_end_part": null,
+              "display": "Matthew 14:15-21"
+            }
+          ]
+        },
+        {
+          "display": "Mark 6:35-44",
+          "refs": [
+            {
+              "book": "Mark",
+              "chapter_start": 6,
+              "verse_start": 35,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 44,
+              "verse_end_part": null,
+              "display": "Mark 6:35-44"
+            }
+          ]
+        },
+        {
+          "display": "Luke 9:12-17",
+          "refs": [
+            {
+              "book": "Luke",
+              "chapter_start": 9,
+              "verse_start": 12,
+              "verse_start_part": null,
+              "chapter_end": 9,
+              "verse_end": 17,
+              "verse_end_part": null,
+              "display": "Luke 9:12-17"
+            }
+          ]
+        },
+        {
+          "display": "John 6:4-13",
+          "refs": [
+            {
+              "book": "John",
+              "chapter_start": 6,
+              "verse_start": 4,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 13,
+              "verse_end_part": null,
+              "display": "John 6:4-13"
+            }
+          ]
+        },
+        {
+          "display": "Mark 6:45-46",
+          "refs": [
+            {
+              "book": "Mark",
+              "chapter_start": 6,
+              "verse_start": 45,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 46,
+              "verse_end_part": null,
+              "display": "Mark 6:45-46"
+            }
+          ]
+        },
+        {
+          "display": "Matthew 14:22-23",
+          "refs": [
+            {
+              "book": "Matthew",
+              "chapter_start": 14,
+              "verse_start": 22,
+              "verse_start_part": null,
+              "chapter_end": 14,
+              "verse_end": 23,
+              "verse_end_part": null,
+              "display": "Matthew 14:22-23"
+            }
+          ]
+        },
+        {
+          "display": "John 6:14-15",
+          "refs": [
+            {
+              "book": "John",
+              "chapter_start": 6,
+              "verse_start": 14,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 15,
+              "verse_end_part": null,
+              "display": "John 6:14-15"
+            }
+          ]
+        },
+        {
+          "display": "Mark 6:47-52",
+          "refs": [
+            {
+              "book": "Mark",
+              "chapter_start": 6,
+              "verse_start": 47,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 52,
+              "verse_end_part": null,
+              "display": "Mark 6:47-52"
+            }
+          ]
+        },
+        {
+          "display": "Matthew 14:24-33",
+          "refs": [
+            {
+              "book": "Matthew",
+              "chapter_start": 14,
+              "verse_start": 24,
+              "verse_start_part": null,
+              "chapter_end": 14,
+              "verse_end": 33,
+              "verse_end_part": null,
+              "display": "Matthew 14:24-33"
+            }
+          ]
+        },
+        {
+          "display": "John 6:16-21",
+          "refs": [
+            {
+              "book": "John",
+              "chapter_start": 6,
+              "verse_start": 16,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 21,
+              "verse_end_part": null,
+              "display": "John 6:16-21"
+            }
+          ]
+        },
+        {
+          "display": "Mark 6:53-56",
+          "refs": [
+            {
+              "book": "Mark",
+              "chapter_start": 6,
+              "verse_start": 53,
+              "verse_start_part": null,
+              "chapter_end": 6,
+              "verse_end": 56,
+              "verse_end_part": null,
+              "display": "Mark 6:53-56"
+            }
+          ]
+        },
+        {
+          "display": "Matthew 14:34-36",
+          "refs": [
+            {
+              "book": "Matthew",
+              "chapter_start": 14,
+              "verse_start": 34,
+              "verse_start_part": null,
+              "chapter_end": 14,
+              "verse_end": 36,
+              "verse_end_part": null,
+              "display": "Matthew 14:34-36"
+            }
+          ]
+        }
+      ],
+      "word_count": 1746,
+      "notes": null,
+      "links": {
+        "en": {
+          "provider": "bible_gateway",
+          "version": "ERV",
+          "combined": {
+            "label": "Matthew 14:13-14; Mark 6:31-34; Luke 9:10-11; John 6:1-3; Matthew 14:15-21; Mark 6:35-44; Luke 9:12-17; John 6:4-13; Mark 6:45-46; Matthew 14:22-23; John 6:14-15; Mark 6:47-52; Matthew 14:24-33; John 6:16-21; Mark 6:53-56; Matthew 14:34-36",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+14:13-14;Mark+6:31-34;Luke+9:10-11;John+6:1-3;Matthew+14:15-21;Mark+6:35-44;Luke+9:12-17;John+6:4-13;Mark+6:45-46;Matthew+14:22-23;John+6:14-15;Mark+6:47-52;Matthew+14:24-33;John+6:16-21;Mark+6:53-56;Matthew+14:34-36&version=ERV"
+          },
+          "passages": [
+            {
+              "label": "Matthew 14:13-14",
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+14:13-14&version=ERV"
+            },
+            {
+              "label": "Mark 6:31-34",
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:31-34&version=ERV"
+            },
+            {
+              "label": "Luke 9:10-11",
+              "url": "https://www.biblegateway.com/passage/?search=Luke+9:10-11&version=ERV"
+            },
+            {
+              "label": "John 6:1-3",
+              "url": "https://www.biblegateway.com/passage/?search=John+6:1-3&version=ERV"
+            },
+            {
+              "label": "Matthew 14:15-21",
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+14:15-21&version=ERV"
+            },
+            {
+              "label": "Mark 6:35-44",
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:35-44&version=ERV"
+            },
+            {
+              "label": "Luke 9:12-17",
+              "url": "https://www.biblegateway.com/passage/?search=Luke+9:12-17&version=ERV"
+            },
+            {
+              "label": "John 6:4-13",
+              "url": "https://www.biblegateway.com/passage/?search=John+6:4-13&version=ERV"
+            },
+            {
+              "label": "Mark 6:45-46",
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:45-46&version=ERV"
+            },
+            {
+              "label": "Matthew 14:22-23",
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+14:22-23&version=ERV"
+            },
+            {
+              "label": "John 6:14-15",
+              "url": "https://www.biblegateway.com/passage/?search=John+6:14-15&version=ERV"
+            },
+            {
+              "label": "Mark 6:47-52",
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:47-52&version=ERV"
+            },
+            {
+              "label": "Matthew 14:24-33",
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+14:24-33&version=ERV"
+            },
+            {
+              "label": "John 6:16-21",
+              "url": "https://www.biblegateway.com/passage/?search=John+6:16-21&version=ERV"
+            },
+            {
+              "label": "Mark 6:53-56",
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:53-56&version=ERV"
+            },
+            {
+              "label": "Matthew 14:34-36",
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+14:34-36&version=ERV"
+            }
+          ]
+        },
+        "vi": {
+          "provider": "bible_com",
+          "version": "VIE2010",
+          "combined": null,
+          "passages": [
+            {
+              "label": "Matthew 14:13-14",
+              "url": "https://www.bible.com/bible/151/MAT.14.13-14.VIE2010"
+            },
+            {
+              "label": "Mark 6:31-34",
+              "url": "https://www.bible.com/bible/151/MRK.6.31-34.VIE2010"
+            },
+            {
+              "label": "Luke 9:10-11",
+              "url": "https://www.bible.com/bible/151/LUK.9.10-11.VIE2010"
+            },
+            {
+              "label": "John 6:1-3",
+              "url": "https://www.bible.com/bible/151/JHN.6.1-3.VIE2010"
+            },
+            {
+              "label": "Matthew 14:15-21",
+              "url": "https://www.bible.com/bible/151/MAT.14.15-21.VIE2010"
+            },
+            {
+              "label": "Mark 6:35-44",
+              "url": "https://www.bible.com/bible/151/MRK.6.35-44.VIE2010"
+            },
+            {
+              "label": "Luke 9:12-17",
+              "url": "https://www.bible.com/bible/151/LUK.9.12-17.VIE2010"
+            },
+            {
+              "label": "John 6:4-13",
+              "url": "https://www.bible.com/bible/151/JHN.6.4-13.VIE2010"
+            },
+            {
+              "label": "Mark 6:45-46",
+              "url": "https://www.bible.com/bible/151/MRK.6.45-46.VIE2010"
+            },
+            {
+              "label": "Matthew 14:22-23",
+              "url": "https://www.bible.com/bible/151/MAT.14.22-23.VIE2010"
+            },
+            {
+              "label": "John 6:14-15",
+              "url": "https://www.bible.com/bible/151/JHN.6.14-15.VIE2010"
+            },
+            {
+              "label": "Mark 6:47-52",
+              "url": "https://www.bible.com/bible/151/MRK.6.47-52.VIE2010"
+            },
+            {
+              "label": "Matthew 14:24-33",
+              "url": "https://www.bible.com/bible/151/MAT.14.24-33.VIE2010"
+            },
+            {
+              "label": "John 6:16-21",
+              "url": "https://www.bible.com/bible/151/JHN.6.16-21.VIE2010"
+            },
+            {
+              "label": "Mark 6:53-56",
+              "url": "https://www.bible.com/bible/151/MRK.6.53-56.VIE2010"
+            },
+            {
+              "label": "Matthew 14:34-36",
+              "url": "https://www.bible.com/bible/151/MAT.14.34-36.VIE2010"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "day_id": "d053",
+      "day": 53,
+      "date": "2027-02-10",
+      "title": "Commissioning of the Seventy | Return of the Seventy",
+      "titles": [
+        "Commissioning of the Seventy",
+        "Return of the Seventy"
+      ],
+      "plusnothing_sections": [
+        "4.4"
+      ],
+      "robertson_sections": [
+        "102a",
+        "102b"
+      ],
+      "gospel_event_ids": [
+        "r1922-102"
+      ],
+      "passages": [
+        {
+          "display": "Luke 10:1-16",
+          "refs": [
+            {
+              "book": "Luke",
+              "chapter_start": 10,
+              "verse_start": 1,
+              "verse_start_part": null,
+              "chapter_end": 10,
+              "verse_end": 16,
+              "verse_end_part": null,
+              "display": "Luke 10:1-16"
+            }
+          ]
+        },
+        {
+          "display": "Luke 10:17-24",
+          "refs": [
+            {
+              "book": "Luke",
+              "chapter_start": 10,
+              "verse_start": 17,
+              "verse_start_part": null,
+              "chapter_end": 10,
+              "verse_end": 24,
+              "verse_end_part": null,
+              "display": "Luke 10:17-24"
+            }
+          ]
+        }
+      ],
+      "word_count": 577,
+      "notes": "folded in: #102b",
+      "links": {
+        "en": {
+          "provider": "bible_gateway",
+          "version": "ERV",
+          "combined": {
+            "label": "Luke 10:1-16; Luke 10:17-24",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+10:1-16;Luke+10:17-24&version=ERV"
+          },
+          "passages": [
+            {
+              "label": "Luke 10:1-16",
+              "url": "https://www.biblegateway.com/passage/?search=Luke+10:1-16&version=ERV"
+            },
+            {
+              "label": "Luke 10:17-24",
+              "url": "https://www.biblegateway.com/passage/?search=Luke+10:17-24&version=ERV"
+            }
+          ]
+        },
+        "vi": {
+          "provider": "bible_com",
+          "version": "VIE2010",
+          "combined": null,
+          "passages": [
+            {
+              "label": "Luke 10:1-16",
+              "url": "https://www.bible.com/bible/151/LUK.10.1-16.VIE2010"
+            },
+            {
+              "label": "Luke 10:17-24",
+              "url": "https://www.bible.com/bible/151/LUK.10.17-24.VIE2010"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
