@@ -17,7 +17,7 @@ add_action( 'init', 'jlife_challenges_add_rewrites' );
  * Routes.
  */
 function jlife_challenges_add_rewrites() {
-	add_rewrite_rule( '^(today|soap|marathon)/?$', 'index.php?jlife_screen=$matches[1]', 'top' );
+	add_rewrite_rule( '^(today|soap|marathon|share|group)/?$', 'index.php?jlife_screen=$matches[1]', 'top' );
 }
 
 add_filter( 'query_vars', 'jlife_challenges_query_vars' );
@@ -63,7 +63,7 @@ function jlife_challenges_format_date( $ymd ) {
  * @param string $title  Page title.
  * @param string $body   Escaped HTML.
  * @param string $active Active nav item.
- * @param string $script Optional script handle file ('soap').
+ * @param string $script Optional script file ('soap' or 'share').
  */
 function jlife_challenges_send_page( $title, $body, $active = '', $script = '' ) {
 	nocache_headers();
@@ -73,6 +73,7 @@ function jlife_challenges_send_page( $title, $body, $active = '', $script = '' )
 	$nav  = '';
 	foreach ( array(
 		'today'    => __( 'Today', 'jlife-challenges' ),
+		'group'    => __( 'My Group', 'jlife-challenges' ),
 		'marathon' => __( 'My Marathon', 'jlife-challenges' ),
 	) as $slug => $label ) {
 		$nav .= '<a href="' . esc_url( home_url( '/' . $slug . '/' ) ) . '"' . ( $slug === $active ? ' aria-current="page"' : '' ) . '>' . esc_html( $label ) . '</a>';
@@ -81,9 +82,9 @@ function jlife_challenges_send_page( $title, $body, $active = '', $script = '' )
 	$html = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=1' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=2' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>'
-		. ( 'soap' === $script ? '<script src="' . esc_url( $base . 'soap.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
+		. ( in_array( $script, array( 'soap', 'share' ), true ) ? '<script src="' . esc_url( $base . $script . '.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. '</body></html>';
 	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts.
 	exit;
@@ -222,6 +223,7 @@ function jlife_challenges_screen_today() {
 	$body = $head . jlife_challenges_render_reading( $view )
 		. '<section class="jl-status"><p>' . esc_html( jlife_challenges_status_text( $view ) ) . '</p>'
 		. '<a class="jl-button jl-primary" href="' . esc_url( $soap ) . '">' . esc_html( $cta ) . '</a>'
+		. jlife_challenges_share_button( $view )
 		/* translators: 1: points, 2: number of days. */
 		. '<p class="jl-score">' . esc_html( sprintf( __( '%1$d of %2$d', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p></section>';
 	jlife_challenges_send_page( __( 'Today', 'jlife-challenges' ), $body, 'today' );
@@ -295,7 +297,8 @@ function jlife_challenges_screen_soap() {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flag after a redirect.
 	if ( isset( $_GET['done'] ) && '' === $error ) {
 		/* translators: 1: points, 2: number of days. */
-		$body .= '<p class="jl-ok" role="status">' . esc_html( jlife_challenges_status_text( $view ) ) . ' ' . esc_html( sprintf( __( 'You have %1$d of %2$d.', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>';
+		$body .= '<p class="jl-ok" role="status">' . esc_html( jlife_challenges_status_text( $view ) ) . ' ' . esc_html( sprintf( __( 'You have %1$d of %2$d.', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>'
+			. jlife_challenges_share_button( $view );
 	}
 	if ( '' !== $error ) {
 		$body .= '<p class="jl-err" role="alert">' . esc_html( $error ) . '</p>';
@@ -387,6 +390,10 @@ function jlife_challenges_route() {
 		jlife_challenges_screen_soap();
 	} elseif ( 'marathon' === $screen ) {
 		jlife_challenges_screen_marathon();
+	} elseif ( 'share' === $screen ) {
+		jlife_challenges_screen_share();
+	} elseif ( 'group' === $screen ) {
+		jlife_challenges_screen_group();
 	} elseif ( ( is_front_page() || is_home() ) && ! current_user_can( 'edit_posts' ) && is_user_logged_in() ) {
 		wp_safe_redirect( home_url( '/today/' ) );
 		exit;
