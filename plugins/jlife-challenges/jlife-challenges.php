@@ -28,6 +28,8 @@ require_once __DIR__ . '/includes/shares.php';
 require_once __DIR__ . '/includes/lifecycle.php';
 require_once __DIR__ . '/includes/views.php';
 require_once __DIR__ . '/includes/screens.php';
+require_once __DIR__ . '/includes/share-views.php';
+require_once __DIR__ . '/includes/share-screens.php';
 require_once __DIR__ . '/includes/rest.php';
 require_once __DIR__ . '/includes/test-campaign.php';
 
