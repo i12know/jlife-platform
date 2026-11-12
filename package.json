@@ -27,6 +27,6 @@
     "test:js": "node --test bin/test/*.test.js"
   },
   "devDependencies": {
-    "@wordpress/env": "^10.0.0"
+    "@wordpress/env": "^12.1.0"
   }
 }
