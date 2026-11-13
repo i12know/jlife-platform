@@ -1,0 +1,59 @@
+name: YouVersion check
+
+# Manual only (#79, #78 Gate 1). Read-only requests to api.youversion.com
+# with the App Key from the `youversion-check` environment secret
+# YVP_APP_KEY. Reports HTTP status and non-secret metadata only: never the
+# key, request headers or Bible text. Separate from the latoc deploy: no
+# deploy secrets, no SSH, no write access. Script: bin/youversion-check.js.
+on:
+  workflow_dispatch:
+    inputs:
+      check:
+        description: >-
+          "auth" checks only that the key authenticates (#79). "gate1" also
+          checks ERV and BPT: catalog IDs, licenses and a passage request (#78).
+        type: choice
+        options:
+          - auth
+          - gate1
+        default: auth
+      passage:
+        description: USFM passage for the text request (one chapter).
+        type: string
+        default: JHN.1.1-18
+      bible_ids:
+        description: >-
+          Optional: force YouVersion IDs, e.g. "ERV=406,BPT=1234". Leave empty
+          to find them in the catalog by abbreviation.
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: youversion-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: YouVersion ${{ inputs.check }}
+    runs-on: ubuntu-latest
+    environment: youversion-check
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Run the check
+        env:
+          YVP_APP_KEY: ${{ secrets.YVP_APP_KEY }}
+          YVP_PASSAGE: ${{ inputs.passage }}
+          YVP_BIBLE_IDS: ${{ inputs.bible_ids }}
+          CHECK: ${{ inputs.check }}
+        run: node bin/youversion-check.js "$CHECK"
