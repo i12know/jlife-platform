@@ -174,4 +174,85 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 			);
 		}
 	}
+
+	/**
+	 * Today / SOAP reading block: one Bible Gateway button per language, in
+	 * the participant's order, for the assigned and the optional readings (#91).
+	 */
+	public function test_reading_block_has_one_button_per_language_for_both_lists() {
+		$links = static function ( $search ) {
+			$out      = array();
+			$versions = array(
+				'en' => 'ERV',
+				'vi' => 'BPT',
+			);
+			foreach ( $versions as $lang => $version ) {
+				$url          = 'https://www.biblegateway.com/passage/?search=' . $search . '&version=' . $version;
+				$out[ $lang ] = array(
+					'provider' => 'bible_gateway',
+					'version'  => $version,
+					'combined' => array(
+						'label' => $search,
+						'url'   => $url,
+					),
+					'passages' => array(),
+				);
+			}
+			return $out;
+		};
+
+		$config = array(
+			'en' => array( 'label' => 'English' ),
+			'vi' => array( 'label' => 'Tiếng Việt' ),
+		);
+		$view   = array(
+			'languages' => array( 'vi', 'en' ),
+			'reading'   => array(
+				'plan'         => array( 'links_config' => $config ),
+				'day'          => array(
+					'title'    => 'John the Baptizer Prepares the Way',
+					'passages' => array( array( 'display' => 'Luke 3:1-6' ) ),
+					'links'    => $links( 'Luke+3:1-6;Matthew+3:4-10;Luke+3:10-18' ),
+				),
+				'supplemental' => array(
+					'plan' => array( 'links_config' => $config ),
+					'day'  => array(
+						'passages' => array( array( 'display' => 'Mark 1:1' ) ),
+						'links'    => $links( 'Mark+1:1;Luke+3:1-2' ),
+					),
+				),
+			),
+		);
+
+		$html  = jlife_challenges_render_reading( $view );
+		$parts = explode( '<details class="jl-optional">', $html );
+		$this->assertCount( 2, $parts );
+		list( $main, $optional ) = $parts;
+
+		$this->assertSame( 2, substr_count( $main, 'class="jl-button"' ) );
+		$this->assertStringContainsString( esc_url( 'https://www.biblegateway.com/passage/?search=Luke+3:1-6;Matthew+3:4-10;Luke+3:10-18&version=BPT' ), $main );
+		$this->assertLessThan( strpos( $main, 'version=ERV' ), strpos( $main, 'version=BPT' ), 'Vietnamese first for a Vietnamese participant' );
+		$this->assertStringContainsString( 'Read in Tiếng Việt (BPT)', $main );
+
+		$this->assertSame( 2, substr_count( $optional, 'class="jl-button"' ) );
+		$this->assertStringContainsString( esc_url( 'https://www.biblegateway.com/passage/?search=Mark+1:1;Luke+3:1-2&version=BPT' ), $optional );
+	}
+
+	/**
+	 * Sign out asks first (#89): Cancel stays put, Sign out uses WordPress's
+	 * nonce-protected logout and lands on the sign-in screen.
+	 */
+	public function test_signout_prompt() {
+		$back   = jlife_challenges_screen_url( 'soap', 'd009' );
+		$dialog = jlife_challenges_signout_prompt( $back, true );
+		$this->assertStringContainsString( '<form method="dialog">', $dialog, 'Cancel closes the dialog without leaving the page' );
+		$this->assertStringContainsString( esc_url( wp_logout_url( home_url( '/signin/' ) ) ), $dialog );
+		$this->assertStringContainsString( '_wpnonce=', $dialog );
+
+		$page = jlife_challenges_signout_prompt( $back, false );
+		$this->assertStringContainsString( 'href="' . esc_url( $back ) . '"', $page, 'Cancel on the no-JS page returns to the same screen and day' );
+		$this->assertSame( add_query_arg( 'day', 'd009', home_url( '/soap/' ) ), $back );
+		$this->assertSame( home_url( '/today/' ), jlife_challenges_screen_url( 'https://evil.test/' ), 'only known screens' );
+		$this->assertSame( home_url( '/group/' ), jlife_challenges_screen_url( 'group' ), 'My Group (#62) is a known screen' );
+	}
 }

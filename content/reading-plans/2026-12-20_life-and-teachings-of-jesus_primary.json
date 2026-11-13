@@ -17,9 +17,8 @@
     },
     "vi": {
       "label": "Tiếng Việt",
-      "provider": "bible_com",
-      "version_id": 151,
-      "version_code": "VIE2010"
+      "provider": "bible_gateway",
+      "version": "BPT"
     }
   },
   "days": [
@@ -75,13 +74,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 1:1-18",
+            "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=BPT"
+          },
           "passages": [
             {
               "label": "John 1:1-18",
-              "url": "https://www.bible.com/bible/151/JHN.1.1-18.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=BPT"
             }
           ]
         }
@@ -139,13 +141,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 1:5-25",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+1:5-25&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 1:5-25",
-              "url": "https://www.bible.com/bible/151/LUK.1.5-25.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+1:5-25&version=BPT"
             }
           ]
         }
@@ -226,17 +231,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 1:26-38; Luke 1:39-45",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+1:26-38;Luke+1:39-45&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 1:26-38",
-              "url": "https://www.bible.com/bible/151/LUK.1.26-38.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+1:26-38&version=BPT"
             },
             {
               "label": "Luke 1:39-45",
-              "url": "https://www.bible.com/bible/151/LUK.1.39-45.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+1:39-45&version=BPT"
             }
           ]
         }
@@ -317,17 +325,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 1:46-55; Luke 1:57-66",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+1:46-55;Luke+1:57-66&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 1:46-55",
-              "url": "https://www.bible.com/bible/151/LUK.1.46-55.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+1:46-55&version=BPT"
             },
             {
               "label": "Luke 1:57-66",
-              "url": "https://www.bible.com/bible/151/LUK.1.57-66.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+1:57-66&version=BPT"
             }
           ]
         }
@@ -408,17 +419,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 1:67-80; Luke 2:1-7",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+1:67-80;Luke+2:1-7&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 1:67-80",
-              "url": "https://www.bible.com/bible/151/LUK.1.67-80.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+1:67-80&version=BPT"
             },
             {
               "label": "Luke 2:1-7",
-              "url": "https://www.bible.com/bible/151/LUK.2.1-7.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+2:1-7&version=BPT"
             }
           ]
         }
@@ -499,17 +513,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 2:8-21; Luke 2:22-38",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+2:8-21;Luke+2:22-38&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 2:8-21",
-              "url": "https://www.bible.com/bible/151/LUK.2.8-21.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+2:8-21&version=BPT"
             },
             {
               "label": "Luke 2:22-38",
-              "url": "https://www.bible.com/bible/151/LUK.2.22-38.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+2:22-38&version=BPT"
             }
           ]
         }
@@ -590,17 +607,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 2:1-12; Matthew 2:13-15",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+2:1-12;Matthew+2:13-15&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 2:1-12",
-              "url": "https://www.bible.com/bible/151/MAT.2.1-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+2:1-12&version=BPT"
             },
             {
               "label": "Matthew 2:13-15",
-              "url": "https://www.bible.com/bible/151/MAT.2.13-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+2:13-15&version=BPT"
             }
           ]
         }
@@ -725,25 +745,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 2:16-18; Matthew 2:19-23; Luke 2:40; Luke 2:41-52",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+2:16-18;Matthew+2:19-23;Luke+2:40;Luke+2:41-52&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 2:16-18",
-              "url": "https://www.bible.com/bible/151/MAT.2.16-18.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+2:16-18&version=BPT"
             },
             {
               "label": "Matthew 2:19-23",
-              "url": "https://www.bible.com/bible/151/MAT.2.19-23.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+2:19-23&version=BPT"
             },
             {
               "label": "Luke 2:40",
-              "url": "https://www.bible.com/bible/151/LUK.2.40.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+2:40&version=BPT"
             },
             {
               "label": "Luke 2:41-52",
-              "url": "https://www.bible.com/bible/151/LUK.2.41-52.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+2:41-52&version=BPT"
             }
           ]
         }
@@ -841,21 +864,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 3:1-6; Matthew 3:4-10; Luke 3:10-18",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+3:1-6;Matthew+3:4-10;Luke+3:10-18&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 3:1-6",
-              "url": "https://www.bible.com/bible/151/LUK.3.1-6.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+3:1-6&version=BPT"
             },
             {
               "label": "Matthew 3:4-10",
-              "url": "https://www.bible.com/bible/151/MAT.3.4-10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+3:4-10&version=BPT"
             },
             {
               "label": "Luke 3:10-18",
-              "url": "https://www.bible.com/bible/151/LUK.3.10-18.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+3:10-18&version=BPT"
             }
           ]
         }
@@ -980,25 +1006,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 3:13-17; Luke 3:23; Matthew 4:1-11; John 1:19-28",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+3:13-17;Luke+3:23;Matthew+4:1-11;John+1:19-28&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 3:13-17",
-              "url": "https://www.bible.com/bible/151/MAT.3.13-17.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+3:13-17&version=BPT"
             },
             {
               "label": "Luke 3:23",
-              "url": "https://www.bible.com/bible/151/LUK.3.23.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+3:23&version=BPT"
             },
             {
               "label": "Matthew 4:1-11",
-              "url": "https://www.bible.com/bible/151/MAT.4.1-11.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+4:1-11&version=BPT"
             },
             {
               "label": "John 1:19-28",
-              "url": "https://www.bible.com/bible/151/JHN.1.19-28.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+1:19-28&version=BPT"
             }
           ]
         }
@@ -1100,21 +1129,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 1:29-34; John 1:35-42; John 1:43-51",
+            "url": "https://www.biblegateway.com/passage/?search=John+1:29-34;John+1:35-42;John+1:43-51&version=BPT"
+          },
           "passages": [
             {
               "label": "John 1:29-34",
-              "url": "https://www.bible.com/bible/151/JHN.1.29-34.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+1:29-34&version=BPT"
             },
             {
               "label": "John 1:35-42",
-              "url": "https://www.bible.com/bible/151/JHN.1.35-42.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+1:35-42&version=BPT"
             },
             {
               "label": "John 1:43-51",
-              "url": "https://www.bible.com/bible/151/JHN.1.43-51.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+1:43-51&version=BPT"
             }
           ]
         }
@@ -1195,17 +1227,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 2:1-12; John 2:13-25",
+            "url": "https://www.biblegateway.com/passage/?search=John+2:1-12;John+2:13-25&version=BPT"
+          },
           "passages": [
             {
               "label": "John 2:1-12",
-              "url": "https://www.bible.com/bible/151/JHN.2.1-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+2:1-12&version=BPT"
             },
             {
               "label": "John 2:13-25",
-              "url": "https://www.bible.com/bible/151/JHN.2.13-25.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+2:13-25&version=BPT"
             }
           ]
         }
@@ -1290,21 +1325,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 3:1-21; John 3:22-36; John 4:1-3",
+            "url": "https://www.biblegateway.com/passage/?search=John+3:1-21;John+3:22-36;John+4:1-3&version=BPT"
+          },
           "passages": [
             {
               "label": "John 3:1-21",
-              "url": "https://www.bible.com/bible/151/JHN.3.1-21.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+3:1-21&version=BPT"
             },
             {
               "label": "John 3:22-36",
-              "url": "https://www.bible.com/bible/151/JHN.3.22-36.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+3:22-36&version=BPT"
             },
             {
               "label": "John 4:1-3",
-              "url": "https://www.bible.com/bible/151/JHN.4.1-3.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+4:1-3&version=BPT"
             }
           ]
         }
@@ -1362,13 +1400,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 4:4-26",
+            "url": "https://www.biblegateway.com/passage/?search=John+4:4-26&version=BPT"
+          },
           "passages": [
             {
               "label": "John 4:4-26",
-              "url": "https://www.bible.com/bible/151/JHN.4.4-26.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+4:4-26&version=BPT"
             }
           ]
         }
@@ -1494,25 +1535,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 4:27-38; John 4:39-42; John 4:43-45; John 4:46-54",
+            "url": "https://www.biblegateway.com/passage/?search=John+4:27-38;John+4:39-42;John+4:43-45;John+4:46-54&version=BPT"
+          },
           "passages": [
             {
               "label": "John 4:27-38",
-              "url": "https://www.bible.com/bible/151/JHN.4.27-38.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+4:27-38&version=BPT"
             },
             {
               "label": "John 4:39-42",
-              "url": "https://www.bible.com/bible/151/JHN.4.39-42.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+4:39-42&version=BPT"
             },
             {
               "label": "John 4:43-45",
-              "url": "https://www.bible.com/bible/151/JHN.4.43-45.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+4:43-45&version=BPT"
             },
             {
               "label": "John 4:46-54",
-              "url": "https://www.bible.com/bible/151/JHN.4.46-54.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+4:46-54&version=BPT"
             }
           ]
         }
@@ -1633,25 +1677,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 4:13-17; Mark 1:15; Luke 4:14-15; Luke 4:16-30",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+4:13-17;Mark+1:15;Luke+4:14-15;Luke+4:16-30&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 4:13-17",
-              "url": "https://www.bible.com/bible/151/MAT.4.13-17.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+4:13-17&version=BPT"
             },
             {
               "label": "Mark 1:15",
-              "url": "https://www.bible.com/bible/151/MRK.1.15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+1:15&version=BPT"
             },
             {
               "label": "Luke 4:14-15",
-              "url": "https://www.bible.com/bible/151/LUK.4.14-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+4:14-15&version=BPT"
             },
             {
               "label": "Luke 4:16-30",
-              "url": "https://www.bible.com/bible/151/LUK.4.16-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+4:16-30&version=BPT"
             }
           ]
         }
@@ -1776,25 +1823,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 4:18-22; Luke 5:1-11; Mark 1:21-28; Mark 1:29-34",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+4:18-22;Luke+5:1-11;Mark+1:21-28;Mark+1:29-34&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 4:18-22",
-              "url": "https://www.bible.com/bible/151/MAT.4.18-22.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+4:18-22&version=BPT"
             },
             {
               "label": "Luke 5:1-11",
-              "url": "https://www.bible.com/bible/151/LUK.5.1-11.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+5:1-11&version=BPT"
             },
             {
               "label": "Mark 1:21-28",
-              "url": "https://www.bible.com/bible/151/MRK.1.21-28.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+1:21-28&version=BPT"
             },
             {
               "label": "Mark 1:29-34",
-              "url": "https://www.bible.com/bible/151/MRK.1.29-34.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+1:29-34&version=BPT"
             }
           ]
         }
@@ -1919,25 +1969,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 1:35-38; Matthew 4:23-25; Mark 1:40-45; Mark 2:1-12",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+1:35-38;Matthew+4:23-25;Mark+1:40-45;Mark+2:1-12&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 1:35-38",
-              "url": "https://www.bible.com/bible/151/MRK.1.35-38.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+1:35-38&version=BPT"
             },
             {
               "label": "Matthew 4:23-25",
-              "url": "https://www.bible.com/bible/151/MAT.4.23-25.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+4:23-25&version=BPT"
             },
             {
               "label": "Mark 1:40-45",
-              "url": "https://www.bible.com/bible/151/MRK.1.40-45.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+1:40-45&version=BPT"
             },
             {
               "label": "Mark 2:1-12",
-              "url": "https://www.bible.com/bible/151/MRK.2.1-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+2:1-12&version=BPT"
             }
           ]
         }
@@ -2041,21 +2094,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 2:13-17; Luke 5:33-39; John 5:1-18",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+2:13-17;Luke+5:33-39;John+5:1-18&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 2:13-17",
-              "url": "https://www.bible.com/bible/151/MRK.2.13-17.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+2:13-17&version=BPT"
             },
             {
               "label": "Luke 5:33-39",
-              "url": "https://www.bible.com/bible/151/LUK.5.33-39.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+5:33-39&version=BPT"
             },
             {
               "label": "John 5:1-18",
-              "url": "https://www.bible.com/bible/151/JHN.5.1-18.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+5:1-18&version=BPT"
             }
           ]
         }
@@ -2134,17 +2190,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 5:19-30; John 5:31-47",
+            "url": "https://www.biblegateway.com/passage/?search=John+5:19-30;John+5:31-47&version=BPT"
+          },
           "passages": [
             {
               "label": "John 5:19-30",
-              "url": "https://www.bible.com/bible/151/JHN.5.19-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+5:19-30&version=BPT"
             },
             {
               "label": "John 5:31-47",
-              "url": "https://www.bible.com/bible/151/JHN.5.31-47.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+5:31-47&version=BPT"
             }
           ]
         }
@@ -2303,33 +2362,36 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 2:23-26; Matthew 12:5-7; Mark 2:27-28; Matthew 12:9-14; Mark 3:7-12; Matthew 12:17-21",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+2:23-26;Matthew+12:5-7;Mark+2:27-28;Matthew+12:9-14;Mark+3:7-12;Matthew+12:17-21&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 2:23-26",
-              "url": "https://www.bible.com/bible/151/MRK.2.23-26.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+2:23-26&version=BPT"
             },
             {
               "label": "Matthew 12:5-7",
-              "url": "https://www.bible.com/bible/151/MAT.12.5-7.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+12:5-7&version=BPT"
             },
             {
               "label": "Mark 2:27-28",
-              "url": "https://www.bible.com/bible/151/MRK.2.27-28.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+2:27-28&version=BPT"
             },
             {
               "label": "Matthew 12:9-14",
-              "url": "https://www.bible.com/bible/151/MAT.12.9-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+12:9-14&version=BPT"
             },
             {
               "label": "Mark 3:7-12",
-              "url": "https://www.bible.com/bible/151/MRK.3.7-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+3:7-12&version=BPT"
             },
             {
               "label": "Matthew 12:17-21",
-              "url": "https://www.bible.com/bible/151/MAT.12.17-21.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+12:17-21&version=BPT"
             }
           ]
         }
@@ -2473,29 +2535,32 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 6:12-13; Mark 3:14-19; Matthew 5:1-12; Matthew 5:13-16; Matthew 5:17-20",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+6:12-13;Mark+3:14-19;Matthew+5:1-12;Matthew+5:13-16;Matthew+5:17-20&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 6:12-13",
-              "url": "https://www.bible.com/bible/151/LUK.6.12-13.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+6:12-13&version=BPT"
             },
             {
               "label": "Mark 3:14-19",
-              "url": "https://www.bible.com/bible/151/MRK.3.14-19.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+3:14-19&version=BPT"
             },
             {
               "label": "Matthew 5:1-12",
-              "url": "https://www.bible.com/bible/151/MAT.5.1-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+5:1-12&version=BPT"
             },
             {
               "label": "Matthew 5:13-16",
-              "url": "https://www.bible.com/bible/151/MAT.5.13-16.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+5:13-16&version=BPT"
             },
             {
               "label": "Matthew 5:17-20",
-              "url": "https://www.bible.com/bible/151/MAT.5.17-20.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+5:17-20&version=BPT"
             }
           ]
         }
@@ -2637,29 +2702,32 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 5:21-26; Matthew 5:27-30; Matthew 5:31-32; Matthew 5:33-37; Matthew 5:38-42",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+5:21-26;Matthew+5:27-30;Matthew+5:31-32;Matthew+5:33-37;Matthew+5:38-42&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 5:21-26",
-              "url": "https://www.bible.com/bible/151/MAT.5.21-26.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+5:21-26&version=BPT"
             },
             {
               "label": "Matthew 5:27-30",
-              "url": "https://www.bible.com/bible/151/MAT.5.27-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+5:27-30&version=BPT"
             },
             {
               "label": "Matthew 5:31-32",
-              "url": "https://www.bible.com/bible/151/MAT.5.31-32.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+5:31-32&version=BPT"
             },
             {
               "label": "Matthew 5:33-37",
-              "url": "https://www.bible.com/bible/151/MAT.5.33-37.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+5:33-37&version=BPT"
             },
             {
               "label": "Matthew 5:38-42",
-              "url": "https://www.bible.com/bible/151/MAT.5.38-42.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+5:38-42&version=BPT"
             }
           ]
         }
@@ -2781,25 +2849,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 5:43-48; Matthew 6:1-4; Matthew 6:5-15; Matthew 6:16-18",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+5:43-48;Matthew+6:1-4;Matthew+6:5-15;Matthew+6:16-18&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 5:43-48",
-              "url": "https://www.bible.com/bible/151/MAT.5.43-48.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+5:43-48&version=BPT"
             },
             {
               "label": "Matthew 6:1-4",
-              "url": "https://www.bible.com/bible/151/MAT.6.1-4.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+6:1-4&version=BPT"
             },
             {
               "label": "Matthew 6:5-15",
-              "url": "https://www.bible.com/bible/151/MAT.6.5-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+6:5-15&version=BPT"
             },
             {
               "label": "Matthew 6:16-18",
-              "url": "https://www.bible.com/bible/151/MAT.6.16-18.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+6:16-18&version=BPT"
             }
           ]
         }
@@ -2921,25 +2992,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 6:19-24; Matthew 6:25-34; Matthew 7:1-6; Matthew 7:7-12",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+6:19-24;Matthew+6:25-34;Matthew+7:1-6;Matthew+7:7-12&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 6:19-24",
-              "url": "https://www.bible.com/bible/151/MAT.6.19-24.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+6:19-24&version=BPT"
             },
             {
               "label": "Matthew 6:25-34",
-              "url": "https://www.bible.com/bible/151/MAT.6.25-34.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+6:25-34&version=BPT"
             },
             {
               "label": "Matthew 7:1-6",
-              "url": "https://www.bible.com/bible/151/MAT.7.1-6.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+7:1-6&version=BPT"
             },
             {
               "label": "Matthew 7:7-12",
-              "url": "https://www.bible.com/bible/151/MAT.7.7-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+7:7-12&version=BPT"
             }
           ]
         }
@@ -3062,25 +3136,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 7:13-14; Matthew 7:15-23; Matthew 7:24-27; Luke 7:1-10",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+7:13-14;Matthew+7:15-23;Matthew+7:24-27;Luke+7:1-10&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 7:13-14",
-              "url": "https://www.bible.com/bible/151/MAT.7.13-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+7:13-14&version=BPT"
             },
             {
               "label": "Matthew 7:15-23",
-              "url": "https://www.bible.com/bible/151/MAT.7.15-23.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+7:15-23&version=BPT"
             },
             {
               "label": "Matthew 7:24-27",
-              "url": "https://www.bible.com/bible/151/MAT.7.24-27.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+7:24-27&version=BPT"
             },
             {
               "label": "Luke 7:1-10",
-              "url": "https://www.bible.com/bible/151/LUK.7.1-10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+7:1-10&version=BPT"
             }
           ]
         }
@@ -3161,17 +3238,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 7:11-17; Luke 7:18-35",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+7:11-17;Luke+7:18-35&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 7:11-17",
-              "url": "https://www.bible.com/bible/151/LUK.7.11-17.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+7:11-17&version=BPT"
             },
             {
               "label": "Luke 7:18-35",
-              "url": "https://www.bible.com/bible/151/LUK.7.18-35.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+7:18-35&version=BPT"
             }
           ]
         }
@@ -3275,21 +3355,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 11:25-30; Luke 7:36-50; Luke 8:1-3",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+11:25-30;Luke+7:36-50;Luke+8:1-3&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 11:25-30",
-              "url": "https://www.bible.com/bible/151/MAT.11.25-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+11:25-30&version=BPT"
             },
             {
               "label": "Luke 7:36-50",
-              "url": "https://www.bible.com/bible/151/LUK.7.36-50.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+7:36-50&version=BPT"
             },
             {
               "label": "Luke 8:1-3",
-              "url": "https://www.bible.com/bible/151/LUK.8.1-3.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+8:1-3&version=BPT"
             }
           ]
         }
@@ -3370,17 +3453,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 12:22-37; Matthew 12:38-45",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+12:22-37;Matthew+12:38-45&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 12:22-37",
-              "url": "https://www.bible.com/bible/151/MAT.12.22-37.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+12:22-37&version=BPT"
             },
             {
               "label": "Matthew 12:38-45",
-              "url": "https://www.bible.com/bible/151/MAT.12.38-45.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+12:38-45&version=BPT"
             }
           ]
         }
@@ -3482,21 +3568,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 12:46-50; Luke 11:27-28; Matthew 13:1-23",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+12:46-50;Luke+11:27-28;Matthew+13:1-23&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 12:46-50",
-              "url": "https://www.bible.com/bible/151/MAT.12.46-50.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+12:46-50&version=BPT"
             },
             {
               "label": "Luke 11:27-28",
-              "url": "https://www.bible.com/bible/151/LUK.11.27-28.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+11:27-28&version=BPT"
             },
             {
               "label": "Matthew 13:1-23",
-              "url": "https://www.bible.com/bible/151/MAT.13.1-23.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+13:1-23&version=BPT"
             }
           ]
         }
@@ -3620,25 +3709,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 4:21-25; Mark 4:26-29; Matthew 13:24-30; Matthew 13:31-35",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+4:21-25;Mark+4:26-29;Matthew+13:24-30;Matthew+13:31-35&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 4:21-25",
-              "url": "https://www.bible.com/bible/151/MRK.4.21-25.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+4:21-25&version=BPT"
             },
             {
               "label": "Mark 4:26-29",
-              "url": "https://www.bible.com/bible/151/MRK.4.26-29.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+4:26-29&version=BPT"
             },
             {
               "label": "Matthew 13:24-30",
-              "url": "https://www.bible.com/bible/151/MAT.13.24-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+13:24-30&version=BPT"
             },
             {
               "label": "Matthew 13:31-35",
-              "url": "https://www.bible.com/bible/151/MAT.13.31-35.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+13:31-35&version=BPT"
             }
           ]
         }
@@ -3763,25 +3855,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 13:36-43; Matthew 13:44-46; Matthew 13:47-53; Mark 4:35-41",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+13:36-43;Matthew+13:44-46;Matthew+13:47-53;Mark+4:35-41&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 13:36-43",
-              "url": "https://www.bible.com/bible/151/MAT.13.36-43.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+13:36-43&version=BPT"
             },
             {
               "label": "Matthew 13:44-46",
-              "url": "https://www.bible.com/bible/151/MAT.13.44-46.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+13:44-46&version=BPT"
             },
             {
               "label": "Matthew 13:47-53",
-              "url": "https://www.bible.com/bible/151/MAT.13.47-53.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+13:47-53&version=BPT"
             },
             {
               "label": "Mark 4:35-41",
-              "url": "https://www.bible.com/bible/151/MRK.4.35-41.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+4:35-41&version=BPT"
             }
           ]
         }
@@ -3858,17 +3953,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 8:26-27; Mark 5:3-20",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+8:26-27;Mark+5:3-20&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 8:26-27",
-              "url": "https://www.bible.com/bible/151/LUK.8.26-27.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+8:26-27&version=BPT"
             },
             {
               "label": "Mark 5:3-20",
-              "url": "https://www.bible.com/bible/151/MRK.5.3-20.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+5:3-20&version=BPT"
             }
           ]
         }
@@ -3926,13 +4024,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 5:21-43",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+5:21-43&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 5:21-43",
-              "url": "https://www.bible.com/bible/151/MRK.5.21-43.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+5:21-43&version=BPT"
             }
           ]
         }
@@ -4036,21 +4137,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 9:27-34; Mark 6:1-6; Matthew 9:35-38",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+9:27-34;Mark+6:1-6;Matthew+9:35-38&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 9:27-34",
-              "url": "https://www.bible.com/bible/151/MAT.9.27-34.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+9:27-34&version=BPT"
             },
             {
               "label": "Mark 6:1-6",
-              "url": "https://www.bible.com/bible/151/MRK.6.1-6.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:1-6&version=BPT"
             },
             {
               "label": "Matthew 9:35-38",
-              "url": "https://www.bible.com/bible/151/MAT.9.35-38.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+9:35-38&version=BPT"
             }
           ]
         }
@@ -4185,29 +4289,32 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 10:1; Matthew 10:5-42; Matthew 11:1; Luke 9:6; Mark 6:12-13",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+10:1;Matthew+10:5-42;Matthew+11:1;Luke+9:6;Mark+6:12-13&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 10:1",
-              "url": "https://www.bible.com/bible/151/MAT.10.1.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+10:1&version=BPT"
             },
             {
               "label": "Matthew 10:5-42",
-              "url": "https://www.bible.com/bible/151/MAT.10.5-42.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+10:5-42&version=BPT"
             },
             {
               "label": "Matthew 11:1",
-              "url": "https://www.bible.com/bible/151/MAT.11.1.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+11:1&version=BPT"
             },
             {
               "label": "Luke 9:6",
-              "url": "https://www.bible.com/bible/151/LUK.9.6.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+9:6&version=BPT"
             },
             {
               "label": "Mark 6:12-13",
-              "url": "https://www.bible.com/bible/151/MRK.6.12-13.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:12-13&version=BPT"
             }
           ]
         }
@@ -4265,13 +4372,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 6:14-29",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+6:14-29&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 6:14-29",
-              "url": "https://www.bible.com/bible/151/MRK.6.14-29.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:14-29&version=BPT"
             }
           ]
         }
@@ -4431,29 +4541,32 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 6:30-37; John 6:8-15; Mark 6:45; Matthew 14:23-33; Mark 6:53-56",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+6:30-37;John+6:8-15;Mark+6:45;Matthew+14:23-33;Mark+6:53-56&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 6:30-37",
-              "url": "https://www.bible.com/bible/151/MRK.6.30-37.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:30-37&version=BPT"
             },
             {
               "label": "John 6:8-15",
-              "url": "https://www.bible.com/bible/151/JHN.6.8-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+6:8-15&version=BPT"
             },
             {
               "label": "Mark 6:45",
-              "url": "https://www.bible.com/bible/151/MRK.6.45.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:45&version=BPT"
             },
             {
               "label": "Matthew 14:23-33",
-              "url": "https://www.bible.com/bible/151/MAT.14.23-33.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+14:23-33&version=BPT"
             },
             {
               "label": "Mark 6:53-56",
-              "url": "https://www.bible.com/bible/151/MRK.6.53-56.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:53-56&version=BPT"
             }
           ]
         }
@@ -4511,13 +4624,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 6:22-59",
+            "url": "https://www.biblegateway.com/passage/?search=John+6:22-59&version=BPT"
+          },
           "passages": [
             {
               "label": "John 6:22-59",
-              "url": "https://www.bible.com/bible/151/JHN.6.22-59.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+6:22-59&version=BPT"
             }
           ]
         }
@@ -4636,25 +4752,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 6:60-71; Mark 7:1-15; Matthew 15:12-14; Mark 7:17-23",
+            "url": "https://www.biblegateway.com/passage/?search=John+6:60-71;Mark+7:1-15;Matthew+15:12-14;Mark+7:17-23&version=BPT"
+          },
           "passages": [
             {
               "label": "John 6:60-71",
-              "url": "https://www.bible.com/bible/151/JHN.6.60-71.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+6:60-71&version=BPT"
             },
             {
               "label": "Mark 7:1-15",
-              "url": "https://www.bible.com/bible/151/MRK.7.1-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+7:1-15&version=BPT"
             },
             {
               "label": "Matthew 15:12-14",
-              "url": "https://www.bible.com/bible/151/MAT.15.12-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+15:12-14&version=BPT"
             },
             {
               "label": "Mark 7:17-23",
-              "url": "https://www.bible.com/bible/151/MRK.7.17-23.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+7:17-23&version=BPT"
             }
           ]
         }
@@ -4833,37 +4952,40 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 15:21-28; Mark 7:31; Matthew 15:30; Mark 7:32-36; Matthew 15:31; Mark 7:37; Matthew 15:32-39",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+15:21-28;Mark+7:31;Matthew+15:30;Mark+7:32-36;Matthew+15:31;Mark+7:37;Matthew+15:32-39&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 15:21-28",
-              "url": "https://www.bible.com/bible/151/MAT.15.21-28.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+15:21-28&version=BPT"
             },
             {
               "label": "Mark 7:31",
-              "url": "https://www.bible.com/bible/151/MRK.7.31.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+7:31&version=BPT"
             },
             {
               "label": "Matthew 15:30",
-              "url": "https://www.bible.com/bible/151/MAT.15.30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+15:30&version=BPT"
             },
             {
               "label": "Mark 7:32-36",
-              "url": "https://www.bible.com/bible/151/MRK.7.32-36.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+7:32-36&version=BPT"
             },
             {
               "label": "Matthew 15:31",
-              "url": "https://www.bible.com/bible/151/MAT.15.31.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+15:31&version=BPT"
             },
             {
               "label": "Mark 7:37",
-              "url": "https://www.bible.com/bible/151/MRK.7.37.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+7:37&version=BPT"
             },
             {
               "label": "Matthew 15:32-39",
-              "url": "https://www.bible.com/bible/151/MAT.15.32-39.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+15:32-39&version=BPT"
             }
           ]
         }
@@ -4989,25 +5111,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 16:1-4; Matthew 16:5-12; Mark 8:22-26; Matthew 16:13-20",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+16:1-4;Matthew+16:5-12;Mark+8:22-26;Matthew+16:13-20&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 16:1-4",
-              "url": "https://www.bible.com/bible/151/MAT.16.1-4.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+16:1-4&version=BPT"
             },
             {
               "label": "Matthew 16:5-12",
-              "url": "https://www.bible.com/bible/151/MAT.16.5-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+16:5-12&version=BPT"
             },
             {
               "label": "Mark 8:22-26",
-              "url": "https://www.bible.com/bible/151/MRK.8.22-26.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+8:22-26&version=BPT"
             },
             {
               "label": "Matthew 16:13-20",
-              "url": "https://www.bible.com/bible/151/MAT.16.13-20.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+16:13-20&version=BPT"
             }
           ]
         }
@@ -5109,21 +5234,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 16:21-28; Luke 9:28-33; Matthew 17:5-13",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+16:21-28;Luke+9:28-33;Matthew+17:5-13&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 16:21-28",
-              "url": "https://www.bible.com/bible/151/MAT.16.21-28.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+16:21-28&version=BPT"
             },
             {
               "label": "Luke 9:28-33",
-              "url": "https://www.bible.com/bible/151/LUK.9.28-33.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+9:28-33&version=BPT"
             },
             {
               "label": "Matthew 17:5-13",
-              "url": "https://www.bible.com/bible/151/MAT.17.5-13.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+17:5-13&version=BPT"
             }
           ]
         }
@@ -5227,21 +5355,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 9:14-29; Mark 9:30-32; Matthew 17:24-27",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+9:14-29;Mark+9:30-32;Matthew+17:24-27&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 9:14-29",
-              "url": "https://www.bible.com/bible/151/MRK.9.14-29.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+9:14-29&version=BPT"
             },
             {
               "label": "Mark 9:30-32",
-              "url": "https://www.bible.com/bible/151/MRK.9.30-32.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+9:30-32&version=BPT"
             },
             {
               "label": "Matthew 17:24-27",
-              "url": "https://www.bible.com/bible/151/MAT.17.24-27.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+17:24-27&version=BPT"
             }
           ]
         }
@@ -5364,25 +5495,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 18:1-5; Mark 9:38-41; Matthew 18:6-14; Matthew 18:15-20",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+18:1-5;Mark+9:38-41;Matthew+18:6-14;Matthew+18:15-20&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 18:1-5",
-              "url": "https://www.bible.com/bible/151/MAT.18.1-5.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+18:1-5&version=BPT"
             },
             {
               "label": "Mark 9:38-41",
-              "url": "https://www.bible.com/bible/151/MRK.9.38-41.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+9:38-41&version=BPT"
             },
             {
               "label": "Matthew 18:6-14",
-              "url": "https://www.bible.com/bible/151/MAT.18.6-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+18:6-14&version=BPT"
             },
             {
               "label": "Matthew 18:15-20",
-              "url": "https://www.bible.com/bible/151/MAT.18.15-20.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+18:15-20&version=BPT"
             }
           ]
         }
@@ -5463,17 +5597,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 18:21-35; John 7:2-13",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+18:21-35;John+7:2-13&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 18:21-35",
-              "url": "https://www.bible.com/bible/151/MAT.18.21-35.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+18:21-35&version=BPT"
             },
             {
               "label": "John 7:2-13",
-              "url": "https://www.bible.com/bible/151/JHN.7.2-13.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+7:2-13&version=BPT"
             }
           ]
         }
@@ -5553,17 +5690,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 7:14-24; John 7:25-44",
+            "url": "https://www.biblegateway.com/passage/?search=John+7:14-24;John+7:25-44&version=BPT"
+          },
           "passages": [
             {
               "label": "John 7:14-24",
-              "url": "https://www.bible.com/bible/151/JHN.7.14-24.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+7:14-24&version=BPT"
             },
             {
               "label": "John 7:25-44",
-              "url": "https://www.bible.com/bible/151/JHN.7.25-44.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+7:25-44&version=BPT"
             }
           ]
         }
@@ -5648,21 +5788,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 7:45-52; John 7:53; John 8:1-11",
+            "url": "https://www.biblegateway.com/passage/?search=John+7:45-52;John+7:53;John+8:1-11&version=BPT"
+          },
           "passages": [
             {
               "label": "John 7:45-52",
-              "url": "https://www.bible.com/bible/151/JHN.7.45-52.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+7:45-52&version=BPT"
             },
             {
               "label": "John 7:53",
-              "url": "https://www.bible.com/bible/151/JHN.7.53.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+7:53&version=BPT"
             },
             {
               "label": "John 8:1-11",
-              "url": "https://www.bible.com/bible/151/JHN.8.1-11.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+8:1-11&version=BPT"
             }
           ]
         }
@@ -5742,17 +5885,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 8:12-30; John 8:31-41",
+            "url": "https://www.biblegateway.com/passage/?search=John+8:12-30;John+8:31-41&version=BPT"
+          },
           "passages": [
             {
               "label": "John 8:12-30",
-              "url": "https://www.bible.com/bible/151/JHN.8.12-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+8:12-30&version=BPT"
             },
             {
               "label": "John 8:31-41",
-              "url": "https://www.bible.com/bible/151/JHN.8.31-41.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+8:31-41&version=BPT"
             }
           ]
         }
@@ -5854,21 +6000,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 8:42-47; John 8:48-59; John 9:1-12",
+            "url": "https://www.biblegateway.com/passage/?search=John+8:42-47;John+8:48-59;John+9:1-12&version=BPT"
+          },
           "passages": [
             {
               "label": "John 8:42-47",
-              "url": "https://www.bible.com/bible/151/JHN.8.42-47.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+8:42-47&version=BPT"
             },
             {
               "label": "John 8:48-59",
-              "url": "https://www.bible.com/bible/151/JHN.8.48-59.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+8:48-59&version=BPT"
             },
             {
               "label": "John 9:1-12",
-              "url": "https://www.bible.com/bible/151/JHN.9.1-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+9:1-12&version=BPT"
             }
           ]
         }
@@ -5948,17 +6097,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 9:13-34; John 9:35-41",
+            "url": "https://www.biblegateway.com/passage/?search=John+9:13-34;John+9:35-41&version=BPT"
+          },
           "passages": [
             {
               "label": "John 9:13-34",
-              "url": "https://www.bible.com/bible/151/JHN.9.13-34.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+9:13-34&version=BPT"
             },
             {
               "label": "John 9:35-41",
-              "url": "https://www.bible.com/bible/151/JHN.9.35-41.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+9:35-41&version=BPT"
             }
           ]
         }
@@ -6039,17 +6191,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 10:1-21; Luke 9:51-62",
+            "url": "https://www.biblegateway.com/passage/?search=John+10:1-21;Luke+9:51-62&version=BPT"
+          },
           "passages": [
             {
               "label": "John 10:1-21",
-              "url": "https://www.bible.com/bible/151/JHN.10.1-21.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+10:1-21&version=BPT"
             },
             {
               "label": "Luke 9:51-62",
-              "url": "https://www.bible.com/bible/151/LUK.9.51-62.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+9:51-62&version=BPT"
             }
           ]
         }
@@ -6107,13 +6262,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 10:1-24",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+10:1-24&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 10:1-24",
-              "url": "https://www.bible.com/bible/151/LUK.10.1-24.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+10:1-24&version=BPT"
             }
           ]
         }
@@ -6217,21 +6375,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 10:25-37; Luke 10:38-42; Luke 11:1-13",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+10:25-37;Luke+10:38-42;Luke+11:1-13&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 10:25-37",
-              "url": "https://www.bible.com/bible/151/LUK.10.25-37.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+10:25-37&version=BPT"
             },
             {
               "label": "Luke 10:38-42",
-              "url": "https://www.bible.com/bible/151/LUK.10.38-42.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+10:38-42&version=BPT"
             },
             {
               "label": "Luke 11:1-13",
-              "url": "https://www.bible.com/bible/151/LUK.11.1-13.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+11:1-13&version=BPT"
             }
           ]
         }
@@ -6289,13 +6450,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 11:37-54",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+11:37-54&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 11:37-54",
-              "url": "https://www.bible.com/bible/151/LUK.11.37-54.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+11:37-54&version=BPT"
             }
           ]
         }
@@ -6375,17 +6539,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 12:1-12; Luke 12:13-21",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+12:1-12;Luke+12:13-21&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 12:1-12",
-              "url": "https://www.bible.com/bible/151/LUK.12.1-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+12:1-12&version=BPT"
             },
             {
               "label": "Luke 12:13-21",
-              "url": "https://www.bible.com/bible/151/LUK.12.13-21.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+12:13-21&version=BPT"
             }
           ]
         }
@@ -6489,21 +6656,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 12:49-53; Luke 13:1-9; Luke 13:10-17",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+12:49-53;Luke+13:1-9;Luke+13:10-17&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 12:49-53",
-              "url": "https://www.bible.com/bible/151/LUK.12.49-53.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+12:49-53&version=BPT"
             },
             {
               "label": "Luke 13:1-9",
-              "url": "https://www.bible.com/bible/151/LUK.13.1-9.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+13:1-9&version=BPT"
             },
             {
               "label": "Luke 13:10-17",
-              "url": "https://www.bible.com/bible/151/LUK.13.10-17.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+13:10-17&version=BPT"
             }
           ]
         }
@@ -6584,17 +6754,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 10:22-42; Luke 13:22-30",
+            "url": "https://www.biblegateway.com/passage/?search=John+10:22-42;Luke+13:22-30&version=BPT"
+          },
           "passages": [
             {
               "label": "John 10:22-42",
-              "url": "https://www.bible.com/bible/151/JHN.10.22-42.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+10:22-42&version=BPT"
             },
             {
               "label": "Luke 13:22-30",
-              "url": "https://www.bible.com/bible/151/LUK.13.22-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+13:22-30&version=BPT"
             }
           ]
         }
@@ -6675,17 +6848,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 13:31-35; Luke 14:1-14",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+13:31-35;Luke+14:1-14&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 13:31-35",
-              "url": "https://www.bible.com/bible/151/LUK.13.31-35.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+13:31-35&version=BPT"
             },
             {
               "label": "Luke 14:1-14",
-              "url": "https://www.bible.com/bible/151/LUK.14.1-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+14:1-14&version=BPT"
             }
           ]
         }
@@ -6789,21 +6965,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 14:15-24; Luke 14:25-35; Luke 15:1-7",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+14:15-24;Luke+14:25-35;Luke+15:1-7&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 14:15-24",
-              "url": "https://www.bible.com/bible/151/LUK.14.15-24.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+14:15-24&version=BPT"
             },
             {
               "label": "Luke 14:25-35",
-              "url": "https://www.bible.com/bible/151/LUK.14.25-35.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+14:25-35&version=BPT"
             },
             {
               "label": "Luke 15:1-7",
-              "url": "https://www.bible.com/bible/151/LUK.15.1-7.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+15:1-7&version=BPT"
             }
           ]
         }
@@ -6882,17 +7061,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 15:8-10; Luke 15:11-32",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+15:8-10;Luke+15:11-32&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 15:8-10",
-              "url": "https://www.bible.com/bible/151/LUK.15.8-10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+15:8-10&version=BPT"
             },
             {
               "label": "Luke 15:11-32",
-              "url": "https://www.bible.com/bible/151/LUK.15.11-32.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+15:11-32&version=BPT"
             }
           ]
         }
@@ -6950,13 +7132,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 16:1-15",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+16:1-15&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 16:1-15",
-              "url": "https://www.bible.com/bible/151/LUK.16.1-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+16:1-15&version=BPT"
             }
           ]
         }
@@ -7036,17 +7221,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 16:19-31; Luke 17:1-10",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+16:19-31;Luke+17:1-10&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 16:19-31",
-              "url": "https://www.bible.com/bible/151/LUK.16.19-31.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+16:19-31&version=BPT"
             },
             {
               "label": "Luke 17:1-10",
-              "url": "https://www.bible.com/bible/151/LUK.17.1-10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+17:1-10&version=BPT"
             }
           ]
         }
@@ -7126,17 +7314,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 11:1-16; John 11:17-37",
+            "url": "https://www.biblegateway.com/passage/?search=John+11:1-16;John+11:17-37&version=BPT"
+          },
           "passages": [
             {
               "label": "John 11:1-16",
-              "url": "https://www.bible.com/bible/151/JHN.11.1-16.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+11:1-16&version=BPT"
             },
             {
               "label": "John 11:17-37",
-              "url": "https://www.bible.com/bible/151/JHN.11.17-37.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+11:17-37&version=BPT"
             }
           ]
         }
@@ -7240,21 +7431,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 11:38-44; John 11:45-54; Luke 17:11-19",
+            "url": "https://www.biblegateway.com/passage/?search=John+11:38-44;John+11:45-54;Luke+17:11-19&version=BPT"
+          },
           "passages": [
             {
               "label": "John 11:38-44",
-              "url": "https://www.bible.com/bible/151/JHN.11.38-44.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+11:38-44&version=BPT"
             },
             {
               "label": "John 11:45-54",
-              "url": "https://www.bible.com/bible/151/JHN.11.45-54.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+11:45-54&version=BPT"
             },
             {
               "label": "Luke 17:11-19",
-              "url": "https://www.bible.com/bible/151/LUK.17.11-19.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+17:11-19&version=BPT"
             }
           ]
         }
@@ -7335,17 +7529,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 17:20-37; Luke 18:1-8",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+17:20-37;Luke+18:1-8&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 17:20-37",
-              "url": "https://www.bible.com/bible/151/LUK.17.20-37.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+17:20-37&version=BPT"
             },
             {
               "label": "Luke 18:1-8",
-              "url": "https://www.bible.com/bible/151/LUK.18.1-8.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+18:1-8&version=BPT"
             }
           ]
         }
@@ -7487,29 +7684,32 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 18:9-14; Matthew 19:3-8; Mark 10:10-12; Matthew 19:10-12; Mark 10:13-16",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+18:9-14;Matthew+19:3-8;Mark+10:10-12;Matthew+19:10-12;Mark+10:13-16&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 18:9-14",
-              "url": "https://www.bible.com/bible/151/LUK.18.9-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+18:9-14&version=BPT"
             },
             {
               "label": "Matthew 19:3-8",
-              "url": "https://www.bible.com/bible/151/MAT.19.3-8.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+19:3-8&version=BPT"
             },
             {
               "label": "Mark 10:10-12",
-              "url": "https://www.bible.com/bible/151/MRK.10.10-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+10:10-12&version=BPT"
             },
             {
               "label": "Matthew 19:10-12",
-              "url": "https://www.bible.com/bible/151/MAT.19.10-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+19:10-12&version=BPT"
             },
             {
               "label": "Mark 10:13-16",
-              "url": "https://www.bible.com/bible/151/MRK.10.13-16.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+10:13-16&version=BPT"
             }
           ]
         }
@@ -7589,17 +7789,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 10:17-31; Matthew 20:1-16",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+10:17-31;Matthew+20:1-16&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 10:17-31",
-              "url": "https://www.bible.com/bible/151/MRK.10.17-31.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+10:17-31&version=BPT"
             },
             {
               "label": "Matthew 20:1-16",
-              "url": "https://www.bible.com/bible/151/MAT.20.1-16.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+20:1-16&version=BPT"
             }
           ]
         }
@@ -7702,21 +7905,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 18:31-34; Matthew 20:20-28; Mark 10:46-52",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+18:31-34;Matthew+20:20-28;Mark+10:46-52&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 18:31-34",
-              "url": "https://www.bible.com/bible/151/LUK.18.31-34.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+18:31-34&version=BPT"
             },
             {
               "label": "Matthew 20:20-28",
-              "url": "https://www.bible.com/bible/151/MAT.20.20-28.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+20:20-28&version=BPT"
             },
             {
               "label": "Mark 10:46-52",
-              "url": "https://www.bible.com/bible/151/MRK.10.46-52.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+10:46-52&version=BPT"
             }
           ]
         }
@@ -7796,17 +8002,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 19:1-10; Luke 19:11-28",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+19:1-10;Luke+19:11-28&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 19:1-10",
-              "url": "https://www.bible.com/bible/151/LUK.19.1-10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+19:1-10&version=BPT"
             },
             {
               "label": "Luke 19:11-28",
-              "url": "https://www.bible.com/bible/151/LUK.19.11-28.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+19:11-28&version=BPT"
             }
           ]
         }
@@ -8019,49 +8228,52 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 11:55-57; John 12:1; John 12:9-11; John 12:12-13; Luke 19:29-36; Mark 11:8-10; Matthew 21:4-5; John 12:16; Luke 19:39-44; Mark 11:11",
+            "url": "https://www.biblegateway.com/passage/?search=John+11:55-57;John+12:1;John+12:9-11;John+12:12-13;Luke+19:29-36;Mark+11:8-10;Matthew+21:4-5;John+12:16;Luke+19:39-44;Mark+11:11&version=BPT"
+          },
           "passages": [
             {
               "label": "John 11:55-57",
-              "url": "https://www.bible.com/bible/151/JHN.11.55-57.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+11:55-57&version=BPT"
             },
             {
               "label": "John 12:1",
-              "url": "https://www.bible.com/bible/151/JHN.12.1.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+12:1&version=BPT"
             },
             {
               "label": "John 12:9-11",
-              "url": "https://www.bible.com/bible/151/JHN.12.9-11.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+12:9-11&version=BPT"
             },
             {
               "label": "John 12:12-13",
-              "url": "https://www.bible.com/bible/151/JHN.12.12-13.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+12:12-13&version=BPT"
             },
             {
               "label": "Luke 19:29-36",
-              "url": "https://www.bible.com/bible/151/LUK.19.29-36.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+19:29-36&version=BPT"
             },
             {
               "label": "Mark 11:8-10",
-              "url": "https://www.bible.com/bible/151/MRK.11.8-10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+11:8-10&version=BPT"
             },
             {
               "label": "Matthew 21:4-5",
-              "url": "https://www.bible.com/bible/151/MAT.21.4-5.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+21:4-5&version=BPT"
             },
             {
               "label": "John 12:16",
-              "url": "https://www.bible.com/bible/151/JHN.12.16.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+12:16&version=BPT"
             },
             {
               "label": "Luke 19:39-44",
-              "url": "https://www.bible.com/bible/151/LUK.19.39-44.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+19:39-44&version=BPT"
             },
             {
               "label": "Mark 11:11",
-              "url": "https://www.bible.com/bible/151/MRK.11.11.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+11:11&version=BPT"
             }
           ]
         }
@@ -8246,37 +8458,40 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 11:12-14; Mark 11:15-17; Matthew 21:14-16; Luke 19:47-48; Mark 11:19; Mark 11:20-25; Mark 11:27-33",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+11:12-14;Mark+11:15-17;Matthew+21:14-16;Luke+19:47-48;Mark+11:19;Mark+11:20-25;Mark+11:27-33&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 11:12-14",
-              "url": "https://www.bible.com/bible/151/MRK.11.12-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+11:12-14&version=BPT"
             },
             {
               "label": "Mark 11:15-17",
-              "url": "https://www.bible.com/bible/151/MRK.11.15-17.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+11:15-17&version=BPT"
             },
             {
               "label": "Matthew 21:14-16",
-              "url": "https://www.bible.com/bible/151/MAT.21.14-16.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+21:14-16&version=BPT"
             },
             {
               "label": "Luke 19:47-48",
-              "url": "https://www.bible.com/bible/151/LUK.19.47-48.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+19:47-48&version=BPT"
             },
             {
               "label": "Mark 11:19",
-              "url": "https://www.bible.com/bible/151/MRK.11.19.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+11:19&version=BPT"
             },
             {
               "label": "Mark 11:20-25",
-              "url": "https://www.bible.com/bible/151/MRK.11.20-25.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+11:20-25&version=BPT"
             },
             {
               "label": "Mark 11:27-33",
-              "url": "https://www.bible.com/bible/151/MRK.11.27-33.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+11:27-33&version=BPT"
             }
           ]
         }
@@ -8355,17 +8570,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 21:28-32; Matthew 21:33-46",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+21:28-32;Matthew+21:33-46&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 21:28-32",
-              "url": "https://www.bible.com/bible/151/MAT.21.28-32.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+21:28-32&version=BPT"
             },
             {
               "label": "Matthew 21:33-46",
-              "url": "https://www.bible.com/bible/151/MAT.21.33-46.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+21:33-46&version=BPT"
             }
           ]
         }
@@ -8446,17 +8664,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 22:1-14; Matthew 22:15-22",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+22:1-14;Matthew+22:15-22&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 22:1-14",
-              "url": "https://www.bible.com/bible/151/MAT.22.1-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+22:1-14&version=BPT"
             },
             {
               "label": "Matthew 22:15-22",
-              "url": "https://www.bible.com/bible/151/MAT.22.15-22.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+22:15-22&version=BPT"
             }
           ]
         }
@@ -8617,33 +8838,36 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 22:23-33; Matthew 22:34-36; Mark 12:29-31; Matthew 22:40; Mark 12:32-34; Matthew 22:41-46",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+22:23-33;Matthew+22:34-36;Mark+12:29-31;Matthew+22:40;Mark+12:32-34;Matthew+22:41-46&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 22:23-33",
-              "url": "https://www.bible.com/bible/151/MAT.22.23-33.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+22:23-33&version=BPT"
             },
             {
               "label": "Matthew 22:34-36",
-              "url": "https://www.bible.com/bible/151/MAT.22.34-36.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+22:34-36&version=BPT"
             },
             {
               "label": "Mark 12:29-31",
-              "url": "https://www.bible.com/bible/151/MRK.12.29-31.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+12:29-31&version=BPT"
             },
             {
               "label": "Matthew 22:40",
-              "url": "https://www.bible.com/bible/151/MAT.22.40.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+22:40&version=BPT"
             },
             {
               "label": "Mark 12:32-34",
-              "url": "https://www.bible.com/bible/151/MRK.12.32-34.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+12:32-34&version=BPT"
             },
             {
               "label": "Matthew 22:41-46",
-              "url": "https://www.bible.com/bible/151/MAT.22.41-46.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+22:41-46&version=BPT"
             }
           ]
         }
@@ -8701,13 +8925,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 23:1-39",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+23:1-39&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 23:1-39",
-              "url": "https://www.bible.com/bible/151/MAT.23.1-39.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+23:1-39&version=BPT"
             }
           ]
         }
@@ -8827,25 +9054,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 12:41-44; Mark 13:1-13; Matthew 24:14; Mark 13:14-31",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+12:41-44;Mark+13:1-13;Matthew+24:14;Mark+13:14-31&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 12:41-44",
-              "url": "https://www.bible.com/bible/151/MRK.12.41-44.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+12:41-44&version=BPT"
             },
             {
               "label": "Mark 13:1-13",
-              "url": "https://www.bible.com/bible/151/MRK.13.1-13.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+13:1-13&version=BPT"
             },
             {
               "label": "Matthew 24:14",
-              "url": "https://www.bible.com/bible/151/MAT.24.14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+24:14&version=BPT"
             },
             {
               "label": "Mark 13:14-31",
-              "url": "https://www.bible.com/bible/151/MRK.13.14-31.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+13:14-31&version=BPT"
             }
           ]
         }
@@ -8961,25 +9191,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 24:36-41; Luke 21:34-36; Mark 13:34-37; Matthew 24:42-51",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+24:36-41;Luke+21:34-36;Mark+13:34-37;Matthew+24:42-51&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 24:36-41",
-              "url": "https://www.bible.com/bible/151/MAT.24.36-41.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+24:36-41&version=BPT"
             },
             {
               "label": "Luke 21:34-36",
-              "url": "https://www.bible.com/bible/151/LUK.21.34-36.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+21:34-36&version=BPT"
             },
             {
               "label": "Mark 13:34-37",
-              "url": "https://www.bible.com/bible/151/MRK.13.34-37.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+13:34-37&version=BPT"
             },
             {
               "label": "Matthew 24:42-51",
-              "url": "https://www.bible.com/bible/151/MAT.24.42-51.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+24:42-51&version=BPT"
             }
           ]
         }
@@ -9058,17 +9291,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 25:1-13; Matthew 25:14-30",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+25:1-13;Matthew+25:14-30&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 25:1-13",
-              "url": "https://www.bible.com/bible/151/MAT.25.1-13.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+25:1-13&version=BPT"
             },
             {
               "label": "Matthew 25:14-30",
-              "url": "https://www.bible.com/bible/151/MAT.25.14-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+25:14-30&version=BPT"
             }
           ]
         }
@@ -9126,13 +9362,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 25:31-46",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+25:31-46&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 25:31-46",
-              "url": "https://www.bible.com/bible/151/MAT.25.31-46.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+25:31-46&version=BPT"
             }
           ]
         }
@@ -9190,13 +9429,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 12:20-50",
+            "url": "https://www.biblegateway.com/passage/?search=John+12:20-50&version=BPT"
+          },
           "passages": [
             {
               "label": "John 12:20-50",
-              "url": "https://www.bible.com/bible/151/JHN.12.20-50.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+12:20-50&version=BPT"
             }
           ]
         }
@@ -9359,33 +9601,36 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 14:1-3; John 12:2-8; Mark 14:8-9; Luke 22:3-4; Matthew 26:15-16; Luke 22:7-14",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+14:1-3;John+12:2-8;Mark+14:8-9;Luke+22:3-4;Matthew+26:15-16;Luke+22:7-14&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 14:1-3",
-              "url": "https://www.bible.com/bible/151/MRK.14.1-3.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+14:1-3&version=BPT"
             },
             {
               "label": "John 12:2-8",
-              "url": "https://www.bible.com/bible/151/JHN.12.2-8.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+12:2-8&version=BPT"
             },
             {
               "label": "Mark 14:8-9",
-              "url": "https://www.bible.com/bible/151/MRK.14.8-9.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+14:8-9&version=BPT"
             },
             {
               "label": "Luke 22:3-4",
-              "url": "https://www.bible.com/bible/151/LUK.22.3-4.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:3-4&version=BPT"
             },
             {
               "label": "Matthew 26:15-16",
-              "url": "https://www.bible.com/bible/151/MAT.26.15-16.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:15-16&version=BPT"
             },
             {
               "label": "Luke 22:7-14",
-              "url": "https://www.bible.com/bible/151/LUK.22.7-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:7-14&version=BPT"
             }
           ]
         }
@@ -9466,17 +9711,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 22:15-18; John 13:2-17",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+22:15-18;John+13:2-17&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 22:15-18",
-              "url": "https://www.bible.com/bible/151/LUK.22.15-18.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:15-18&version=BPT"
             },
             {
               "label": "John 13:2-17",
-              "url": "https://www.bible.com/bible/151/JHN.13.2-17.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+13:2-17&version=BPT"
             }
           ]
         }
@@ -9671,41 +9919,44 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 13:18-26; Matthew 26:24-25; John 13:26-30; Matthew 26:26; Luke 22:19-20; Matthew 26:27; Luke 22:20; Matthew 26:28-29",
+            "url": "https://www.biblegateway.com/passage/?search=John+13:18-26;Matthew+26:24-25;John+13:26-30;Matthew+26:26;Luke+22:19-20;Matthew+26:27;Luke+22:20;Matthew+26:28-29&version=BPT"
+          },
           "passages": [
             {
               "label": "John 13:18-26",
-              "url": "https://www.bible.com/bible/151/JHN.13.18-26.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+13:18-26&version=BPT"
             },
             {
               "label": "Matthew 26:24-25",
-              "url": "https://www.bible.com/bible/151/MAT.26.24-25.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:24-25&version=BPT"
             },
             {
               "label": "John 13:26-30",
-              "url": "https://www.bible.com/bible/151/JHN.13.26-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+13:26-30&version=BPT"
             },
             {
               "label": "Matthew 26:26",
-              "url": "https://www.bible.com/bible/151/MAT.26.26.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:26&version=BPT"
             },
             {
               "label": "Luke 22:19-20",
-              "url": "https://www.bible.com/bible/151/LUK.22.19-20.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:19-20&version=BPT"
             },
             {
               "label": "Matthew 26:27",
-              "url": "https://www.bible.com/bible/151/MAT.26.27.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:27&version=BPT"
             },
             {
               "label": "Luke 22:20",
-              "url": "https://www.bible.com/bible/151/LUK.22.20.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:20&version=BPT"
             },
             {
               "label": "Matthew 26:28-29",
-              "url": "https://www.bible.com/bible/151/MAT.26.28-29.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:28-29&version=BPT"
             }
           ]
         }
@@ -9887,37 +10138,40 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 22:24-30; John 13:31-35; Matthew 26:31-32; Luke 22:31-32; Mark 14:29-31; Luke 22:35-38; John 14:1-4",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+22:24-30;John+13:31-35;Matthew+26:31-32;Luke+22:31-32;Mark+14:29-31;Luke+22:35-38;John+14:1-4&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 22:24-30",
-              "url": "https://www.bible.com/bible/151/LUK.22.24-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:24-30&version=BPT"
             },
             {
               "label": "John 13:31-35",
-              "url": "https://www.bible.com/bible/151/JHN.13.31-35.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+13:31-35&version=BPT"
             },
             {
               "label": "Matthew 26:31-32",
-              "url": "https://www.bible.com/bible/151/MAT.26.31-32.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:31-32&version=BPT"
             },
             {
               "label": "Luke 22:31-32",
-              "url": "https://www.bible.com/bible/151/LUK.22.31-32.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:31-32&version=BPT"
             },
             {
               "label": "Mark 14:29-31",
-              "url": "https://www.bible.com/bible/151/MRK.14.29-31.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+14:29-31&version=BPT"
             },
             {
               "label": "Luke 22:35-38",
-              "url": "https://www.bible.com/bible/151/LUK.22.35-38.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:35-38&version=BPT"
             },
             {
               "label": "John 14:1-4",
-              "url": "https://www.bible.com/bible/151/JHN.14.1-4.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+14:1-4&version=BPT"
             }
           ]
         }
@@ -9996,17 +10250,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 14:5-14; John 14:15-31",
+            "url": "https://www.biblegateway.com/passage/?search=John+14:5-14;John+14:15-31&version=BPT"
+          },
           "passages": [
             {
               "label": "John 14:5-14",
-              "url": "https://www.bible.com/bible/151/JHN.14.5-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+14:5-14&version=BPT"
             },
             {
               "label": "John 14:15-31",
-              "url": "https://www.bible.com/bible/151/JHN.14.15-31.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+14:15-31&version=BPT"
             }
           ]
         }
@@ -10064,13 +10321,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 15:1-17",
+            "url": "https://www.biblegateway.com/passage/?search=John+15:1-17&version=BPT"
+          },
           "passages": [
             {
               "label": "John 15:1-17",
-              "url": "https://www.bible.com/bible/151/JHN.15.1-17.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+15:1-17&version=BPT"
             }
           ]
         }
@@ -10150,17 +10410,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 15:18-27; John 16:1-15",
+            "url": "https://www.biblegateway.com/passage/?search=John+15:18-27;John+16:1-15&version=BPT"
+          },
           "passages": [
             {
               "label": "John 15:18-27",
-              "url": "https://www.bible.com/bible/151/JHN.15.18-27.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+15:18-27&version=BPT"
             },
             {
               "label": "John 16:1-15",
-              "url": "https://www.bible.com/bible/151/JHN.16.1-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+16:1-15&version=BPT"
             }
           ]
         }
@@ -10218,13 +10481,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 16:16-33",
+            "url": "https://www.biblegateway.com/passage/?search=John+16:16-33&version=BPT"
+          },
           "passages": [
             {
               "label": "John 16:16-33",
-              "url": "https://www.bible.com/bible/151/JHN.16.16-33.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+16:16-33&version=BPT"
             }
           ]
         }
@@ -10303,17 +10569,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 17:1-5; John 17:6-19",
+            "url": "https://www.biblegateway.com/passage/?search=John+17:1-5;John+17:6-19&version=BPT"
+          },
           "passages": [
             {
               "label": "John 17:1-5",
-              "url": "https://www.bible.com/bible/151/JHN.17.1-5.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+17:1-5&version=BPT"
             },
             {
               "label": "John 17:6-19",
-              "url": "https://www.bible.com/bible/151/JHN.17.6-19.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+17:6-19&version=BPT"
             }
           ]
         }
@@ -10451,29 +10720,32 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 17:20-26; Matthew 26:30; Matthew 26:36-39; Luke 22:43-44; Matthew 26:40-46",
+            "url": "https://www.biblegateway.com/passage/?search=John+17:20-26;Matthew+26:30;Matthew+26:36-39;Luke+22:43-44;Matthew+26:40-46&version=BPT"
+          },
           "passages": [
             {
               "label": "John 17:20-26",
-              "url": "https://www.bible.com/bible/151/JHN.17.20-26.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+17:20-26&version=BPT"
             },
             {
               "label": "Matthew 26:30",
-              "url": "https://www.bible.com/bible/151/MAT.26.30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:30&version=BPT"
             },
             {
               "label": "Matthew 26:36-39",
-              "url": "https://www.bible.com/bible/151/MAT.26.36-39.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:36-39&version=BPT"
             },
             {
               "label": "Luke 22:43-44",
-              "url": "https://www.bible.com/bible/151/LUK.22.43-44.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:43-44&version=BPT"
             },
             {
               "label": "Matthew 26:40-46",
-              "url": "https://www.bible.com/bible/151/MAT.26.40-46.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:40-46&version=BPT"
             }
           ]
         }
@@ -10740,57 +11012,60 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 18:2-3; Matthew 26:48-49; Luke 22:48; John 18:4-9; Mark 14:46; John 18:10; Luke 22:51; John 18:11; Matthew 26:52; John 18:11; Matthew 26:53-56; Mark 14:51-52",
+            "url": "https://www.biblegateway.com/passage/?search=John+18:2-3;Matthew+26:48-49;Luke+22:48;John+18:4-9;Mark+14:46;John+18:10;Luke+22:51;John+18:11;Matthew+26:52;John+18:11;Matthew+26:53-56;Mark+14:51-52&version=BPT"
+          },
           "passages": [
             {
               "label": "John 18:2-3",
-              "url": "https://www.bible.com/bible/151/JHN.18.2-3.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:2-3&version=BPT"
             },
             {
               "label": "Matthew 26:48-49",
-              "url": "https://www.bible.com/bible/151/MAT.26.48-49.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:48-49&version=BPT"
             },
             {
               "label": "Luke 22:48",
-              "url": "https://www.bible.com/bible/151/LUK.22.48.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:48&version=BPT"
             },
             {
               "label": "John 18:4-9",
-              "url": "https://www.bible.com/bible/151/JHN.18.4-9.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:4-9&version=BPT"
             },
             {
               "label": "Mark 14:46",
-              "url": "https://www.bible.com/bible/151/MRK.14.46.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+14:46&version=BPT"
             },
             {
               "label": "John 18:10",
-              "url": "https://www.bible.com/bible/151/JHN.18.10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:10&version=BPT"
             },
             {
               "label": "Luke 22:51",
-              "url": "https://www.bible.com/bible/151/LUK.22.51.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:51&version=BPT"
             },
             {
               "label": "John 18:11",
-              "url": "https://www.bible.com/bible/151/JHN.18.11.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:11&version=BPT"
             },
             {
               "label": "Matthew 26:52",
-              "url": "https://www.bible.com/bible/151/MAT.26.52.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:52&version=BPT"
             },
             {
               "label": "John 18:11",
-              "url": "https://www.bible.com/bible/151/JHN.18.11.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:11&version=BPT"
             },
             {
               "label": "Matthew 26:53-56",
-              "url": "https://www.bible.com/bible/151/MAT.26.53-56.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:53-56&version=BPT"
             },
             {
               "label": "Mark 14:51-52",
-              "url": "https://www.bible.com/bible/151/MRK.14.51-52.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+14:51-52&version=BPT"
             }
           ]
         }
@@ -11027,49 +11302,52 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 18:12-14; John 18:15-16; John 18:18; Mark 14:66-68; John 18:19-24; John 18:25; Mark 14:69-70; John 18:26; Mark 14:71; Luke 22:60-62",
+            "url": "https://www.biblegateway.com/passage/?search=John+18:12-14;John+18:15-16;John+18:18;Mark+14:66-68;John+18:19-24;John+18:25;Mark+14:69-70;John+18:26;Mark+14:71;Luke+22:60-62&version=BPT"
+          },
           "passages": [
             {
               "label": "John 18:12-14",
-              "url": "https://www.bible.com/bible/151/JHN.18.12-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:12-14&version=BPT"
             },
             {
               "label": "John 18:15-16",
-              "url": "https://www.bible.com/bible/151/JHN.18.15-16.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:15-16&version=BPT"
             },
             {
               "label": "John 18:18",
-              "url": "https://www.bible.com/bible/151/JHN.18.18.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:18&version=BPT"
             },
             {
               "label": "Mark 14:66-68",
-              "url": "https://www.bible.com/bible/151/MRK.14.66-68.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+14:66-68&version=BPT"
             },
             {
               "label": "John 18:19-24",
-              "url": "https://www.bible.com/bible/151/JHN.18.19-24.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:19-24&version=BPT"
             },
             {
               "label": "John 18:25",
-              "url": "https://www.bible.com/bible/151/JHN.18.25.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:25&version=BPT"
             },
             {
               "label": "Mark 14:69-70",
-              "url": "https://www.bible.com/bible/151/MRK.14.69-70.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+14:69-70&version=BPT"
             },
             {
               "label": "John 18:26",
-              "url": "https://www.bible.com/bible/151/JHN.18.26.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:26&version=BPT"
             },
             {
               "label": "Mark 14:71",
-              "url": "https://www.bible.com/bible/151/MRK.14.71.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+14:71&version=BPT"
             },
             {
               "label": "Luke 22:60-62",
-              "url": "https://www.bible.com/bible/151/LUK.22.60-62.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+22:60-62&version=BPT"
             }
           ]
         }
@@ -11169,21 +11447,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 26:57; Mark 14:55-65; Matthew 27:1-10",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+26:57;Mark+14:55-65;Matthew+27:1-10&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 26:57",
-              "url": "https://www.bible.com/bible/151/MAT.26.57.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+26:57&version=BPT"
             },
             {
               "label": "Mark 14:55-65",
-              "url": "https://www.bible.com/bible/151/MRK.14.55-65.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+14:55-65&version=BPT"
             },
             {
               "label": "Matthew 27:1-10",
-              "url": "https://www.bible.com/bible/151/MAT.27.1-10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:1-10&version=BPT"
             }
           ]
         }
@@ -11380,41 +11661,44 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 15:1; John 18:28-32; Luke 23:2; John 18:33-38; Matthew 27:13-14; John 18:38; Luke 23:5-7; Luke 23:8-12",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+15:1;John+18:28-32;Luke+23:2;John+18:33-38;Matthew+27:13-14;John+18:38;Luke+23:5-7;Luke+23:8-12&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 15:1",
-              "url": "https://www.bible.com/bible/151/MRK.15.1.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+15:1&version=BPT"
             },
             {
               "label": "John 18:28-32",
-              "url": "https://www.bible.com/bible/151/JHN.18.28-32.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:28-32&version=BPT"
             },
             {
               "label": "Luke 23:2",
-              "url": "https://www.bible.com/bible/151/LUK.23.2.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+23:2&version=BPT"
             },
             {
               "label": "John 18:33-38",
-              "url": "https://www.bible.com/bible/151/JHN.18.33-38.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:33-38&version=BPT"
             },
             {
               "label": "Matthew 27:13-14",
-              "url": "https://www.bible.com/bible/151/MAT.27.13-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:13-14&version=BPT"
             },
             {
               "label": "John 18:38",
-              "url": "https://www.bible.com/bible/151/JHN.18.38.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+18:38&version=BPT"
             },
             {
               "label": "Luke 23:5-7",
-              "url": "https://www.bible.com/bible/151/LUK.23.5-7.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+23:5-7&version=BPT"
             },
             {
               "label": "Luke 23:8-12",
-              "url": "https://www.bible.com/bible/151/LUK.23.8-12.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+23:8-12&version=BPT"
             }
           ]
         }
@@ -11573,33 +11857,36 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 23:13-15; Matthew 27:15-21; John 19:1-15; Matthew 27:24-25; Luke 23:24-25; Matthew 27:27-31",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+23:13-15;Matthew+27:15-21;John+19:1-15;Matthew+27:24-25;Luke+23:24-25;Matthew+27:27-31&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 23:13-15",
-              "url": "https://www.bible.com/bible/151/LUK.23.13-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+23:13-15&version=BPT"
             },
             {
               "label": "Matthew 27:15-21",
-              "url": "https://www.bible.com/bible/151/MAT.27.15-21.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:15-21&version=BPT"
             },
             {
               "label": "John 19:1-15",
-              "url": "https://www.bible.com/bible/151/JHN.19.1-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+19:1-15&version=BPT"
             },
             {
               "label": "Matthew 27:24-25",
-              "url": "https://www.bible.com/bible/151/MAT.27.24-25.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:24-25&version=BPT"
             },
             {
               "label": "Luke 23:24-25",
-              "url": "https://www.bible.com/bible/151/LUK.23.24-25.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+23:24-25&version=BPT"
             },
             {
               "label": "Matthew 27:27-31",
-              "url": "https://www.bible.com/bible/151/MAT.27.27-31.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:27-31&version=BPT"
             }
           ]
         }
@@ -11788,37 +12075,40 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 23:26-32; Matthew 27:33-34; Luke 23:33-34; John 19:23-24; Matthew 27:39-43; Luke 23:39-43; John 19:25-27",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+23:26-32;Matthew+27:33-34;Luke+23:33-34;John+19:23-24;Matthew+27:39-43;Luke+23:39-43;John+19:25-27&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 23:26-32",
-              "url": "https://www.bible.com/bible/151/LUK.23.26-32.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+23:26-32&version=BPT"
             },
             {
               "label": "Matthew 27:33-34",
-              "url": "https://www.bible.com/bible/151/MAT.27.33-34.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:33-34&version=BPT"
             },
             {
               "label": "Luke 23:33-34",
-              "url": "https://www.bible.com/bible/151/LUK.23.33-34.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+23:33-34&version=BPT"
             },
             {
               "label": "John 19:23-24",
-              "url": "https://www.bible.com/bible/151/JHN.19.23-24.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+19:23-24&version=BPT"
             },
             {
               "label": "Matthew 27:39-43",
-              "url": "https://www.bible.com/bible/151/MAT.27.39-43.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:39-43&version=BPT"
             },
             {
               "label": "Luke 23:39-43",
-              "url": "https://www.bible.com/bible/151/LUK.23.39-43.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+23:39-43&version=BPT"
             },
             {
               "label": "John 19:25-27",
-              "url": "https://www.bible.com/bible/151/JHN.19.25-27.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+19:25-27&version=BPT"
             }
           ]
         }
@@ -12037,45 +12327,48 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 27:45-47; John 19:28-30; Luke 23:46; Matthew 27:51-54; John 19:31-37; John 19:38-40; Matthew 27:60; Mark 15:47; Luke 23:56",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+27:45-47;John+19:28-30;Luke+23:46;Matthew+27:51-54;John+19:31-37;John+19:38-40;Matthew+27:60;Mark+15:47;Luke+23:56&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 27:45-47",
-              "url": "https://www.bible.com/bible/151/MAT.27.45-47.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:45-47&version=BPT"
             },
             {
               "label": "John 19:28-30",
-              "url": "https://www.bible.com/bible/151/JHN.19.28-30.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+19:28-30&version=BPT"
             },
             {
               "label": "Luke 23:46",
-              "url": "https://www.bible.com/bible/151/LUK.23.46.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+23:46&version=BPT"
             },
             {
               "label": "Matthew 27:51-54",
-              "url": "https://www.bible.com/bible/151/MAT.27.51-54.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:51-54&version=BPT"
             },
             {
               "label": "John 19:31-37",
-              "url": "https://www.bible.com/bible/151/JHN.19.31-37.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+19:31-37&version=BPT"
             },
             {
               "label": "John 19:38-40",
-              "url": "https://www.bible.com/bible/151/JHN.19.38-40.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+19:38-40&version=BPT"
             },
             {
               "label": "Matthew 27:60",
-              "url": "https://www.bible.com/bible/151/MAT.27.60.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:60&version=BPT"
             },
             {
               "label": "Mark 15:47",
-              "url": "https://www.bible.com/bible/151/MRK.15.47.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+15:47&version=BPT"
             },
             {
               "label": "Luke 23:56",
-              "url": "https://www.bible.com/bible/151/LUK.23.56.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+23:56&version=BPT"
             }
           ]
         }
@@ -12343,53 +12636,56 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Matthew 27:62-66; Mark 16:1; Luke 24:10; Mark 16:1-2; Matthew 28:2-6; Luke 24:2-7; Mark 16:7; Luke 24:8; Matthew 28:8; Luke 24:10-11; John 20:3-10",
+            "url": "https://www.biblegateway.com/passage/?search=Matthew+27:62-66;Mark+16:1;Luke+24:10;Mark+16:1-2;Matthew+28:2-6;Luke+24:2-7;Mark+16:7;Luke+24:8;Matthew+28:8;Luke+24:10-11;John+20:3-10&version=BPT"
+          },
           "passages": [
             {
               "label": "Matthew 27:62-66",
-              "url": "https://www.bible.com/bible/151/MAT.27.62-66.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+27:62-66&version=BPT"
             },
             {
               "label": "Mark 16:1",
-              "url": "https://www.bible.com/bible/151/MRK.16.1.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+16:1&version=BPT"
             },
             {
               "label": "Luke 24:10",
-              "url": "https://www.bible.com/bible/151/LUK.24.10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+24:10&version=BPT"
             },
             {
               "label": "Mark 16:1-2",
-              "url": "https://www.bible.com/bible/151/MRK.16.1-2.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+16:1-2&version=BPT"
             },
             {
               "label": "Matthew 28:2-6",
-              "url": "https://www.bible.com/bible/151/MAT.28.2-6.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+28:2-6&version=BPT"
             },
             {
               "label": "Luke 24:2-7",
-              "url": "https://www.bible.com/bible/151/LUK.24.2-7.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+24:2-7&version=BPT"
             },
             {
               "label": "Mark 16:7",
-              "url": "https://www.bible.com/bible/151/MRK.16.7.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+16:7&version=BPT"
             },
             {
               "label": "Luke 24:8",
-              "url": "https://www.bible.com/bible/151/LUK.24.8.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+24:8&version=BPT"
             },
             {
               "label": "Matthew 28:8",
-              "url": "https://www.bible.com/bible/151/MAT.28.8.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+28:8&version=BPT"
             },
             {
               "label": "Luke 24:10-11",
-              "url": "https://www.bible.com/bible/151/LUK.24.10-11.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+24:10-11&version=BPT"
             },
             {
               "label": "John 20:3-10",
-              "url": "https://www.bible.com/bible/151/JHN.20.3-10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+20:3-10&version=BPT"
             }
           ]
         }
@@ -12493,21 +12789,24 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 20:11-18; Matthew 28:9-10; Matthew 28:11-15",
+            "url": "https://www.biblegateway.com/passage/?search=John+20:11-18;Matthew+28:9-10;Matthew+28:11-15&version=BPT"
+          },
           "passages": [
             {
               "label": "John 20:11-18",
-              "url": "https://www.bible.com/bible/151/JHN.20.11-18.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+20:11-18&version=BPT"
             },
             {
               "label": "Matthew 28:9-10",
-              "url": "https://www.bible.com/bible/151/MAT.28.9-10.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+28:9-10&version=BPT"
             },
             {
               "label": "Matthew 28:11-15",
-              "url": "https://www.bible.com/bible/151/MAT.28.11-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+28:11-15&version=BPT"
             }
           ]
         }
@@ -12626,25 +12925,28 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 24:13-35; John 20:19; Luke 24:36-43; John 20:21-23",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+24:13-35;John+20:19;Luke+24:36-43;John+20:21-23&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 24:13-35",
-              "url": "https://www.bible.com/bible/151/LUK.24.13-35.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+24:13-35&version=BPT"
             },
             {
               "label": "John 20:19",
-              "url": "https://www.bible.com/bible/151/JHN.20.19.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+20:19&version=BPT"
             },
             {
               "label": "Luke 24:36-43",
-              "url": "https://www.bible.com/bible/151/LUK.24.36-43.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+24:36-43&version=BPT"
             },
             {
               "label": "John 20:21-23",
-              "url": "https://www.bible.com/bible/151/JHN.20.21-23.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+20:21-23&version=BPT"
             }
           ]
         }
@@ -12725,17 +13027,20 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 20:24-29; John 21:1-14",
+            "url": "https://www.biblegateway.com/passage/?search=John+20:24-29;John+21:1-14&version=BPT"
+          },
           "passages": [
             {
               "label": "John 20:24-29",
-              "url": "https://www.bible.com/bible/151/JHN.20.24-29.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+20:24-29&version=BPT"
             },
             {
               "label": "John 21:1-14",
-              "url": "https://www.bible.com/bible/151/JHN.21.1-14.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+21:1-14&version=BPT"
             }
           ]
         }
@@ -12877,29 +13182,32 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 21:15-23; Matthew 28:16-20; Acts 1:3-4; Luke 24:44-49; Acts 1:4-8",
+            "url": "https://www.biblegateway.com/passage/?search=John+21:15-23;Matthew+28:16-20;Acts+1:3-4;Luke+24:44-49;Acts+1:4-8&version=BPT"
+          },
           "passages": [
             {
               "label": "John 21:15-23",
-              "url": "https://www.bible.com/bible/151/JHN.21.15-23.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+21:15-23&version=BPT"
             },
             {
               "label": "Matthew 28:16-20",
-              "url": "https://www.bible.com/bible/151/MAT.28.16-20.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+28:16-20&version=BPT"
             },
             {
               "label": "Acts 1:3-4",
-              "url": "https://www.bible.com/bible/151/ACT.1.3-4.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Acts+1:3-4&version=BPT"
             },
             {
               "label": "Luke 24:44-49",
-              "url": "https://www.bible.com/bible/151/LUK.24.44-49.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+24:44-49&version=BPT"
             },
             {
               "label": "Acts 1:4-8",
-              "url": "https://www.bible.com/bible/151/ACT.1.4-8.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Acts+1:4-8&version=BPT"
             }
           ]
         }
@@ -13060,33 +13368,36 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 24:50-51; Acts 1:9-11; Luke 24:52-53; Acts 2:1-11; John 21:25; John 20:31",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+24:50-51;Acts+1:9-11;Luke+24:52-53;Acts+2:1-11;John+21:25;John+20:31&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 24:50-51",
-              "url": "https://www.bible.com/bible/151/LUK.24.50-51.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+24:50-51&version=BPT"
             },
             {
               "label": "Acts 1:9-11",
-              "url": "https://www.bible.com/bible/151/ACT.1.9-11.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Acts+1:9-11&version=BPT"
             },
             {
               "label": "Luke 24:52-53",
-              "url": "https://www.bible.com/bible/151/LUK.24.52-53.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+24:52-53&version=BPT"
             },
             {
               "label": "Acts 2:1-11",
-              "url": "https://www.bible.com/bible/151/ACT.2.1-11.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Acts+2:1-11&version=BPT"
             },
             {
               "label": "John 21:25",
-              "url": "https://www.bible.com/bible/151/JHN.21.25.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+21:25&version=BPT"
             },
             {
               "label": "John 20:31",
-              "url": "https://www.bible.com/bible/151/JHN.20.31.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+20:31&version=BPT"
             }
           ]
         }

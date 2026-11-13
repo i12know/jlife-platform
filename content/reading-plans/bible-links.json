@@ -6,8 +6,7 @@
   },
   "vi": {
     "label": "Tiếng Việt",
-    "provider": "bible_com",
-    "version_id": 151,
-    "version_code": "VIE2010"
+    "provider": "bible_gateway",
+    "version": "BPT"
   }
 }
