@@ -5,7 +5,8 @@
 body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;color:var(--ink);background:var(--bg);line-height:1.5;font-size:1.0625rem}
 main{max-width:34rem;margin:0 auto;padding:1rem 1rem 3rem}
 .jl-nav{display:flex;gap:.25rem;justify-content:center;border-bottom:1px solid var(--line);background:var(--soft);position:sticky;top:0;z-index:1}
-.jl-nav a{padding:.75rem .9rem;color:var(--muted);text-decoration:none;font-weight:600}
+.jl-nav a{padding:.75rem .55rem;white-space:nowrap;font-size:.9375rem;color:var(--muted);text-decoration:none;font-weight:600}
+@media (max-width:360px){.jl-nav{gap:0}.jl-nav a{padding:.7rem .4rem;font-size:.875rem}}
 .jl-nav a[aria-current=page]{color:var(--accent);box-shadow:inset 0 -3px 0 var(--accent)}
 h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3{font-size:1rem;margin:1rem 0 .4rem;color:var(--muted)}
 .jl-day{color:var(--muted);margin:.5rem 0 0;font-weight:600}
@@ -37,6 +38,21 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-future{color:var(--muted);opacity:.5}
 .jl-legend{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.5rem 1rem;font-size:.875rem;color:var(--muted)}
 .jl-legend .jl-cell{display:inline-block;width:1rem;min-width:1rem;height:1rem;vertical-align:middle}
+/* Sharing (M7, #62) */
+.jl-share fieldset{border:0;padding:0;margin:1rem 0}
+.jl-share legend,.jl-share h2{font-size:1.125rem;font-weight:700;margin:1.25rem 0 .5rem;padding:0}
+.jl-pick{display:flex;gap:.6rem;align-items:flex-start;padding:.6rem;border:1px solid var(--line);border-radius:.6rem;margin:.4rem 0;cursor:pointer}
+.jl-pick input{margin-top:.3rem;width:1.2rem;height:1.2rem;flex:none}
+.jl-excerpt{display:block;white-space:pre-wrap;color:var(--ink);font-weight:400}
+.jl-preview{white-space:pre-wrap;font:inherit;font-size:.9375rem;background:var(--soft);border-radius:.6rem;padding:.75rem;margin:0}
+.jl-dest{border-top:1px solid var(--line);padding-top:.5rem;margin-top:.75rem}
+.jl-post{border:1px solid var(--line);border-radius:.75rem;padding:.75rem 1rem;margin:.75rem 0}
+.jl-post h3{margin:.6rem 0 .1rem}
+.jl-post .jl-excerpt{margin:0}
+.jl-post-meta{margin:0;color:var(--muted)}
+.jl-post-meta strong{color:var(--ink)}
+.jl-mine{border-color:var(--accent)}
+.jl-empty{color:var(--muted)}
 .jl-dialog{max-width:22rem;width:calc(100% - 2rem);border:1px solid var(--line);border-radius:.8rem;padding:0;background:var(--bg);color:var(--ink)}
 .jl-dialog::backdrop{background:rgba(0,0,0,.45)}
 .jl-dialog-body{padding:1.25rem}.jl-dialog form{margin:0}

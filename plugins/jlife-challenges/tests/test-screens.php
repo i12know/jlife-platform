@@ -253,5 +253,6 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'href="' . esc_url( $back ) . '"', $page, 'Cancel on the no-JS page returns to the same screen and day' );
 		$this->assertSame( add_query_arg( 'day', 'd009', home_url( '/soap/' ) ), $back );
 		$this->assertSame( home_url( '/today/' ), jlife_challenges_screen_url( 'https://evil.test/' ), 'only known screens' );
+		$this->assertSame( home_url( '/group/' ), jlife_challenges_screen_url( 'group' ), 'My Group (#62) is a known screen' );
 	}
 }
