@@ -4,7 +4,7 @@
   "private": true,
   "description": "J-Life Platform — dev environment and tooling (WordPress multisite + Disciple.Tools)",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13.0"
   },
   "scripts": {
     "env:start": "node bin/start.js",
@@ -27,6 +27,6 @@
     "test:js": "node --test bin/test/*.test.js"
   },
   "devDependencies": {
-    "@wordpress/env": "^10.0.0"
+    "@wordpress/env": "^12.1.0"
   }
 }
