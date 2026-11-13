@@ -8,8 +8,14 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ## Unreleased
 
+### Changed
+
+- Vietnamese Bible Marathon links now open Bible Gateway's *Vietnamese Bible: Easy-to-Read Version* (BPT) instead of Bible.com VIE2010 (#91): one "open all of today's passages" button, like English ERV, on Today, the SOAP page and the public `/reading/` day pages. The optional parallel readings on Today and the SOAP page now show their own per-language buttons too.
+- Sign out on the participant screens now asks first (#89): an in-page dialog with Cancel and Sign out, or a `/signout/` confirmation page without JavaScript. Cancel keeps the participant on the same screen and day.
+
 ### Added
 
+- Added sharing (#62, M7) and the My Group feed (#61): from a submitted SOAP, `/share?day=dNNN` lets the participant tick which parts to share (Prayer unticked by default), see the exact preview, then **Post to My Group** (a snapshot only their current group can read; posting again replaces it; removable any time) and/or **Send to a chat** (the phone's share sheet or Copy text, with only a public link to that day's reading — never a sign-in, invite or personal link). `/group` shows the group's posts with first names only and no points. Sharing is never automatic, never part of Submit and never changes points; minors awaiting guardian consent cannot post to the group (D19); posts hidden by an organizer stay hidden. Covered by a PHPUnit share-screens suite.
 - Added a reversible staging test drive (`wp jlife test-campaign create|remove|status`, and a **test_campaign** choice on the latoc deploy): creates a TEST Bible Marathon starting today with a Test Group and emails the invite link to the site admin (never logged); **remove** deletes all test-campaign data and test-only participant accounts without touching real campaigns. Runbook: `docs/staging-latoc.md`.
 - Added the participant screens (#61) in `jlife-challenges`: `/today` (Day N, the reading with Bible links in the participant's language first, optional parallels collapsed, status and "N of 104"), `/soap?day=dNNN` (four guided fields, reference chips with no Bible text, server draft autosave plus an on-device backup, submit with a "1 point" confirmation, incomplete submissions keep the typed text) and `/marathon` (a 104-day grid with neutral wording for days not written). Signed-in participants landing on the home page go to Today. Works without JavaScript; covered by a PHPUnit screens suite (view states, privacy, autosave endpoint).
 - Added `jlife-auth` participant sign-in (#58): emailed 6-digit codes (single use, 10 minutes, hashed, 5-guess limit, no account enumeration, rate limits, no sign-in links), `/join` with invite code, first name, age band (13+) and language, `/signin`, a versioned `/consent` step, 180-day phone sessions for participants, and no wp-admin or admin bar for participants.

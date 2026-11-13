@@ -118,7 +118,14 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 			$html,
 			'the owner-tested combined English link'
 		);
-		$this->assertStringContainsString( 'https://www.bible.com/bible/151/MRK.6.30-37.VIE2010', $html );
+		$this->assertStringContainsString(
+			esc_url( 'https://www.biblegateway.com/passage/?search=Mark+6:30-37;John+6:8-15;Mark+6:45;Matthew+14:23-33;Mark+6:53-56&version=BPT' ),
+			$html,
+			'one Vietnamese BPT link with every passage, like English (#91)'
+		);
+		$this->assertStringNotContainsString( 'bible.com', $html );
+		$supp = substr( $html, (int) strpos( $html, '<details class="jlife-supplemental">' ) );
+		$this->assertMatchesRegularExpression( '/class="jlife-read-all" href="[^"]*version=BPT"/', $supp, 'optional parallels get their own BPT button' );
 		$this->assertStringContainsString( 'target="_blank" rel="noopener"', $html );
 		$this->assertStringContainsString( '<details class="jlife-supplemental">', $html, 'parallel readings collapsed and optional' );
 	}
