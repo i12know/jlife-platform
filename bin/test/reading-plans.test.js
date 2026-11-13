@@ -97,3 +97,15 @@ test('CSV parser keeps section IDs as strings and handles quoted commas', () => 
   assert.equal(records[0].Sections, '4.40');
   assert.equal(records[1].Sections, '1.3, 1.4');
 });
+
+test('shipped config: Vietnamese uses one Bible Gateway BPT link, like English ERV (#91)', () => {
+  const shipped = require('../../content/reading-plans/bible-links.json');
+  const l = buildDayLinks(parseReferenceList('Luke 3:1-6; Matthew 3:4-10; Luke 3:10-18').passages, shipped);
+  assert.equal(l.vi.provider, 'bible_gateway');
+  assert.equal(l.vi.version, 'BPT');
+  assert.equal(
+    l.vi.combined.url,
+    'https://www.biblegateway.com/passage/?search=Luke+3:1-6;Matthew+3:4-10;Luke+3:10-18&version=BPT',
+  );
+  assert.equal(l.en.combined.url, l.vi.combined.url.replace('version=BPT', 'version=ERV'));
+});

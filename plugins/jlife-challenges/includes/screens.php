@@ -1,6 +1,7 @@
 <?php
 /**
- * Participant screens (M6, #61): /today, /soap, /marathon.
+ * Participant screens (M6, #61): /today, /soap, /marathon, and the sign-out
+ * confirmation /signout (#89).
  *
  * Read → SOAP → Submit → Repeat. Scripture comes first; the score is
  * secondary; missed days are shown without shame. Mobile-first, works
@@ -17,7 +18,7 @@ add_action( 'init', 'jlife_challenges_add_rewrites' );
  * Routes.
  */
 function jlife_challenges_add_rewrites() {
-	add_rewrite_rule( '^(today|soap|marathon)/?$', 'index.php?jlife_screen=$matches[1]', 'top' );
+	add_rewrite_rule( '^(today|soap|marathon|signout)/?$', 'index.php?jlife_screen=$matches[1]', 'top' );
 }
 
 add_filter( 'query_vars', 'jlife_challenges_query_vars' );
@@ -77,16 +78,81 @@ function jlife_challenges_send_page( $title, $body, $active = '', $script = '' )
 	) as $slug => $label ) {
 		$nav .= '<a href="' . esc_url( home_url( '/' . $slug . '/' ) ) . '"' . ( $slug === $active ? ' aria-current="page"' : '' ) . '>' . esc_html( $label ) . '</a>';
 	}
-	$nav .= '<a href="' . esc_url( wp_logout_url( home_url( '/signin/' ) ) ) . '">' . esc_html__( 'Sign out', 'jlife-challenges' ) . '</a>';
-	$html = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
+	// Sign out asks first (#89): the link opens a confirmation page, which the
+	// nav script turns into an in-page dialog when JavaScript is available.
+	$day  = isset( $_GET['day'] ) ? sanitize_key( wp_unslash( $_GET['day'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only day selector.
+	$back = 'soap' === $script ? 'soap' : $active;
+	$here = jlife_challenges_screen_url( $back, $day );
+	$ask  = add_query_arg(
+		array_filter(
+			array(
+				'back' => $back,
+				'day'  => $day,
+			)
+		),
+		home_url( '/signout/' )
+	);
+	$nav .= '<a class="jl-signout" href="' . esc_url( $ask ) . '">' . esc_html__( 'Sign out', 'jlife-challenges' ) . '</a>';
+
+	$dialog = 'signout' === $active ? '' : '<dialog class="jl-dialog" id="jl-signout-dialog" aria-labelledby="jl-signout-title"><div class="jl-dialog-body">' . jlife_challenges_signout_prompt( $here, true ) . '</div></dialog>';
+	$html   = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=1' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
-		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>'
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=2' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>' . $dialog
+		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. ( 'soap' === $script ? '<script src="' . esc_url( $base . 'soap.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. '</body></html>';
 	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts.
 	exit;
+}
+
+/**
+ * URL of a participant screen, optionally for one day. Unknown screens give Today.
+ *
+ * @param string $screen 'today', 'soap' or 'marathon'.
+ * @param string $day    Day key, or ''.
+ * @return string
+ */
+function jlife_challenges_screen_url( $screen, $day = '' ) {
+	$screen = in_array( $screen, array( 'today', 'soap', 'marathon' ), true ) ? $screen : 'today';
+	$url    = home_url( '/' . $screen . '/' );
+	return '' !== $day ? add_query_arg( 'day', $day, $url ) : $url;
+}
+
+/**
+ * The Cancel / Sign out prompt, shared by the in-page dialog and the
+ * no-JavaScript confirmation page (#89).
+ *
+ * @param string $back      Where Cancel returns to.
+ * @param bool   $in_dialog True inside <dialog>: Cancel just closes it.
+ * @return string
+ */
+function jlife_challenges_signout_prompt( $back, $in_dialog ) {
+	$cancel = $in_dialog
+		? '<form method="dialog"><button class="jl-button" value="cancel" autofocus>' . esc_html__( 'Cancel', 'jlife-challenges' ) . '</button></form>'
+		: '<a class="jl-button" href="' . esc_url( $back ) . '">' . esc_html__( 'Cancel', 'jlife-challenges' ) . '</a>';
+	return '<h2 id="jl-signout-title">' . esc_html__( 'Sign out of J-Life?', 'jlife-challenges' ) . '</h2>'
+		. '<p>' . esc_html__( 'You will need a new email code to sign back in.', 'jlife-challenges' ) . '</p>'
+		. '<div class="jl-actions">' . $cancel
+		. '<a class="jl-button jl-primary" href="' . esc_url( wp_logout_url( home_url( '/signin/' ) ) ) . '">' . esc_html__( 'Sign out', 'jlife-challenges' ) . '</a></div>';
+}
+
+/**
+ * /signout: confirmation page. Signed-out visitors go to the sign-in screen.
+ */
+function jlife_challenges_screen_signout() {
+	if ( ! is_user_logged_in() ) {
+		wp_safe_redirect( home_url( '/signin/' ) );
+		exit;
+	}
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only return target, rebuilt from a whitelist.
+	$back = jlife_challenges_screen_url(
+		isset( $_GET['back'] ) ? sanitize_key( wp_unslash( $_GET['back'] ) ) : '',
+		isset( $_GET['day'] ) ? sanitize_key( wp_unslash( $_GET['day'] ) ) : ''
+	);
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
+	jlife_challenges_send_page( __( 'Sign out', 'jlife-challenges' ), '<section class="jl-confirm">' . jlife_challenges_signout_prompt( $back, false ) . '</section>', 'signout' );
 }
 
 /**
@@ -107,8 +173,32 @@ function jlife_challenges_render_reading( $view ) {
 	foreach ( (array) $day['passages'] as $p ) {
 		$out .= '<li>' . esc_html( (string) $p['display'] ) . '</li>';
 	}
-	$out .= '</ul>';
-	foreach ( $view['languages'] as $lang ) {
+	$out .= '</ul>' . jlife_challenges_render_bible_links( $day, $config, $view['languages'] );
+	if ( ! empty( $reading['supplemental']['day'] ) ) {
+		$supp = $reading['supplemental'];
+		$out .= '<details class="jl-optional"><summary>' . esc_html__( 'Optional: parallel readings for deeper study', 'jlife-challenges' ) . '</summary><p>'
+			. esc_html__( 'Optional. Reading these does not change your points.', 'jlife-challenges' ) . '</p><ul>';
+		foreach ( (array) $supp['day']['passages'] as $p ) {
+			$out .= '<li>' . esc_html( (string) $p['display'] ) . '</li>';
+		}
+		$out .= '</ul>' . jlife_challenges_render_bible_links( $supp['day'], $supp['plan']['links_config'] ?? $config, $view['languages'] ) . '</details>';
+	}
+	return $out . '</section>';
+}
+
+/**
+ * Bible links for one day, one block per language in the participant's order:
+ * a single button when the provider opens every passage on one page (Bible
+ * Gateway), otherwise one chip per passage.
+ *
+ * @param array    $day       Day data with 'links'.
+ * @param array    $config    Language => provider config (labels).
+ * @param string[] $languages Language codes, preferred first.
+ * @return string
+ */
+function jlife_challenges_render_bible_links( $day, $config, $languages ) {
+	$out = '';
+	foreach ( $languages as $lang ) {
 		$links = $day['links'][ $lang ] ?? null;
 		if ( ! $links ) {
 			continue;
@@ -126,15 +216,7 @@ function jlife_challenges_render_reading( $view ) {
 		}
 		$out .= '</div>';
 	}
-	if ( ! empty( $reading['supplemental']['day'] ) ) {
-		$out .= '<details class="jl-optional"><summary>' . esc_html__( 'Optional: parallel readings for deeper study', 'jlife-challenges' ) . '</summary><p>'
-			. esc_html__( 'Optional. Reading these does not change your points.', 'jlife-challenges' ) . '</p><ul>';
-		foreach ( (array) $reading['supplemental']['day']['passages'] as $p ) {
-			$out .= '<li>' . esc_html( (string) $p['display'] ) . '</li>';
-		}
-		$out .= '</ul></details>';
-	}
-	return $out . '</section>';
+	return $out;
 }
 
 /**
@@ -387,6 +469,8 @@ function jlife_challenges_route() {
 		jlife_challenges_screen_soap();
 	} elseif ( 'marathon' === $screen ) {
 		jlife_challenges_screen_marathon();
+	} elseif ( 'signout' === $screen ) {
+		jlife_challenges_screen_signout();
 	} elseif ( ( is_front_page() || is_home() ) && ! current_user_can( 'edit_posts' ) && is_user_logged_in() ) {
 		wp_safe_redirect( home_url( '/today/' ) );
 		exit;
