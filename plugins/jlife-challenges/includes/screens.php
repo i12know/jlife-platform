@@ -270,7 +270,7 @@ function jlife_challenges_render_reader( $view ) {
 			. '<p class="jl-reader-note"><small>' . esc_html( (string) ( $cfg['notice'] ?? $name ) ) . '. ' . esc_html__( 'Shown from Bible Gateway.', 'jlife-challenges' ) . '</small> '
 			. '<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . esc_html__( 'Open in Bible Gateway', 'jlife-challenges' ) . '</a></p>'
 			. '</div>';
-		$first  = false;
+		$first = false;
 	}
 	if ( '' === $panes ) {
 		return '';

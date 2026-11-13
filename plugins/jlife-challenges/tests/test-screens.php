@@ -329,6 +329,10 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertSame( 1, substr_count( $html, '<iframe' ) );
 		$this->assertStringNotContainsString( 'data-reader-lang', $html, 'no version buttons for a single version' );
 
-		$this->assertSame( '', jlife_challenges_render_reader( array( 'languages' => array( 'en' ), 'reading' => null ) ) );
+		$no_reading = array(
+			'languages' => array( 'en' ),
+			'reading'   => null,
+		);
+		$this->assertSame( '', jlife_challenges_render_reader( $no_reading ) );
 	}
 }
