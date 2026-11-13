@@ -14,12 +14,18 @@
     "en": {
       "label": "English",
       "provider": "bible_gateway",
-      "version": "ERV"
+      "version": "ERV",
+      "version_name": "Easy-to-Read Version",
+      "notice": "Easy-to-Read Version (ERV) Copyright © 2006 by Bible League International",
+      "embed": true
     },
     "vi": {
       "label": "Tiếng Việt",
       "provider": "bible_gateway",
-      "version": "BPT"
+      "version": "BPT",
+      "version_name": "Vietnamese Bible: Easy-to-Read Version",
+      "notice": "Vietnamese Bible: Easy-to-Read Version (BPT) © 2010 Bible League International",
+      "embed": true
     }
   },
   "days": [
