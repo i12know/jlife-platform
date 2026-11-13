@@ -37,3 +37,8 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-future{color:var(--muted);opacity:.5}
 .jl-legend{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.5rem 1rem;font-size:.875rem;color:var(--muted)}
 .jl-legend .jl-cell{display:inline-block;width:1rem;min-width:1rem;height:1rem;vertical-align:middle}
+.jl-dialog{max-width:22rem;width:calc(100% - 2rem);border:1px solid var(--line);border-radius:.8rem;padding:0;background:var(--bg);color:var(--ink)}
+.jl-dialog::backdrop{background:rgba(0,0,0,.45)}
+.jl-dialog-body{padding:1.25rem}.jl-dialog form{margin:0}
+.jl-actions .jl-button{margin:.5rem 0 0}
+.jl-confirm{margin-top:2rem}

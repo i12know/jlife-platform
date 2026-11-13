@@ -41,6 +41,7 @@ Rule of the repo: **do not publish or commit third-party copyrighted expression 
 | **NASB** | **Confirmed:** 1,000 verses; no complete book; at most 50%; at most 1,000 verses stored electronically; full notice + clickable lockman.org link on web/apps | Limited attributed quotes within those conditions |
 | **ERV** (Easy-to-Read Version) | **Conditional:** 1,000 verses / 50% / no complete book, **but Bible League requires written permission to host ERV on a server or use it on a website** | Links for the marathon. ERV text on a J-Life page needs Bible League's written permission or an authorized API that carries ERV |
 | **NIV** (Biblica) | **Unverified:** publisher pages couldn't be read in this review | Don't rely on a NIV allowance until a person confirms it at the source |
+| **BPT** (Vietnamese Bible: Easy-to-Read Version, Bible League International) | Same publisher as ERV; assume the same server/website restriction until confirmed | **Links for the marathon (#91, 2026-11-13):** one Bible Gateway link per day, like ERV. No BPT text on J-Life pages without Bible League's permission |
 | **VIE2010 / RVV11** | **Unverified:** no public quotation rule; UBS's 500-verse rule is **Spanish-only** | References and links. Ask Bible Society of Vietnam / UBS for the quotation rule and, separately, app display rights (#3) |
 
 The options below are larger-scale ways to *show* Vietnamese text in J-Life, separate from occasional quotation.

@@ -8,6 +8,11 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ## Unreleased
 
+### Changed
+
+- Vietnamese Bible Marathon links now open Bible Gateway's *Vietnamese Bible: Easy-to-Read Version* (BPT) instead of Bible.com VIE2010 (#91): one "open all of today's passages" button, like English ERV, on Today, the SOAP page and the public `/reading/` day pages. The optional parallel readings on Today and the SOAP page now show their own per-language buttons too.
+- Sign out on the participant screens now asks first (#89): an in-page dialog with Cancel and Sign out, or a `/signout/` confirmation page without JavaScript. Cancel keeps the participant on the same screen and day.
+
 ### Added
 
 - Added a reversible staging test drive (`wp jlife test-campaign create|remove|status`, and a **test_campaign** choice on the latoc deploy): creates a TEST Bible Marathon starting today with a Test Group and emails the invite link to the site admin (never logged); **remove** deletes all test-campaign data and test-only participant accounts without touching real campaigns. Runbook: `docs/staging-latoc.md`.

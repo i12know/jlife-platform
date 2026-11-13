@@ -39,7 +39,7 @@ The CSVs above stay the source. `npm run plans:build` turns each plan in [`plans
 - **Days:** `day_id` (`d001`…`d104`, shared by both plans), day number, calendar date, title, and section IDs **as strings** (`4.40` stays `4.40`).
 - **Harmony:** Robertson labels and their `r1922-NNN` events; lettered sub-sections such as `#54a` link to the parent event.
 - **References:** each reference exactly as written in the CSV, plus parsed segments (half-verse letters kept).
-- **Links:** pre-built Bible links per language from [`bible-links.json`](bible-links.json). English ERV is one Bible Gateway link with all passages, plus one per passage. Vietnamese VIE2010 is one Bible.com link per passage. Chapter-crossing ranges are split; half-verse letters are dropped only in links. **No Bible text.** The rules come from the owner's link tests on #59.
+- **Links:** pre-built Bible links per language from [`bible-links.json`](bible-links.json). English ERV and Vietnamese BPT (*Vietnamese Bible: Easy-to-Read Version*, owner's choice on #91) are each one Bible Gateway link with all passages, plus one per passage. Bible.com links (one per passage, e.g. VIE2010) remain supported by the builder. Chapter-crossing ranges are split; half-verse letters are dropped only in links. **No Bible text.** The rules come from the owner's link tests on #59.
 
 | Command | What it does |
 |---|---|

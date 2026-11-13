@@ -17,9 +17,8 @@
     },
     "vi": {
       "label": "Tiếng Việt",
-      "provider": "bible_com",
-      "version_id": 151,
-      "version_code": "VIE2010"
+      "provider": "bible_gateway",
+      "version": "BPT"
     }
   },
   "days": [
@@ -75,13 +74,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "John 1:1-18",
+            "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=BPT"
+          },
           "passages": [
             {
               "label": "John 1:1-18",
-              "url": "https://www.bible.com/bible/151/JHN.1.1-18.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=BPT"
             }
           ]
         }
@@ -241,29 +243,32 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Mark 6:30-37; John 6:8-15; Mark 6:45; Matthew 14:23-33; Mark 6:53-56",
+            "url": "https://www.biblegateway.com/passage/?search=Mark+6:30-37;John+6:8-15;Mark+6:45;Matthew+14:23-33;Mark+6:53-56&version=BPT"
+          },
           "passages": [
             {
               "label": "Mark 6:30-37",
-              "url": "https://www.bible.com/bible/151/MRK.6.30-37.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:30-37&version=BPT"
             },
             {
               "label": "John 6:8-15",
-              "url": "https://www.bible.com/bible/151/JHN.6.8-15.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=John+6:8-15&version=BPT"
             },
             {
               "label": "Mark 6:45",
-              "url": "https://www.bible.com/bible/151/MRK.6.45.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:45&version=BPT"
             },
             {
               "label": "Matthew 14:23-33",
-              "url": "https://www.bible.com/bible/151/MAT.14.23-33.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Matthew+14:23-33&version=BPT"
             },
             {
               "label": "Mark 6:53-56",
-              "url": "https://www.bible.com/bible/151/MRK.6.53-56.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Mark+6:53-56&version=BPT"
             }
           ]
         }
@@ -321,13 +326,16 @@
           ]
         },
         "vi": {
-          "provider": "bible_com",
-          "version": "VIE2010",
-          "combined": null,
+          "provider": "bible_gateway",
+          "version": "BPT",
+          "combined": {
+            "label": "Luke 10:1-24",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+10:1-24&version=BPT"
+          },
           "passages": [
             {
               "label": "Luke 10:1-24",
-              "url": "https://www.bible.com/bible/151/LUK.10.1-24.VIE2010"
+              "url": "https://www.biblegateway.com/passage/?search=Luke+10:1-24&version=BPT"
             }
           ]
         }
