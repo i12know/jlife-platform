@@ -181,8 +181,12 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	 */
 	public function test_reading_block_has_one_button_per_language_for_both_lists() {
 		$links = static function ( $search ) {
-			$out = array();
-			foreach ( array( 'en' => 'ERV', 'vi' => 'BPT' ) as $lang => $version ) {
+			$out      = array();
+			$versions = array(
+				'en' => 'ERV',
+				'vi' => 'BPT',
+			);
+			foreach ( $versions as $lang => $version ) {
 				$url          = 'https://www.biblegateway.com/passage/?search=' . $search . '&version=' . $version;
 				$out[ $lang ] = array(
 					'provider' => 'bible_gateway',
