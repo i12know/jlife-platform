@@ -58,3 +58,13 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-dialog-body{padding:1.25rem}.jl-dialog form{margin:0}
 .jl-actions .jl-button{margin:.5rem 0 0}
 .jl-confirm{margin-top:2rem}
+/* Bible reader above the SOAP form (#92) */
+.jl-reader{margin:1rem 0;border:1px solid var(--line);border-radius:.6rem;background:var(--soft)}
+.jl-reader>summary{cursor:pointer;font-weight:700;padding:.8rem 1rem;list-style-position:inside}
+.jl-reader[open]>summary{border-bottom:1px solid var(--line)}
+.jl-reader>.jl-chips{padding:.5rem .75rem 0}
+.jl-reader-pane{padding:.5rem .75rem .75rem}
+.jl-reader iframe{display:block;width:100%;height:70vh;min-height:22rem;border:1px solid var(--line);border-radius:.4rem;background:#fff}
+.jl-reader-note{margin:.5rem 0 0;color:var(--muted);font-size:.875rem}
+.jl-reader-fail{margin:.5rem 0 0;color:var(--err)}
+.jl-reader .jl-chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--bg)}

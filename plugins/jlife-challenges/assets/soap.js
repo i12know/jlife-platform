@@ -75,3 +75,46 @@
 		});
 	});
 }());
+
+/* Bible reader above the SOAP form (#92). The frame loads Bible Gateway only
+ * when the participant opens the reader or picks a version, never on page
+ * load. It sits outside the form, so opening, closing or switching versions
+ * never touches what the participant has typed. If the frame hasn't loaded
+ * after 20 seconds, a note points to the Bible Gateway link, which is always
+ * shown. */
+(function () {
+	'use strict';
+	var reader = document.querySelector('details.jl-reader');
+	if (!reader) { return; }
+
+	function load(pane) {
+		var frame = pane.querySelector('iframe[data-src]');
+		if (!frame || frame.getAttribute('src')) { return; }
+		var fail = pane.querySelector('.jl-reader-fail');
+		var timer = setTimeout(function () { if (fail) { fail.hidden = false; } }, 20000);
+		frame.addEventListener('load', function () {
+			clearTimeout(timer);
+			if (fail) { fail.hidden = true; }
+		});
+		frame.setAttribute('src', frame.getAttribute('data-src'));
+	}
+	function visiblePane() {
+		return reader.querySelector('[data-reader-pane]:not([hidden])');
+	}
+
+	reader.addEventListener('toggle', function () {
+		if (reader.open) { load(visiblePane()); }
+	});
+	reader.querySelectorAll('[data-reader-lang]').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			var lang = btn.getAttribute('data-reader-lang');
+			reader.querySelectorAll('[data-reader-lang]').forEach(function (b) {
+				b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+			});
+			reader.querySelectorAll('[data-reader-pane]').forEach(function (p) {
+				p.hidden = p.getAttribute('data-reader-pane') !== lang;
+			});
+			load(visiblePane());
+		});
+	});
+}());

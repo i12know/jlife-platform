@@ -255,4 +255,84 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertSame( home_url( '/today/' ), jlife_challenges_screen_url( 'https://evil.test/' ), 'only known screens' );
 		$this->assertSame( home_url( '/group/' ), jlife_challenges_screen_url( 'group' ), 'My Group (#62) is a known screen' );
 	}
+
+	/**
+	 * A day view with Bible Gateway links in English and Vietnamese.
+	 *
+	 * @param bool   $embed  Value of the per-language "embed" flag.
+	 * @param string $vi_url Vietnamese combined link.
+	 * @return array
+	 */
+	private function reader_view( $embed = true, $vi_url = 'https://www.biblegateway.com/passage/?search=Luke+3:1-6;Matthew+3:4-10;Luke+3:10-18&version=BPT' ) {
+		$config = array(
+			'en' => array(
+				'label'  => 'English',
+				'notice' => 'Easy-to-Read Version (ERV) Copyright © 2006 by Bible League International',
+				'embed'  => $embed,
+			),
+			'vi' => array(
+				'label'  => 'Tiếng Việt',
+				'notice' => 'Vietnamese Bible: Easy-to-Read Version (BPT) © 2010 Bible League International',
+				'embed'  => $embed,
+			),
+		);
+		$links  = array(
+			'en' => array(
+				'version'  => 'ERV',
+				'combined' => array( 'url' => 'https://www.biblegateway.com/passage/?search=Luke+3:1-6;Matthew+3:4-10;Luke+3:10-18&version=ERV' ),
+			),
+			'vi' => array(
+				'version'  => 'BPT',
+				'combined' => array( 'url' => $vi_url ),
+			),
+		);
+		return array(
+			'languages' => array( 'vi', 'en' ),
+			'reading'   => array(
+				'plan' => array( 'links_config' => $config ),
+				'day'  => array(
+					'passages' => array(),
+					'links'    => $links,
+				),
+			),
+		);
+	}
+
+	/**
+	 * The reader (#92): collapsed, participant's language first, nothing loaded
+	 * from Bible Gateway until opened, sandboxed without top navigation, with the
+	 * publisher notice and a Bible Gateway link always present.
+	 */
+	public function test_reader_embeds_bible_gateway_lazily_with_link_fallback() {
+		$html = jlife_challenges_render_reader( $this->reader_view() );
+
+		$this->assertStringStartsWith( '<details class="jl-reader">', $html, 'collapsed by default' );
+		$this->assertStringNotContainsString( ' src=', $html, 'no request to Bible Gateway before the participant opens the reader' );
+		$this->assertSame( 2, substr_count( $html, '<iframe' ) );
+		$this->assertLessThan( strpos( $html, 'version=ERV' ), strpos( $html, 'version=BPT' ), 'Vietnamese pane first for a Vietnamese participant' );
+		$this->assertStringContainsString( 'data-src="' . esc_url( 'https://www.biblegateway.com/passage/?search=Luke+3:1-6;Matthew+3:4-10;Luke+3:10-18&version=BPT' ) . '"', $html );
+		$this->assertStringNotContainsString( 'allow-top-navigation', $html, 'the frame can never navigate away from a half-written SOAP' );
+		$this->assertSame( 2, substr_count( $html, 'Open in Bible Gateway' ) );
+		$this->assertStringContainsString( '© 2010 Bible League International', $html );
+		$this->assertStringContainsString( 'Copyright © 2006 by Bible League International', $html );
+		$this->assertMatchesRegularExpression( '/data-reader-pane="en"[^>]*hidden/', $html, 'only the first language is shown' );
+	}
+
+	/**
+	 * Only Bible Gateway passage pages are framed, and only when "embed" is on.
+	 */
+	public function test_reader_skips_disabled_or_foreign_links() {
+		$this->assertSame( '', jlife_challenges_render_reader( $this->reader_view( false ) ) );
+
+		$html = jlife_challenges_render_reader( $this->reader_view( true, 'https://evil.test/passage/?search=Luke+3' ) );
+		$this->assertStringNotContainsString( 'evil.test', $html );
+		$this->assertSame( 1, substr_count( $html, '<iframe' ) );
+		$this->assertStringNotContainsString( 'data-reader-lang', $html, 'no version buttons for a single version' );
+
+		$no_reading = array(
+			'languages' => array( 'en' ),
+			'reading'   => null,
+		);
+		$this->assertSame( '', jlife_challenges_render_reader( $no_reading ) );
+	}
 }
