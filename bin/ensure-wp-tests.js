@@ -23,9 +23,10 @@ const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const getCacheDirectory = require('../node_modules/@wordpress/env/lib/config/get-cache-directory');
-const md5 = require('../node_modules/@wordpress/env/lib/md5');
-const { getConfigFilePath } = require('../node_modules/@wordpress/env/lib/config/parse-config');
+// Ask wp-env for its own instance directory: wp-env 12 names new ones
+// "wp-env-<project>-<hash>" and keeps the older bare-md5 name only when that
+// directory already exists, so the path must not be recomputed here.
+const loadConfig = require('../node_modules/@wordpress/env/lib/config/load-config');
 
 const repoRoot = path.resolve(__dirname, '..');
 const DEVELOP_REPO = 'https://github.com/WordPress/wordpress-develop.git';
@@ -149,8 +150,7 @@ function ensureTestsConfig(wpDir, suiteDir, label) {
 async function main() {
   let installPath = process.env.JLIFE_WP_ENV_INSTALL_PATH;
   if (!installPath) {
-    const cacheRoot = await getCacheDirectory();
-    installPath = path.resolve(cacheRoot, md5(getConfigFilePath(repoRoot)));
+    installPath = (await loadConfig(repoRoot)).workDirectoryPath;
   }
   if (!fs.existsSync(installPath)) {
     throw new Error(`wp-env instance not found at ${installPath} — run \`wp-env start\` first`);
