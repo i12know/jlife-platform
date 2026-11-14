@@ -109,3 +109,32 @@ test('shipped config: Vietnamese uses one Bible Gateway BPT link, like English E
   );
   assert.equal(l.en.combined.url, l.vi.combined.url.replace('version=BPT', 'version=ERV'));
 });
+
+test('Harmony Bible sections: once per section number, in reading order (#90)', () => {
+  const { buildHarmonySections } = require('../content-lib/harmony-sections');
+  const toEvent = (label) => {
+    const n = label.replace(/[a-z]+$/, '');
+    return { gospel_event_id: `r1922-${n.padStart(3, '0')}`, title: `Title ${n}` };
+  };
+  const url = 'https://harmony-bible.com/sections/{number}/';
+  const day9 = buildHarmonySections(['20', '21', '22', '23'], toEvent, url);
+  assert.deepEqual(day9.map((s) => s.number), ['20', '21', '22', '23']);
+  assert.equal(day9[0].url, 'https://harmony-bible.com/sections/20/');
+  assert.equal(day9[0].title, 'Title 20');
+  const lettered = buildHarmonySections(['8b', '8c', '9', '8a', '10'], toEvent, url);
+  assert.deepEqual(lettered.map((s) => s.number), ['8', '9', '10'], 'lettered parts share one section; first position wins');
+  assert.deepEqual(buildHarmonySections(['999'], () => null, url), []);
+});
+
+test('shipped plan: Day 9 lists Harmony sections 20-23, each linked (#90)', () => {
+  const { buildAll } = require('../build-reading-plans');
+  const supp = buildAll().find((b) => b.doc.role === 'supplemental').doc;
+  const day9 = supp.days.find((d) => d.day === 9);
+  assert.deepEqual(day9.harmony_sections.map((s) => [s.number, s.title, s.url]), [
+    ['20', 'The Time of the Beginning', 'https://harmony-bible.com/sections/20/'],
+    ['21', 'The Message and the Messenger', 'https://harmony-bible.com/sections/21/'],
+    ['22', "A Specimen of John's Preaching", 'https://harmony-bible.com/sections/22/'],
+    ['23', "The Forerunner's Picture of the Messiah Before Seeing Him", 'https://harmony-bible.com/sections/23/'],
+  ]);
+  for (const d of supp.days) assert.ok(d.harmony_sections.length > 0, `${d.day_id} has Harmony sections`);
+});

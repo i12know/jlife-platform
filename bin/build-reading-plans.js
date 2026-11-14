@@ -17,6 +17,7 @@ const path = require('path');
 const { parseCsvRecords } = require('./content-lib/csv');
 const { parseReferenceList } = require('./content-lib/scripture');
 const { buildDayLinks } = require('./content-lib/bible-links');
+const { buildHarmonySections } = require('./content-lib/harmony-sections');
 
 const ROOT = path.join(__dirname, '..');
 const PLAN_DIR = path.join(ROOT, 'content', 'reading-plans');
@@ -26,10 +27,10 @@ function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
-/** Robertson section label ("54a", "128a", "2") -> r1922 event id. */
+/** Robertson section label ("54a", "128a", "2") -> r1922 event. */
 function robertsonIndex() {
   const index = new Map();
-  for (const e of readJson(HARMONY).events) index.set(String(e.robertson_section), e.gospel_event_id);
+  for (const e of readJson(HARMONY).events) index.set(String(e.robertson_section), e);
   return (label) => index.get(label) || index.get(label.replace(/[a-z]+$/, '')) || null;
 }
 
@@ -43,10 +44,10 @@ function list(cell) {
  *
  * @param {object} plan Entry from plans.json.
  * @param {object} linkConfig Parsed bible-links.json.
- * @param {(label: string) => ?string} toEventId Robertson label resolver.
+ * @param {(label: string) => ?object} toEvent Robertson label resolver.
  * @returns {object}
  */
-function buildPlan(plan, linkConfig, toEventId) {
+function buildPlan(plan, linkConfig, toEvent) {
   const csvFile = path.join(PLAN_DIR, plan.source_csv);
   const { records } = parseCsvRecords(fs.readFileSync(csvFile, 'utf8'));
   const col = plan.columns;
@@ -63,9 +64,9 @@ function buildPlan(plan, linkConfig, toEventId) {
     const robertson = list(r[col.robertson_sections]).map((s) => s.replace(/^#/, ''));
     const eventIds = [];
     for (const label of robertson) {
-      const id = toEventId(label);
-      if (!id) errors.push(`${where}: Robertson section #${label} not in the harmony dataset`);
-      else if (!eventIds.includes(id)) eventIds.push(id);
+      const event = toEvent(label);
+      if (!event) errors.push(`${where}: Robertson section #${label} not in the harmony dataset`);
+      else if (!eventIds.includes(event.gospel_event_id)) eventIds.push(event.gospel_event_id);
     }
     let links = null;
     try {
@@ -74,6 +75,9 @@ function buildPlan(plan, linkConfig, toEventId) {
       errors.push(`${where}: ${e.message}`);
     }
     const notes = String(r[col.notes] || '').trim();
+    const harmonySections = plan.harmony_sections_url
+      ? { harmony_sections: buildHarmonySections(robertson, toEvent, plan.harmony_sections_url) }
+      : {};
     return {
       day_id: `d${String(day).padStart(3, '0')}`,
       day,
@@ -83,6 +87,7 @@ function buildPlan(plan, linkConfig, toEventId) {
       plusnothing_sections: list(r[col.plusnothing_sections]),
       robertson_sections: robertson,
       gospel_event_ids: eventIds,
+      ...harmonySections,
       passages: parsed.passages,
       word_count: Number(String(r[col.words]).trim()),
       notes: notes === '' ? null : notes,
@@ -116,9 +121,9 @@ function buildPlan(plan, linkConfig, toEventId) {
 function buildAll() {
   const manifest = readJson(path.join(PLAN_DIR, 'plans.json'));
   const linkConfig = readJson(path.join(PLAN_DIR, 'bible-links.json'));
-  const toEventId = robertsonIndex();
+  const toEvent = robertsonIndex();
   return manifest.plans.map((plan) => {
-    const doc = buildPlan(plan, linkConfig, toEventId);
+    const doc = buildPlan(plan, linkConfig, toEvent);
     const file = path.join(PLAN_DIR, plan.source_csv.replace(/\.csv$/, '.json'));
     return { file, doc, text: `${JSON.stringify(doc, null, 2)}\n` };
   });

@@ -90,6 +90,14 @@ for (const { file, text, doc: fresh } of built) {
       }
     }
     ok = check(where, 'Harmony event IDs exist', d.gospel_event_ids.every((id) => eventIds.has(id)), d.gospel_event_ids.join(',')) && ok;
+    if (doc.role === 'supplemental') {
+      const hs = d.harmony_sections;
+      const expected = [...new Set(d.robertson_sections.map((l) => l.replace(/[a-z]+$/, '')))];
+      ok = check(where, 'Harmony Bible sections: once each, in reading order, linked to harmony-bible.com', Array.isArray(hs) &&
+        hs.map((x) => x.number).join(',') === expected.join(',') &&
+        hs.every((x) => x.title && eventIds.has(x.gospel_event_id) && x.url === `https://harmony-bible.com/sections/${x.number}/`),
+      hs ? hs.map((x) => x.number).join(',') : 'missing') && ok;
+    }
     ok = check(where, 'has at least one passage with parsed refs', d.passages.length > 0 && d.passages.every((p) => p.display && p.refs.length > 0)) && ok;
     ok = check(where, 'word count is a positive integer', Number.isInteger(d.word_count) && d.word_count > 0) && ok;
     for (const [lang, cfg] of Object.entries(doc.links_config)) {

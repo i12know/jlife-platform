@@ -249,6 +249,31 @@ function jlife_studies_render_reading_links( $day, $links_config ) {
 	return $out;
 }
 
+/**
+ * Harmony Bible sections for a day's optional parallel readings (#90): number
+ * and Robertson title, each linking to the matching harmony-bible.com page.
+ * Links open in a new tab so the participant's J-Life page stays where it was.
+ *
+ * @param array $day Supplemental day data.
+ * @return string HTML, or '' when the day has no sections.
+ */
+function jlife_studies_render_harmony_sections( $day ) {
+	$items = '';
+	foreach ( (array) ( $day['harmony_sections'] ?? array() ) as $section ) {
+		$url = (string) ( $section['url'] ?? '' );
+		if ( 0 !== strpos( $url, 'https://harmony-bible.com/sections/' ) ) {
+			continue;
+		}
+		/* translators: 1: Harmony Bible section number, 2: section title. */
+		$label  = sprintf( __( "Harmony's section %1\$s: %2\$s", 'jlife-studies' ), (string) $section['number'], (string) $section['title'] );
+		$items .= '<li><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . esc_html( $label ) . '</a></li>';
+	}
+	if ( '' === $items ) {
+		return '';
+	}
+	return '<div class="jlife-harmony-sections"><h3>' . esc_html__( 'Harmony Bible sections', 'jlife-studies' ) . '</h3><ul>' . $items . '</ul></div>';
+}
+
 add_filter( 'the_content', 'jlife_studies_render_reading_day' );
 
 /**
@@ -280,6 +305,7 @@ function jlife_studies_render_reading_day( $content ) {
 	if ( is_array( $supp ) && ! empty( $supp['day'] ) ) {
 		$out .= '<details class="jlife-supplemental"><summary>' . esc_html__( 'Optional: parallel readings for deeper study', 'jlife-studies' ) . '</summary>';
 		$out .= '<p><em>' . esc_html__( 'Optional. Reading these does not change your daily points.', 'jlife-studies' ) . '</em></p>';
+		$out .= jlife_studies_render_harmony_sections( $supp['day'] );
 		$out .= jlife_studies_render_reading_links( $supp['day'], $supp['plan']['links_config'] ?? array() );
 		$out .= '</details>';
 	}

@@ -182,9 +182,35 @@ function jlife_challenges_render_reading( $view ) {
 		foreach ( (array) $supp['day']['passages'] as $p ) {
 			$out .= '<li>' . esc_html( (string) $p['display'] ) . '</li>';
 		}
-		$out .= '</ul>' . jlife_challenges_render_bible_links( $supp['day'], $supp['plan']['links_config'] ?? $config, $view['languages'] ) . '</details>';
+		$out .= '</ul>' . jlife_challenges_render_harmony_sections( $supp['day'] )
+			. jlife_challenges_render_bible_links( $supp['day'], $supp['plan']['links_config'] ?? $config, $view['languages'] ) . '</details>';
 	}
 	return $out . '</section>';
+}
+
+/**
+ * Harmony Bible sections for the optional parallel readings (#90): number and
+ * Robertson title, each opening the matching harmony-bible.com page in a new
+ * tab so the participant keeps their place for the SOAP.
+ *
+ * @param array $day Supplemental day data.
+ * @return string
+ */
+function jlife_challenges_render_harmony_sections( $day ) {
+	$out = '';
+	foreach ( (array) ( $day['harmony_sections'] ?? array() ) as $section ) {
+		$url = (string) ( $section['url'] ?? '' );
+		if ( 0 !== strpos( $url, 'https://harmony-bible.com/sections/' ) ) {
+			continue;
+		}
+		/* translators: 1: Harmony Bible section number, 2: section title. */
+		$label = sprintf( __( "Harmony's section %1\$s: %2\$s", 'jlife-challenges' ), (string) $section['number'], (string) $section['title'] );
+		$out  .= '<li><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . esc_html( $label ) . '</a></li>';
+	}
+	if ( '' === $out ) {
+		return '';
+	}
+	return '<div class="jl-harmony"><h3>' . esc_html__( 'Harmony Bible sections', 'jlife-challenges' ) . '</h3><ul>' . $out . '</ul></div>';
 }
 
 /**

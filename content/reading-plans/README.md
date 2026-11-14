@@ -39,6 +39,7 @@ The CSVs above stay the source. `npm run plans:build` turns each plan in [`plans
 - **Days:** `day_id` (`d001`…`d104`, shared by both plans), day number, calendar date, title, and section IDs **as strings** (`4.40` stays `4.40`).
 - **Harmony:** Robertson labels and their `r1922-NNN` events; lettered sub-sections such as `#54a` link to the parent event.
 - **References:** each reference exactly as written in the CSV, plus parsed segments (half-verse letters kept).
+- **Harmony Bible sections (#90, supplemental plan):** `harmony_sections` per day — section number, Robertson title and a `harmony-bible.com/sections/<number>/` link, once per section in reading order (`8a`/`8b` → 8). Harmony Bible numbering is assumed to match Robertson's; the URL pattern is `harmony_sections_url` in [`plans.json`](plans.json). Titles are Robertson's, never harmony-bible.com's headings.
 - **Links:** pre-built Bible links per language from [`bible-links.json`](bible-links.json). English ERV and Vietnamese BPT (*Vietnamese Bible: Easy-to-Read Version*, owner's choice on #91) are each one Bible Gateway link with all passages, plus one per passage. Bible.com links (one per passage, e.g. VIE2010) remain supported by the builder. Chapter-crossing ranges are split; half-verse letters are dropped only in links. **No Bible text.** The rules come from the owner's link tests on #59.
 
 | Command | What it does |

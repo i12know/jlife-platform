@@ -27,6 +27,7 @@
       "primary_plan_id": "rpl-life-and-teachings-of-jesus-2026",
       "title": "Harmony of the Gospels: optional parallel readings",
       "source_csv": "2026-12-20_harmony-parallel_supplemental.csv",
+      "harmony_sections_url": "https://harmony-bible.com/sections/{number}/",
       "start_date": "2026-12-20",
       "end_date": "2027-04-02",
       "day_count": 104,
