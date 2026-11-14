@@ -131,6 +131,22 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Optional parallel readings list their Harmony Bible sections (#90).
+	 */
+	public function test_day_page_links_harmony_sections_in_the_optional_readings() {
+		jlife_studies_import_reading_plan( $this->fixture( 'primary' ) );
+		jlife_studies_import_reading_plan( $this->fixture( 'supplemental' ) );
+		$day1 = jlife_studies_get_reading_day( 'rpl-life-and-teachings-of-jesus-2026', 'd001' );
+		$html = $this->render( $day1['post_id'] );
+
+		$this->assertStringNotContainsString( 'harmony-bible.com', substr( $html, 0, (int) strpos( $html, '<details class="jlife-supplemental">' ) ), 'only inside the optional section' );
+		$this->assertStringContainsString( '<a href="https://harmony-bible.com/sections/1/" target="_blank" rel="noopener">Harmony&#039;s section 1: In the Dedication Luke Explains His Method of Research</a>', $html );
+		$this->assertSame( 1, substr_count( $html, 'harmony-bible.com/sections/2/' ) );
+		$this->assertLessThan( strpos( $html, 'sections/2/' ), strpos( $html, 'sections/1/' ), 'reading order' );
+		$this->assertStringContainsString( 'version=BPT', $html, 'parallel Scripture and Bible links stay' );
+	}
+
+	/**
 	 * Imported text is escaped on output.
 	 */
 	public function test_day_page_escapes_titles_and_references() {

@@ -275,6 +275,59 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * The optional readings list their Harmony Bible sections (#90): number and
+	 * title, once each, linking to the matching page in a new tab.
+	 */
+	public function test_optional_readings_list_harmony_sections() {
+		$section = static function ( $n, $title ) {
+			return array(
+				'number' => (string) $n,
+				'title'  => $title,
+				'url'    => 'https://harmony-bible.com/sections/' . $n . '/',
+			);
+		};
+		$view    = array(
+			'languages' => array( 'en' ),
+			'reading'   => array(
+				'plan'         => array( 'links_config' => array() ),
+				'day'          => array(
+					'title'    => 'John the Baptizer Prepares the Way',
+					'passages' => array( array( 'display' => 'Luke 3:1-6' ) ),
+				),
+				'supplemental' => array(
+					'plan' => array( 'links_config' => array() ),
+					'day'  => array(
+						'passages'         => array( array( 'display' => 'Mark 1:1' ) ),
+						'harmony_sections' => array(
+							$section( 20, 'The Time of the Beginning' ),
+							$section( 21, 'The Message and the Messenger' ),
+							$section( 22, "A Specimen of John's Preaching" ),
+							$section( 23, '<b>Forerunner</b>' ),
+							array(
+								'number' => '99',
+								'title'  => 'Elsewhere',
+								'url'    => 'https://example.com/sections/99/',
+							),
+						),
+					),
+				),
+			),
+		);
+
+		$html  = jlife_challenges_render_reading( $view );
+		$parts = explode( '<details class="jl-optional">', $html );
+		$this->assertCount( 2, $parts );
+		$this->assertStringNotContainsString( 'harmony-bible.com', $parts[0], 'sections belong to the optional readings only' );
+
+		$this->assertSame( 4, substr_count( $parts[1], 'href="https://harmony-bible.com/sections/' ), 'one link per section; foreign hosts are dropped' );
+		$this->assertStringContainsString( '<a href="https://harmony-bible.com/sections/20/" target="_blank" rel="noopener">Harmony&#039;s section 20: The Time of the Beginning</a>', $parts[1] );
+		$this->assertStringContainsString( 'sections/23/', $parts[1] );
+		$this->assertLessThan( strpos( $parts[1], 'sections/21/' ), strpos( $parts[1], 'sections/20/' ), 'reading order' );
+		$this->assertStringNotContainsString( '<b>Forerunner', $parts[1], 'titles are escaped' );
+		$this->assertStringNotContainsString( 'example.com', $parts[1] );
+	}
+
+	/**
 	 * Sign out asks first (#89): Cancel stays put, Sign out uses WordPress's
 	 * nonce-protected logout and lands on the sign-in screen.
 	 */

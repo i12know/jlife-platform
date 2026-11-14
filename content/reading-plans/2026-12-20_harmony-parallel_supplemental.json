@@ -49,6 +49,20 @@
         "r1922-001",
         "r1922-002"
       ],
+      "harmony_sections": [
+        {
+          "number": "1",
+          "title": "In the Dedication Luke Explains His Method of Research",
+          "gospel_event_id": "r1922-001",
+          "url": "https://harmony-bible.com/sections/1/"
+        },
+        {
+          "number": "2",
+          "title": "In His Introduction John Pictures Christ as the Word (Logos)",
+          "gospel_event_id": "r1922-002",
+          "url": "https://harmony-bible.com/sections/2/"
+        }
+      ],
       "passages": [
         {
           "display": "Luke 1:1-4",
@@ -139,6 +153,14 @@
       "gospel_event_ids": [
         "r1922-004"
       ],
+      "harmony_sections": [
+        {
+          "number": "4",
+          "title": "The Annunciation of the Birth of the Baptist to Zacharias",
+          "gospel_event_id": "r1922-004",
+          "url": "https://harmony-bible.com/sections/4/"
+        }
+      ],
       "passages": [
         {
           "display": "Luke 1:5-25",
@@ -209,6 +231,20 @@
       "gospel_event_ids": [
         "r1922-005",
         "r1922-006"
+      ],
+      "harmony_sections": [
+        {
+          "number": "5",
+          "title": "The Annunciation to the Virgin Mary of the Birth of Jesus",
+          "gospel_event_id": "r1922-005",
+          "url": "https://harmony-bible.com/sections/5/"
+        },
+        {
+          "number": "6",
+          "title": "The Song of Elisabeth to Mary Upon Her Visit",
+          "gospel_event_id": "r1922-006",
+          "url": "https://harmony-bible.com/sections/6/"
+        }
       ],
       "passages": [
         {
@@ -303,6 +339,20 @@
       "gospel_event_ids": [
         "r1922-007",
         "r1922-008"
+      ],
+      "harmony_sections": [
+        {
+          "number": "7",
+          "title": "The Magnificat of Mary",
+          "gospel_event_id": "r1922-007",
+          "url": "https://harmony-bible.com/sections/7/"
+        },
+        {
+          "number": "8",
+          "title": "The Birth and Childhood of the Baptist, and His Desert Life",
+          "gospel_event_id": "r1922-008",
+          "url": "https://harmony-bible.com/sections/8/"
+        }
       ],
       "passages": [
         {
@@ -402,6 +452,26 @@
         "r1922-008",
         "r1922-009",
         "r1922-010"
+      ],
+      "harmony_sections": [
+        {
+          "number": "8",
+          "title": "The Birth and Childhood of the Baptist, and His Desert Life",
+          "gospel_event_id": "r1922-008",
+          "url": "https://harmony-bible.com/sections/8/"
+        },
+        {
+          "number": "9",
+          "title": "The Annunciation to Joseph of the Birth of Jesus",
+          "gospel_event_id": "r1922-009",
+          "url": "https://harmony-bible.com/sections/9/"
+        },
+        {
+          "number": "10",
+          "title": "The Birth of Jesus",
+          "gospel_event_id": "r1922-010",
+          "url": "https://harmony-bible.com/sections/10/"
+        }
       ],
       "passages": [
         {
@@ -546,6 +616,26 @@
         "r1922-012",
         "r1922-013"
       ],
+      "harmony_sections": [
+        {
+          "number": "11",
+          "title": "The Praise of the Angels and the Homage of the Shepherds",
+          "gospel_event_id": "r1922-011",
+          "url": "https://harmony-bible.com/sections/11/"
+        },
+        {
+          "number": "12",
+          "title": "The Circumcision of Jesus",
+          "gospel_event_id": "r1922-012",
+          "url": "https://harmony-bible.com/sections/12/"
+        },
+        {
+          "number": "13",
+          "title": "The Presentation in the Temple with the Homage of Simeon and Anna",
+          "gospel_event_id": "r1922-013",
+          "url": "https://harmony-bible.com/sections/13/"
+        }
+      ],
       "passages": [
         {
           "display": "Luke 2:8-20",
@@ -663,6 +753,20 @@
         "r1922-014",
         "r1922-015"
       ],
+      "harmony_sections": [
+        {
+          "number": "14",
+          "title": "Magi Visit the New-born King of the Jews",
+          "gospel_event_id": "r1922-014",
+          "url": "https://harmony-bible.com/sections/14/"
+        },
+        {
+          "number": "15",
+          "title": "The Child Jesus Carried to Egypt, and the Children at Bethlehem Slain",
+          "gospel_event_id": "r1922-015",
+          "url": "https://harmony-bible.com/sections/15/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 2:1-12",
@@ -763,6 +867,32 @@
         "r1922-017",
         "r1922-018",
         "r1922-019"
+      ],
+      "harmony_sections": [
+        {
+          "number": "16",
+          "title": "The Child Brought from Egypt to Nazareth",
+          "gospel_event_id": "r1922-016",
+          "url": "https://harmony-bible.com/sections/16/"
+        },
+        {
+          "number": "17",
+          "title": "The Childhood of Jesus at Nazareth",
+          "gospel_event_id": "r1922-017",
+          "url": "https://harmony-bible.com/sections/17/"
+        },
+        {
+          "number": "18",
+          "title": "The Visit of the Boy Jesus to Jerusalem When Twelve Years Old",
+          "gospel_event_id": "r1922-018",
+          "url": "https://harmony-bible.com/sections/18/"
+        },
+        {
+          "number": "19",
+          "title": "The Eighteen Years at Nazareth",
+          "gospel_event_id": "r1922-019",
+          "url": "https://harmony-bible.com/sections/19/"
+        }
       ],
       "passages": [
         {
@@ -931,6 +1061,32 @@
         "r1922-021",
         "r1922-022",
         "r1922-023"
+      ],
+      "harmony_sections": [
+        {
+          "number": "20",
+          "title": "The Time of the Beginning",
+          "gospel_event_id": "r1922-020",
+          "url": "https://harmony-bible.com/sections/20/"
+        },
+        {
+          "number": "21",
+          "title": "The Message and the Messenger",
+          "gospel_event_id": "r1922-021",
+          "url": "https://harmony-bible.com/sections/21/"
+        },
+        {
+          "number": "22",
+          "title": "A Specimen of John's Preaching",
+          "gospel_event_id": "r1922-022",
+          "url": "https://harmony-bible.com/sections/22/"
+        },
+        {
+          "number": "23",
+          "title": "The Forerunner's Picture of the Messiah Before Seeing Him",
+          "gospel_event_id": "r1922-023",
+          "url": "https://harmony-bible.com/sections/23/"
+        }
       ],
       "passages": [
         {
@@ -1217,6 +1373,32 @@
         "r1922-025",
         "r1922-026"
       ],
+      "harmony_sections": [
+        {
+          "number": "3",
+          "title": "Apparently Joseph's Genealogy in Matthew and Mary's in Luke",
+          "gospel_event_id": "r1922-003",
+          "url": "https://harmony-bible.com/sections/3/"
+        },
+        {
+          "number": "24",
+          "title": "Jesus Baptized by John in the Jordan",
+          "gospel_event_id": "r1922-024",
+          "url": "https://harmony-bible.com/sections/24/"
+        },
+        {
+          "number": "25",
+          "title": "The Three Temptations of Jesus",
+          "gospel_event_id": "r1922-025",
+          "url": "https://harmony-bible.com/sections/25/"
+        },
+        {
+          "number": "26",
+          "title": "The Testimony of the Baptist to the Committee of the Sanhedrin",
+          "gospel_event_id": "r1922-026",
+          "url": "https://harmony-bible.com/sections/26/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 1:1-17",
@@ -1473,6 +1655,20 @@
         "r1922-027",
         "r1922-028"
       ],
+      "harmony_sections": [
+        {
+          "number": "27",
+          "title": "John's Identification of Jesus as the Messiah",
+          "gospel_event_id": "r1922-027",
+          "url": "https://harmony-bible.com/sections/27/"
+        },
+        {
+          "number": "28",
+          "title": "Jesus Makes His First Disciples",
+          "gospel_event_id": "r1922-028",
+          "url": "https://harmony-bible.com/sections/28/"
+        }
+      ],
       "passages": [
         {
           "display": "John 1:29-34",
@@ -1572,6 +1768,32 @@
         "r1922-030",
         "r1922-031",
         "r1922-032"
+      ],
+      "harmony_sections": [
+        {
+          "number": "29",
+          "title": "Jesus Works His First Miracle",
+          "gospel_event_id": "r1922-029",
+          "url": "https://harmony-bible.com/sections/29/"
+        },
+        {
+          "number": "30",
+          "title": "Jesus Makes a First Sojourn at Capernaum, Accompanied by His Kindred and His Early Disciples",
+          "gospel_event_id": "r1922-030",
+          "url": "https://harmony-bible.com/sections/30/"
+        },
+        {
+          "number": "31",
+          "title": "The First Cleansing of the Temple at the Passover",
+          "gospel_event_id": "r1922-031",
+          "url": "https://harmony-bible.com/sections/31/"
+        },
+        {
+          "number": "32",
+          "title": "The Interview of Nicodemus with Jesus",
+          "gospel_event_id": "r1922-032",
+          "url": "https://harmony-bible.com/sections/32/"
+        }
       ],
       "passages": [
         {
@@ -1715,6 +1937,26 @@
         "r1922-032",
         "r1922-033",
         "r1922-034"
+      ],
+      "harmony_sections": [
+        {
+          "number": "32",
+          "title": "The Interview of Nicodemus with Jesus",
+          "gospel_event_id": "r1922-032",
+          "url": "https://harmony-bible.com/sections/32/"
+        },
+        {
+          "number": "33",
+          "title": "The Parallel Ministry of Jesus and John with John's Loyalty to Jesus",
+          "gospel_event_id": "r1922-033",
+          "url": "https://harmony-bible.com/sections/33/"
+        },
+        {
+          "number": "34",
+          "title": "Christ's Reasons for Leaving Judea",
+          "gospel_event_id": "r1922-034",
+          "url": "https://harmony-bible.com/sections/34/"
+        }
       ],
       "passages": [
         {
@@ -1921,6 +2163,14 @@
       "gospel_event_ids": [
         "r1922-035"
       ],
+      "harmony_sections": [
+        {
+          "number": "35",
+          "title": "Jesus in Samaria at Jacob's Well and in Sychar",
+          "gospel_event_id": "r1922-035",
+          "url": "https://harmony-bible.com/sections/35/"
+        }
+      ],
       "passages": [
         {
           "display": "John 4:5-26",
@@ -1998,6 +2248,26 @@
         "r1922-035",
         "r1922-036",
         "r1922-038"
+      ],
+      "harmony_sections": [
+        {
+          "number": "35",
+          "title": "Jesus in Samaria at Jacob's Well and in Sychar",
+          "gospel_event_id": "r1922-035",
+          "url": "https://harmony-bible.com/sections/35/"
+        },
+        {
+          "number": "36",
+          "title": "The Arrival of Jesus in Galilee",
+          "gospel_event_id": "r1922-036",
+          "url": "https://harmony-bible.com/sections/36/"
+        },
+        {
+          "number": "38",
+          "title": "The Healing at Cana of the Son of a Courtier of Capernaum",
+          "gospel_event_id": "r1922-038",
+          "url": "https://harmony-bible.com/sections/38/"
+        }
       ],
       "passages": [
         {
@@ -2141,6 +2411,26 @@
         "r1922-037",
         "r1922-039",
         "r1922-040"
+      ],
+      "harmony_sections": [
+        {
+          "number": "37",
+          "title": "General Account of His Teaching in Galilee",
+          "gospel_event_id": "r1922-037",
+          "url": "https://harmony-bible.com/sections/37/"
+        },
+        {
+          "number": "39",
+          "title": "The First Rejection at Nazareth",
+          "gospel_event_id": "r1922-039",
+          "url": "https://harmony-bible.com/sections/39/"
+        },
+        {
+          "number": "40",
+          "title": "The New Home in Capernaum",
+          "gospel_event_id": "r1922-040",
+          "url": "https://harmony-bible.com/sections/40/"
+        }
       ],
       "passages": [
         {
@@ -2311,6 +2601,32 @@
         "r1922-042",
         "r1922-043",
         "r1922-044"
+      ],
+      "harmony_sections": [
+        {
+          "number": "41",
+          "title": "Jesus Finds Four Fishers of Men in Four Fishermen",
+          "gospel_event_id": "r1922-041",
+          "url": "https://harmony-bible.com/sections/41/"
+        },
+        {
+          "number": "42",
+          "title": "The Excitement in the Synagogue Because of the Teaching of Jesus and the Healing of a Demoniac on the Sabbath",
+          "gospel_event_id": "r1922-042",
+          "url": "https://harmony-bible.com/sections/42/"
+        },
+        {
+          "number": "43",
+          "title": "He Heals Peter's Mother-in-Law and Many Others",
+          "gospel_event_id": "r1922-043",
+          "url": "https://harmony-bible.com/sections/43/"
+        },
+        {
+          "number": "44",
+          "title": "The First Tour of Galilee with the Four Fishermen",
+          "gospel_event_id": "r1922-044",
+          "url": "https://harmony-bible.com/sections/44/"
+        }
       ],
       "passages": [
         {
@@ -2551,6 +2867,32 @@
         "r1922-045",
         "r1922-046",
         "r1922-047"
+      ],
+      "harmony_sections": [
+        {
+          "number": "44",
+          "title": "The First Tour of Galilee with the Four Fishermen",
+          "gospel_event_id": "r1922-044",
+          "url": "https://harmony-bible.com/sections/44/"
+        },
+        {
+          "number": "45",
+          "title": "A Leper Healed and Much Popular Excitement",
+          "gospel_event_id": "r1922-045",
+          "url": "https://harmony-bible.com/sections/45/"
+        },
+        {
+          "number": "46",
+          "title": "Thronged in Capernaum, He Heals a Paralytic Lowered Through the Roof of Peter's House",
+          "gospel_event_id": "r1922-046",
+          "url": "https://harmony-bible.com/sections/46/"
+        },
+        {
+          "number": "47",
+          "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
+          "gospel_event_id": "r1922-047",
+          "url": "https://harmony-bible.com/sections/47/"
+        }
       ],
       "passages": [
         {
@@ -2882,6 +3224,26 @@
         "r1922-048",
         "r1922-049"
       ],
+      "harmony_sections": [
+        {
+          "number": "47",
+          "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
+          "gospel_event_id": "r1922-047",
+          "url": "https://harmony-bible.com/sections/47/"
+        },
+        {
+          "number": "48",
+          "title": "Jesus in Three Parables Defends His Disciples for Feasting Instead of Fasting",
+          "gospel_event_id": "r1922-048",
+          "url": "https://harmony-bible.com/sections/48/"
+        },
+        {
+          "number": "49",
+          "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
+          "gospel_event_id": "r1922-049",
+          "url": "https://harmony-bible.com/sections/49/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 9:10-13",
@@ -3111,6 +3473,14 @@
       "gospel_event_ids": [
         "r1922-049"
       ],
+      "harmony_sections": [
+        {
+          "number": "49",
+          "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
+          "gospel_event_id": "r1922-049",
+          "url": "https://harmony-bible.com/sections/49/"
+        }
+      ],
       "passages": [
         {
           "display": "John 5:19-47",
@@ -3184,6 +3554,26 @@
         "r1922-050",
         "r1922-051",
         "r1922-052"
+      ],
+      "harmony_sections": [
+        {
+          "number": "50",
+          "title": "Another Sabbath Controversy with the Pharisees When the Disciples Pluck Ears of Grain in the Fields",
+          "gospel_event_id": "r1922-050",
+          "url": "https://harmony-bible.com/sections/50/"
+        },
+        {
+          "number": "51",
+          "title": "A Third Sabbath Controversy with the Pharisees Over the Healing of a Man with a Withered Hand in a Synagogue",
+          "gospel_event_id": "r1922-051",
+          "url": "https://harmony-bible.com/sections/51/"
+        },
+        {
+          "number": "52",
+          "title": "Jesus Teaches and Heals Great Multitudes by the Sea of Galilee",
+          "gospel_event_id": "r1922-052",
+          "url": "https://harmony-bible.com/sections/52/"
+        }
       ],
       "passages": [
         {
@@ -3425,6 +3815,20 @@
         "r1922-053",
         "r1922-054"
       ],
+      "harmony_sections": [
+        {
+          "number": "53",
+          "title": "After a Night of Prayer Jesus Selects Twelve Apostles",
+          "gospel_event_id": "r1922-053",
+          "url": "https://harmony-bible.com/sections/53/"
+        },
+        {
+          "number": "54",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 3:13-19",
@@ -3657,6 +4061,14 @@
       "gospel_event_ids": [
         "r1922-054"
       ],
+      "harmony_sections": [
+        {
+          "number": "54",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 5:21-48",
@@ -3773,6 +4185,14 @@
       "gospel_event_ids": [
         "r1922-054"
       ],
+      "harmony_sections": [
+        {
+          "number": "54",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 6:1-18",
@@ -3846,6 +4266,14 @@
       ],
       "gospel_event_ids": [
         "r1922-054"
+      ],
+      "harmony_sections": [
+        {
+          "number": "54",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54/"
+        }
       ],
       "passages": [
         {
@@ -4048,6 +4476,14 @@
       "gospel_event_ids": [
         "r1922-055"
       ],
+      "harmony_sections": [
+        {
+          "number": "55",
+          "title": "Jesus Heals a Centurion's Servant at Capernaum",
+          "gospel_event_id": "r1922-055",
+          "url": "https://harmony-bible.com/sections/55/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 8:5-13",
@@ -4141,6 +4577,20 @@
       "gospel_event_ids": [
         "r1922-056",
         "r1922-057"
+      ],
+      "harmony_sections": [
+        {
+          "number": "56",
+          "title": "He Raises a Widow's Son at Nain",
+          "gospel_event_id": "r1922-056",
+          "url": "https://harmony-bible.com/sections/56/"
+        },
+        {
+          "number": "57",
+          "title": "The Message from the Baptist and the Eulogy of Jesus",
+          "gospel_event_id": "r1922-057",
+          "url": "https://harmony-bible.com/sections/57/"
+        }
       ],
       "passages": [
         {
@@ -4263,6 +4713,26 @@
         "r1922-059",
         "r1922-060"
       ],
+      "harmony_sections": [
+        {
+          "number": "58",
+          "title": "Woes Upon the Cities of Opportunity: The Claims of Christ as the Teacher About the Father",
+          "gospel_event_id": "r1922-058",
+          "url": "https://harmony-bible.com/sections/58/"
+        },
+        {
+          "number": "59",
+          "title": "The Anointing of Christ's Feet by a Sinful Woman in the House of Simon a Pharisee: The Parable of the Two Debtors",
+          "gospel_event_id": "r1922-059",
+          "url": "https://harmony-bible.com/sections/59/"
+        },
+        {
+          "number": "60",
+          "title": "The Second Tour of Galilee",
+          "gospel_event_id": "r1922-060",
+          "url": "https://harmony-bible.com/sections/60/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 11:20-30",
@@ -4379,6 +4849,20 @@
       "gospel_event_ids": [
         "r1922-061",
         "r1922-062"
+      ],
+      "harmony_sections": [
+        {
+          "number": "61",
+          "title": "Blasphemous Accusation of League with Beelzebub",
+          "gospel_event_id": "r1922-061",
+          "url": "https://harmony-bible.com/sections/61/"
+        },
+        {
+          "number": "62",
+          "title": "Scribes and Pharisees Demand a Sign",
+          "gospel_event_id": "r1922-062",
+          "url": "https://harmony-bible.com/sections/62/"
+        }
       ],
       "passages": [
         {
@@ -4501,6 +4985,26 @@
         "r1922-063",
         "r1922-064",
         "r1922-106"
+      ],
+      "harmony_sections": [
+        {
+          "number": "63",
+          "title": "Christ's Mother and Brethren Seek to Take Him Home",
+          "gospel_event_id": "r1922-063",
+          "url": "https://harmony-bible.com/sections/63/"
+        },
+        {
+          "number": "64",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64/"
+        },
+        {
+          "number": "106",
+          "title": "Blasphemous Accusation of League with Beelzebub",
+          "gospel_event_id": "r1922-106",
+          "url": "https://harmony-bible.com/sections/106/"
+        }
       ],
       "passages": [
         {
@@ -4785,6 +5289,14 @@
       "gospel_event_ids": [
         "r1922-064"
       ],
+      "harmony_sections": [
+        {
+          "number": "64",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 4:26-29",
@@ -4980,6 +5492,20 @@
       "gospel_event_ids": [
         "r1922-064",
         "r1922-065"
+      ],
+      "harmony_sections": [
+        {
+          "number": "64",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64/"
+        },
+        {
+          "number": "65",
+          "title": "In Crossing the Lake, Jesus Stills the Tempest",
+          "gospel_event_id": "r1922-065",
+          "url": "https://harmony-bible.com/sections/65/"
+        }
       ],
       "passages": [
         {
@@ -5232,6 +5758,14 @@
       "gospel_event_ids": [
         "r1922-066"
       ],
+      "harmony_sections": [
+        {
+          "number": "66",
+          "title": "Beyond the Lake Jesus Heals the Gerasene Demoniac",
+          "gospel_event_id": "r1922-066",
+          "url": "https://harmony-bible.com/sections/66/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 5:1-20",
@@ -5344,6 +5878,14 @@
       ],
       "gospel_event_ids": [
         "r1922-067"
+      ],
+      "harmony_sections": [
+        {
+          "number": "67",
+          "title": "The Return and the Healing of Jairus' Daughter and of the Woman Who Only Touched Christ's Garment",
+          "gospel_event_id": "r1922-067",
+          "url": "https://harmony-bible.com/sections/67/"
+        }
       ],
       "passages": [
         {
@@ -5465,6 +6007,26 @@
         "r1922-068",
         "r1922-069",
         "r1922-070"
+      ],
+      "harmony_sections": [
+        {
+          "number": "68",
+          "title": "He Heals Two Blind Men and a Dumb Demoniac; a Blasphemous Accusation",
+          "gospel_event_id": "r1922-068",
+          "url": "https://harmony-bible.com/sections/68/"
+        },
+        {
+          "number": "69",
+          "title": "The Last Visit to Nazareth",
+          "gospel_event_id": "r1922-069",
+          "url": "https://harmony-bible.com/sections/69/"
+        },
+        {
+          "number": "70",
+          "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
+          "gospel_event_id": "r1922-070",
+          "url": "https://harmony-bible.com/sections/70/"
+        }
       ],
       "passages": [
         {
@@ -5629,6 +6191,20 @@
       "gospel_event_ids": [
         "r1922-070",
         "r1922-071"
+      ],
+      "harmony_sections": [
+        {
+          "number": "70",
+          "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
+          "gospel_event_id": "r1922-070",
+          "url": "https://harmony-bible.com/sections/70/"
+        },
+        {
+          "number": "71",
+          "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
+          "gospel_event_id": "r1922-071",
+          "url": "https://harmony-bible.com/sections/71/"
+        }
       ],
       "passages": [
         {
@@ -5884,6 +6460,20 @@
         "r1922-071",
         "r1922-072"
       ],
+      "harmony_sections": [
+        {
+          "number": "71",
+          "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
+          "gospel_event_id": "r1922-071",
+          "url": "https://harmony-bible.com/sections/71/"
+        },
+        {
+          "number": "72",
+          "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
+          "gospel_event_id": "r1922-072",
+          "url": "https://harmony-bible.com/sections/72/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 14:3-12",
@@ -6032,6 +6622,32 @@
         "r1922-073",
         "r1922-074",
         "r1922-075"
+      ],
+      "harmony_sections": [
+        {
+          "number": "72",
+          "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
+          "gospel_event_id": "r1922-072",
+          "url": "https://harmony-bible.com/sections/72/"
+        },
+        {
+          "number": "73",
+          "title": "The Prevention of the Revolutionary Purpose to Proclaim Jesus King (A Political Messiah)",
+          "gospel_event_id": "r1922-073",
+          "url": "https://harmony-bible.com/sections/73/"
+        },
+        {
+          "number": "74",
+          "title": "The Peril to the Twelve in the Storm at Sea and Christ's Coming to Them on the Water in the Darkness",
+          "gospel_event_id": "r1922-074",
+          "url": "https://harmony-bible.com/sections/74/"
+        },
+        {
+          "number": "75",
+          "title": "The Reception at Gennesaret",
+          "gospel_event_id": "r1922-075",
+          "url": "https://harmony-bible.com/sections/75/"
+        }
       ],
       "passages": [
         {
@@ -6445,6 +7061,14 @@
       "gospel_event_ids": [
         "r1922-076"
       ],
+      "harmony_sections": [
+        {
+          "number": "76",
+          "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
+          "gospel_event_id": "r1922-076",
+          "url": "https://harmony-bible.com/sections/76/"
+        }
+      ],
       "passages": [
         {
           "display": "John 6:22-59",
@@ -6515,6 +7139,20 @@
       "gospel_event_ids": [
         "r1922-076",
         "r1922-077"
+      ],
+      "harmony_sections": [
+        {
+          "number": "76",
+          "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
+          "gospel_event_id": "r1922-076",
+          "url": "https://harmony-bible.com/sections/76/"
+        },
+        {
+          "number": "77",
+          "title": "Pharisees from Jerusalem Reproach Jesus for Allowing His Disciples to Disregard Their Traditions About Ceremonial Defilement of the Hands",
+          "gospel_event_id": "r1922-077",
+          "url": "https://harmony-bible.com/sections/77/"
+        }
       ],
       "passages": [
         {
@@ -6658,6 +7296,20 @@
       "gospel_event_ids": [
         "r1922-078",
         "r1922-079"
+      ],
+      "harmony_sections": [
+        {
+          "number": "78",
+          "title": "The Second Withdrawal to the Region of Tyre and Sidon and the Healing of the Daughter of a Syro-Phoenician Woman",
+          "gospel_event_id": "r1922-078",
+          "url": "https://harmony-bible.com/sections/78/"
+        },
+        {
+          "number": "79",
+          "title": "The Third Withdrawal North Through Phoenicia and East Towards Hermon and South Into Decapolis: Healing of the Deaf and Dumb Man and Feeding of the Four Thousand",
+          "gospel_event_id": "r1922-079",
+          "url": "https://harmony-bible.com/sections/79/"
+        }
       ],
       "passages": [
         {
@@ -6851,6 +7503,26 @@
         "r1922-080",
         "r1922-081",
         "r1922-082"
+      ],
+      "harmony_sections": [
+        {
+          "number": "80",
+          "title": "The Brief Visit to Magadan (Dalmanutha) in Galilee and the Sharp Attack by the Pharisees and Sadducees",
+          "gospel_event_id": "r1922-080",
+          "url": "https://harmony-bible.com/sections/80/"
+        },
+        {
+          "number": "81",
+          "title": "The Fourth Retirement to Bethsaida Julias with Sharp Rebuke of the Dulness of the Disciples and the Healing of a Blind Man in Bethsaida",
+          "gospel_event_id": "r1922-081",
+          "url": "https://harmony-bible.com/sections/81/"
+        },
+        {
+          "number": "82",
+          "title": "Near Caesarea Philippi Jesus Tests the Faith of the Twelve in His Messiahship",
+          "gospel_event_id": "r1922-082",
+          "url": "https://harmony-bible.com/sections/82/"
+        }
       ],
       "passages": [
         {
@@ -7097,6 +7769,32 @@
         "r1922-084",
         "r1922-085",
         "r1922-086"
+      ],
+      "harmony_sections": [
+        {
+          "number": "83",
+          "title": "Jesus Distinctly Foretells That He, the Messiah, Will Be Rejected and Killed and Will Rise the Third Day",
+          "gospel_event_id": "r1922-083",
+          "url": "https://harmony-bible.com/sections/83/"
+        },
+        {
+          "number": "84",
+          "title": "The Coming of the Son of Man in That Generation",
+          "gospel_event_id": "r1922-084",
+          "url": "https://harmony-bible.com/sections/84/"
+        },
+        {
+          "number": "85",
+          "title": "The Transfiguration of Jesus on a Mountain (Probably Hermon) Near Caesarea Philippi",
+          "gospel_event_id": "r1922-085",
+          "url": "https://harmony-bible.com/sections/85/"
+        },
+        {
+          "number": "86",
+          "title": "The Puzzle of the Three Disciples About the Resurrection and About Elijah on Their Way Down the Mountain",
+          "gospel_event_id": "r1922-086",
+          "url": "https://harmony-bible.com/sections/86/"
+        }
       ],
       "passages": [
         {
@@ -7434,6 +8132,26 @@
         "r1922-088",
         "r1922-089"
       ],
+      "harmony_sections": [
+        {
+          "number": "87",
+          "title": "The Demoniac Boy, Whom the Disciples Could Not Heal",
+          "gospel_event_id": "r1922-087",
+          "url": "https://harmony-bible.com/sections/87/"
+        },
+        {
+          "number": "88",
+          "title": "Returning Privately Through Galilee, He Again Foretells His Death and Resurrection",
+          "gospel_event_id": "r1922-088",
+          "url": "https://harmony-bible.com/sections/88/"
+        },
+        {
+          "number": "89",
+          "title": "Jesus, the Messiah, Pays the Half-Shekel for the Temple",
+          "gospel_event_id": "r1922-089",
+          "url": "https://harmony-bible.com/sections/89/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 9:14-29",
@@ -7649,6 +8367,32 @@
         "r1922-091",
         "r1922-092",
         "r1922-093"
+      ],
+      "harmony_sections": [
+        {
+          "number": "90",
+          "title": "The Twelve Contend as to Who Shall Be Greatest Under the Messiah's Reign: His Subjects Must Be Childlike",
+          "gospel_event_id": "r1922-090",
+          "url": "https://harmony-bible.com/sections/90/"
+        },
+        {
+          "number": "91",
+          "title": "The Mistaken Zeal of the Apostle John Rebuked by Jesus in Pertinent Parables",
+          "gospel_event_id": "r1922-091",
+          "url": "https://harmony-bible.com/sections/91/"
+        },
+        {
+          "number": "92",
+          "title": "Right Treatment of a Brother Who Has Sinned Against One, and Duty of Patiently Forgiving a Brother (Parable of the Unmerciful Servant)",
+          "gospel_event_id": "r1922-092",
+          "url": "https://harmony-bible.com/sections/92/"
+        },
+        {
+          "number": "93",
+          "title": "The Messiah's Followers Must Give Up Everything for His Service",
+          "gospel_event_id": "r1922-093",
+          "url": "https://harmony-bible.com/sections/93/"
+        }
       ],
       "passages": [
         {
@@ -7902,6 +8646,14 @@
       "gospel_event_ids": [
         "r1922-094"
       ],
+      "harmony_sections": [
+        {
+          "number": "94",
+          "title": "The Unbelieving Brothers of Jesus Counsel Him to Exhibit Himself in Judea, and He Rejects the Advice",
+          "gospel_event_id": "r1922-094",
+          "url": "https://harmony-bible.com/sections/94/"
+        }
+      ],
       "passages": [
         {
           "display": "John 7:2-9",
@@ -7971,6 +8723,14 @@
       ],
       "gospel_event_ids": [
         "r1922-096"
+      ],
+      "harmony_sections": [
+        {
+          "number": "96",
+          "title": "The Coming of Jesus to the Feast of Tabernacles Creates Intense Excitement Concerning the Messiahship",
+          "gospel_event_id": "r1922-096",
+          "url": "https://harmony-bible.com/sections/96/"
+        }
       ],
       "passages": [
         {
@@ -8065,6 +8825,20 @@
       "gospel_event_ids": [
         "r1922-097",
         "r1922-098"
+      ],
+      "harmony_sections": [
+        {
+          "number": "97",
+          "title": "Story of an Adulterous Woman Brought to Jesus for Judgment",
+          "gospel_event_id": "r1922-097",
+          "url": "https://harmony-bible.com/sections/97/"
+        },
+        {
+          "number": "98",
+          "title": "After the Feast of Tabernacles in the Temple Jesus Angers the Pharisees by Claiming to Be the Light of the World",
+          "gospel_event_id": "r1922-098",
+          "url": "https://harmony-bible.com/sections/98/"
+        }
       ],
       "passages": [
         {
@@ -8167,6 +8941,14 @@
       "gospel_event_ids": [
         "r1922-099"
       ],
+      "harmony_sections": [
+        {
+          "number": "99",
+          "title": "The Pharisees Attempt to Stone Jesus When He Exposes Their Sinfulness",
+          "gospel_event_id": "r1922-099",
+          "url": "https://harmony-bible.com/sections/99/"
+        }
+      ],
       "passages": [
         {
           "display": "John 8:21-30",
@@ -8260,6 +9042,14 @@
       ],
       "gospel_event_ids": [
         "r1922-100"
+      ],
+      "harmony_sections": [
+        {
+          "number": "100",
+          "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+          "gospel_event_id": "r1922-100",
+          "url": "https://harmony-bible.com/sections/100/"
+        }
       ],
       "passages": [
         {
@@ -8355,6 +9145,14 @@
       ],
       "gospel_event_ids": [
         "r1922-100"
+      ],
+      "harmony_sections": [
+        {
+          "number": "100",
+          "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+          "gospel_event_id": "r1922-100",
+          "url": "https://harmony-bible.com/sections/100/"
+        }
       ],
       "passages": [
         {
@@ -8474,6 +9272,20 @@
       "gospel_event_ids": [
         "r1922-095",
         "r1922-101"
+      ],
+      "harmony_sections": [
+        {
+          "number": "95",
+          "title": "He Goes Privately to Jerusalem Through Samaria",
+          "gospel_event_id": "r1922-095",
+          "url": "https://harmony-bible.com/sections/95/"
+        },
+        {
+          "number": "101",
+          "title": "In the Parable of the Good Shepherd Jesus Draws the Picture of the Hostile Pharisees and Intimates That He Is Going to Die for His Flock",
+          "gospel_event_id": "r1922-101",
+          "url": "https://harmony-bible.com/sections/101/"
+        }
       ],
       "passages": [
         {
@@ -8613,6 +9425,14 @@
       "gospel_event_ids": [
         "r1922-102"
       ],
+      "harmony_sections": [
+        {
+          "number": "102",
+          "title": "The Mission of the Seventy; Christ's Joy in Their Work on Their Return",
+          "gospel_event_id": "r1922-102",
+          "url": "https://harmony-bible.com/sections/102/"
+        }
+      ],
       "passages": [
         {
           "display": "Luke 10:1-16",
@@ -8710,6 +9530,26 @@
         "r1922-103",
         "r1922-104",
         "r1922-105"
+      ],
+      "harmony_sections": [
+        {
+          "number": "103",
+          "title": "Jesus Answers a Lawyer's Question as to Eternal Life, Giving the Parable of the Good Samaritan",
+          "gospel_event_id": "r1922-103",
+          "url": "https://harmony-bible.com/sections/103/"
+        },
+        {
+          "number": "104",
+          "title": "Jesus the Guest of Martha and Mary",
+          "gospel_event_id": "r1922-104",
+          "url": "https://harmony-bible.com/sections/104/"
+        },
+        {
+          "number": "105",
+          "title": "Jesus Again Gives a Model of Prayer and Encourages His Disciples to Pray: Parable of the Importunate Friend",
+          "gospel_event_id": "r1922-105",
+          "url": "https://harmony-bible.com/sections/105/"
+        }
       ],
       "passages": [
         {
@@ -8824,6 +9664,14 @@
       "gospel_event_ids": [
         "r1922-107"
       ],
+      "harmony_sections": [
+        {
+          "number": "107",
+          "title": "While Breakfasting with a Pharisee, Jesus Severely Denounces the Pharisees and Lawyers and Excites Their Enmity",
+          "gospel_event_id": "r1922-107",
+          "url": "https://harmony-bible.com/sections/107/"
+        }
+      ],
       "passages": [
         {
           "display": "Luke 11:37-54",
@@ -8895,6 +9743,14 @@
       ],
       "gospel_event_ids": [
         "r1922-108"
+      ],
+      "harmony_sections": [
+        {
+          "number": "108",
+          "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+          "gospel_event_id": "r1922-108",
+          "url": "https://harmony-bible.com/sections/108/"
+        }
       ],
       "passages": [
         {
@@ -9018,6 +9874,26 @@
         "r1922-108",
         "r1922-109",
         "r1922-110"
+      ],
+      "harmony_sections": [
+        {
+          "number": "108",
+          "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+          "gospel_event_id": "r1922-108",
+          "url": "https://harmony-bible.com/sections/108/"
+        },
+        {
+          "number": "109",
+          "title": "All Must Repent or Perish: Two Current Tragedies; Parable of the Barren Fig Tree",
+          "gospel_event_id": "r1922-109",
+          "url": "https://harmony-bible.com/sections/109/"
+        },
+        {
+          "number": "110",
+          "title": "Jesus Heals a Crippled Woman on the Sabbath and Defends Himself Against the Ruler of the Synagogue; Repetition of the Parables of the Mustard Seed and of the Leaven",
+          "gospel_event_id": "r1922-110",
+          "url": "https://harmony-bible.com/sections/110/"
+        }
       ],
       "passages": [
         {
@@ -9162,6 +10038,26 @@
         "r1922-112",
         "r1922-113"
       ],
+      "harmony_sections": [
+        {
+          "number": "111",
+          "title": "At the Feast of Dedication Jesus Will Not Yet Openly Say That He Is the Messiah; The Jews Try to Stone Him",
+          "gospel_event_id": "r1922-111",
+          "url": "https://harmony-bible.com/sections/111/"
+        },
+        {
+          "number": "112",
+          "title": "The Withdrawal from Jerusalem to Bethany Beyond Jordan",
+          "gospel_event_id": "r1922-112",
+          "url": "https://harmony-bible.com/sections/112/"
+        },
+        {
+          "number": "113",
+          "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
+          "gospel_event_id": "r1922-113",
+          "url": "https://harmony-bible.com/sections/113/"
+        }
+      ],
       "passages": [
         {
           "display": "John 10:22-39",
@@ -9279,6 +10175,20 @@
         "r1922-113",
         "r1922-114"
       ],
+      "harmony_sections": [
+        {
+          "number": "113",
+          "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
+          "gospel_event_id": "r1922-113",
+          "url": "https://harmony-bible.com/sections/113/"
+        },
+        {
+          "number": "114",
+          "title": "While Dining with a Chief Pharisee, He Again Heals on the Sabbath and Defends Himself; Three Parables Suggested by the Occasion",
+          "gospel_event_id": "r1922-114",
+          "url": "https://harmony-bible.com/sections/114/"
+        }
+      ],
       "passages": [
         {
           "display": "Luke 13:31-35",
@@ -9371,6 +10281,14 @@
       "gospel_event_ids": [
         "r1922-115"
       ],
+      "harmony_sections": [
+        {
+          "number": "115",
+          "title": "Great Crowds Follow Him, and He Warns Them to Count the Cost of Discipleship to Him",
+          "gospel_event_id": "r1922-115",
+          "url": "https://harmony-bible.com/sections/115/"
+        }
+      ],
       "passages": [
         {
           "display": "Luke 14:25-35",
@@ -9439,6 +10357,14 @@
       "gospel_event_ids": [
         "r1922-116"
       ],
+      "harmony_sections": [
+        {
+          "number": "116",
+          "title": "The Pharisees and Scribes Murmur Against Jesus for Receiving Sinners: He Defends Himself by Three Great Parables (The Lost Sheep, The Lost Coin, The Lost Son)",
+          "gospel_event_id": "r1922-116",
+          "url": "https://harmony-bible.com/sections/116/"
+        }
+      ],
       "passages": [
         {
           "display": "Luke 15:1-32",
@@ -9505,6 +10431,14 @@
       ],
       "gospel_event_ids": [
         "r1922-117"
+      ],
+      "harmony_sections": [
+        {
+          "number": "117",
+          "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
+          "gospel_event_id": "r1922-117",
+          "url": "https://harmony-bible.com/sections/117/"
+        }
       ],
       "passages": [
         {
@@ -9575,6 +10509,14 @@
       ],
       "gospel_event_ids": [
         "r1922-117"
+      ],
+      "harmony_sections": [
+        {
+          "number": "117",
+          "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
+          "gospel_event_id": "r1922-117",
+          "url": "https://harmony-bible.com/sections/117/"
+        }
       ],
       "passages": [
         {
@@ -9668,6 +10610,14 @@
       ],
       "gospel_event_ids": [
         "r1922-118"
+      ],
+      "harmony_sections": [
+        {
+          "number": "118",
+          "title": "Jesus Raises Lazarus from the Dead",
+          "gospel_event_id": "r1922-118",
+          "url": "https://harmony-bible.com/sections/118/"
+        }
       ],
       "passages": [
         {
@@ -9764,6 +10714,20 @@
         "r1922-119",
         "r1922-120"
       ],
+      "harmony_sections": [
+        {
+          "number": "119",
+          "title": "The Effect of the Raising of Lazarus (On the People, On the Sanhedrin, On the Movements of Jesus)",
+          "gospel_event_id": "r1922-119",
+          "url": "https://harmony-bible.com/sections/119/"
+        },
+        {
+          "number": "120",
+          "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
+          "gospel_event_id": "r1922-120",
+          "url": "https://harmony-bible.com/sections/120/"
+        }
+      ],
       "passages": [
         {
           "display": "John 11:45-54",
@@ -9857,6 +10821,20 @@
       "gospel_event_ids": [
         "r1922-120",
         "r1922-121"
+      ],
+      "harmony_sections": [
+        {
+          "number": "120",
+          "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
+          "gospel_event_id": "r1922-120",
+          "url": "https://harmony-bible.com/sections/120/"
+        },
+        {
+          "number": "121",
+          "title": "Two Parables on Prayer (The Importunate Widow; The Pharisee and the Publican)",
+          "gospel_event_id": "r1922-121",
+          "url": "https://harmony-bible.com/sections/121/"
+        }
       ],
       "passages": [
         {
@@ -9952,6 +10930,20 @@
       "gospel_event_ids": [
         "r1922-122",
         "r1922-123"
+      ],
+      "harmony_sections": [
+        {
+          "number": "122",
+          "title": "Going from Galilee Through Perea, He Teaches Concerning Divorce",
+          "gospel_event_id": "r1922-122",
+          "url": "https://harmony-bible.com/sections/122/"
+        },
+        {
+          "number": "123",
+          "title": "Christ and Children and the Failure of the Disciples to Understand the Attitude of Jesus",
+          "gospel_event_id": "r1922-123",
+          "url": "https://harmony-bible.com/sections/123/"
+        }
       ],
       "passages": [
         {
@@ -10115,6 +11107,14 @@
       "gospel_event_ids": [
         "r1922-124"
       ],
+      "harmony_sections": [
+        {
+          "number": "124",
+          "title": "The Rich Young Ruler, the Perils of Riches, and Amazement of the Disciples; Rewards of Following the Messiah (Parable of the Laborers in the Vineyard)",
+          "gospel_event_id": "r1922-124",
+          "url": "https://harmony-bible.com/sections/124/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 19:16-30",
@@ -10257,6 +11257,20 @@
       "gospel_event_ids": [
         "r1922-125",
         "r1922-126"
+      ],
+      "harmony_sections": [
+        {
+          "number": "125",
+          "title": "Jesus Again Foretells to the Disciples His Death and Resurrection, and Rebukes the Selfish Ambition of James and John",
+          "gospel_event_id": "r1922-125",
+          "url": "https://harmony-bible.com/sections/125/"
+        },
+        {
+          "number": "126",
+          "title": "Blind Bartimaeus and His Companion Healed",
+          "gospel_event_id": "r1922-126",
+          "url": "https://harmony-bible.com/sections/126/"
+        }
       ],
       "passages": [
         {
@@ -10489,6 +11503,14 @@
       "gospel_event_ids": [
         "r1922-127"
       ],
+      "harmony_sections": [
+        {
+          "number": "127",
+          "title": "Jesus Visits Zacchaeus, and Speaks the Parable of the Pounds, and Sets Out for Jerusalem",
+          "gospel_event_id": "r1922-127",
+          "url": "https://harmony-bible.com/sections/127/"
+        }
+      ],
       "passages": [
         {
           "display": "Luke 19:1-10",
@@ -10582,6 +11604,14 @@
       "gospel_event_ids": [
         "r1922-128a",
         "r1922-128b"
+      ],
+      "harmony_sections": [
+        {
+          "number": "128",
+          "title": "Jesus Arrives at Bethany Near Jerusalem",
+          "gospel_event_id": "r1922-128a",
+          "url": "https://harmony-bible.com/sections/128/"
+        }
       ],
       "passages": [
         {
@@ -10806,6 +11836,26 @@
         "r1922-129",
         "r1922-131",
         "r1922-132"
+      ],
+      "harmony_sections": [
+        {
+          "number": "129",
+          "title": "The Barren Fig Tree Cursed, and the Second Cleansing of the Temple",
+          "gospel_event_id": "r1922-129",
+          "url": "https://harmony-bible.com/sections/129/"
+        },
+        {
+          "number": "131",
+          "title": "The Barren Fig Tree Found to Have Withered",
+          "gospel_event_id": "r1922-131",
+          "url": "https://harmony-bible.com/sections/131/"
+        },
+        {
+          "number": "132",
+          "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
+          "gospel_event_id": "r1922-132",
+          "url": "https://harmony-bible.com/sections/132/"
+        }
       ],
       "passages": [
         {
@@ -11105,6 +12155,14 @@
       "gospel_event_ids": [
         "r1922-132"
       ],
+      "harmony_sections": [
+        {
+          "number": "132",
+          "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
+          "gospel_event_id": "r1922-132",
+          "url": "https://harmony-bible.com/sections/132/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 21:28-22:14",
@@ -11227,6 +12285,14 @@
       "gospel_event_ids": [
         "r1922-133"
       ],
+      "harmony_sections": [
+        {
+          "number": "133",
+          "title": "The Pharisees and the Herodians Try to Ensnare Jesus About Paying Tribute to Caesar",
+          "gospel_event_id": "r1922-133",
+          "url": "https://harmony-bible.com/sections/133/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 12:13-17",
@@ -11347,6 +12413,26 @@
         "r1922-134",
         "r1922-135",
         "r1922-136"
+      ],
+      "harmony_sections": [
+        {
+          "number": "134",
+          "title": "The Sadducees Ask Him a Puzzling Question About the Resurrection",
+          "gospel_event_id": "r1922-134",
+          "url": "https://harmony-bible.com/sections/134/"
+        },
+        {
+          "number": "135",
+          "title": "The Pharisees Rejoice Over the Rout of the Sadducees and a Pharisaic Lawyer Asks Jesus a Legal Question",
+          "gospel_event_id": "r1922-135",
+          "url": "https://harmony-bible.com/sections/135/"
+        },
+        {
+          "number": "136",
+          "title": "Jesus Silences His Enemies by the Pertinent Question of the Messiah's Descent from David and Lordship Over David",
+          "gospel_event_id": "r1922-136",
+          "url": "https://harmony-bible.com/sections/136/"
+        }
       ],
       "passages": [
         {
@@ -11578,6 +12664,14 @@
       "gospel_event_ids": [
         "r1922-137"
       ],
+      "harmony_sections": [
+        {
+          "number": "137",
+          "title": "In His Last Public Discourse, Jesus Solemnly Denounces the Scribes and Pharisees",
+          "gospel_event_id": "r1922-137",
+          "url": "https://harmony-bible.com/sections/137/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 23:1-36",
@@ -11723,6 +12817,20 @@
       "gospel_event_ids": [
         "r1922-138",
         "r1922-139"
+      ],
+      "harmony_sections": [
+        {
+          "number": "138",
+          "title": "Jesus Closely Observes the Contributions in the Temple, and Commends the Poor Widow's Gift",
+          "gospel_event_id": "r1922-138",
+          "url": "https://harmony-bible.com/sections/138/"
+        },
+        {
+          "number": "139",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139/"
+        }
       ],
       "passages": [
         {
@@ -12090,6 +13198,14 @@
       "gospel_event_ids": [
         "r1922-139"
       ],
+      "harmony_sections": [
+        {
+          "number": "139",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 24:32-41",
@@ -12203,6 +13319,14 @@
       ],
       "gospel_event_ids": [
         "r1922-139"
+      ],
+      "harmony_sections": [
+        {
+          "number": "139",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139/"
+        }
       ],
       "passages": [
         {
@@ -12325,6 +13449,14 @@
       "gospel_event_ids": [
         "r1922-139"
       ],
+      "harmony_sections": [
+        {
+          "number": "139",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139/"
+        }
+      ],
       "passages": [
         {
           "display": "Matthew 25:31-46",
@@ -12393,6 +13525,14 @@
       ],
       "gospel_event_ids": [
         "r1922-130"
+      ],
+      "harmony_sections": [
+        {
+          "number": "130",
+          "title": "The Desire of Some Greeks to See Jesus Leads Jesus to Interpret Life and Death as Sacrifice and Show How Being Lifted Up He Will Draw All Men to Him",
+          "gospel_event_id": "r1922-130",
+          "url": "https://harmony-bible.com/sections/130/"
+        }
       ],
       "passages": [
         {
@@ -12486,6 +13626,32 @@
         "r1922-141",
         "r1922-142",
         "r1922-143"
+      ],
+      "harmony_sections": [
+        {
+          "number": "140",
+          "title": "Jesus Predicts His Crucifixion Two Days Hence (Jewish Friday)",
+          "gospel_event_id": "r1922-140",
+          "url": "https://harmony-bible.com/sections/140/"
+        },
+        {
+          "number": "141",
+          "title": "At the Feast in the House of Simon the Leper Mary of Bethany Anoints Jesus for His Burial",
+          "gospel_event_id": "r1922-141",
+          "url": "https://harmony-bible.com/sections/141/"
+        },
+        {
+          "number": "142",
+          "title": "Judas, Stung by the Rebuke of Jesus at the Feast, Bargains with the Rulers to Betray Jesus",
+          "gospel_event_id": "r1922-142",
+          "url": "https://harmony-bible.com/sections/142/"
+        },
+        {
+          "number": "143",
+          "title": "The Preparation for the Paschal Meal at the Home of a Friend",
+          "gospel_event_id": "r1922-143",
+          "url": "https://harmony-bible.com/sections/143/"
+        }
       ],
       "passages": [
         {
@@ -12811,6 +13977,20 @@
         "r1922-144",
         "r1922-145"
       ],
+      "harmony_sections": [
+        {
+          "number": "144",
+          "title": "Jesus Partakes of the Paschal Meal with the Twelve Apostles and Rebukes Their Jealousy",
+          "gospel_event_id": "r1922-144",
+          "url": "https://harmony-bible.com/sections/144/"
+        },
+        {
+          "number": "145",
+          "title": "During the Paschal Meal, Jesus Washes the Feet of His Disciples",
+          "gospel_event_id": "r1922-145",
+          "url": "https://harmony-bible.com/sections/145/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 14:17",
@@ -12973,6 +14153,20 @@
       "gospel_event_ids": [
         "r1922-146",
         "r1922-148"
+      ],
+      "harmony_sections": [
+        {
+          "number": "146",
+          "title": "At the Paschal Meal Jesus Points Out Judas as the Betrayer",
+          "gospel_event_id": "r1922-146",
+          "url": "https://harmony-bible.com/sections/146/"
+        },
+        {
+          "number": "148",
+          "title": "Jesus Institutes the Memorial of Eating Bread and Drinking Wine",
+          "gospel_event_id": "r1922-148",
+          "url": "https://harmony-bible.com/sections/148/"
+        }
       ],
       "passages": [
         {
@@ -13205,6 +14399,14 @@
       "gospel_event_ids": [
         "r1922-147"
       ],
+      "harmony_sections": [
+        {
+          "number": "147",
+          "title": "After the Departure of Judas Jesus Warns the Disciples (Peter in Particular) Against Desertion, While All Protest Their Loyalty",
+          "gospel_event_id": "r1922-147",
+          "url": "https://harmony-bible.com/sections/147/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 14:27-31",
@@ -13342,6 +14544,14 @@
       "gospel_event_ids": [
         "r1922-149"
       ],
+      "harmony_sections": [
+        {
+          "number": "149",
+          "title": "The Farewell Discourse to His Disciples in the Upper Room",
+          "gospel_event_id": "r1922-149",
+          "url": "https://harmony-bible.com/sections/149/"
+        }
+      ],
       "passages": [
         {
           "display": "John 14",
@@ -13408,6 +14618,14 @@
       ],
       "gospel_event_ids": [
         "r1922-150"
+      ],
+      "harmony_sections": [
+        {
+          "number": "150",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150/"
+        }
       ],
       "passages": [
         {
@@ -13480,6 +14698,14 @@
       ],
       "gospel_event_ids": [
         "r1922-150"
+      ],
+      "harmony_sections": [
+        {
+          "number": "150",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150/"
+        }
       ],
       "passages": [
         {
@@ -13602,6 +14828,14 @@
       "gospel_event_ids": [
         "r1922-150"
       ],
+      "harmony_sections": [
+        {
+          "number": "150",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150/"
+        }
+      ],
       "passages": [
         {
           "display": "John 16:23-33",
@@ -13670,6 +14904,14 @@
       "gospel_event_ids": [
         "r1922-151"
       ],
+      "harmony_sections": [
+        {
+          "number": "151",
+          "title": "Christ's Intercessory Prayer",
+          "gospel_event_id": "r1922-151",
+          "url": "https://harmony-bible.com/sections/151/"
+        }
+      ],
       "passages": [
         {
           "display": "John 17",
@@ -13737,6 +14979,14 @@
       ],
       "gospel_event_ids": [
         "r1922-152"
+      ],
+      "harmony_sections": [
+        {
+          "number": "152",
+          "title": "Going Forth to Gethsemane, Jesus Suffers Long in Agony",
+          "gospel_event_id": "r1922-152",
+          "url": "https://harmony-bible.com/sections/152/"
+        }
       ],
       "passages": [
         {
@@ -13920,6 +15170,14 @@
       "gospel_event_ids": [
         "r1922-153"
       ],
+      "harmony_sections": [
+        {
+          "number": "153",
+          "title": "Jesus Is Betrayed, Arrested, and Forsaken",
+          "gospel_event_id": "r1922-153",
+          "url": "https://harmony-bible.com/sections/153/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 14:43-52",
@@ -14061,6 +15319,20 @@
       "gospel_event_ids": [
         "r1922-154",
         "r1922-156"
+      ],
+      "harmony_sections": [
+        {
+          "number": "154",
+          "title": "Jesus First Examined by Annas, the Ex-High Priest",
+          "gospel_event_id": "r1922-154",
+          "url": "https://harmony-bible.com/sections/154/"
+        },
+        {
+          "number": "156",
+          "title": "Peter Thrice Denies His Lord",
+          "gospel_event_id": "r1922-156",
+          "url": "https://harmony-bible.com/sections/156/"
+        }
       ],
       "passages": [
         {
@@ -14316,6 +15588,20 @@
       "gospel_event_ids": [
         "r1922-155",
         "r1922-158"
+      ],
+      "harmony_sections": [
+        {
+          "number": "155",
+          "title": "Jesus Hurriedly Tried and Condemned by Caiaphas and the Sanhedrin, Who Mock and Buffet Him",
+          "gospel_event_id": "r1922-155",
+          "url": "https://harmony-bible.com/sections/155/"
+        },
+        {
+          "number": "158",
+          "title": "Remorse and Suicide of Judas the Betrayer",
+          "gospel_event_id": "r1922-158",
+          "url": "https://harmony-bible.com/sections/158/"
+        }
       ],
       "passages": [
         {
@@ -14575,6 +15861,26 @@
         "r1922-159",
         "r1922-160"
       ],
+      "harmony_sections": [
+        {
+          "number": "157",
+          "title": "After Dawn, Jesus Is Formally Condemned by the Sanhedrin",
+          "gospel_event_id": "r1922-157",
+          "url": "https://harmony-bible.com/sections/157/"
+        },
+        {
+          "number": "159",
+          "title": "Jesus Before Pilate the First Time",
+          "gospel_event_id": "r1922-159",
+          "url": "https://harmony-bible.com/sections/159/"
+        },
+        {
+          "number": "160",
+          "title": "Jesus Before Herod Antipas the Tetrarch",
+          "gospel_event_id": "r1922-160",
+          "url": "https://harmony-bible.com/sections/160/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 15:1",
@@ -14831,6 +16137,20 @@
         "r1922-161",
         "r1922-162"
       ],
+      "harmony_sections": [
+        {
+          "number": "161",
+          "title": "Jesus the Second Time Before Pilate",
+          "gospel_event_id": "r1922-161",
+          "url": "https://harmony-bible.com/sections/161/"
+        },
+        {
+          "number": "162",
+          "title": "The Roman Soldiers Mock Jesus",
+          "gospel_event_id": "r1922-162",
+          "url": "https://harmony-bible.com/sections/162/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 15:6-15",
@@ -15023,6 +16343,20 @@
       "gospel_event_ids": [
         "r1922-163",
         "r1922-164"
+      ],
+      "harmony_sections": [
+        {
+          "number": "163",
+          "title": "Jesus on the Way to the Cross (Via Dolorosa) on Golgotha",
+          "gospel_event_id": "r1922-163",
+          "url": "https://harmony-bible.com/sections/163/"
+        },
+        {
+          "number": "164",
+          "title": "The First Three Hours on the Cross",
+          "gospel_event_id": "r1922-164",
+          "url": "https://harmony-bible.com/sections/164/"
+        }
       ],
       "passages": [
         {
@@ -15263,6 +16597,32 @@
         "r1922-166",
         "r1922-167",
         "r1922-168"
+      ],
+      "harmony_sections": [
+        {
+          "number": "165",
+          "title": "The Three Hours of Darkness from Noon to Three P.M.",
+          "gospel_event_id": "r1922-165",
+          "url": "https://harmony-bible.com/sections/165/"
+        },
+        {
+          "number": "166",
+          "title": "The Phenomena Accompanying the Death of Christ",
+          "gospel_event_id": "r1922-166",
+          "url": "https://harmony-bible.com/sections/166/"
+        },
+        {
+          "number": "167",
+          "title": "The Burial of the Body of Jesus in the Tomb of Joseph of Arimathea After Proof of His Death",
+          "gospel_event_id": "r1922-167",
+          "url": "https://harmony-bible.com/sections/167/"
+        },
+        {
+          "number": "168",
+          "title": "The Watch of the Women by the Tomb of Jesus",
+          "gospel_event_id": "r1922-168",
+          "url": "https://harmony-bible.com/sections/168/"
+        }
       ],
       "passages": [
         {
@@ -15755,6 +17115,32 @@
         "r1922-171",
         "r1922-172"
       ],
+      "harmony_sections": [
+        {
+          "number": "169",
+          "title": "The Visit of the Women to the Tomb of Jesus",
+          "gospel_event_id": "r1922-169",
+          "url": "https://harmony-bible.com/sections/169/"
+        },
+        {
+          "number": "170",
+          "title": "The Earthquake, the Rolling Away of the Stone by an Angel, and the Fright of the Roman Watchers",
+          "gospel_event_id": "r1922-170",
+          "url": "https://harmony-bible.com/sections/170/"
+        },
+        {
+          "number": "171",
+          "title": "The Visit of the Women to the Tomb About Sunrise Sunday Morning and the Message of the Angels About the Empty Tomb",
+          "gospel_event_id": "r1922-171",
+          "url": "https://harmony-bible.com/sections/171/"
+        },
+        {
+          "number": "172",
+          "title": "Mary Magdalene and the Other Women Report to the Apostles, and Peter and John Visit the Empty Tomb",
+          "gospel_event_id": "r1922-172",
+          "url": "https://harmony-bible.com/sections/172/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 16:1",
@@ -16014,6 +17400,26 @@
         "r1922-174",
         "r1922-175"
       ],
+      "harmony_sections": [
+        {
+          "number": "173",
+          "title": "The Appearance of Jesus to Mary Magdalene and the Message to the Disciples",
+          "gospel_event_id": "r1922-173",
+          "url": "https://harmony-bible.com/sections/173/"
+        },
+        {
+          "number": "174",
+          "title": "The Appearance of Jesus to the Other Women",
+          "gospel_event_id": "r1922-174",
+          "url": "https://harmony-bible.com/sections/174/"
+        },
+        {
+          "number": "175",
+          "title": "Some of the Guard Report to the Jewish Rulers",
+          "gospel_event_id": "r1922-175",
+          "url": "https://harmony-bible.com/sections/175/"
+        }
+      ],
       "passages": [
         {
           "display": "Mark 16:9-11",
@@ -16156,6 +17562,26 @@
         "r1922-176",
         "r1922-177",
         "r1922-178"
+      ],
+      "harmony_sections": [
+        {
+          "number": "176",
+          "title": "The Appearance to Two Disciples (Cleopas and Another) on the Way to Emmaus",
+          "gospel_event_id": "r1922-176",
+          "url": "https://harmony-bible.com/sections/176/"
+        },
+        {
+          "number": "177",
+          "title": "The Report of the Two Disciples and the News of the Appearance to Simon Peter",
+          "gospel_event_id": "r1922-177",
+          "url": "https://harmony-bible.com/sections/177/"
+        },
+        {
+          "number": "178",
+          "title": "The Appearance to the Astonished Disciples (Thomas Absent) with a Commission and Their Failure to Convince Thomas",
+          "gospel_event_id": "r1922-178",
+          "url": "https://harmony-bible.com/sections/178/"
+        }
       ],
       "passages": [
         {
@@ -16366,6 +17792,20 @@
         "r1922-179",
         "r1922-180"
       ],
+      "harmony_sections": [
+        {
+          "number": "179",
+          "title": "The Appearance to the Disciples the Next Sunday Night and the Convincing of Thomas",
+          "gospel_event_id": "r1922-179",
+          "url": "https://harmony-bible.com/sections/179/"
+        },
+        {
+          "number": "180",
+          "title": "The Appearance to Seven Disciples Beside the Sea of Galilee: The Miraculous Draught of Fishes",
+          "gospel_event_id": "r1922-180",
+          "url": "https://harmony-bible.com/sections/180/"
+        }
+      ],
       "passages": [
         {
           "display": "John 20:26-31",
@@ -16486,6 +17926,26 @@
         "r1922-181",
         "r1922-182",
         "r1922-183"
+      ],
+      "harmony_sections": [
+        {
+          "number": "181",
+          "title": "The Appearance to About Five Hundred on an Appointed Mountain in Galilee, and a Commission Given",
+          "gospel_event_id": "r1922-181",
+          "url": "https://harmony-bible.com/sections/181/"
+        },
+        {
+          "number": "182",
+          "title": "The Appearance to James the Brother of Jesus",
+          "gospel_event_id": "r1922-182",
+          "url": "https://harmony-bible.com/sections/182/"
+        },
+        {
+          "number": "183",
+          "title": "The Appearance to the Disciples with Another Commission",
+          "gospel_event_id": "r1922-183",
+          "url": "https://harmony-bible.com/sections/183/"
+        }
       ],
       "passages": [
         {
@@ -16670,6 +18130,14 @@
       ],
       "gospel_event_ids": [
         "r1922-184"
+      ],
+      "harmony_sections": [
+        {
+          "number": "184",
+          "title": "The Last Appearance and the Ascension",
+          "gospel_event_id": "r1922-184",
+          "url": "https://harmony-bible.com/sections/184/"
+        }
       ],
       "passages": [
         {

@@ -114,7 +114,21 @@
             }
           ]
         }
-      }
+      },
+      "harmony_sections": [
+        {
+          "number": "1",
+          "title": "In the Dedication Luke Explains His Method of Research",
+          "gospel_event_id": "r1922-001",
+          "url": "https://harmony-bible.com/sections/1/"
+        },
+        {
+          "number": "2",
+          "title": "In His Introduction John Pictures Christ as the Word (Logos)",
+          "gospel_event_id": "r1922-002",
+          "url": "https://harmony-bible.com/sections/2/"
+        }
+      ]
     },
     {
       "day_id": "d038",
