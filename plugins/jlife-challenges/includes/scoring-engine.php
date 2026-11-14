@@ -98,10 +98,11 @@ function jlife_challenges_join_sections( $sections, $headings ) {
  * The registered scoring engines.
  *
  * Each engine: label, version, callback( string $text, array $context ): array
+ * (anything a filter returns is checked with is_callable() before it is used)
  * with 'passes' (bool) and 'reasons' (string[]). Add engines with the
  * jlife_challenges_scoring_engines filter. The default always exists.
  *
- * @return array<string,array{label:string,version:string,callback:callable}>
+ * @return array<string,array{label:string,version:string,callback:mixed}>
  */
 function jlife_challenges_scoring_engines() {
 	$engines = (array) apply_filters(
