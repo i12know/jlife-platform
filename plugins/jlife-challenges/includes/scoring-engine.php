@@ -169,17 +169,28 @@ function jlife_challenges_score_entry( $text, $context = array() ) {
  * @return array|null { letter: string, rest: string } (rest = same-line text after the heading), or null.
  */
 function jlife_challenges_parse_heading( $line ) {
-	if ( ! preg_match( '/^[ \t]*([SOAP])[ \t]*[:\x{2014}\x{2013}\-]+[ \t]*(.*)$/iu', $line, $m ) ) {
+	if ( ! preg_match( '/^[ \t]*([SOAP])[ \t]*(:|[\x{2014}\x{2013}]+|-+)([ \t]*)(.*)$/iu', $line, $m ) ) {
 		return null;
 	}
-	$letter = strtoupper( $m[1] );
-	$rest   = trim( $m[2] );
+	$letter  = strtoupper( $m[1] );
+	$rest    = trim( $m[4] );
+	$word_at = null;
 	foreach ( jlife_challenges_soap_heading_words()[ $letter ] as $word ) {
 		$pattern = '/^' . preg_quote( $word, '/' ) . '(?=$|[\s:.\x{2014}\x{2013}\-])[\s:.\x{2014}\x{2013}\-]*/iu';
 		if ( preg_match( $pattern, $rest ) ) {
-			$rest = trim( (string) preg_replace( $pattern, '', $rest, 1 ) );
+			$word_at = $pattern;
 			break;
 		}
+	}
+	// A plain hyphen glued to the next word is part of a name, not a heading:
+	// Vietnamese writes names with hyphens ("A-rôn", "A-đam", "Phi-e-rơ"), so a
+	// line starting "A-rôn" is Scripture or Observation text. "S-Scripture"
+	// (a heading word right after the hyphen) is still a heading.
+	if ( '-' === $m[2][0] && '' === $m[3] && '' !== $rest && null === $word_at ) {
+		return null;
+	}
+	if ( null !== $word_at ) {
+		$rest = trim( (string) preg_replace( $word_at, '', $rest, 1 ) );
 	}
 	return array(
 		'letter' => $letter,

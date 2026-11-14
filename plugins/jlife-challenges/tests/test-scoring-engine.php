@@ -42,6 +42,8 @@ class Test_Scoring_Engine extends Jlife_Challenges_TestCase {
 			'extra blank lines'       => array( "\n\nS: a\n\n\nO: b\n\n\nA: c\n\n\nP: d\n\n" ),
 			'vietnamese headings'     => array( "S — Kinh Thánh\nGa 1:14\n\nO — Quan sát\nb\n\nA — Áp dụng\nc\n\nP — Cầu nguyện\nd" ),
 			'vietnamese, lower case'  => array( "s — kinh thánh: Ga 1:14\no — quan sát: b\na — áp dụng: c\np — cầu nguyện: d" ),
+			'hyphen glued to heading' => array( "S-Scripture a\nO-Observation b\nA-Application c\nP-Prayer d" ),
+			'hyphenated names inside' => array( "S — Kinh Thánh\nA-rôn và A-đam\n\nO — Quan sát\nA-rôn đứng bên\n\nA — Áp dụng\nc\n\nP — Cầu nguyện\nd" ),
 		);
 	}
 
@@ -91,6 +93,10 @@ class Test_Scoring_Engine extends Jlife_Challenges_TestCase {
 			'whitespace only prayer'    => array(
 				"S: a\nO: b\nA: c\nP:   \n   \n",
 				array( 'Add something under P — Prayer' ),
+			),
+			'a name is not a heading'   => array(
+				"S: a\nO: b\nA-rôn đứng bên\nP: d",
+				array( 'Add the A — Application part' ),
 			),
 			'out of order'              => array(
 				"O: b\nS: a\nA: c\nP: d",
