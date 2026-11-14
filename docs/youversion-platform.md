@@ -76,6 +76,17 @@ Related: [bible-quotation-permissions.md](bible-quotation-permissions.md) (quota
 5. **Owner asks YouVersion in writing:** non-commercial status of a free church challenge with an offline cash prize; caching/storage rules; rate limits; whether ERV/VIE2010 can be made available.
 6. If either version is unavailable, keep links for it, and consider an available alternative for in-app text (e.g. BSB 3034, public domain; NIV via Biblica, if licensed).
 
+
+### Running the checks (#79, #78 Gate 1)
+
+The App Key lives only in GitHub, as the environment secret **`YVP_APP_KEY`** of the **`youversion-check`** environment (repository **Settings → Environments → youversion-check → Environment secrets**). Never put it in code, issues, PRs or chat. To rotate it, create a new key in the Platform portal, replace the secret, then revoke the old key.
+
+Run **Actions → YouVersion check → Run workflow** (branch `main`):
+- `check: auth`: one `GET /v1/bibles` request; PASS means the key authenticates (#79).
+- `check: gate1`: also lists the app's licenses, finds ERV and BPT in the catalog (`all_available=true`) and in the app-licensed list, calls `GET /v1/licenses?bible_id=…`, and requests `GET /v1/bibles/{id}/passages/JHN.1.1-18?format=text` (#78).
+
+The job summary shows HTTP status, timing and non-secret metadata only. Passage results show status, reference and content length, never the text. The script (`bin/youversion-check.js`) blanks the key out of anything it prints, on top of GitHub's own masking. The workflow has read-only repository permissions and no deploy secrets.
+
 ## 3. Three ways to show the passage in J-Life
 
 | | **A. External Bible links** | **B. iframe of Bible.com** | **C. Official YouVersion integration** |
