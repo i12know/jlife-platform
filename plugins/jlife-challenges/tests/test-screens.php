@@ -270,6 +270,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertLessThan( strpos( $main, 'version=ERV' ), strpos( $main, 'version=BPT' ), 'Vietnamese first for a Vietnamese participant' );
 		$this->assertStringContainsString( 'Read in Tiếng Việt (BPT)', $main );
 
+		$this->assertStringNotContainsString( '<li>Mark 1:1</li>', $optional, 'no bulleted passage list in the optional readings (#90)' );
 		$this->assertSame( 2, substr_count( $optional, 'class="jl-button"' ) );
 		$this->assertStringContainsString( esc_url( 'https://www.biblegateway.com/passage/?search=Mark+1:1;Luke+3:1-2&version=BPT' ), $optional );
 	}
