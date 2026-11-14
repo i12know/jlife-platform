@@ -335,4 +335,339 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		);
 		$this->assertSame( '', jlife_challenges_render_reader( $no_reading ) );
 	}
+
+	/**
+	 * Clear any simulated form POST.
+	 */
+	public function tear_down() {
+		$this->clear_request();
+		set_query_var( 'jlife_screen', '' );
+		parent::tear_down();
+	}
+
+	/**
+	 * Remove the simulated form POST.
+	 */
+	private function clear_request() {
+		foreach ( array_keys( $_POST ) as $key ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- test helper clearing a simulated POST.
+			unset( $_POST[ $key ], $_REQUEST[ $key ] );
+		}
+	}
+
+	/**
+	 * Simulate a signed-in participant posting the SOAP form for a day.
+	 *
+	 * @param int    $user_id Participant.
+	 * @param string $day_key Day the form belongs to.
+	 * @param string $action  'submit' or 'draft'.
+	 * @param array  $fields  The four fields as typed.
+	 */
+	private function post_soap( $user_id, $day_key, $action, $fields ) {
+		$this->clear_request();
+		wp_set_current_user( $user_id );
+		$data = array_merge(
+			$fields,
+			array(
+				'jl_action'   => $action,
+				'jl_day'      => $day_key,
+				'_jlife_soap' => wp_create_nonce( 'jlife_soap_' . $day_key ),
+			)
+		);
+		foreach ( $data as $key => $value ) {
+			$_POST[ $key ]    = $value;
+			$_REQUEST[ $key ] = $value;
+		}
+	}
+
+	/**
+	 * A participant's day view with a Bible Gateway reading, as the screens get it
+	 * when the reading plan is loaded.
+	 *
+	 * @param int         $user_id Participant.
+	 * @param string|null $day_key Day (null = today).
+	 * @return array
+	 */
+	private function view_with_reading( $user_id, $day_key = null ) {
+		$reading                    = $this->reader_view()['reading'];
+		$reading['day']['title']    = 'John the Baptizer Prepares the Way';
+		$reading['day']['passages'] = array( array( 'display' => 'Luke 3:1-6' ) );
+		return array_merge(
+			jlife_challenges_day_view( $user_id, $day_key ),
+			array(
+				'reading'   => $reading,
+				'languages' => array( 'vi', 'en' ),
+			)
+		);
+	}
+
+	/**
+	 * The SOAP <form> element out of a page body.
+	 *
+	 * @param string $html Page body.
+	 * @return string
+	 */
+	private function form_of( $html ) {
+		$this->assertSame( 1, preg_match( '#<form method="post" class="jl-soap".*?</form>#s', $html, $m ), 'exactly one SOAP form' );
+		return $m[0];
+	}
+
+	/**
+	 * Today (#96), new day: the reading, then the collapsed reader directly above
+	 * the four fields, and "Submit SOAP" with "Save draft". No Write / View-edit
+	 * button leading to /soap.
+	 */
+	public function test_today_new_day_shows_reader_and_form_with_submit_button() {
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) );
+
+		$this->assertStringContainsString( 'John the Baptizer Prepares the Way', $body );
+		$this->assertLessThan( strpos( $body, '<details class="jl-reader">' ), strpos( $body, 'John the Baptizer Prepares the Way' ), 'the reading comes first' );
+		$this->assertStringContainsString( '</details><form method="post" class="jl-soap"', $body, 'the reader sits directly above the form' );
+		$this->assertStringContainsString( esc_html( "Read today's passages" ), $body );
+		$this->assertStringNotContainsString( '<details class="jl-reader" open', $body, 'collapsed by default' );
+
+		$form = $this->form_of( $body );
+		$this->assertSame( 4, substr_count( $form, '<textarea' ) );
+		foreach ( array( 'scripture', 'observation', 'application', 'prayer' ) as $field ) {
+			$this->assertMatchesRegularExpression( '#<textarea[^>]*name="' . $field . '"[^>]*></textarea>#', $form, "$field starts empty" );
+		}
+		$this->assertStringContainsString( 'data-day="d001"', $form );
+		$this->assertStringContainsString( 'data-status="draft"', $form, 'autosave stays on for an unsubmitted day' );
+		$this->assertStringContainsString( 'name="jl_day" value="d001"', $form );
+		$this->assertStringContainsString( 'Submit SOAP', $form );
+		$this->assertStringContainsString( 'Save draft', $form );
+		$this->assertStringNotContainsString( 'Save changes', $form );
+		$this->assertStringContainsString( 'data-insert="Luke 3:1-6"', $form, 'reference chips still work' );
+
+		foreach ( array( 'Write my SOAP', 'View or edit my SOAP', 'Continue my SOAP' ) as $gone ) {
+			$this->assertStringNotContainsString( $gone, $body );
+		}
+		$this->assertStringNotContainsString( 'Share with my group or a chat', $body, 'nothing to share before a submit' );
+		$this->assertStringContainsString( 'Not started yet.', $body );
+		$this->assertStringContainsString( '0 of 104', $body );
+	}
+
+	/**
+	 * Today shows a saved draft in the fields, still with Submit and Save draft.
+	 */
+	public function test_today_prefills_a_draft() {
+		jlife_challenges_save_draft( $this->u['a'], $this->campaign, 'd001', array( 'observation' => 'half-written' ) );
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) );
+		$form = $this->form_of( $body );
+		$this->assertMatchesRegularExpression( '#name="observation"[^>]*>half-written</textarea>#', $form );
+		$this->assertStringContainsString( 'Submit SOAP', $form );
+		$this->assertStringContainsString( 'Save draft', $form );
+		$this->assertStringContainsString( 'Draft saved. Finish all four parts and submit.', $body );
+	}
+
+	/**
+	 * Today (#96), completed day: the saved entry fills the fields, the button
+	 * is "Save changes" (no draft button, no autosave over a submitted entry),
+	 * and sharing stays available.
+	 */
+	public function test_today_completed_day_prefills_and_offers_save_changes() {
+		jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $this->soap() );
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) );
+		$form = $this->form_of( $body );
+
+		$this->assertStringContainsString( '</details><form method="post" class="jl-soap"', $body );
+		$this->assertStringContainsString( 'Save changes', $form );
+		$this->assertStringNotContainsString( 'Submit SOAP', $form );
+		$this->assertStringNotContainsString( 'Save draft', $form );
+		$this->assertStringContainsString( 'data-status="submitted"', $form );
+		$this->assertMatchesRegularExpression( '#name="scripture"[^>]*>John 1:14 \(x\)</textarea>#', $form );
+		$this->assertMatchesRegularExpression( '#name="observation"[^>]*>The Word became flesh \(x\)\.</textarea>#', $form );
+		$this->assertMatchesRegularExpression( '#name="application"[^>]*>Be present with my family \(x\)\.</textarea>#', $form );
+		$this->assertMatchesRegularExpression( '#name="prayer"[^>]*>Lord, help me \(x\)\.</textarea>#', $form );
+
+		$this->assertSame( 1, substr_count( $body, 'Share with my group or a chat' ) );
+		$this->assertStringContainsString( esc_url( add_query_arg( 'day', 'd001', home_url( '/share/' ) ) ), $body );
+		$this->assertStringContainsString( 'Done — 1 point earned.', $body );
+		$this->assertStringContainsString( '1 of 104', $body );
+		$this->assertStringNotContainsString( 'View or edit my SOAP', $body );
+	}
+
+	/**
+	 * After a submit, Today shows the confirmation and one Share button, then the form.
+	 */
+	public function test_today_confirmation_after_submit() {
+		jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $this->soap() );
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ), '', true );
+
+		$this->assertStringContainsString( '<p class="jl-ok" role="status">Done — 1 point earned. Well done! You have 1 of 104.</p>', $body );
+		$this->assertSame( 1, substr_count( $body, 'Share with my group or a chat' ), 'one Share button, not two' );
+		$this->assertStringContainsString( 'Save changes', $body );
+
+		$not_done = jlife_challenges_today_body( $this->view_with_reading( $this->u['b'] ), '', true );
+		$this->assertStringNotContainsString( 'jl-ok', $not_done, 'a hand-typed ?done=1 on an unsubmitted day confirms nothing' );
+	}
+
+	/**
+	 * An incomplete submit from Today keeps what was typed, says so inline, and
+	 * earns nothing.
+	 */
+	public function test_today_incomplete_submit_keeps_text_and_shows_error() {
+		$typed = array(
+			'scripture'   => 'Luke 3:1-6',
+			'observation' => 'typed but not finished',
+			'application' => '',
+			'prayer'      => '',
+		);
+		$this->post_soap( $this->u['a'], 'd001', 'submit', $typed );
+		$state = jlife_challenges_process_soap_request( $this->u['a'], jlife_challenges_day_view( $this->u['a'] ), 'today' );
+
+		$this->assertSame( '', $state['redirect'], 'stays on the page' );
+		$this->assertStringContainsString( 'Please fill in all four parts', $state['error'] );
+		$this->assertSame( $typed, $state['values'] );
+		$this->assertSame( 0, $this->ledger_rows( $this->u['a'] ) );
+
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ), $state['error'], false, $state['values'] );
+		$this->assertStringContainsString( '<p class="jl-err" role="alert">Please fill in all four parts', $body );
+		$this->assertMatchesRegularExpression( '#name="observation"[^>]*>typed but not finished</textarea>#', $body );
+		$this->assertStringContainsString( 'Submit SOAP', $body );
+		$this->assertStringContainsString( 'Save draft', $body );
+	}
+
+	/**
+	 * Save draft from Today stores a draft (no point) and returns to Today.
+	 */
+	public function test_today_save_draft_returns_to_today() {
+		$typed = array(
+			'scripture'   => 'Luke 3:1-6',
+			'observation' => 'draft only',
+			'application' => '',
+			'prayer'      => '',
+		);
+		$this->post_soap( $this->u['a'], 'd001', 'draft', $typed );
+		$state = jlife_challenges_process_soap_request( $this->u['a'], jlife_challenges_day_view( $this->u['a'] ), 'today' );
+
+		$this->assertSame( '', $state['error'] );
+		$this->assertSame( home_url( '/today/' ), $state['redirect'] );
+		$this->assertSame( 'draft', jlife_challenges_day_view( $this->u['a'] )['status'] );
+		$this->assertSame( 'draft only', jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' )['observation'] );
+		$this->assertSame( 0, $this->ledger_rows( $this->u['a'] ) );
+	}
+
+	/**
+	 * Submit from Today earns one point and returns to Today (not /soap); editing
+	 * the day from Today and from /soap keeps the day at exactly one point. The
+	 * ledger's one row per person per day is what enforces it.
+	 */
+	public function test_submit_then_edit_from_today_leaves_one_point() {
+		$first = $this->soap( 'first' );
+		$this->post_soap( $this->u['a'], 'd001', 'submit', $first );
+		$state = jlife_challenges_process_soap_request( $this->u['a'], jlife_challenges_day_view( $this->u['a'] ), 'today' );
+
+		$this->assertSame( '', $state['error'] );
+		$this->assertSame( add_query_arg( 'done', 1, home_url( '/today/' ) ), $state['redirect'], 'back to Today with the confirmation, not /soap' );
+		$view = jlife_challenges_day_view( $this->u['a'] );
+		$this->assertSame( 'earned', $view['status'] );
+		$this->assertSame( 1, $view['points'] );
+		$this->assertSame( 1, $this->ledger_rows( $this->u['a'] ) );
+
+		// Edit from Today: the form is now "Save changes" with the saved text.
+		$this->assertStringContainsString( 'Save changes', $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) ) );
+		$edited = $this->soap( 'edited' );
+		$this->post_soap( $this->u['a'], 'd001', 'submit', $edited );
+		$state = jlife_challenges_process_soap_request( $this->u['a'], jlife_challenges_day_view( $this->u['a'] ), 'today' );
+
+		$this->assertSame( '', $state['error'] );
+		$this->assertSame( add_query_arg( 'done', 1, home_url( '/today/' ) ), $state['redirect'] );
+		$entry = jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' );
+		$this->assertSame( $edited['observation'], $entry['observation'], 'the edit is saved' );
+		$this->assertSame( 2, (int) $entry['revision'], 'as a revision of the same entry' );
+		$this->assertSame( 1, $this->ledger_rows( $this->u['a'] ), 'still one ledger row for the day' );
+		$this->assertSame( 1, jlife_challenges_progress( $this->u['a'], $this->u['a'], $this->campaign )['points'], 'the total stays at one point' );
+		$this->assertSame( 1, jlife_challenges_day_view( $this->u['a'] )['points'] );
+		$this->assertSame( 'earned', jlife_challenges_day_view( $this->u['a'] )['status'] );
+
+		// Edit again on a later day, from /soap?day=d001 (My Marathon / share links).
+		$this->set_now( '2026-12-24 20:00:00' ); // Day 5, past the grace window.
+		$later = $this->soap( 'later' );
+		$this->post_soap( $this->u['a'], 'd001', 'submit', $later );
+		$state = jlife_challenges_process_soap_request( $this->u['a'], jlife_challenges_day_view( $this->u['a'], 'd001' ), 'soap' );
+
+		$this->assertSame( '', $state['error'] );
+		$this->assertSame( add_query_arg( 'done', 1, add_query_arg( 'day', 'd001', home_url( '/soap/' ) ) ), $state['redirect'] );
+		$this->assertSame( $later['prayer'], jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' )['prayer'] );
+		$this->assertSame( 1, $this->ledger_rows( $this->u['a'] ) );
+		$this->assertSame( 1, jlife_challenges_progress( $this->u['a'], $this->u['a'], $this->campaign )['points'] );
+	}
+
+	/**
+	 * A form opened before midnight and sent after it still saves to the day it
+	 * was written for (its nonce and day travel with the form), and returns to
+	 * that day's /soap page since Today has moved on.
+	 */
+	public function test_today_form_sent_after_midnight_saves_to_its_own_day() {
+		$typed = $this->soap( 'late-night' );
+		$this->post_soap( $this->u['a'], 'd001', 'submit', $typed );
+		$this->set_now( '2026-12-21 18:00:00' ); // Day 2, 10:00 AM Pacific.
+		$this->assertSame( 'd001', jlife_challenges_posted_day_key() );
+
+		$view  = jlife_challenges_day_view( $this->u['a'], jlife_challenges_posted_day_key() );
+		$state = jlife_challenges_process_soap_request( $this->u['a'], $view, 'today' );
+
+		$this->assertSame( '', $state['error'] );
+		$this->assertSame( add_query_arg( 'done', 1, add_query_arg( 'day', 'd001', home_url( '/soap/' ) ) ), $state['redirect'] );
+		$this->assertSame( $typed['prayer'], jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' )['prayer'] );
+		$this->assertNull( jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd002' ) );
+		$this->assertSame( 1, $this->ledger_rows( $this->u['a'] ) );
+
+		$this->clear_request();
+		$this->assertNull( jlife_challenges_posted_day_key(), 'a plain visit means today' );
+	}
+
+	/**
+	 * /soap?day=dNNN (My Marathon and share links) still renders the reading, the
+	 * reader and the form for that day, with the same markup Today uses.
+	 */
+	public function test_soap_day_link_still_renders_the_same_form() {
+		$this->set_now( '2026-12-29 20:00:00' ); // Day 10.
+		$view = $this->view_with_reading( $this->u['a'], 'd003' );
+		$this->assertSame( 'active', $view['state'] );
+		$this->assertFalse( $view['is_today'] );
+
+		$body = jlife_challenges_soap_body( $view );
+		$this->assertStringContainsString( 'Day 3 · ', $body );
+		$this->assertStringContainsString( 'John the Baptizer Prepares the Way', $body );
+		$this->assertStringContainsString( '</details><form method="post" class="jl-soap"', $body );
+		$this->assertStringContainsString( 'data-day="d003"', $body );
+		$this->assertStringContainsString( 'Submit SOAP', $body );
+		$this->assertStringContainsString( 'You can still write this one', jlife_challenges_status_text( $view ) );
+
+		$today = $this->view_with_reading( $this->u['a'], 'd010' );
+		$this->assertSame( $this->form_of( jlife_challenges_soap_body( $today ) ), $this->form_of( jlife_challenges_today_body( $today ) ), 'Today and /soap share one form renderer' );
+	}
+
+	/**
+	 * Submitting from /soap?day= still returns to /soap with the confirmation and
+	 * Share; a completed day there is "Save changes" with the saved entry.
+	 */
+	public function test_soap_day_submit_returns_to_soap_with_confirmation() {
+		$this->post_soap( $this->u['a'], 'd001', 'submit', $this->soap() );
+		$state = jlife_challenges_process_soap_request( $this->u['a'], jlife_challenges_day_view( $this->u['a'], 'd001' ), 'soap' );
+		$this->assertSame( add_query_arg( 'done', 1, add_query_arg( 'day', 'd001', home_url( '/soap/' ) ) ), $state['redirect'] );
+
+		$body = jlife_challenges_soap_body( $this->view_with_reading( $this->u['a'], 'd001' ), '', true );
+		$this->assertStringContainsString( 'Done — 1 point earned. Well done! You have 1 of 104.', $body );
+		$this->assertSame( 1, substr_count( $body, 'Share with my group or a chat' ) );
+		$this->assertStringContainsString( 'Save changes', $body );
+		$this->assertMatchesRegularExpression( '#name="scripture"[^>]*>John 1:14 \(x\)</textarea>#', $body );
+	}
+
+	/**
+	 * The SOAP page script (autosave, chips, reader loading) is loaded for Today
+	 * too, and Sign out on Today returns to Today, not /soap.
+	 */
+	public function test_page_loads_soap_script_and_signout_returns_to_today() {
+		set_query_var( 'jlife_screen', 'today' );
+		$html = jlife_challenges_page_html( 'Today', jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ), 'today', 'soap' );
+		$this->assertStringContainsString( 'assets/soap.js', $html );
+		$this->assertStringContainsString( 'back=today', $html );
+		$this->assertStringNotContainsString( 'back=soap', $html );
+
+		set_query_var( 'jlife_screen', 'soap' );
+		$html = jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' );
+		$this->assertStringContainsString( 'back=soap', $html );
+	}
 }
