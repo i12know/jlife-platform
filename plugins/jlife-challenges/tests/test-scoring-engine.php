@@ -317,7 +317,7 @@ class Test_Scoring_Engine extends Jlife_Challenges_TestCase {
 		$bodies = $wpdb->get_col( "SELECT body FROM {$table} ORDER BY id" ); // phpcs:ignore WordPress.DB
 		$this->assertSame( "S — Scripture\nJohn 1:14\n\nO — Observation\nLine one\nLine two\n\nAfter a blank\n\nA — Application\nBe present\n\nP — Prayer\nLord, help me", $bodies[0] );
 		$this->assertSame( "S — Scripture\nx\n\nO — Observation\n\nA — Application\ny\n\nP — Prayer\nz", $bodies[1], 'an empty part keeps its heading' );
-		$this->assertSame( '', $bodies[2], 'nothing to move' );
+		$this->assertSame( '', (string) $bodies[2], 'nothing to move (wpdb::get_col() returns null for an empty string)' );
 		$this->assertSame( 'already new', $bodies[3], 'a row with a body is left alone' );
 		$this->assertTrue( $this->score( $bodies[0] )['passes'], 'migrated entries score' );
 
