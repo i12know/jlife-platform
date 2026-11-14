@@ -118,6 +118,8 @@
 	if (!reader) { return; }
 
 	function load(pane) {
+		if (!pane) { return; }
+		// A pane for a language that isn't framed holds only a link: nothing to load.
 		var frame = pane.querySelector('iframe[data-src]');
 		if (!frame || frame.getAttribute('src')) { return; }
 		var fail = pane.querySelector('.jl-reader-fail');

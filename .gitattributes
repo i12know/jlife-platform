@@ -1,0 +1,8 @@
+# Check out text files with LF on every platform (matches .editorconfig).
+# The reading-plan validator compares committed JSON byte-for-byte with
+# freshly built output, so CRLF checkouts (core.autocrlf=true on Windows)
+# would fail it locally while CI passes.
+* text=auto eol=lf
+
+# Committed with CRLF as exported for spreadsheet review; keep it byte-exact.
+content/harmony/robertson-1922-outline.review.csv -text
