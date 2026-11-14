@@ -93,8 +93,10 @@ function jlife_challenges_copy_legacy_to_body( $table, $skip_empty = false ) {
 	$select = '`id`, `' . implode( '`, `', $legacy ) . '`';
 	$last   = 0;
 	do {
-		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT {$select} FROM `{$table}` WHERE id > %d AND (body IS NULL OR body = '') ORDER BY id LIMIT 200", $last ), ARRAY_A );
-		foreach ( (array) $rows as $row ) {
+		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT {$select} FROM `{$table}` WHERE id > %d AND (body IS NULL OR body = '') ORDER BY id LIMIT 200", $last ), ARRAY_A );
+		$rows  = is_array( $rows ) ? $rows : array();
+		$fetch = count( $rows );
+		foreach ( $rows as $row ) {
 			$last = (int) $row['id'];
 			$body = jlife_challenges_join_legacy_row( $row, $skip_empty );
 			if ( '' === $body ) {
@@ -106,7 +108,7 @@ function jlife_challenges_copy_legacy_to_body( $table, $skip_empty = false ) {
 				++$result['migrated'];
 			}
 		}
-	} while ( is_array( $rows ) && 200 === count( $rows ) );
+	} while ( 200 === $fetch );
 	return $result;
 }
 

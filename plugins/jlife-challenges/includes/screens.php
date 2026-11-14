@@ -462,8 +462,8 @@ function jlife_challenges_process_soap_request( $user_id, $view, $screen ) {
 		$state['error'] = $r->get_error_message();
 		return $state;
 	}
-	$flags                                         = array();
-	$flags[ $r['passes'] ? 'done' : 'incomplete' ] = 1;
+	$key   = $r['passes'] ? 'done' : 'incomplete';
+	$flags = array( $key => 1 );
 	if ( 'shared' === $r['share']['status'] ) {
 		$flags['shared'] = 1;
 	} elseif ( 'failed' === $r['share']['status'] ) {
@@ -611,6 +611,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$text      = null === $state['text'] ? jlife_challenges_entry_text( $view ) : (string) $state['text'];
 	$submitted = jlife_challenges_is_submitted( $view );
 	$headings  = jlife_challenges_soap_headings();
+	$shared    = $view['share_status'] ?? '';
 	$chips     = '';
 	foreach ( (array) ( $view['reading']['day']['passages'] ?? array() ) as $p ) {
 		$chips .= '<button type="button" class="jl-chip" data-insert="' . esc_attr( (string) $p['display'] ) . '">' . esc_html( (string) $p['display'] ) . '</button>';
@@ -646,7 +647,6 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		. '<p class="jl-saved" aria-live="polite"></p>'
 		. '<label class="jl-share-opt"><input type="checkbox" name="jl_share" value="1"' . checked( $state['share'], true, false ) . '> <span>' . esc_html__( 'Share this with my group', 'jlife-challenges' ) . '</span></label>'
 		. '<small class="jl-share-note">' . esc_html__( 'This shares the whole entry, including your Prayer, with your group. Leave it unticked to keep it private.', 'jlife-challenges' ) . '</small>';
-	$shared = $view['share_status'] ?? '';
 	if ( 'shared' === $shared ) {
 		$out .= '<small class="jl-share-note">' . esc_html__( 'Your group already has this day. Tick the box and save to update it.', 'jlife-challenges' ) . '</small>';
 	}
