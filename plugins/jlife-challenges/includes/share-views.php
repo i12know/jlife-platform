@@ -1,19 +1,14 @@
 <?php
 /**
  * View models for sharing (M7, #62): the share page and the My Group feed.
- * Pure data, no output. Sharing is always a separate, deliberate step after
- * Submit and never changes points.
+ * Pure data, no output. Sharing is always a deliberate choice (the box on the
+ * SOAP form, or /share) and never changes points. The whole entry is shared
+ * (#98); there are no per-part choices.
  *
  * @package jlife-challenges
  */
 
 defined( 'ABSPATH' ) || exit;
-
-/**
- * Fields ticked by default on the share page (Prayer stays private unless
- * the author ticks it).
- */
-const JLIFE_CHALLENGES_SHARE_DEFAULT = array( 'scripture', 'observation', 'application' );
 
 /**
  * The author's live share of one entry in their current group, or null.
@@ -31,12 +26,12 @@ function jlife_challenges_current_share( $user_id, $entry_id, $group_id ) {
 }
 
 /**
- * Data for /share?day=dNNN: the author's submitted entry, which fields are
- * ticked, the existing group post, and whether group posting is allowed.
+ * Data for /share?day=dNNN: the author's entry (shareable once it has text),
+ * the existing group post, and whether group posting is allowed.
  *
  * @param int         $user_id Author.
  * @param string|null $day_key Day.
- * @return array Day view plus: shareable, share, checked[], can_post, post_block.
+ * @return array Day view plus: shareable, share, can_post, post_block.
  */
 function jlife_challenges_share_view( $user_id, $day_key ) {
 	$view = jlife_challenges_day_view( $user_id, $day_key );
@@ -44,9 +39,8 @@ function jlife_challenges_share_view( $user_id, $day_key ) {
 		return $view;
 	}
 	$entry              = $view['entry'];
-	$view['shareable']  = $entry && 'submitted' === $entry['status'];
+	$view['shareable']  = $entry && '' !== trim( (string) $entry['body'] );
 	$view['share']      = null;
-	$view['checked']    = JLIFE_CHALLENGES_SHARE_DEFAULT;
 	$view['can_post']   = false;
 	$view['post_block'] = '';
 	if ( ! $view['shareable'] ) {
@@ -55,9 +49,6 @@ function jlife_challenges_share_view( $user_id, $day_key ) {
 	$enrollment = jlife_challenges_active_enrollment( (int) $view['campaign']['id'], $user_id );
 	if ( $enrollment ) {
 		$view['share'] = jlife_challenges_current_share( $user_id, (int) $entry['id'], (int) $enrollment['group_id'] );
-		if ( $view['share'] ) {
-			$view['checked'] = array_values( array_intersect( JLIFE_CHALLENGES_FIELDS, explode( ',', (string) $view['share']['fields'] ) ) );
-		}
 		if ( jlife_challenges_needs_guardian_consent( $enrollment ) ) {
 			$view['post_block'] = 'guardian';
 		} elseif ( $view['share'] && 'hidden' === $view['share']['status'] ) {
@@ -70,26 +61,22 @@ function jlife_challenges_share_view( $user_id, $day_key ) {
 }
 
 /**
- * The text for "Send to a chat": the day, the reading references, the
- * author's chosen words and a public link to that day's reading page. Never
- * a sign-in code, session, invite or anyone else's data.
+ * The text for "Send to a chat": the day, the reading references, the author's
+ * whole entry and a public link to that day's reading page. Never a sign-in
+ * code, session, invite or anyone else's data.
  *
- * @param array    $view   Share view (active).
- * @param string[] $fields Chosen fields.
+ * @param array $view Share view (active).
  * @return string
  */
-function jlife_challenges_chat_text( $view, $fields ) {
-	$labels = jlife_challenges_field_labels();
-	$day    = $view['reading']['day'] ?? array();
-	$refs   = array_map( static fn( $p ) => (string) $p['display'], (array) ( $day['passages'] ?? array() ) );
+function jlife_challenges_chat_text( $view ) {
+	$day  = $view['reading']['day'] ?? array();
+	$refs = array_map( static fn( $p ) => (string) $p['display'], (array) ( $day['passages'] ?? array() ) );
 	/* translators: 1: day number, 2: Bible references. */
 	$lines = array( sprintf( __( 'Bible Marathon · Day %1$d · %2$s', 'jlife-challenges' ), (int) $view['index'], implode( '; ', $refs ) ) );
-	foreach ( JLIFE_CHALLENGES_FIELDS as $f ) {
-		if ( in_array( $f, (array) $fields, true ) && $view['entry'] && '' !== trim( (string) $view['entry'][ $f ] ) ) {
-			$lines[] = '';
-			$lines[] = $labels[ $f ][0];
-			$lines[] = trim( (string) $view['entry'][ $f ] );
-		}
+	$body  = $view['entry'] ? trim( (string) $view['entry']['body'] ) : '';
+	if ( '' !== $body ) {
+		$lines[] = '';
+		$lines[] = $body;
 	}
 	$url = jlife_challenges_public_reading_url( $view );
 	if ( '' !== $url ) {

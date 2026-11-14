@@ -2,7 +2,8 @@
 /**
  * REST endpoint for SOAP draft autosave (M6, #61). Signed-in authors only;
  * nonce-checked by WordPress's REST cookie authentication. Submitting stays a
- * plain form POST so it works without JavaScript.
+ * plain form POST so it works without JavaScript. A draft is one text (#98);
+ * it is never shared and never scored.
  *
  * @package jlife-challenges
  */
@@ -30,9 +31,13 @@ function jlife_challenges_register_rest() {
 					'type'     => 'string',
 					'required' => true,
 				),
+				'text'        => array(
+					'type'     => 'string',
+					'required' => false,
+				),
 				'fields'      => array(
 					'type'     => 'object',
-					'required' => true,
+					'required' => false,
 				),
 			),
 			'callback'            => 'jlife_challenges_rest_save_draft',
@@ -47,11 +52,24 @@ function jlife_challenges_register_rest() {
  * @return WP_REST_Response|WP_Error
  */
 function jlife_challenges_rest_save_draft( WP_REST_Request $request ) {
+	$text = $request['text'];
+	if ( ! is_string( $text ) ) {
+		// A page open from before #98 still sends the four parts: join them.
+		$parts = (array) $request['fields'];
+		if ( ! $parts ) {
+			return new WP_Error( 'jlife_text_missing', 'Missing text.', array( 'status' => 400 ) );
+		}
+		$sections = array();
+		foreach ( JLIFE_CHALLENGES_LEGACY_COLUMNS as $column => $letter ) {
+			$sections[ $letter ] = is_scalar( $parts[ $column ] ?? null ) ? (string) $parts[ $column ] : '';
+		}
+		$text = jlife_challenges_join_sections( $sections, jlife_challenges_soap_headings_en() );
+	}
 	$id = jlife_challenges_save_draft(
 		get_current_user_id(),
 		(int) $request['campaign_id'],
 		(string) $request['day_key'],
-		(array) $request['fields']
+		$text
 	);
 	if ( is_wp_error( $id ) ) {
 		$id->add_data( array( 'status' => 'jlife_denied' === $id->get_error_code() ? 403 : 400 ) );

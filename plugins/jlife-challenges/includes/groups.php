@@ -28,9 +28,10 @@ function jlife_challenges_create_campaign( $actor, $args ) {
 	$args = wp_parse_args(
 		$args,
 		array(
-			'timezone'   => 'America/Los_Angeles',
-			'grace_days' => 1,
-			'status'     => 'draft',
+			'timezone'       => 'America/Los_Angeles',
+			'grace_days'     => 1,
+			'status'         => 'draft',
+			'scoring_engine' => JLIFE_CHALLENGES_DEFAULT_ENGINE,
 		)
 	);
 	foreach ( array( 'campaign_key', 'plan_id', 'title', 'start_date', 'end_date' ) as $k ) {
@@ -45,21 +46,26 @@ function jlife_challenges_create_campaign( $actor, $args ) {
 	if ( ! in_array( $args['timezone'], timezone_identifiers_list(), true ) ) {
 		return new WP_Error( 'jlife_campaign_invalid', 'Invalid timezone.' );
 	}
+	$engines = jlife_challenges_scoring_engines();
+	if ( ! isset( $engines[ (string) $args['scoring_engine'] ] ) ) {
+		return new WP_Error( 'jlife_campaign_invalid', 'Unknown scoring engine.' );
+	}
 	global $wpdb;
 	$ok = $wpdb->insert(
 		jlife_challenges_table( 'campaigns' ),
 		array(
-			'campaign_key' => sanitize_key( $args['campaign_key'] ),
-			'plan_id'      => (string) $args['plan_id'],
-			'title'        => sanitize_text_field( $args['title'] ),
-			'start_date'   => $args['start_date'],
-			'end_date'     => $args['end_date'],
-			'timezone'     => $args['timezone'],
-			'grace_days'   => max( 0, (int) $args['grace_days'] ),
-			'status'       => (string) $args['status'],
-			'created'      => current_time( 'mysql', true ),
+			'campaign_key'   => sanitize_key( $args['campaign_key'] ),
+			'plan_id'        => (string) $args['plan_id'],
+			'title'          => sanitize_text_field( $args['title'] ),
+			'start_date'     => $args['start_date'],
+			'end_date'       => $args['end_date'],
+			'timezone'       => $args['timezone'],
+			'grace_days'     => max( 0, (int) $args['grace_days'] ),
+			'status'         => (string) $args['status'],
+			'scoring_engine' => (string) $args['scoring_engine'],
+			'created'        => current_time( 'mysql', true ),
 		),
-		array( '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s' )
+		array( '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s' )
 	);
 	if ( false === $ok ) {
 		return new WP_Error( 'jlife_db', 'Could not create campaign.' );

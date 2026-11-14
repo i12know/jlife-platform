@@ -18,6 +18,8 @@
 defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/includes/schema.php';
+require_once __DIR__ . '/includes/scoring-engine.php';
+require_once __DIR__ . '/includes/upgrade.php';
 require_once __DIR__ . '/includes/calendar.php';
 require_once __DIR__ . '/includes/audit.php';
 require_once __DIR__ . '/includes/gate.php';

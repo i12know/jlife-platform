@@ -3,27 +3,15 @@
  * Sharing screens (M7, #62): /share?day=dNNN and /group.
  *
  * One share flow, two destinations: "Post to My Group" (a stored snapshot of
- * the chosen fields) and "Send to a chat" (the phone's share sheet or copy;
- * nothing stored). Never automatic, never part of Submit, never scored.
+ * the whole entry, #98) and "Send to a chat" (the phone's share sheet or copy;
+ * nothing stored). Never automatic, never scored. The SOAP form's "Share this
+ * with my group" box is the quick way to the first destination; this page is
+ * where a post is previewed, updated or removed.
  *
  * @package jlife-challenges
  */
 
 defined( 'ABSPATH' ) || exit;
-
-/**
- * A "Share" link for a submitted day ('' otherwise).
- *
- * @param array $view Day view.
- * @return string
- */
-function jlife_challenges_share_button( $view ) {
-	if ( ! in_array( $view['status'] ?? '', array( 'earned', 'late_no_point', 'submitted' ), true ) ) {
-		return '';
-	}
-	return '<a class="jl-button" href="' . esc_url( add_query_arg( 'day', $view['day_key'], home_url( '/share/' ) ) ) . '">'
-		. esc_html__( 'Share with my group or a chat', 'jlife-challenges' ) . '</a>';
-}
 
 /**
  * Handle a share-page POST (post or remove). Redirects on success.
@@ -33,11 +21,8 @@ function jlife_challenges_share_button( $view ) {
  * @return string Error message.
  */
 function jlife_challenges_handle_share_post( $user_id, $view ) {
-	// phpcs:disable WordPress.Security.NonceVerification.Missing -- verified by the caller.
-	$action = isset( $_POST['jl_share_action'] ) ? sanitize_key( wp_unslash( $_POST['jl_share_action'] ) ) : '';
-	$fields = isset( $_POST['fields'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['fields'] ) ) : array();
-	// phpcs:enable WordPress.Security.NonceVerification.Missing
-	$back = add_query_arg( 'day', $view['day_key'], home_url( '/share/' ) );
+	$action = isset( $_POST['jl_share_action'] ) ? sanitize_key( wp_unslash( $_POST['jl_share_action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by the caller.
+	$back   = add_query_arg( 'day', $view['day_key'], home_url( '/share/' ) );
 	if ( 'remove' === $action ) {
 		$r = $view['share'] ? jlife_challenges_unshare( $user_id, (int) $view['share']['id'] ) : jlife_challenges_denied();
 		if ( true === $r ) {
@@ -45,7 +30,7 @@ function jlife_challenges_handle_share_post( $user_id, $view ) {
 			exit;
 		}
 	} else {
-		$r = jlife_challenges_share( $user_id, (int) $view['entry']['id'], $fields );
+		$r = jlife_challenges_share( $user_id, (int) $view['entry']['id'] );
 		if ( ! is_wp_error( $r ) ) {
 			wp_safe_redirect( add_query_arg( 'posted', 1, $back ) );
 			exit;
@@ -68,10 +53,10 @@ function jlife_challenges_screen_share() {
 	}
 	/* translators: %d: day number. */
 	$body = '<h1>' . esc_html( sprintf( __( 'Share Day %d', 'jlife-challenges' ), $view['index'] ) ) . '</h1>'
-		. '<p>' . esc_html__( 'Sharing is optional and never changes your points. Choose what to share; the rest stays private.', 'jlife-challenges' ) . '</p>';
+		. '<p>' . esc_html__( 'Sharing is optional and never changes your points. It shares your whole entry, including your prayer.', 'jlife-challenges' ) . '</p>';
 	if ( ! $view['shareable'] ) {
-		$body .= '<p>' . esc_html__( 'Submit your SOAP for this day first, then you can share part of it.', 'jlife-challenges' ) . '</p>'
-			. '<a class="jl-button jl-primary" href="' . esc_url( add_query_arg( 'day', $view['day_key'], home_url( '/soap/' ) ) ) . '">' . esc_html__( 'Go to my SOAP', 'jlife-challenges' ) . '</a>';
+		$body .= '<p>' . esc_html__( 'Write your SOAP for this day first, then you can share it.', 'jlife-challenges' ) . '</p>'
+			. '<a class="jl-button jl-primary" href="' . esc_url( jlife_challenges_screen_url( 'soap', $view['day_key'] ) ) . '">' . esc_html__( 'Go to my SOAP', 'jlife-challenges' ) . '</a>';
 		jlife_challenges_send_page( __( 'Share', 'jlife-challenges' ), $body, 'group' );
 	}
 
@@ -90,38 +75,26 @@ function jlife_challenges_screen_share() {
 		$body .= '<p class="jl-err" role="alert">' . esc_html( $error ) . '</p>';
 	}
 
-	// Field choices with the exact text, then the preview.
-	$labels = jlife_challenges_field_labels();
-	$parts  = array();
-	$form   = '<form method="post" class="jl-share" id="jl-share-form">' . wp_nonce_field( 'jlife_share_' . $view['day_key'], '_jlife_share', true, false )
-		. '<fieldset><legend>' . esc_html__( '1. Choose what to share', 'jlife-challenges' ) . '</legend>';
-	foreach ( JLIFE_CHALLENGES_FIELDS as $f ) {
-		$text = trim( (string) $view['entry'][ $f ] );
-		if ( '' === $text ) {
-			continue;
-		}
-		$parts[ $f ] = array( $labels[ $f ][0], $text );
-		$form       .= '<label class="jl-pick"><input type="checkbox" name="fields[]" value="' . esc_attr( $f ) . '"' . checked( in_array( $f, $view['checked'], true ), true, false ) . '> '
-			. '<span><strong>' . esc_html( $labels[ $f ][0] ) . '</strong><span class="jl-excerpt">' . esc_html( $text ) . '</span></span></label>';
-	}
-	$form .= '</fieldset>';
-
-	$chat  = jlife_challenges_chat_text( $view, $view['checked'] );
-	$form .= '<h2>' . esc_html__( '2. Preview', 'jlife-challenges' ) . '</h2>'
+	// The exact text, then the destinations.
+	$chat = jlife_challenges_chat_text( $view );
+	$form = '<form method="post" class="jl-share" id="jl-share-form">' . wp_nonce_field( 'jlife_share_' . $view['day_key'], '_jlife_share', true, false )
+		. '<h2>' . esc_html__( '1. Preview', 'jlife-challenges' ) . '</h2>'
 		. '<pre class="jl-preview" id="jl-preview" aria-live="polite">' . esc_html( $chat ) . '</pre>';
 
 	// Destination 1: My Group.
-	$form .= '<h2>' . esc_html__( '3. Share it', 'jlife-challenges' ) . '</h2><section class="jl-dest"><h3>' . esc_html__( 'Post to My Group', 'jlife-challenges' ) . '</h3>';
+	$form .= '<h2>' . esc_html__( '2. Share it', 'jlife-challenges' ) . '</h2><section class="jl-dest"><h3>' . esc_html__( 'Post to My Group', 'jlife-challenges' ) . '</h3>';
 	if ( 'guardian' === $view['post_block'] ) {
 		$form .= '<p>' . esc_html__( 'Posting to your group starts once a parent or guardian has agreed.', 'jlife-challenges' ) . '</p>';
 	} elseif ( 'hidden' === $view['post_block'] ) {
 		/* translators: %s: reason given by the organizer. */
 		$form .= '<p>' . esc_html( sprintf( __( 'An organizer hid this post from your group: %s', 'jlife-challenges' ), (string) $view['share']['hidden_reason'] ) ) . '</p>';
 	} else {
-		if ( $view['share'] ) {
-			$form .= '<p>' . esc_html__( 'Your group can see the parts you posted for this day. Posting again replaces it.', 'jlife-challenges' ) . '</p>';
-		}
-		$form .= '<button type="submit" name="jl_share_action" value="post" class="jl-button jl-primary">'
+		$form .= '<p>' . esc_html(
+			$view['share']
+				? __( 'Your group can see this entry for this day. Posting again updates it with your latest text.', 'jlife-challenges' )
+				: __( 'Your group will see the whole entry above, from your latest saved text.', 'jlife-challenges' )
+		) . '</p>'
+			. '<button type="submit" name="jl_share_action" value="post" class="jl-button jl-primary">'
 			. esc_html( $view['share'] ? __( 'Update my group post', 'jlife-challenges' ) : __( 'Post to My Group', 'jlife-challenges' ) ) . '</button>';
 	}
 	if ( $view['share'] ) {
@@ -137,16 +110,8 @@ function jlife_challenges_screen_share() {
 		. '<p class="jl-saved" id="jl-copied" aria-live="polite"></p>'
 		. '<noscript><p>' . esc_html__( 'Select and copy the preview text above.', 'jlife-challenges' ) . '</p></noscript></section></form>';
 
-	$url  = jlife_challenges_public_reading_url( $view );
-	$refs = implode( '; ', array_map( static fn( $p ) => (string) $p['display'], (array) ( $view['reading']['day']['passages'] ?? array() ) ) );
-	/* translators: 1: day number, 2: Bible references. */
-	$head = sprintf( __( 'Bible Marathon · Day %1$d · %2$s', 'jlife-challenges' ), (int) $view['index'], $refs );
-	/* translators: %s: link to the day's reading. */
-	$foot  = '' !== $url ? sprintf( __( "Today's reading: %s", 'jlife-challenges' ), $url ) : '';
 	$data  = array(
-		'head'   => $head,
-		'parts'  => $parts,
-		'foot'   => $foot,
+		'text'   => $chat,
 		'copied' => __( 'Copied. Paste it into your chat.', 'jlife-challenges' ),
 	);
 	$body .= '<div id="jl-share-data" data-share="' . esc_attr( (string) wp_json_encode( $data ) ) . '"></div>' . $form;
@@ -162,21 +127,18 @@ function jlife_challenges_screen_group() {
 	if ( 'ok' !== $view['state'] ) {
 		jlife_challenges_send_page( __( 'My Group', 'jlife-challenges' ), (string) jlife_challenges_render_no_day( array( 'state' => 'not_enrolled' ) ), 'group' );
 	}
-	$labels = jlife_challenges_field_labels();
-	$body   = '<h1>' . esc_html__( 'My Group', 'jlife-challenges' ) . '</h1>'
+	$body = '<h1>' . esc_html__( 'My Group', 'jlife-challenges' ) . '</h1>'
 		. ( '' !== $view['group_name'] ? '<p class="jl-day">' . esc_html( $view['group_name'] ) . '</p>' : '' )
 		. '<p>' . esc_html__( 'What members chose to share from their daily reading. Only your group can see this. Points are personal and never shown here.', 'jlife-challenges' ) . '</p>';
 	if ( ! $view['posts'] ) {
-		$body .= '<p class="jl-empty">' . esc_html__( 'Nothing shared yet. After you submit a SOAP, you can choose to share part of it here.', 'jlife-challenges' ) . '</p>';
+		$body .= '<p class="jl-empty">' . esc_html__( 'Nothing shared yet. When you save your SOAP, tick "Share this with my group" to post it here.', 'jlife-challenges' ) . '</p>';
 	}
 	foreach ( $view['posts'] as $p ) {
 		/* translators: 1: first name, 2: day number. */
 		$meta  = sprintf( __( '%1$s · Day %2$d', 'jlife-challenges' ), $p['author'], (int) $p['index'] );
 		$body .= '<article class="jl-post' . ( $p['mine'] ? ' jl-mine' : '' ) . '"><p class="jl-post-meta"><strong>' . esc_html( $meta ) . '</strong>'
-			. ( '' !== $p['refs'] ? ' · ' . esc_html( $p['refs'] ) : '' ) . '</p>';
-		foreach ( $p['fields'] as $f => $text ) {
-			$body .= '<h3>' . esc_html( $labels[ $f ][0] ?? $f ) . '</h3><p class="jl-excerpt">' . esc_html( $text ) . '</p>';
-		}
+			. ( '' !== $p['refs'] ? ' · ' . esc_html( $p['refs'] ) : '' ) . '</p>'
+			. '<p class="jl-excerpt">' . esc_html( $p['body'] ) . '</p>';
 		if ( $p['mine'] ) {
 			$body .= '<p><a href="' . esc_url( add_query_arg( 'day', $p['day_key'], home_url( '/share/' ) ) ) . '">' . esc_html__( 'Yours — change or remove', 'jlife-challenges' ) . '</a></p>';
 		}

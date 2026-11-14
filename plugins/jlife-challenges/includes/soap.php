@@ -1,12 +1,17 @@
 <?php
 /**
- * SOAP entries and scoring (docs/challenges-engine-design.md §3).
+ * SOAP entries and scoring (docs/challenges-engine-design.md §3, §3a).
  *
- * - An entry is private to its author. Drafts save server-side.
- * - Submitting needs all four fields. The first complete submission for a
- *   campaign day writes the ledger row once (database UNIQUE key): 1 point if
- *   on time (D1), 0 with a reason if late (D2). Later edits keep a revision
- *   history and never change the ledger (D3).
+ * - An entry is ONE free text (#98), private to its author. Drafts save
+ *   server-side. New entries start from the S/O/A/P heading template.
+ * - Submitting saves the text first, then runs it through the campaign's
+ *   scoring engine (scoring-engine.php) synchronously. If the engine passes
+ *   it, the first passing submission for a campaign day writes the ledger row
+ *   once (database UNIQUE key): 1 point if on time (D1), 0 with a reason if
+ *   late (D2). If it doesn't, the text stays saved with no point and the
+ *   reasons are returned; submitting again after editing can still earn it.
+ *   Later edits keep a revision history and never change the ledger (D3), and
+ *   a point is never taken back.
  * - Personal entries (campaign 0) are unscored, one per calendar day (P4).
  * - Never pre-filled with Bible text.
  *
@@ -17,24 +22,20 @@ defined( 'ABSPATH' ) || exit;
 
 // phpcs:disable WordPress.DB.DirectDatabaseQuery -- custom tables are this plugin's data layer; every query goes through the gate; WordPress has no API for them.
 
-const JLIFE_CHALLENGES_FIELDS     = array( 'scripture', 'observation', 'application', 'prayer' );
-const JLIFE_CHALLENGES_FIELD_MAX  = 10000;
+const JLIFE_CHALLENGES_BODY_MAX   = 20000;
 const JLIFE_CHALLENGES_LATE_RULE  = 'after_grace_window';
 const JLIFE_CHALLENGES_DAY_FORMAT = '/^\d{4}-\d{2}-\d{2}$/';
 
 /**
- * Normalize submitted fields: the four SOAP fields only, plain text, capped.
+ * Normalize an entry's text: plain text, line breaks kept as "\n", trimmed, capped.
  *
- * @param array $fields Raw fields.
- * @return array
+ * @param mixed $text Raw text.
+ * @return string
  */
-function jlife_challenges_clean_fields( $fields ) {
-	$out = array();
-	foreach ( JLIFE_CHALLENGES_FIELDS as $f ) {
-		$v         = isset( $fields[ $f ] ) ? sanitize_textarea_field( (string) $fields[ $f ] ) : '';
-		$out[ $f ] = mb_substr( trim( $v ), 0, JLIFE_CHALLENGES_FIELD_MAX );
-	}
-	return $out;
+function jlife_challenges_clean_text( $text ) {
+	$text = sanitize_textarea_field( is_scalar( $text ) ? (string) $text : '' );
+	$text = str_replace( array( "\r\n", "\r" ), "\n", $text );
+	return mb_substr( trim( $text ), 0, JLIFE_CHALLENGES_BODY_MAX );
 }
 
 /**
@@ -98,20 +99,21 @@ function jlife_challenges_ensure_entry( $user_id, $campaign_id, $day_key ) {
 	global $wpdb;
 	$now = current_time( 'mysql', true );
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; INSERT IGNORE relies on the UNIQUE key.
-	$wpdb->query( $wpdb->prepare( 'INSERT IGNORE INTO ' . jlife_challenges_table( 'soap_entries' ) . " (user_id, campaign_id, day_key, scripture, observation, application, prayer, status, revision, created, updated) VALUES (%d, %d, %s, '', '', '', '', 'draft', 0, %s, %s)", (int) $user_id, (int) $campaign_id, (string) $day_key, $now, $now ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	$wpdb->query( $wpdb->prepare( 'INSERT IGNORE INTO ' . jlife_challenges_table( 'soap_entries' ) . " (user_id, campaign_id, day_key, body, status, revision, created, updated) VALUES (%d, %d, %s, '', 'draft', 0, %s, %s)", (int) $user_id, (int) $campaign_id, (string) $day_key, $now, $now ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	return jlife_challenges_find_entry( $user_id, $campaign_id, $day_key );
 }
 
 /**
- * Save a draft (any fields may be empty). Only while the entry is a draft.
+ * Save a draft (any text, even none). Only while the entry is a draft. A draft
+ * is never shared, whatever else is on the form.
  *
  * @param int         $user_id     Author.
  * @param int         $campaign_id Campaign (0 = personal).
  * @param string|null $day_key     Day (null = today).
- * @param array       $fields      SOAP fields.
+ * @param string      $text        The entry text.
  * @return int|WP_Error Entry ID.
  */
-function jlife_challenges_save_draft( $user_id, $campaign_id, $day_key, $fields ) {
+function jlife_challenges_save_draft( $user_id, $campaign_id, $day_key, $text ) {
 	if ( ! jlife_challenges_can_write_entry( $user_id, $campaign_id ) ) {
 		return jlife_challenges_denied();
 	}
@@ -129,34 +131,29 @@ function jlife_challenges_save_draft( $user_id, $campaign_id, $day_key, $fields 
 	global $wpdb;
 	$wpdb->update(
 		jlife_challenges_table( 'soap_entries' ),
-		array_merge( jlife_challenges_clean_fields( $fields ), array( 'updated' => current_time( 'mysql', true ) ) ),
+		array(
+			'body'    => jlife_challenges_clean_text( $text ),
+			'updated' => current_time( 'mysql', true ),
+		),
 		array( 'id' => (int) $entry['id'] )
 	);
 	return (int) $entry['id'];
 }
 
 /**
- * Submit an entry (or save changes to a submitted one). Idempotent: repeating
- * a submission never creates a second point.
+ * Submit an entry (or save changes to a submitted one): save the text, then
+ * score it with the campaign's engine. Idempotent: repeating a submission never
+ * creates a second point. An entry that doesn't pass is still saved.
  *
  * @param int         $user_id     Author.
  * @param int         $campaign_id Campaign (0 = personal).
  * @param string|null $day_key     Day (null = today).
- * @param array       $fields      SOAP fields; all four required.
- * @return array|WP_Error { entry_id, day_key, revision, points, status, reason, first_submission }
+ * @param string      $text        The entry text.
+ * @return array|WP_Error { entry_id, day_key, revision, points, status, reason, first_submission, passes, reasons, engine, engine_version }
  */
-function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $fields ) {
+function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $text ) {
 	if ( ! jlife_challenges_can_write_entry( $user_id, $campaign_id ) ) {
 		return jlife_challenges_denied();
-	}
-	$clean   = jlife_challenges_clean_fields( $fields );
-	$missing = array_keys( array_filter( $clean, static fn( $v ) => '' === $v ) );
-	if ( $missing ) {
-		return new WP_Error(
-			'jlife_soap_incomplete',
-			__( 'Please fill in all four parts of SOAP before submitting. Your writing has been kept.', 'jlife-challenges' ),
-			array( 'missing' => $missing )
-		);
 	}
 	$day = jlife_challenges_resolve_day( $campaign_id, $day_key );
 	if ( is_wp_error( $day ) ) {
@@ -166,34 +163,52 @@ function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $fields ) {
 	if ( ! $entry ) {
 		return new WP_Error( 'jlife_db', 'Could not save.' );
 	}
-
-	global $wpdb;
+	$clean    = jlife_challenges_clean_text( $text );
 	$now      = current_time( 'mysql', true );
-	$first    = 'draft' === $entry['status'];
 	$revision = (int) $entry['revision'] + 1;
-	$update   = array_merge(
-		$clean,
+	$table    = jlife_challenges_table( 'soap_entries' );
+
+	// 1. Save the text first, whatever the engine says.
+	global $wpdb;
+	$wpdb->update(
+		$table,
 		array(
-			'status'   => 'submitted',
+			'body'     => $clean,
 			'revision' => $revision,
 			'updated'  => $now,
-		)
+		),
+		array( 'id' => (int) $entry['id'] )
 	);
-	if ( $first ) {
-		$update['submitted'] = $now;
-	}
-	$wpdb->update( jlife_challenges_table( 'soap_entries' ), $update, array( 'id' => (int) $entry['id'] ) );
 	$wpdb->insert(
 		jlife_challenges_table( 'soap_revisions' ),
-		array_merge(
-			$clean,
-			array(
-				'entry_id' => (int) $entry['id'],
-				'revision' => $revision,
-				'saved'    => $now,
-			)
+		array(
+			'entry_id' => (int) $entry['id'],
+			'revision' => $revision,
+			'body'     => $clean,
+			'saved'    => $now,
 		)
 	);
+
+	// 2. Then score it, synchronously.
+	$score = jlife_challenges_score_entry(
+		$clean,
+		array(
+			'campaign' => $day['campaign'],
+			'day_key'  => $day['day_key'],
+			'index'    => $day['index'],
+		)
+	);
+	$first = $score['passes'] && 'draft' === $entry['status'];
+	if ( $score['passes'] ) {
+		$wpdb->update(
+			$table,
+			array_merge(
+				array( 'status' => 'submitted' ),
+				$first ? array( 'submitted' => $now ) : array()
+			),
+			array( 'id' => (int) $entry['id'] )
+		);
+	}
 
 	$result = array(
 		'entry_id'         => (int) $entry['id'],
@@ -203,31 +218,60 @@ function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $fields ) {
 		'status'           => 'unscored',
 		'reason'           => '',
 		'first_submission' => $first,
+		'passes'           => $score['passes'],
+		'reasons'          => $score['reasons'],
+		'engine'           => $score['engine'],
+		'engine_version'   => $score['version'],
 	);
 	if ( $day['campaign'] ) {
-		$ledger = jlife_challenges_record_score( $day['campaign'], $user_id, $day['index'], (int) $entry['id'] );
-		$result = array_merge( $result, $ledger );
+		$ledger = $score['passes']
+			? jlife_challenges_record_score( $day['campaign'], $user_id, $day['index'], (int) $entry['id'], $score )
+			: jlife_challenges_ledger_row( (int) $day['campaign']['id'], $user_id, $day['day_key'] );
+		if ( $ledger ) {
+			$result = array_merge( $result, $ledger );
+		}
 	}
 	return $result;
 }
 
 /**
- * Write the day's ledger row once (UNIQUE campaign/user/day) and return it.
+ * The day's ledger row for a participant, as { points, status, reason }, or null.
+ *
+ * @param int    $campaign_id Campaign.
+ * @param int    $user_id     Participant.
+ * @param string $day_key     Day key.
+ * @return array|null
+ */
+function jlife_challenges_ledger_row( $campaign_id, $user_id, $day_key ) {
+	global $wpdb;
+	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT points, status, reason FROM ' . jlife_challenges_table( 'score_ledger' ) . ' WHERE campaign_id = %d AND user_id = %d AND day_key = %s', (int) $campaign_id, (int) $user_id, (string) $day_key ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	return $row ? array(
+		'points' => (int) $row['points'],
+		'status' => (string) $row['status'],
+		'reason' => (string) $row['reason'],
+	) : null;
+}
+
+/**
+ * Write the day's ledger row once (UNIQUE campaign/user/day) and return it. The
+ * row records which scoring engine and version passed the entry. It is only
+ * ever added: a later submission or engine never changes or removes it.
  *
  * @param array $campaign Campaign row.
  * @param int   $user_id  Participant.
  * @param int   $index    Day index.
  * @param int   $entry_id Entry ID.
+ * @param array $score    Engine result ({ engine, version }).
  * @return array { points, status, reason }
  */
-function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id ) {
+function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id, $score ) {
 	global $wpdb;
 	$on_time = jlife_challenges_is_on_time( $campaign, $index );
 	$day_key = jlife_challenges_day_key( $index );
 	// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix; INSERT IGNORE relies on the UNIQUE key.
 	$wpdb->query(
 		$wpdb->prepare(
-			'INSERT IGNORE INTO ' . jlife_challenges_table( 'score_ledger' ) . " (campaign_id, user_id, day_key, entry_id, points, status, reason, source, created) VALUES (%d, %d, %s, %d, %d, %s, %s, 'platform', %s)",
+			'INSERT IGNORE INTO ' . jlife_challenges_table( 'score_ledger' ) . " (campaign_id, user_id, day_key, entry_id, points, status, reason, source, engine, engine_version, created) VALUES (%d, %d, %s, %d, %d, %s, %s, 'platform', %s, %s, %s)",
 			(int) $campaign['id'],
 			(int) $user_id,
 			$day_key,
@@ -235,15 +279,17 @@ function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id )
 			$on_time ? 1 : 0,
 			$on_time ? 'earned' : 'late_no_point',
 			$on_time ? '' : JLIFE_CHALLENGES_LATE_RULE,
+			(string) $score['engine'],
+			(string) $score['version'],
 			current_time( 'mysql', true )
 		)
 	);
-	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT points, status, reason FROM ' . jlife_challenges_table( 'score_ledger' ) . ' WHERE campaign_id = %d AND user_id = %d AND day_key = %s', (int) $campaign['id'], (int) $user_id, $day_key ), ARRAY_A );
 	// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
-	return array(
-		'points' => (int) ( $row['points'] ?? 0 ),
-		'status' => (string) ( $row['status'] ?? '' ),
-		'reason' => (string) ( $row['reason'] ?? '' ),
+	$row = jlife_challenges_ledger_row( (int) $campaign['id'], $user_id, $day_key );
+	return $row ? $row : array(
+		'points' => 0,
+		'status' => '',
+		'reason' => '',
 	);
 }
 

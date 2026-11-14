@@ -1,35 +1,54 @@
-/* SOAP form enhancements (M6, #61): debounced server autosave, a local
- * backup if the network drops, reference chips, no double submit.
- * The form works fully without this script. */
+/* SOAP form enhancements (M6, #61; one textbox, #98): debounced server
+ * autosave of the single text, a local backup if the network drops (an older
+ * four-field backup is joined under the headings, not lost), reference chips,
+ * no double submit. The form works fully without this script. */
 (function () {
 	'use strict';
 	var form = document.querySelector('form.jl-soap');
 	if (!form) { return; }
-	var fields = ['scripture', 'observation', 'application', 'prayer'];
+	var box = form.elements.jl_text;
+	if (!box) { return; }
 	var key = 'jl-soap-' + form.dataset.campaign + '-' + form.dataset.day;
 	var status = form.querySelector('.jl-saved');
+	var template = form.dataset.template || '';
+	var headings = ['S \u2014 Scripture', 'O \u2014 Observation', 'A \u2014 Application', 'P \u2014 Prayer'];
+	var legacyKeys = ['scripture', 'observation', 'application', 'prayer'];
 	var timer = null;
-	var msg = { saving: '…', saved: '✓', local: '✓', restored: '✓' };
+	var msg = { saving: '\u2026', saved: '\u2713', local: '\u2713', restored: '\u2713' };
 	try { msg = JSON.parse(form.dataset.i18n); } catch (e) { /* keep fallbacks */ }
+	try {
+		var h = JSON.parse(form.dataset.headings);
+		if (Array.isArray(h) && h.length === 4) { headings = h; }
+	} catch (e) { /* keep English headings */ }
 
-	function values() {
-		var out = {};
-		fields.forEach(function (f) { out[f] = form.elements[f].value; });
-		return out;
-	}
 	function backup() {
-		try { localStorage.setItem(key, JSON.stringify(values())); } catch (e) { /* storage unavailable */ }
+		try { localStorage.setItem(key, JSON.stringify({ v: 2, text: box.value })); } catch (e) { /* storage unavailable */ }
 	}
 	function clearBackup() {
 		try { localStorage.removeItem(key); } catch (e) { /* storage unavailable */ }
 	}
 
-	// Restore a local backup only when the server copy is empty.
+	// A backup made before the single textbox held four parts: join them under the headings.
+	function joinLegacy(old) {
+		if (!legacyKeys.some(function (k) { return typeof old[k] === 'string'; })) { return null; }
+		return headings.map(function (heading, i) {
+			var text = String(old[legacyKeys[i]] || '').trim();
+			return text ? heading + '\n' + text : heading;
+		}).join('\n\n');
+	}
+	function backupText(raw) {
+		var saved = JSON.parse(raw || 'null');
+		if (!saved || typeof saved !== 'object') { return null; }
+		return typeof saved.text === 'string' ? saved.text : joinLegacy(saved);
+	}
+
+	// Restore a local backup only when the server copy is untouched (empty or just the template).
 	try {
-		var saved = JSON.parse(localStorage.getItem(key) || 'null');
-		var empty = fields.every(function (f) { return form.elements[f].value === ''; });
-		if (saved && empty) {
-			fields.forEach(function (f) { form.elements[f].value = saved[f] || ''; });
+		var restored = backupText(localStorage.getItem(key));
+		var current = box.value.replace(/\s+$/, '');
+		var untouched = current === '' || current === template.replace(/\s+$/, '');
+		if (restored !== null && untouched && restored.replace(/\s+$/, '') !== current && restored.trim() !== '') {
+			box.value = restored;
 			status.textContent = msg.restored;
 		}
 	} catch (e) { /* ignore */ }
@@ -42,7 +61,7 @@
 			method: 'POST',
 			credentials: 'same-origin',
 			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': form.dataset.nonce },
-			body: JSON.stringify({ campaign_id: Number(form.dataset.campaign), day_key: form.dataset.day, fields: values() })
+			body: JSON.stringify({ campaign_id: Number(form.dataset.campaign), day_key: form.dataset.day, text: box.value })
 		}).then(function (r) {
 			if (!r.ok) { throw new Error(String(r.status)); }
 			status.textContent = msg.saved;
@@ -50,19 +69,30 @@
 		}).catch(function () { status.textContent = msg.local; });
 	}
 
-	form.addEventListener('input', function () {
+	box.addEventListener('input', function () {
 		backup();
 		clearTimeout(timer);
 		timer = setTimeout(save, 1500);
 	});
 
+	// A reference chip goes on its own line under the S heading (or at the end if the heading is gone).
 	form.querySelectorAll('[data-insert]').forEach(function (chip) {
 		chip.addEventListener('click', function () {
-			var ta = form.elements.scripture;
 			var text = chip.getAttribute('data-insert');
-			ta.value = ta.value ? ta.value.replace(/\s*$/, '') + '\n' + text : text;
-			ta.focus();
-			ta.dispatchEvent(new Event('input', { bubbles: true }));
+			var value = box.value;
+			var heading = /^[ \t]*S[ \t]*[:\u2014\u2013-]+.*$/im.exec(value);
+			var pos;
+			if (heading) {
+				pos = heading.index + heading[0].length;
+				box.value = value.slice(0, pos) + '\n' + text + value.slice(pos);
+				pos += text.length + 1;
+			} else {
+				box.value = value ? value.replace(/\s*$/, '') + '\n' + text : text;
+				pos = box.value.length;
+			}
+			box.focus();
+			box.setSelectionRange(pos, pos);
+			box.dispatchEvent(new Event('input', { bubbles: true }));
 		});
 	});
 
