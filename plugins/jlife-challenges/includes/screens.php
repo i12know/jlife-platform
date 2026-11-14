@@ -157,8 +157,10 @@ function jlife_challenges_screen_signout() {
 }
 
 /**
- * The reading block: passages, Bible links (participant's language first),
- * optional parallels collapsed (Harmony sections and Bible links, no passage list).
+ * The reading block: the day's title and reference list (plain text), then the
+ * optional parallels collapsed (their note and the Harmony sections, no passage
+ * list). It has no Bible links of its own (#103): the Bible text is read in
+ * the "Read today's passages" reader (jlife_challenges_render_reader()).
  *
  * @param array $view Day view.
  * @return string
@@ -168,19 +170,16 @@ function jlife_challenges_render_reading( $view ) {
 	if ( ! $reading || empty( $reading['day'] ) ) {
 		return '<p>' . esc_html__( 'The reading for this day is not loaded yet.', 'jlife-challenges' ) . '</p>';
 	}
-	$day    = $reading['day'];
-	$config = $reading['plan']['links_config'] ?? array();
-	$out    = '<section class="jl-reading"><h2>' . esc_html( (string) $day['title'] ) . '</h2><ul class="jl-passages">';
+	$day = $reading['day'];
+	$out = '<section class="jl-reading"><h2>' . esc_html( (string) $day['title'] ) . '</h2><ul class="jl-passages">';
 	foreach ( (array) $day['passages'] as $p ) {
 		$out .= '<li>' . esc_html( (string) $p['display'] ) . '</li>';
 	}
-	$out .= '</ul>' . jlife_challenges_render_bible_links( $day, $config, $view['languages'] );
+	$out .= '</ul>';
 	if ( ! empty( $reading['supplemental']['day'] ) ) {
-		$supp = $reading['supplemental'];
 		$out .= '<details class="jl-optional"><summary>' . esc_html__( 'Optional: parallel readings for deeper study', 'jlife-challenges' ) . '</summary><p>'
-			. esc_html__( 'Optional. Reading these does not change your points.', 'jlife-challenges' ) . '</p>';
-		$out .= jlife_challenges_render_harmony_sections( $supp['day'] )
-			. jlife_challenges_render_bible_links( $supp['day'], $supp['plan']['links_config'] ?? $config, $view['languages'] ) . '</details>';
+			. esc_html__( 'Optional. Reading these does not change your points.', 'jlife-challenges' ) . '</p>'
+			. jlife_challenges_render_harmony_sections( $reading['supplemental']['day'] ) . '</details>';
 	}
 	return $out . '</section>';
 }
@@ -211,36 +210,30 @@ function jlife_challenges_render_harmony_sections( $day ) {
 }
 
 /**
- * Bible links for one day, one block per language in the participant's order:
- * a single button when the provider opens every passage on one page (Bible
- * Gateway), otherwise one chip per passage.
+ * Plain links to one language's passages for the reader (#103): a single link
+ * when the provider opens every passage on one page (Bible Gateway), otherwise
+ * one chip per passage. Used where a language is not framed and in the
+ * no-JavaScript list.
  *
- * @param array    $day       Day data with 'links'.
- * @param array    $config    Language => provider config (labels).
- * @param string[] $languages Language codes, preferred first.
- * @return string
+ * @param array       $links Language's links: 'combined' => url, or 'passages' => label/url pairs.
+ * @param string|null $text  Link text for the single link; null names the provider.
+ * @return string Empty when there is no usable link.
  */
-function jlife_challenges_render_bible_links( $day, $config, $languages ) {
-	$out = '';
-	foreach ( $languages as $lang ) {
-		$links = $day['links'][ $lang ] ?? null;
-		if ( ! $links ) {
-			continue;
+function jlife_challenges_render_passage_links( $links, $text = null ) {
+	$url = (string) ( $links['combined']['url'] ?? '' );
+	if ( '' !== $url ) {
+		if ( null === $text ) {
+			$text = 0 === strpos( $url, 'https://www.biblegateway.com/' )
+				? __( 'Open in Bible Gateway', 'jlife-challenges' )
+				: __( "Open today's passages", 'jlife-challenges' );
 		}
-		/* translators: 1: language name, 2: Bible version. */
-		$out .= '<div class="jl-links" lang="' . esc_attr( $lang ) . '"><h3>' . esc_html( sprintf( __( 'Read in %1$s (%2$s)', 'jlife-challenges' ), (string) ( $config[ $lang ]['label'] ?? $lang ), (string) $links['version'] ) ) . '</h3>';
-		if ( ! empty( $links['combined']['url'] ) ) {
-			$out .= '<a class="jl-button" href="' . esc_url( $links['combined']['url'] ) . '" target="_blank" rel="noopener">' . esc_html__( "Open all of today's passages", 'jlife-challenges' ) . '</a>';
-		} else {
-			$out .= '<div class="jl-chips">';
-			foreach ( (array) $links['passages'] as $l ) {
-				$out .= '<a class="jl-chip" href="' . esc_url( (string) $l['url'] ) . '" target="_blank" rel="noopener">' . esc_html( (string) $l['label'] ) . '</a>';
-			}
-			$out .= '</div>';
-		}
-		$out .= '</div>';
+		return '<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . esc_html( $text ) . '</a>';
 	}
-	return $out;
+	$chips = '';
+	foreach ( (array) ( $links['passages'] ?? array() ) as $l ) {
+		$chips .= '<a class="jl-chip" href="' . esc_url( (string) $l['url'] ) . '" target="_blank" rel="noopener">' . esc_html( (string) $l['label'] ) . '</a>';
+	}
+	return '' === $chips ? '' : '<div class="jl-chips">' . $chips . '</div>';
 }
 
 /**
@@ -254,17 +247,21 @@ function jlife_challenges_is_embeddable_passage_url( $url ) {
 }
 
 /**
- * The expandable Bible reader above the SOAP form (#92): today's assigned
- * passages from Bible Gateway in a frame, one pane per language (the
- * participant's first), collapsed by default. Nothing is fetched from Bible
- * Gateway until the participant opens it (soap.js sets the frame's src), and
- * the "Open in Bible Gateway" link stays visible in case the frame can't load.
- * The frame is sandboxed without top navigation, so it can never navigate
- * this page away from a half-written SOAP. Languages whose config has no
- * "embed": true, or whose link isn't a Bible Gateway passage page, are skipped.
+ * The expandable Bible reader above the SOAP form (#92) and the only way to
+ * read the day's Bible text on Today and the SOAP page (#103). One pane per
+ * language that has a link, the participant's first, collapsed by default.
+ * A language whose config has "embed": true and whose link is a Bible Gateway
+ * passage page gets the page in a frame: nothing is fetched until the
+ * participant opens the reader (soap.js sets the frame's src), the frame is
+ * sandboxed without top navigation so it can never navigate this page away
+ * from a half-written SOAP, and the "Open in Bible Gateway" link stays beside
+ * it in case the frame can't load. Any other language (embed off, or not a
+ * Bible Gateway passage page) is never framed: its pane is just a plain link.
+ * Without JavaScript no frame loads and only the first pane shows, so the
+ * <noscript> block lists a link for every language.
  *
  * @param array $view Day view.
- * @return string Empty when there is nothing to embed.
+ * @return string Empty when no language has a link.
  */
 function jlife_challenges_render_reader( $view ) {
 	$day    = $view['reading']['day'] ?? null;
@@ -274,34 +271,46 @@ function jlife_challenges_render_reader( $view ) {
 	}
 	$tabs  = '';
 	$panes = '';
+	$no_js = '';
 	$first = true;
+	$count = 0;
 	foreach ( $view['languages'] as $lang ) {
-		$cfg = $config[ $lang ] ?? array();
-		$url = (string) ( $day['links'][ $lang ]['combined']['url'] ?? '' );
-		if ( empty( $cfg['embed'] ) || ! jlife_challenges_is_embeddable_passage_url( $url ) ) {
+		$links = (array) ( $day['links'][ $lang ] ?? array() );
+		$cfg   = $config[ $lang ] ?? array();
+		$url   = (string) ( $links['combined']['url'] ?? '' );
+		$plain = jlife_challenges_render_passage_links( $links );
+		if ( '' === $plain ) {
 			continue;
 		}
-		$version = (string) ( $day['links'][ $lang ]['version'] ?? '' );
+		$version = (string) ( $links['version'] ?? '' );
+		$label   = (string) ( $cfg['label'] ?? $lang );
 		/* translators: 1: language name, 2: Bible version code. */
-		$name   = sprintf( __( '%1$s (%2$s)', 'jlife-challenges' ), (string) ( $cfg['label'] ?? $lang ), $version );
+		$name   = '' === $version ? $label : sprintf( __( '%1$s (%2$s)', 'jlife-challenges' ), $label, $version );
 		$tabs  .= '<button type="button" class="jl-chip" data-reader-lang="' . esc_attr( $lang ) . '" aria-pressed="' . ( $first ? 'true' : 'false' ) . '">' . esc_html( $name ) . '</button>';
-		$panes .= '<div class="jl-reader-pane" data-reader-pane="' . esc_attr( $lang ) . '" lang="' . esc_attr( $lang ) . '"' . ( $first ? '' : ' hidden' ) . '>'
+		$pane   = '<div class="jl-reader-pane" data-reader-pane="' . esc_attr( $lang ) . '" lang="' . esc_attr( $lang ) . '"' . ( $first ? '' : ' hidden' ) . '>';
+		if ( ! empty( $cfg['embed'] ) && jlife_challenges_is_embeddable_passage_url( $url ) ) {
 			/* translators: %s: Bible version name and code, e.g. "Tiếng Việt (BPT)". */
-			. '<iframe title="' . esc_attr( sprintf( __( "Today's passages, %s", 'jlife-challenges' ), $name ) ) . '" data-src="' . esc_url( $url ) . '"'
-			. ' sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>'
-			. '<p class="jl-reader-fail" role="status" hidden>' . esc_html__( 'The reader could not load here. Use the Bible Gateway link below; your SOAP stays on this page.', 'jlife-challenges' ) . '</p>'
-			. '<p class="jl-reader-note"><small>' . esc_html( (string) ( $cfg['notice'] ?? $name ) ) . '. ' . esc_html__( 'Shown from Bible Gateway.', 'jlife-challenges' ) . '</small> '
-			. '<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . esc_html__( 'Open in Bible Gateway', 'jlife-challenges' ) . '</a></p>'
-			. '</div>';
-		$first = false;
+			$title = sprintf( __( "Today's passages, %s", 'jlife-challenges' ), $name );
+			$pane .= '<iframe title="' . esc_attr( $title ) . '" data-src="' . esc_url( $url ) . '"'
+				. ' sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>'
+				. '<p class="jl-reader-fail" role="status" hidden>' . esc_html__( 'The reader could not load here. Use the Bible Gateway link below; your SOAP stays on this page.', 'jlife-challenges' ) . '</p>'
+				. '<p class="jl-reader-note"><small>' . esc_html( (string) ( $cfg['notice'] ?? $name ) ) . '. ' . esc_html__( 'Shown from Bible Gateway.', 'jlife-challenges' ) . '</small> '
+				. $plain . '</p>';
+		} else {
+			$pane .= '<div class="jl-reader-links">' . $plain . '</div>';
+		}
+		$panes .= $pane . '</div>';
+		$no_js .= '<li lang="' . esc_attr( $lang ) . '">' . ( '' !== $url ? jlife_challenges_render_passage_links( $links, $name ) : esc_html( $name ) . ' ' . $plain ) . '</li>';
+		$first  = false;
+		++$count;
 	}
 	if ( '' === $panes ) {
 		return '';
 	}
 	return '<details class="jl-reader"><summary>' . esc_html__( "Read today's passages", 'jlife-challenges' ) . '</summary>'
-		. ( substr_count( $tabs, '<button' ) > 1 ? '<div class="jl-chips" role="group" aria-label="' . esc_attr__( 'Bible version', 'jlife-challenges' ) . '">' . $tabs . '</div>' : '' )
+		. ( $count > 1 ? '<div class="jl-chips" role="group" aria-label="' . esc_attr__( 'Bible version', 'jlife-challenges' ) . '">' . $tabs . '</div>' : '' )
 		. $panes
-		. '<noscript><p>' . esc_html__( 'The reader needs JavaScript. Use the Bible Gateway link above.', 'jlife-challenges' ) . '</p></noscript>'
+		. '<noscript><p>' . esc_html__( "The reader needs JavaScript. Open today's passages in Bible Gateway instead:", 'jlife-challenges' ) . '</p><ul>' . $no_js . '</ul></noscript>'
 		. '</details>';
 }
 

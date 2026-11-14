@@ -212,10 +212,11 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Today / SOAP reading block: one Bible Gateway button per language, in
-	 * the participant's order, for the assigned and the optional readings (#91).
+	 * Today / SOAP reading block (#103): the day's title and reference list, and
+	 * the optional parallel readings with their note and Harmony sections, but no
+	 * Bible translation buttons. The Bible text is read only in the reader (#92).
 	 */
-	public function test_reading_block_has_one_button_per_language_for_both_lists() {
+	public function test_reading_block_has_no_bible_gateway_buttons() {
 		$links = static function ( $search ) {
 			$out      = array();
 			$versions = array(
@@ -253,8 +254,15 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 				'supplemental' => array(
 					'plan' => array( 'links_config' => $config ),
 					'day'  => array(
-						'passages' => array( array( 'display' => 'Mark 1:1' ) ),
-						'links'    => $links( 'Mark+1:1;Luke+3:1-2' ),
+						'passages'         => array( array( 'display' => 'Mark 1:1' ) ),
+						'links'            => $links( 'Mark+1:1;Luke+3:1-2' ),
+						'harmony_sections' => array(
+							array(
+								'number' => '20',
+								'title'  => 'The Time of the Beginning',
+								'url'    => 'https://harmony-bible.com/sections/20/',
+							),
+						),
 					),
 				),
 			),
@@ -265,14 +273,17 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertCount( 2, $parts );
 		list( $main, $optional ) = $parts;
 
-		$this->assertSame( 2, substr_count( $main, 'class="jl-button"' ) );
-		$this->assertStringContainsString( esc_url( 'https://www.biblegateway.com/passage/?search=Luke+3:1-6;Matthew+3:4-10;Luke+3:10-18&version=BPT' ), $main );
-		$this->assertLessThan( strpos( $main, 'version=ERV' ), strpos( $main, 'version=BPT' ), 'Vietnamese first for a Vietnamese participant' );
-		$this->assertStringContainsString( 'Read in Tiếng Việt (BPT)', $main );
-
+		$this->assertStringContainsString( 'John the Baptizer Prepares the Way', $main );
+		$this->assertStringContainsString( '<ul class="jl-passages"><li>Luke 3:1-6</li></ul>', $main, 'the reference list stays: plain text, not a link' );
+		foreach ( array( $main, $optional ) as $block ) {
+			$this->assertSame( 0, substr_count( $block, 'jl-button' ), 'no buttons' );
+			$this->assertStringNotContainsString( 'biblegateway.com', $block, 'the reader is the only way to read the Bible text' );
+			$this->assertStringNotContainsString( 'Read in ', $block );
+			$this->assertStringNotContainsString( "Open all of today's passages", $block );
+		}
 		$this->assertStringNotContainsString( '<li>Mark 1:1</li>', $optional, 'no bulleted passage list in the optional readings (#90)' );
-		$this->assertSame( 2, substr_count( $optional, 'class="jl-button"' ) );
-		$this->assertStringContainsString( esc_url( 'https://www.biblegateway.com/passage/?search=Mark+1:1;Luke+3:1-2&version=BPT' ), $optional );
+		$this->assertStringContainsString( 'Optional. Reading these does not change your points.', $optional );
+		$this->assertStringContainsString( '<a href="https://harmony-bible.com/sections/20/" target="_blank" rel="noopener">', $optional, 'Harmony sections unchanged' );
 	}
 
 	/**
@@ -410,20 +421,136 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 
 	/**
 	 * Only Bible Gateway passage pages are framed, and only when "embed" is on.
+	 * A language that is not framed still gets a plain link (#103), never a frame.
 	 */
-	public function test_reader_skips_disabled_or_foreign_links() {
-		$this->assertSame( '', jlife_challenges_render_reader( $this->reader_view( false ) ) );
-
+	public function test_reader_frames_only_embeddable_links() {
 		$html = jlife_challenges_render_reader( $this->reader_view( true, 'https://evil.test/passage/?search=Luke+3' ) );
-		$this->assertStringNotContainsString( 'evil.test', $html );
+		$this->assertStringNotContainsString( 'data-src="https://evil.test', $html, 'never framed' );
 		$this->assertSame( 1, substr_count( $html, '<iframe' ) );
-		$this->assertStringNotContainsString( 'data-reader-lang', $html, 'no version buttons for a single version' );
+		$this->assertSame( 1, preg_match( '#data-reader-pane="vi"[^>]*>(.*?)</div>#s', $html, $m ) );
+		$this->assertStringNotContainsString( '<iframe', $m[1] );
+		$this->assertStringContainsString( '<a href="https://evil.test/passage/?search=Luke+3" target="_blank" rel="noopener">', $m[1], 'that language gets a plain link instead' );
+		$this->assertStringNotContainsString( 'Open in Bible Gateway', $m[1], 'not mislabelled as Bible Gateway' );
 
 		$no_reading = array(
 			'languages' => array( 'en' ),
 			'reading'   => null,
 		);
 		$this->assertSame( '', jlife_challenges_render_reader( $no_reading ) );
+		$no_links = $this->reader_view();
+		unset( $no_links['reading']['day']['links'] );
+		$this->assertSame( '', jlife_challenges_render_reader( $no_links ), 'nothing to link to' );
+	}
+
+	/**
+	 * Edge case 1 (#103): "embed": false for every language leaves no frame, but
+	 * the reader still gives each language, participant's first, a working link.
+	 */
+	public function test_reader_without_embedding_still_links_every_language() {
+		$html = jlife_challenges_render_reader( $this->reader_view( false ) );
+
+		$this->assertStringStartsWith( '<details class="jl-reader">', $html );
+		$this->assertStringNotContainsString( '<iframe', $html );
+		$this->assertStringNotContainsString( 'data-src', $html );
+		foreach ( array( 'BPT', 'ERV' ) as $version ) {
+			$this->assertStringContainsString( 'href="' . esc_url( 'https://www.biblegateway.com/passage/?search=Luke+3:1-6;Matthew+3:4-10;Luke+3:10-18&version=' . $version ) . '" target="_blank" rel="noopener">Open in Bible Gateway</a>', $html );
+		}
+		$this->assertLessThan( strpos( $html, 'version=ERV' ), strpos( $html, 'version=BPT' ), 'Vietnamese first for a Vietnamese participant' );
+		$this->assertMatchesRegularExpression( '/data-reader-pane="en"[^>]*hidden/', $html );
+		$this->assertStringContainsString( 'data-reader-lang="en"', $html, 'the version switch still reaches the second language' );
+	}
+
+	/**
+	 * Edge case 1 (#103), mixed: one language framed, the other link-only, in the
+	 * participant's order (here the link-only language comes first).
+	 */
+	public function test_reader_mixes_framed_and_link_only_languages_in_order() {
+		$view = $this->reader_view();
+		$view['reading']['plan']['links_config']['vi']['embed'] = false;
+		$html = jlife_challenges_render_reader( $view );
+
+		$this->assertSame( 1, substr_count( $html, '<iframe' ), 'only English is framed' );
+		$this->assertDoesNotMatchRegularExpression( '/data-reader-pane="vi"[^>]*hidden/', $html, 'the participant\'s language is the one shown' );
+		$this->assertMatchesRegularExpression( '/data-reader-pane="en"[^>]*hidden/', $html );
+		$this->assertLessThan( strpos( $html, 'data-reader-pane="en"' ), strpos( $html, 'data-reader-pane="vi"' ) );
+		$this->assertSame( 1, preg_match( '#data-reader-pane="vi"[^>]*>(.*?)</div>#s', $html, $m ) );
+		$this->assertStringContainsString( 'version=BPT', $m[1] );
+	}
+
+	/**
+	 * A provider without a one-page link gets one chip per passage (#103).
+	 */
+	public function test_reader_link_only_language_without_combined_link_lists_passages() {
+		$view                                  = $this->reader_view( false );
+		$view['reading']['day']['links']['vi'] = array(
+			'version'  => 'BPT',
+			'passages' => array(
+				array(
+					'label' => 'Luke 3:1-6',
+					'url'   => 'https://www.biblegateway.com/passage/?search=Luke+3:1-6&version=BPT',
+				),
+				array(
+					'label' => 'Matthew 3:4-10',
+					'url'   => 'https://www.biblegateway.com/passage/?search=Matthew+3:4-10&version=BPT',
+				),
+			),
+		);
+		$html = jlife_challenges_render_reader( $view );
+		$this->assertSame( 1, preg_match( '#data-reader-pane="vi"[^>]*>(.*?)</div></div>#s', $html, $m ) );
+		$this->assertSame( 2, substr_count( $m[1], 'class="jl-chip"' ) );
+		$this->assertStringContainsString( '>Matthew 3:4-10</a>', $m[1] );
+	}
+
+	/**
+	 * Edge case 2 (#103): without JavaScript the frames never load and the second
+	 * language's pane stays hidden, so the <noscript> block lists a Bible
+	 * Gateway link for every language, participant's first, and nothing in the
+	 * reader points at a link "above" that is not there.
+	 */
+	public function test_reader_without_javascript_links_every_language() {
+		foreach ( array( true, false ) as $embed ) {
+			$html = jlife_challenges_render_reader( $this->reader_view( $embed ) );
+			$this->assertSame( 1, preg_match( '#<noscript>(.*?)</noscript>#s', $html, $m ), 'a no-JavaScript block' );
+			$noscript = $m[1];
+
+			$this->assertStringNotContainsString( 'link above', $html );
+			$this->assertStringContainsString( 'The reader needs JavaScript.', $noscript );
+			$this->assertSame( 2, substr_count( $noscript, '<a href=' ), 'one link per language' );
+			$this->assertSame( 2, substr_count( $noscript, 'target="_blank" rel="noopener"' ) );
+			$this->assertStringContainsString( 'version=BPT', $noscript );
+			$this->assertStringContainsString( 'version=ERV', $noscript );
+			$this->assertLessThan( strpos( $noscript, 'version=ERV' ), strpos( $noscript, 'version=BPT' ), 'participant\'s language first' );
+			$this->assertStringContainsString( 'Tiếng Việt (BPT)', $noscript );
+			$this->assertStringContainsString( 'English (ERV)', $noscript );
+		}
+	}
+
+	/**
+	 * Edge case 3 (#103): the "could not load" note points at a link that is in
+	 * the same pane, after it.
+	 */
+	public function test_reader_load_failure_note_points_at_the_link_below_it() {
+		$html = jlife_challenges_render_reader( $this->reader_view() );
+		$this->assertSame( 2, preg_match_all( '#<div class="jl-reader-pane".*?</p></div>#s', $html, $panes ) );
+		foreach ( $panes[0] as $pane ) {
+			$this->assertStringContainsString( 'Use the Bible Gateway link below', $pane );
+			$this->assertLessThan( strpos( $pane, 'Open in Bible Gateway' ), strpos( $pane, 'Use the Bible Gateway link below' ), 'the link really is below' );
+		}
+	}
+
+	/**
+	 * Today and the SOAP page (#103): the reading section no longer has its own
+	 * Bible translation buttons; the reader is the one way in.
+	 */
+	public function test_today_body_reads_the_bible_text_only_in_the_reader() {
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) );
+		$this->assertStringNotContainsString( 'class="jl-links"', $body );
+		$this->assertStringNotContainsString( "Open all of today's passages", $body );
+		$this->assertStringNotContainsString( 'Read in ', $body );
+		$this->assertStringContainsString( '<ul class="jl-passages"><li>Luke 3:1-6</li></ul>', $body );
+		$reading = substr( $body, 0, (int) strpos( $body, '<details class="jl-reader">' ) );
+		$this->assertStringNotContainsString( 'biblegateway.com', $reading, 'above the reader there is no Bible Gateway link' );
+		$this->assertSame( 2, substr_count( $body, 'data-src=' ), 'the reader frames both languages' );
 	}
 
 
