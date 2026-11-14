@@ -83,7 +83,10 @@ The App Key lives only in GitHub, as the environment secret **`YVP_APP_KEY`** of
 
 Run **Actions → YouVersion check → Run workflow** (branch `main`):
 - `check: auth`: one `GET /v1/bibles` request; PASS means the key authenticates (#79).
-- `check: gate1`: also lists the app's licenses, finds ERV and BPT in the catalog (`all_available=true`) and in the app-licensed list, calls `GET /v1/licenses?bible_id=…`, and requests `GET /v1/bibles/{id}/passages/JHN.1.1-18?format=text` (#78).
+- `check: gate1`: also lists the app's licenses, finds ERV and BPT in the catalog (`all_available=true`) and in the app-licensed list, looks ERV up directly as `GET /v1/bibles/406`, calls `GET /v1/licenses?bible_id=…`, and requests `GET /v1/bibles/{id}/passages/JHN.1.1-18?format=text` (#78).
+- `check: versions` with `versions: 406, NIV@en, BPT@vi, 3034`: the same checks for any versions. A number is looked up directly (`GET /v1/bibles/{id}`; metadata answers even for unlicensed Bibles, so 404 means it is not on the Platform). `ABBR@lang` is searched in that language's catalog.
+- `check: list` with `language: vi` (or `en,vi`): every Bible in the catalog for that language, with ID, abbreviation, title, publisher, whether it's licensed to the app and which license covers it. Tick `licensed_only` to show only licensed ones.
+- Every catalog search reports how many Bibles it scanned (`N of TOTAL scanned`) and flags an incomplete listing.
 
 The job summary shows HTTP status, timing and non-secret metadata only. Passage results show status, reference and content length, never the text. The script (`bin/youversion-check.js`) blanks the key out of anything it prints, on top of GitHub's own masking. The workflow has read-only repository permissions and no deploy secrets.
 

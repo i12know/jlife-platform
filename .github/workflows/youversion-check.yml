@@ -1,30 +1,48 @@
 name: YouVersion check
 
-# Manual only (#79, #78 Gate 1). Read-only requests to api.youversion.com
-# with the App Key from the `youversion-check` environment secret
-# YVP_APP_KEY. Reports HTTP status and non-secret metadata only: never the
-# key, request headers or Bible text. Separate from the latoc deploy: no
-# deploy secrets, no SSH, no write access. Script: bin/youversion-check.js.
+# Manual only (#79, #78 Gate 1, plus version lookups). Read-only requests
+# to api.youversion.com with the App Key from the `youversion-check`
+# environment secret YVP_APP_KEY. Reports HTTP status and non-secret
+# metadata only: never the key, request headers or Bible text. Separate from
+# the latoc deploy: no deploy secrets, no SSH, no write access.
+# Script: bin/youversion-check.js.
 on:
   workflow_dispatch:
     inputs:
       check:
         description: >-
-          "auth" checks only that the key authenticates (#79). "gate1" also
-          checks ERV and BPT: catalog IDs, licenses and a passage request (#78).
+          auth = key only (#79). gate1 = ERV and BPT (#78; ERV also by ID 406).
+          versions = the versions you list below. list = every Bible in a
+          language.
         type: choice
         options:
           - auth
           - gate1
+          - versions
+          - list
         default: auth
+      versions:
+        description: >-
+          For "versions": IDs and/or ABBR@language, comma-separated, e.g.
+          "406, NIV@en, BPT@vi, 3034". Up to 20.
+        type: string
+        default: ''
+      language:
+        description: 'For "list": language tag(s), e.g. "vi" or "en,vi".'
+        type: string
+        default: ''
+      licensed_only:
+        description: 'For "list": show only Bibles licensed to the app.'
+        type: boolean
+        default: false
       passage:
         description: USFM passage for the text request (one chapter).
         type: string
         default: JHN.1.1-18
       bible_ids:
         description: >-
-          Optional: force YouVersion IDs, e.g. "ERV=406,BPT=1234". Leave empty
-          to find them in the catalog by abbreviation.
+          For "gate1": force YouVersion IDs, e.g. "ERV=406,BPT=1234". Leave
+          empty to find them in the catalog by abbreviation.
         type: string
         default: ''
 
@@ -55,5 +73,8 @@ jobs:
           YVP_APP_KEY: ${{ secrets.YVP_APP_KEY }}
           YVP_PASSAGE: ${{ inputs.passage }}
           YVP_BIBLE_IDS: ${{ inputs.bible_ids }}
+          YVP_VERSIONS: ${{ inputs.versions }}
+          YVP_LANGUAGE: ${{ inputs.language }}
+          YVP_LICENSED_ONLY: ${{ inputs.licensed_only }}
           CHECK: ${{ inputs.check }}
         run: node bin/youversion-check.js "$CHECK"
