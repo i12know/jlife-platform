@@ -105,10 +105,25 @@ class Test_Share_On_Save extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * D19: a minor awaiting guardian consent cannot post with the checkbox; the
-	 * save and the point stand and the result says sharing did not happen.
+	 * D19 (owner decision 2026-11-05): by default a minor's ticked save posts to
+	 * their group, with no guardian step in J-Life.
 	 */
-	public function test_minor_awaiting_guardian_consent_cannot_post() {
+	public function test_minor_shares_on_save_by_default() {
+		$teen = self::factory()->user->create( array( 'role' => 'subscriber' ) );
+		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $teen, $this->g['g1'], 'minor' ) );
+
+		$r = jlife_challenges_save_and_share( $teen, $this->campaign, null, $this->soap( 'teen' ), true );
+		$this->assertSame( 1, $r['points'] );
+		$this->assertSame( 'shared', $r['share']['status'] );
+		$this->assertSame( 1, $this->share_rows() );
+	}
+
+	/**
+	 * Opt-in setting on: a minor awaiting guardian consent cannot post with the
+	 * checkbox; the save and the point stand and the result says sharing did not happen.
+	 */
+	public function test_minor_awaiting_guardian_consent_cannot_post_when_required() {
+		update_option( 'jlife_challenges_require_guardian_consent', '1' );
 		$teen = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $teen, $this->g['g1'], 'minor' ) );
 
