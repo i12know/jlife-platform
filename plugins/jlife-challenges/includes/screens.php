@@ -100,7 +100,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '' )
 	$html   = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=5' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=6' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>' . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. ( in_array( $script, array( 'soap', 'share' ), true ) ? '<script src="' . esc_url( $base . $script . '.js?v=3' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
