@@ -158,7 +158,7 @@ function jlife_challenges_screen_signout() {
 
 /**
  * The reading block: passages, Bible links (participant's language first),
- * optional parallels collapsed (Harmony sections and Bible links, no passage list).
+ * optional parallels collapsed (Harmony section links only).
  *
  * @param array $view Day view.
  * @return string
@@ -179,8 +179,7 @@ function jlife_challenges_render_reading( $view ) {
 		$supp = $reading['supplemental'];
 		$out .= '<details class="jl-optional"><summary>' . esc_html__( 'Optional: parallel readings for deeper study', 'jlife-challenges' ) . '</summary><p>'
 			. esc_html__( 'Optional. Reading these does not change your points.', 'jlife-challenges' ) . '</p>';
-		$out .= jlife_challenges_render_harmony_sections( $supp['day'] )
-			. jlife_challenges_render_bible_links( $supp['day'], $supp['plan']['links_config'] ?? $config, $view['languages'] ) . '</details>';
+		$out .= jlife_challenges_render_harmony_sections( $supp['day'] ) . '</details>';
 	}
 	return $out . '</section>';
 }

@@ -213,9 +213,10 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 
 	/**
 	 * Today / SOAP reading block: one Bible Gateway button per language, in
-	 * the participant's order, for the assigned and the optional readings (#91).
+	 * the participant's order, for the assigned reading; the optional readings
+	 * have Harmony section links only (#90).
 	 */
-	public function test_reading_block_has_one_button_per_language_for_both_lists() {
+	public function test_reading_block_has_one_button_per_language_and_optional_has_none() {
 		$links = static function ( $search ) {
 			$out      = array();
 			$versions = array(
@@ -271,8 +272,8 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'Read in Tiếng Việt (BPT)', $main );
 
 		$this->assertStringNotContainsString( '<li>Mark 1:1</li>', $optional, 'no bulleted passage list in the optional readings (#90)' );
-		$this->assertSame( 2, substr_count( $optional, 'class="jl-button"' ) );
-		$this->assertStringContainsString( esc_url( 'https://www.biblegateway.com/passage/?search=Mark+1:1;Luke+3:1-2&version=BPT' ), $optional );
+		$this->assertStringNotContainsString( 'class="jl-button"', $optional, 'no extra Bible buttons in the optional readings (#90)' );
+		$this->assertStringNotContainsString( 'biblegateway.com', $optional );
 	}
 
 	/**
