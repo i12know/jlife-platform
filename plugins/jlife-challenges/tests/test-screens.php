@@ -495,6 +495,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 				),
 			),
 		);
+
 		$html = jlife_challenges_render_reader( $view );
 		$this->assertSame( 1, preg_match( '#data-reader-pane="vi"[^>]*>(.*?)</div></div>#s', $html, $m ) );
 		$this->assertSame( 2, substr_count( $m[1], 'class="jl-chip"' ) );
