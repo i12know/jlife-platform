@@ -285,9 +285,9 @@ function jlife_challenges_render_reader( $view ) {
 		$version = (string) ( $links['version'] ?? '' );
 		$label   = (string) ( $cfg['label'] ?? $lang );
 		/* translators: 1: language name, 2: Bible version code. */
-		$name   = '' === $version ? $label : sprintf( __( '%1$s (%2$s)', 'jlife-challenges' ), $label, $version );
-		$tabs  .= '<button type="button" class="jl-chip" data-reader-lang="' . esc_attr( $lang ) . '" aria-pressed="' . ( $first ? 'true' : 'false' ) . '">' . esc_html( $name ) . '</button>';
-		$pane   = '<div class="jl-reader-pane" data-reader-pane="' . esc_attr( $lang ) . '" lang="' . esc_attr( $lang ) . '"' . ( $first ? '' : ' hidden' ) . '>';
+		$name  = '' === $version ? $label : sprintf( __( '%1$s (%2$s)', 'jlife-challenges' ), $label, $version );
+		$tabs .= '<button type="button" class="jl-chip" data-reader-lang="' . esc_attr( $lang ) . '" aria-pressed="' . ( $first ? 'true' : 'false' ) . '">' . esc_html( $name ) . '</button>';
+		$pane  = '<div class="jl-reader-pane" data-reader-pane="' . esc_attr( $lang ) . '" lang="' . esc_attr( $lang ) . '"' . ( $first ? '' : ' hidden' ) . '>';
 		if ( ! empty( $cfg['embed'] ) && jlife_challenges_is_embeddable_passage_url( $url ) ) {
 			/* translators: %s: Bible version name and code, e.g. "Tiếng Việt (BPT)". */
 			$title = sprintf( __( "Today's passages, %s", 'jlife-challenges' ), $name );
