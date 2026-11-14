@@ -57,7 +57,7 @@ class Test_Lifecycle extends Jlife_Challenges_TestCase {
 	public function test_account_deletion_purges_everything() {
 		require_once ABSPATH . 'wp-admin/includes/user.php';
 		$entry = jlife_challenges_submit( $this->u['a'], $this->campaign, null, $this->soap( 'gone' ) )['entry_id'];
-		jlife_challenges_share( $this->u['a'], $entry, array( 'observation' ) );
+		jlife_challenges_share( $this->u['a'], $entry );
 		$user_id = $this->u['a'];
 		wp_delete_user( $user_id );
 

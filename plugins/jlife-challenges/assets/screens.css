@@ -25,8 +25,14 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-soap{margin-top:1.25rem}
 .jl-soap label{display:block;font-weight:700;margin-top:1rem}
 .jl-soap small{display:block;color:var(--muted)}
-.jl-soap textarea{width:100%;margin-top:.35rem;padding:.6rem;border:1px solid var(--line);border-radius:.5rem;font:inherit;background:var(--bg);color:var(--ink)}
+.jl-soap textarea{width:100%;min-height:18rem;margin-top:.35rem;padding:.6rem;border:1px solid var(--line);border-radius:.5rem;font:inherit;background:var(--bg);color:var(--ink)}
 .jl-saved{min-height:1.5em;color:var(--muted);font-size:.875rem;margin:.5rem 0 0}
+.jl-note{border:1px solid var(--line);background:var(--soft);padding:.75rem;border-radius:.6rem}
+.jl-note p{margin:0 0 .4rem;font-weight:600}.jl-note ul{margin:0;padding-left:1.25rem}
+.jl-guidance{margin:.5rem 0;font-size:.9375rem}.jl-guidance ul{margin:.4rem 0 0;padding-left:1.1rem}
+.jl-soap .jl-share-opt{display:flex;gap:.6rem;align-items:flex-start;margin-top:.75rem;padding:.7rem;border:1px solid var(--line);border-radius:.6rem;cursor:pointer}
+.jl-share-opt input{width:1.25rem;height:1.25rem;flex:none;margin-top:.2rem}
+.jl-share-note{margin:.35rem 0 .5rem}
 .jl-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.3rem;margin:1rem 0}
 .jl-cell{display:flex;align-items:center;justify-content:center;aspect-ratio:1;min-width:1.5rem;border-radius:.4rem;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:.8125rem}
 .jl-earned{background:var(--ok);border-color:var(--ok);color:var(--bg)}

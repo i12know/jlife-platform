@@ -6,9 +6,10 @@ The Bible Marathon engine (M5, #60): campaigns, groups and enrollment, private S
 
 - Campaign calendar in the campaign's timezone (`includes/calendar.php`)
 - Groups, hashed invite codes, enrollment, moves and removals, consent and guardian-consent records (`includes/groups.php`)
-- SOAP entries with drafts and revision history; database-enforced scoring (`includes/soap.php`)
+- SOAP entries (one free text, #98) with drafts and revision history; database-enforced scoring (`includes/soap.php`)
+- Scoring engines (#98): a pluggable engine decides whether an entry earns the day's point; the default `soap-regex` checks the S, O, A, P parts (`includes/scoring-engine.php`). Chosen per campaign (`campaigns.scoring_engine`); each awarded point records the engine and version
 - Progress, organizer counts and the score export without SOAP text (`includes/scores.php`)
-- Group shares as author-chosen snapshots; hide for reported posts (`includes/shares.php`)
+- Group shares as snapshots of the whole entry, from the "Share this with my group" box on a save or from `/share`; hide for reported posts (`includes/shares.php`)
 - The privacy gate (`includes/gate.php`), audit log (`includes/audit.php`), account-deletion purge (`includes/lifecycle.php`)
 
 ## Does not own
@@ -31,4 +32,4 @@ The Bible Marathon engine (M5, #60): campaigns, groups and enrollment, private S
 
 ## Tests
 
-`npm run cloud:test` (cloud) or CI's `wp-env` PHPUnit job: calendar, scoring, privacy, shares, lifecycle.
+`npm run cloud:test` (cloud) or CI's `wp-env` PHPUnit job: calendar, scoring, scoring engines, privacy, shares, share-on-save, lifecycle.

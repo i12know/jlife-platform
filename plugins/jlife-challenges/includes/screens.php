@@ -35,20 +35,6 @@ function jlife_challenges_query_vars( $vars ) {
 }
 
 /**
- * Field labels and short guidance, in SOAP order.
- *
- * @return array<string, array{0:string,1:string}>
- */
-function jlife_challenges_field_labels() {
-	return array(
-		'scripture'   => array( __( 'S — Scripture', 'jlife-challenges' ), __( 'Write the verse or reference that stood out to you.', 'jlife-challenges' ) ),
-		'observation' => array( __( 'O — Observation', 'jlife-challenges' ), __( 'What does it say? What do you notice about Jesus?', 'jlife-challenges' ) ),
-		'application' => array( __( 'A — Application', 'jlife-challenges' ), __( 'What will you believe, change, or do today?', 'jlife-challenges' ) ),
-		'prayer'      => array( __( 'P — Prayer', 'jlife-challenges' ), __( 'Talk to God about what you read.', 'jlife-challenges' ) ),
-	);
-}
-
-/**
  * Format a Y-m-d date for display.
  *
  * @param string $ymd Date.
@@ -114,10 +100,10 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '' )
 	$html   = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=4' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=5' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>' . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
-		. ( in_array( $script, array( 'soap', 'share' ), true ) ? '<script src="' . esc_url( $base . $script . '.js?v=2' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
+		. ( in_array( $script, array( 'soap', 'share' ), true ) ? '<script src="' . esc_url( $base . $script . '.js?v=3' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. '</body></html>';
 	return $html;
 }
@@ -308,8 +294,10 @@ function jlife_challenges_status_text( $view ) {
 			return __( 'Done — 1 point earned. Well done!', 'jlife-challenges' );
 		case 'late_no_point':
 			return __( 'Done. It was after the deadline, so no point this time — your reflection is saved.', 'jlife-challenges' );
+		case 'submitted':
+			return __( 'Saved.', 'jlife-challenges' );
 		case 'draft':
-			return __( 'Draft saved. Finish all four parts and submit.', 'jlife-challenges' );
+			return __( 'Draft saved. Write all four parts (S, O, A, P), then tap Submit SOAP.', 'jlife-challenges' );
 		default:
 			return $view['on_time']
 				? __( 'Not started yet.', 'jlife-challenges' )
@@ -374,7 +362,7 @@ function jlife_challenges_render_day_head( $view ) {
 }
 
 /**
- * Whether the day's SOAP has been submitted (so the form offers "Save changes").
+ * Whether the day's SOAP is done (so the form offers "Save changes").
  *
  * @param array $view Day view.
  * @return bool
@@ -384,32 +372,23 @@ function jlife_challenges_is_submitted( $view ) {
 }
 
 /**
- * The saved entry's four fields, for pre-filling the form.
+ * The text for the textbox: the saved entry, or the heading template for a new one.
  *
  * @param array $view Day view.
- * @return array<string,string> Empty when the participant has no entry yet.
+ * @return string
  */
-function jlife_challenges_entry_values( $view ) {
-	$values = array();
-	if ( ! empty( $view['entry'] ) ) {
-		foreach ( JLIFE_CHALLENGES_FIELDS as $f ) {
-			$values[ $f ] = (string) $view['entry'][ $f ];
-		}
-	}
-	return $values;
+function jlife_challenges_entry_text( $view ) {
+	$body = ! empty( $view['entry'] ) ? (string) $view['entry']['body'] : '';
+	return '' === trim( $body ) ? jlife_challenges_soap_template() : $body;
 }
 
 /**
- * The four fields as typed in a SOAP form POST.
+ * The text as typed in a SOAP form POST.
  *
- * @return array<string,string>
+ * @return string
  */
-function jlife_challenges_posted_fields() {
-	$values = array();
-	foreach ( JLIFE_CHALLENGES_FIELDS as $f ) {
-		$values[ $f ] = isset( $_POST[ $f ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ $f ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by the caller.
-	}
-	return $values;
+function jlife_challenges_posted_text() {
+	return isset( $_POST['jl_text'] ) ? jlife_challenges_clean_text( wp_unslash( $_POST['jl_text'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- verified by the caller; sanitized by jlife_challenges_clean_text().
 }
 
 /**
@@ -439,82 +418,200 @@ function jlife_challenges_soap_return_url( $view, $screen ) {
 }
 
 /**
- * Handle a SOAP form POST (Submit, Save changes or Save draft) for Today and
- * /soap alike.
+ * Handle a SOAP form POST (Submit SOAP, Save changes or Save draft) for Today
+ * and /soap alike.
+ *
+ * Submit saves the text, scores it and, with the box ticked, shares it. The
+ * result is shown after a redirect (?done=1 or ?incomplete=1, plus ?shared=1 or
+ * ?share_failed=code), so a refresh never re-posts. A draft save never shares.
  *
  * @param int    $user_id Participant.
  * @param array  $view    Day view.
  * @param string $screen  'today' or 'soap': where the form lives.
- * @return array { error: string, values: array, redirect: string } On success
- *               "redirect" is where to send the participant; otherwise "error"
- *               is shown with the participant's typed "values" kept. Without a
- *               POST, "values" is the saved entry.
+ * @return array { error: string, text: string, share: bool, redirect: string }
+ *               With a redirect, send the participant there. Otherwise show
+ *               "error" and keep the typed "text". Without a POST, "text" is
+ *               the saved entry (or the template).
  */
 function jlife_challenges_process_soap_request( $user_id, $view, $screen ) {
-	$result = array(
+	$state = array(
 		'error'    => '',
-		'values'   => jlife_challenges_entry_values( $view ),
+		'text'     => jlife_challenges_entry_text( $view ),
+		'share'    => false,
 		'redirect' => '',
 	);
 	if ( ! isset( $_POST['jl_action'] ) || ! check_admin_referer( 'jlife_soap_' . $view['day_key'], '_jlife_soap' ) ) {
-		return $result;
+		return $state;
 	}
-	$fields           = jlife_challenges_posted_fields();
-	$result['values'] = $fields;
-	$action           = sanitize_key( wp_unslash( $_POST['jl_action'] ) );
-	$return           = jlife_challenges_soap_return_url( $view, $screen );
-	$cid              = (int) $view['campaign']['id'];
-	if ( 'draft' === $action ) {
-		$r = jlife_challenges_save_draft( $user_id, $cid, $view['day_key'], $fields );
-		if ( ! is_wp_error( $r ) ) {
-			$result['redirect'] = $return;
+	$text           = jlife_challenges_posted_text();
+	$state['text']  = $text;
+	$state['share'] = isset( $_POST['jl_share'] );
+	$return         = jlife_challenges_soap_return_url( $view, $screen );
+	$cid            = (int) $view['campaign']['id'];
+	if ( 'draft' === sanitize_key( wp_unslash( $_POST['jl_action'] ) ) ) {
+		$r = jlife_challenges_save_draft( $user_id, $cid, $view['day_key'], $text );
+		if ( is_wp_error( $r ) ) {
+			$state['error'] = $r->get_error_message();
+		} else {
+			$state['redirect'] = $return;
 		}
-	} else {
-		$r = jlife_challenges_submit( $user_id, $cid, $view['day_key'], $fields );
-		if ( ! is_wp_error( $r ) ) {
-			$result['redirect'] = add_query_arg( 'done', 1, $return );
-		}
+		return $state;
 	}
+	$r = jlife_challenges_save_and_share( $user_id, $cid, $view['day_key'], $text, $state['share'] );
 	if ( is_wp_error( $r ) ) {
-		$result['error'] = $r->get_error_message();
+		$state['error'] = $r->get_error_message();
+		return $state;
 	}
-	return $result;
+	$key   = $r['passes'] ? 'done' : 'incomplete';
+	$flags = array( $key => 1 );
+	if ( 'shared' === $r['share']['status'] ) {
+		$flags['shared'] = 1;
+	} elseif ( 'failed' === $r['share']['status'] ) {
+		$flags['share_failed'] = $r['share']['code'];
+	}
+	$state['redirect'] = add_query_arg( $flags, $return );
+	return $state;
 }
 
 /**
- * Feedback above the page: the typed-text-kept error, or the confirmation with
- * the share button after a submit.
+ * What the page says after a save, from the redirect's display flags.
  *
- * @param array  $view  Day view.
- * @param string $error Error message ('' if none).
- * @param bool   $done  True after a successful submit (the ?done=1 return).
+ * @return array { done: bool, incomplete: bool, shared: bool, share_failed: string }
+ */
+function jlife_challenges_return_flags() {
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- display flags after a redirect; nothing is changed by them.
+	return array(
+		'done'         => isset( $_GET['done'] ),
+		'incomplete'   => isset( $_GET['incomplete'] ),
+		'shared'       => isset( $_GET['shared'] ),
+		'share_failed' => isset( $_GET['share_failed'] ) ? sanitize_key( wp_unslash( $_GET['share_failed'] ) ) : '',
+	);
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
+}
+
+/**
+ * Fill in a page state (see jlife_challenges_process_soap_request() and
+ * jlife_challenges_return_flags()) with its defaults.
+ *
+ * @param array $state Partial state.
+ * @return array { error: string, text: string|null, share: bool, flags: array }
+ */
+function jlife_challenges_page_state( $state ) {
+	$state          = wp_parse_args(
+		$state,
+		array(
+			'error' => '',
+			'text'  => null,
+			'share' => false,
+			'flags' => array(),
+		)
+	);
+	$state['flags'] = wp_parse_args(
+		(array) $state['flags'],
+		array(
+			'done'         => false,
+			'incomplete'   => false,
+			'shared'       => false,
+			'share_failed' => '',
+		)
+	);
+	return $state;
+}
+
+/**
+ * Plain words for why sharing didn't happen after a good save.
+ *
+ * @param string $code Share error code from the redirect.
  * @return string
  */
-function jlife_challenges_render_soap_feedback( $view, $error, $done ) {
-	if ( '' !== $error ) {
-		return '<p class="jl-err" role="alert">' . esc_html( $error ) . '</p>';
+function jlife_challenges_share_failed_message( $code ) {
+	switch ( $code ) {
+		case 'jlife_guardian_consent_required':
+			return __( 'It was not shared: sharing with your group starts once a parent or guardian has agreed. Your entry is saved.', 'jlife-challenges' );
+		case 'jlife_share_hidden':
+			return __( 'It was not shared: an organizer hid your post for this day, so it was not posted again. Your entry is saved.', 'jlife-challenges' );
+		default:
+			return __( 'Your entry is saved, but it could not be shared with your group this time. Tap Save changes with the box ticked to try again.', 'jlife-challenges' );
 	}
-	if ( ! $done || ! jlife_challenges_is_submitted( $view ) ) {
-		return '';
+}
+
+/**
+ * Feedback above the page: the error, or what happened after a save: the green
+ * confirmation and point (with the share result), or kind reasons why the entry
+ * doesn't earn the point yet. Typed text is always kept.
+ *
+ * @param array $view  Day view.
+ * @param array $state Page state.
+ * @return string
+ */
+function jlife_challenges_render_soap_feedback( $view, $state ) {
+	$state = jlife_challenges_page_state( $state );
+	$flags = $state['flags'];
+	if ( '' !== $state['error'] ) {
+		return '<p class="jl-err" role="alert">' . esc_html( $state['error'] ) . '</p>';
 	}
-	/* translators: 1: points, 2: number of days. */
-	return '<p class="jl-ok" role="status">' . esc_html( jlife_challenges_status_text( $view ) ) . ' ' . esc_html( sprintf( __( 'You have %1$d of %2$d.', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>'
-		. jlife_challenges_share_button( $view );
+	$out = '';
+	if ( $flags['done'] && jlife_challenges_is_submitted( $view ) ) {
+		/* translators: 1: points, 2: number of days. */
+		$out .= '<p class="jl-ok" role="status">' . esc_html( jlife_challenges_status_text( $view ) ) . ' ' . esc_html( sprintf( __( 'You have %1$d of %2$d.', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>';
+	} elseif ( $flags['incomplete'] && ! empty( $view['entry'] ) ) {
+		$reasons = jlife_challenges_score_entry(
+			(string) $view['entry']['body'],
+			array(
+				'campaign' => $view['campaign'],
+				'day_key'  => $view['day_key'],
+				'index'    => $view['index'],
+			)
+		)['reasons'];
+		if ( $reasons ) {
+			$lead = jlife_challenges_is_submitted( $view )
+				? __( 'Your changes are saved, and your point for this day stays. To make this entry complete:', 'jlife-challenges' )
+				: __( 'Saved. Everything you typed is kept. It does not earn the point yet. To finish:', 'jlife-challenges' );
+			$out .= '<div class="jl-note" role="status"><p>' . esc_html( $lead ) . '</p><ul>';
+			foreach ( $reasons as $reason ) {
+				$out .= '<li>' . esc_html( $reason ) . '</li>';
+			}
+			$out .= '</ul></div>';
+		}
+	}
+	if ( $flags['shared'] ) {
+		$out .= '<p class="jl-ok" role="status">' . esc_html__( 'Shared with your group.', 'jlife-challenges' ) . ' <a href="' . esc_url( home_url( '/group/' ) ) . '">' . esc_html__( 'See My Group', 'jlife-challenges' ) . '</a></p>';
+	} elseif ( '' !== $flags['share_failed'] ) {
+		$out .= '<p class="jl-err" role="alert">' . esc_html( jlife_challenges_share_failed_message( $flags['share_failed'] ) ) . '</p>';
+	}
+	return $out;
+}
+
+/**
+ * Short guidance for each part, shown under the textbox.
+ *
+ * @return array<string,string> Letter => guidance.
+ */
+function jlife_challenges_soap_guidance() {
+	return array(
+		'S' => __( 'Write the verse or reference that stood out to you.', 'jlife-challenges' ),
+		'O' => __( 'What does it say? What do you notice about Jesus?', 'jlife-challenges' ),
+		'A' => __( 'What will you believe, change, or do today?', 'jlife-challenges' ),
+		'P' => __( 'Talk to God about what you read.', 'jlife-challenges' ),
+	);
 }
 
 /**
  * The Bible reader and the SOAP form: one renderer for Today and /soap. The
- * reader sits directly above the four fields and outside the form, so opening
- * and closing it never touches what is typed. The form posts back to the page
- * it is on.
+ * reader sits directly above the textbox and outside the form, so opening and
+ * closing it never touches what is typed. The form posts back to the page it
+ * is on.
  *
- * @param array                     $view   Day view.
- * @param array<string,string>|null $values Field values; null = the saved entry.
+ * @param array $view  Day view.
+ * @param array $state Page state (text null = the saved entry or the template).
  * @return string
  */
-function jlife_challenges_render_soap_panel( $view, $values = null ) {
-	$values    = null === $values ? jlife_challenges_entry_values( $view ) : $values;
+function jlife_challenges_render_soap_panel( $view, $state = array() ) {
+	$state     = jlife_challenges_page_state( $state );
+	$text      = null === $state['text'] ? jlife_challenges_entry_text( $view ) : (string) $state['text'];
 	$submitted = jlife_challenges_is_submitted( $view );
+	$headings  = jlife_challenges_soap_headings();
+	$shared    = $view['share_status'] ?? '';
 	$chips     = '';
 	foreach ( (array) ( $view['reading']['day']['passages'] ?? array() ) as $p ) {
 		$chips .= '<button type="button" class="jl-chip" data-insert="' . esc_attr( (string) $p['display'] ) . '">' . esc_html( (string) $p['display'] ) . '</button>';
@@ -522,6 +619,7 @@ function jlife_challenges_render_soap_panel( $view, $values = null ) {
 	$out = jlife_challenges_render_reader( $view )
 		. '<form method="post" class="jl-soap" data-status="' . esc_attr( $submitted ? 'submitted' : 'draft' ) . '"'
 		. ' data-rest="' . esc_url( rest_url( 'jlife/v1/soap/draft' ) ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'wp_rest' ) ) . '"'
+		. ' data-template="' . esc_attr( jlife_challenges_soap_template() ) . '" data-headings="' . esc_attr( (string) wp_json_encode( array_values( $headings ) ) ) . '"'
 		. ' data-i18n="' . esc_attr(
 			(string) wp_json_encode(
 				array(
@@ -534,57 +632,83 @@ function jlife_challenges_render_soap_panel( $view, $values = null ) {
 		) . '"'
 		. ' data-campaign="' . esc_attr( (string) $view['campaign']['id'] ) . '" data-day="' . esc_attr( $view['day_key'] ) . '">'
 		. wp_nonce_field( 'jlife_soap_' . $view['day_key'], '_jlife_soap', true, false )
-		. '<input type="hidden" name="jl_day" value="' . esc_attr( $view['day_key'] ) . '">';
-	foreach ( jlife_challenges_field_labels() as $f => $label ) {
-		$out .= '<label for="jl-' . esc_attr( $f ) . '">' . esc_html( $label[0] ) . '</label><small>' . esc_html( $label[1] ) . '</small>';
-		if ( 'scripture' === $f && '' !== $chips ) {
-			$out .= '<div class="jl-chips" aria-label="' . esc_attr__( "Insert today's references", 'jlife-challenges' ) . '">' . $chips . '</div>';
-		}
-		$out .= '<textarea id="jl-' . esc_attr( $f ) . '" name="' . esc_attr( $f ) . '" rows="' . ( 'scripture' === $f ? 2 : 4 ) . '" maxlength="' . esc_attr( (string) JLIFE_CHALLENGES_FIELD_MAX ) . '">' . esc_textarea( $values[ $f ] ?? '' ) . '</textarea>';
+		. '<input type="hidden" name="jl_day" value="' . esc_attr( $view['day_key'] ) . '">'
+		. '<label for="jl-text">' . esc_html__( 'My SOAP', 'jlife-challenges' ) . '</label>'
+		. '<small>' . esc_html__( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ) . '</small>';
+	if ( '' !== $chips ) {
+		$out .= '<div class="jl-chips" aria-label="' . esc_attr__( "Insert today's references", 'jlife-challenges' ) . '">' . $chips . '</div>';
 	}
-	return $out . '<p class="jl-saved" aria-live="polite"></p>'
+	$out .= '<textarea id="jl-text" name="jl_text" rows="16" maxlength="' . esc_attr( (string) JLIFE_CHALLENGES_BODY_MAX ) . '">' . esc_textarea( $text ) . '</textarea>'
+		. '<details class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary><ul>';
+	foreach ( jlife_challenges_soap_guidance() as $letter => $guidance ) {
+		$out .= '<li><strong>' . esc_html( $headings[ $letter ] ) . '</strong> ' . esc_html( $guidance ) . '</li>';
+	}
+	$out .= '</ul></details>'
+		. '<p class="jl-saved" aria-live="polite"></p>'
+		. '<label class="jl-share-opt"><input type="checkbox" name="jl_share" value="1"' . checked( $state['share'], true, false ) . '> <span>' . esc_html__( 'Share this with my group', 'jlife-challenges' ) . '</span></label>'
+		. '<small class="jl-share-note">' . esc_html__( 'This shares the whole entry, including your Prayer, with your group. Leave it unticked to keep it private.', 'jlife-challenges' ) . '</small>';
+	if ( 'shared' === $shared ) {
+		$out .= '<small class="jl-share-note">' . esc_html__( 'Your group already has this day. Tick the box and save to update it.', 'jlife-challenges' ) . '</small>';
+	}
+	return $out
 		. '<button type="submit" name="jl_action" value="submit" class="jl-button jl-primary">' . esc_html( $submitted ? __( 'Save changes', 'jlife-challenges' ) : __( 'Submit SOAP', 'jlife-challenges' ) ) . '</button>'
 		. ( $submitted ? '' : '<button type="submit" name="jl_action" value="draft" class="jl-button" formnovalidate>' . esc_html__( 'Save draft', 'jlife-challenges' ) . '</button>' )
 		. '</form>';
 }
 
 /**
- * Today's page body: day, reading, status, then the reader and the SOAP form.
+ * Today's page body: day, feedback, reading, status, then the reader and the SOAP form.
  *
- * @param array                     $view   Day view.
- * @param string                    $error  Error to show ('' if none).
- * @param bool                      $done   True after a successful submit.
- * @param array<string,string>|null $values Field values; null = the saved entry.
+ * @param array $view  Day view.
+ * @param array $state Page state.
  * @return string
  */
-function jlife_challenges_today_body( $view, $error = '', $done = false, $values = null ) {
-	$body = jlife_challenges_render_day_head( $view )
-		. jlife_challenges_render_soap_feedback( $view, $error, $done )
+function jlife_challenges_today_body( $view, $state = array() ) {
+	$state = jlife_challenges_page_state( $state );
+	$body  = jlife_challenges_render_day_head( $view )
+		. jlife_challenges_render_soap_feedback( $view, $state )
 		. jlife_challenges_render_reading( $view );
-	// After a submit the confirmation above already says it all.
-	if ( ! ( $done && '' === $error && jlife_challenges_is_submitted( $view ) ) ) {
+	// After a save, the message above already says where things stand.
+	if ( '' !== $state['error'] || ! ( $state['flags']['done'] || $state['flags']['incomplete'] ) ) {
 		$body .= '<section class="jl-status"><p>' . esc_html( jlife_challenges_status_text( $view ) ) . '</p>'
-			. jlife_challenges_share_button( $view )
 			/* translators: 1: points, 2: number of days. */
 			. '<p class="jl-score">' . esc_html( sprintf( __( '%1$d of %2$d', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p></section>';
 	}
-	return $body . jlife_challenges_render_soap_panel( $view, $values );
+	return $body . jlife_challenges_render_soap_panel( $view, $state );
 }
 
 /**
  * The /soap page body: day, feedback, reading, then the reader and the SOAP form.
  *
- * @param array                     $view   Day view.
- * @param string                    $error  Error to show ('' if none).
- * @param bool                      $done   True after a successful submit.
- * @param array<string,string>|null $values Field values; null = the saved entry.
+ * @param array $view  Day view.
+ * @param array $state Page state.
  * @return string
  */
-function jlife_challenges_soap_body( $view, $error = '', $done = false, $values = null ) {
+function jlife_challenges_soap_body( $view, $state = array() ) {
 	return jlife_challenges_render_day_head( $view )
-		. jlife_challenges_render_soap_feedback( $view, $error, $done )
+		. jlife_challenges_render_soap_feedback( $view, $state )
 		. jlife_challenges_render_reading( $view )
-		. jlife_challenges_render_soap_panel( $view, $values );
+		. jlife_challenges_render_soap_panel( $view, $state );
+}
+
+/**
+ * Run a SOAP screen (Today or /soap): handle a form POST, redirect after a
+ * save, or show the page.
+ *
+ * @param string $screen  'today' or 'soap'.
+ * @param string $title   Page title.
+ * @param array  $view    Day view (active).
+ * @param int    $user_id Participant.
+ */
+function jlife_challenges_run_soap_screen( $screen, $title, $view, $user_id ) {
+	$state = jlife_challenges_process_soap_request( $user_id, $view, $screen );
+	if ( '' !== $state['redirect'] ) {
+		wp_safe_redirect( $state['redirect'] );
+		exit;
+	}
+	$state['flags'] = jlife_challenges_return_flags();
+	$body           = 'today' === $screen ? jlife_challenges_today_body( $view, $state ) : jlife_challenges_soap_body( $view, $state );
+	jlife_challenges_send_page( $title, $body, 'today', 'soap' );
 }
 
 /**
@@ -597,13 +721,7 @@ function jlife_challenges_screen_today() {
 	if ( null !== $none ) {
 		jlife_challenges_send_page( __( 'Today', 'jlife-challenges' ), $none, 'today' );
 	}
-	$state = jlife_challenges_process_soap_request( $user_id, $view, 'today' );
-	if ( '' !== $state['redirect'] ) {
-		wp_safe_redirect( $state['redirect'] );
-		exit;
-	}
-	$done = isset( $_GET['done'] ) && '' === $state['error']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flag after a redirect.
-	jlife_challenges_send_page( __( 'Today', 'jlife-challenges' ), jlife_challenges_today_body( $view, $state['error'], $done, $state['values'] ), 'today', 'soap' );
+	jlife_challenges_run_soap_screen( 'today', __( 'Today', 'jlife-challenges' ), $view, $user_id );
 }
 
 /**
@@ -618,13 +736,7 @@ function jlife_challenges_screen_soap() {
 	if ( null !== $none ) {
 		jlife_challenges_send_page( __( 'SOAP', 'jlife-challenges' ), $none, 'today' );
 	}
-	$state = jlife_challenges_process_soap_request( $user_id, $view, 'soap' );
-	if ( '' !== $state['redirect'] ) {
-		wp_safe_redirect( $state['redirect'] );
-		exit;
-	}
-	$done = isset( $_GET['done'] ) && '' === $state['error']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flag after a redirect.
-	jlife_challenges_send_page( __( 'SOAP', 'jlife-challenges' ), jlife_challenges_soap_body( $view, $state['error'], $done, $state['values'] ), 'today', 'soap' );
+	jlife_challenges_run_soap_screen( 'soap', __( 'SOAP', 'jlife-challenges' ), $view, $user_id );
 }
 
 /**
