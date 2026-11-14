@@ -422,7 +422,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'John the Baptizer Prepares the Way', $body );
 		$this->assertLessThan( strpos( $body, '<details class="jl-reader">' ), strpos( $body, 'John the Baptizer Prepares the Way' ), 'the reading comes first' );
 		$this->assertStringContainsString( '</details><form method="post" class="jl-soap"', $body, 'the reader sits directly above the form' );
-		$this->assertStringContainsString( "Read today's passages", $body );
+		$this->assertStringContainsString( esc_html( "Read today's passages" ), $body );
 		$this->assertStringNotContainsString( '<details class="jl-reader" open', $body, 'collapsed by default' );
 
 		$form = $this->form_of( $body );
