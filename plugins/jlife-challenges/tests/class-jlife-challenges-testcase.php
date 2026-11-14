@@ -113,18 +113,23 @@ abstract class Jlife_Challenges_TestCase extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Four complete SOAP fields.
+	 * One complete SOAP entry: the four headings, each with some text (#98).
 	 *
 	 * @param string $tag Text marker.
-	 * @return array
+	 * @return string
 	 */
 	protected function soap( $tag = 'x' ) {
-		return array(
-			'scripture'   => "John 1:14 ($tag)",
-			'observation' => "The Word became flesh ($tag).",
-			'application' => "Be present with my family ($tag).",
-			'prayer'      => "Lord, help me ($tag).",
-		);
+		return "S — Scripture\nJohn 1:14 ($tag)\n\nO — Observation\nThe Word became flesh ($tag).\n\nA — Application\nBe present with my family ($tag).\n\nP — Prayer\nLord, help me ($tag).";
+	}
+
+	/**
+	 * A SOAP entry whose Prayer has nothing under it, so the default engine does not pass it.
+	 *
+	 * @param string $tag Text marker.
+	 * @return string
+	 */
+	protected function soap_without_prayer( $tag = 'x' ) {
+		return "S — Scripture\nJohn 1:14 ($tag)\n\nO — Observation\nThe Word became flesh ($tag).\n\nA — Application\nBe present with my family ($tag).\n\nP — Prayer\n";
 	}
 
 	/**
