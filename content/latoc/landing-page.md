@@ -103,27 +103,24 @@ A few honest sentences are enough. There is no right answer to perform.
 
 ## CTA block
 
-> **PENDING OWNER DECISION.** The issue #110 developer comment lists three options. The copy below is written for **option (a)**, the recommended one. Do not build the CTA until the owner chooses.
->
-> - **(a) Recommended for Dec 20:** CTA goes to the invite-code join page. No contact form, no new participant data.
-> - **(b)** A public "open group" invite code for walk-ins. Changes the campaign model; needs a privacy review.
-> - **(c)** An interest/sign-up form. Collects personal information; needs `integration-boundaries.md` and a `jlife-huddles` sensitivity-matrix row first.
->
-> Why: there is **no open sign-up**. `/join/` requires a group invite code, and `/signin/` is only for existing accounts. Verify routes at build time.
+> **Decided 2026-11-18 (#110, #112):** three ways in. The "read on my own" and "start a group" paths are built in #112; until they reach staging, only the invite-code path works. Final routes are set in #112, so verify every link at build time. The live page is edited on the site, so adjust the buttons there once #112 ships.
 
-### Option (a) copy
+**Heading:** How would you like to join?
 
-**Helper text above the button:** Have an invite code?
+**Button 1:** Read on my own -> solo sign-up (route set in #112)
+*Small text:* Read each day at your own pace. Your reflections stay private.
 
-**Primary button:** Join the Journey -> `/join/`
+**Button 2:** Start a group -> start-a-group sign-up (route set in #112)
+*Small text:* For adults. Get an invite link to read together with friends, family or the people you mentor.
 
-**Line for people without a code:** Don't have a code yet? Ask your church or group leader for one.
+**Button 3:** I have an invite code -> `/join/`
+*Small text:* Someone invited you? Enter their code to join their group.
+
+**Note under the buttons:** You can belong to up to three groups, for example one you lead and one with your friends. Sharing a reflection with a group is always your choice, one group at a time.
 
 **Secondary link:** Already joined? Sign in -> `/signin/`
 
-Use the same block in the hero and in the final call.
-
-If the owner chooses (b) or (c), this block and the Vietnamese counterpart must be rewritten.
+Use the same block in the hero (it may show the three buttons compactly) and in the final call.
 
 ---
 
@@ -146,4 +143,4 @@ Notes:
 4. **SOAP** here is Scripture, Observation, Application, Prayer. Confirm this matches the app screens.
 5. **Milestone wording** matches the primary CSV; see the facts file for caveats (Dec 24 holds two readings; Good Friday is the crucifixion reading, his death is on Mar 27).
 6. **Not on this page, by design:** contact details, church or partner names, participant data, screenshots, Bible text.
-7. **Open items:** CTA option (a/b/c); logo export; final footer wording; Vietnamese reviewer.
+7. **Open items:** CTA routes (#112); logo export; final footer wording; Vietnamese reviewer.

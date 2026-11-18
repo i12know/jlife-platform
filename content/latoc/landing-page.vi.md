@@ -93,13 +93,20 @@ Vài câu chân thật là đủ. Không cần phải viết cho "đúng".
 
 ## Khối CTA
 
-> **CHỜ CHỦ DỰ ÁN QUYẾT ĐỊNH.** Văn bản dưới đây viết cho **phương án (a)** (được đề xuất). Nếu chọn (b) hoặc (c), phải viết lại.
+> **Đã quyết định 2026-11-18 (#110, #112):** ba cách tham gia. Đường dẫn chính xác được xác định trong #112. Bản dịch này vẫn là BẢN NHÁP, cần người dịch duyệt.
 
-**Dòng phía trên nút:** Bạn có mã mời?
+**Tiêu đề:** Bạn muốn tham gia theo cách nào?
 
-**Nút chính:** Tham gia hành trình -> `/join/`
+**Nút 1:** Đọc một mình -> đăng ký đọc một mình (đường dẫn theo #112)
+*Chữ nhỏ:* Đọc mỗi ngày theo nhịp của bạn. Những suy ngẫm của bạn được giữ riêng tư.
 
-**Dòng cho người chưa có mã:** Chưa có mã? Hãy hỏi mục sư, người hướng dẫn hội thánh hoặc trưởng nhóm của bạn.
+**Nút 2:** Lập một nhóm -> đăng ký lập nhóm (đường dẫn theo #112)
+*Chữ nhỏ:* Dành cho người lớn. Nhận đường dẫn mời để cùng đọc với bạn bè, gia đình hoặc những người bạn đang dìu dắt.
+
+**Nút 3:** Tôi có mã mời -> `/join/`
+*Chữ nhỏ:* Có người mời bạn? Nhập mã của họ để vào nhóm.
+
+**Ghi chú dưới các nút:** Bạn có thể tham gia tối đa ba nhóm, ví dụ một nhóm bạn hướng dẫn và một nhóm với bạn bè. Việc chia sẻ suy ngẫm với nhóm luôn do bạn chọn, từng nhóm một.
 
 **Liên kết phụ:** Đã tham gia? Đăng nhập -> `/signin/`
 
