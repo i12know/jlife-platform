@@ -74,6 +74,16 @@ if [ ! -f "${WP_PATH}/wp-config.php" ]; then
   wp config set WP_ENVIRONMENT_TYPE staging --type=constant
 fi
 
+# Mail credentials stay in the protected state directory, outside the web root.
+# Only the include path/expression are versioned/provisioned here, never the key.
+# These definitions run before wp-settings.php in both web PHP and WP-CLI.
+log "Configuring private mail settings include"
+wp config set JLIFE_MAIL_CONFIG_FILE "${STATE_DIR}/mail.php" --type=constant >/dev/null
+wp config set JLIFE_MAIL_CONFIG_LOADED '( is_readable( JLIFE_MAIL_CONFIG_FILE ) ? (bool) ( require JLIFE_MAIL_CONFIG_FILE ) : false )' --raw --type=constant >/dev/null
+if [ -f "${STATE_DIR}/mail.php" ]; then
+  chmod 600 "${STATE_DIR}/mail.php"
+fi
+
 if ! wp core is-installed --network >/dev/null 2>&1; then
   if wp core is-installed >/dev/null 2>&1; then
     die "A single-site WordPress already exists here; refusing to convert it automatically."
@@ -238,6 +248,7 @@ case "${TEST_CAMPAIGN:-none}" in
 esac
 
 log "Status"
+wp jlife mail status
 printf 'WordPress %s; network installed: %s\n' "$(wp core version)" \
   "$(wp core is-installed --network >/dev/null 2>&1 && echo yes || echo no)"
 wp plugin list --status=active --fields=name,version --format=csv

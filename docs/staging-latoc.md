@@ -101,6 +101,69 @@ The first run creates the network admin `latoc-admin` with a random password, sa
 3. **Immediately** change that user's email to a real mailbox (it starts as a placeholder `admin@latoc.vayhub.org`) and set your own password.
 4. Delete `~/.latoc/admin-password`.
 
+## Transactional email (Brevo, #63 Phase A)
+
+The J-Life Sign-in plugin includes an explicitly enabled, site-scoped Brevo
+transport for WordPress mail on the configured network/site IDs. It also handles
+the test-campaign invitation sent from WP-CLI. Other sites retain their own mail
+behavior. Daily reminders are not implemented by this change.
+
+1. Deploy the reviewed code with `test_campaign = none`. No real email is sent by
+   deployment. The deploy installs a private settings include in `wp-config.php`;
+   it does not create or overwrite the credentials file.
+2. Check reachability on the host using its PHP 8.2 and WP-CLI:
+
+   ```bash
+   /opt/cpanel/ea-php82/root/usr/bin/php ~/.latoc/wp-cli-2.11.0.phar --path="$HOME/latoc.vayhub.org" --url=https://latoc.vayhub.org jlife mail probe
+   ```
+
+   This verifies the certificate and SMTP greeting on port 465 without logging
+   in or sending. If blocked, stop and evaluate Brevo HTTPS delivery separately;
+   do not disable certificate checking or fall back silently.
+3. The owner creates a dedicated staging SMTP key in Brevo (not an API key or
+   account password). Use the exact SMTP login and the approved sender/reply-to
+   recorded in #63. Keep staging and production credentials separate.
+4. Copy `config/latoc-mail.example.php` into **`~/.latoc/mail.php` on the host**,
+   set its real site URL, SMTP login/key, approved From name/address and reply-to,
+   and set permissions to **0600** (the `.latoc` directory is 0700). Enter the key
+   privately; never put this real file in GitHub, a deployment archive, screenshots
+   or chat. Both web PHP and WP-CLI read it before plugins load. Keep the product
+   name `LATOC` for branded sign-in subjects. Publishing or editing a page does
+   not change these mail settings.
+5. Run `jlife mail status` with the same PHP/WP-CLI prefix. It must report
+   `enabled_here`, `configured`, and `private_config` as true; it never prints
+   credentials or message data. The approved key must be nonempty; the template
+   placeholder is rejected. Check the matching web runtime by requesting a
+   sign-in code and inspecting the subsequent status and actual received email.
+6. Send only to owner-designated test inboxes. Check From/Reply-to, LATOC subject,
+   arrival before the 10-minute expiry, single use, inbox/spam, DKIM/DMARC headers,
+   and Brevo delivery events. An `accepted` status proves only that `wp_mail`
+   returned success, not delivery. Recheck after a redeploy: the private file
+   must survive and both web/CLI must still work.
+
+The transport uses implicit TLS to `smtp-relay.brevo.com:465`, certificate checks,
+authentication, a 10-second timeout, and no SMTP debug output. While explicitly
+enabled, missing configuration or send failures return failure rather than using
+host mail. Participant responses remain generic. Staff see an admin notice on
+failure; `jlife_mail_health` holds only the allowlisted outcome and UTC timestamp,
+and server logging uses only that outcome. No recipient, code, body, credentials,
+or raw provider errors are stored by this integration. Brevo itself can retain
+transactional message content: review its account retention/access settings and
+keep unnecessary tracking off for authentication emails.
+
+**Rotation:** create a replacement staging key privately, atomically replace the
+protected file with its new value (same 0600 permissions), test delivery, then
+revoke the old key. No redeploy is needed. Never disable an existing key until
+its replacement passes, except during a confirmed credential compromise.
+
+**Disable/rollback:** set `JLIFE_MAIL_ENABLED` to `false` in the protected file;
+this explicitly restores WordPress's original host-mail behavior for this site.
+That is an operator decision, never an automatic failure fallback. Reverting the
+code leaves the protected file intact but unused. Preserve it for recovery and
+revoke the dedicated key in Brevo if it is no longer needed. No credentials are
+stored in WordPress options, so a normal database export does not contain them.
+The host's full-account backups may include the protected file.
+
 ## Test drive campaign
 
 The deploy has a **test_campaign** choice (default `none`):

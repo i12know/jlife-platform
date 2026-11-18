@@ -126,7 +126,7 @@ function jlife_auth_request_code( $email, $purpose = 'signin', $payload = array(
 		static function () use ( $code ) {
 			return array(
 				/* translators: %s: site name. */
-				sprintf( __( 'Your %s sign-in code', 'jlife-auth' ), wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ),
+				sprintf( __( 'Your %s sign-in code', 'jlife-auth' ), wp_specialchars_decode( apply_filters( 'jlife_auth_email_site_name', get_bloginfo( 'name' ) ), ENT_QUOTES ) ),
 				sprintf(
 					/* translators: %s: 6-digit code. */
 					__( "Your code is: %s\n\nIt works once and expires in 10 minutes.\nIf you did not ask for it, you can ignore this email.", 'jlife-auth' ),
