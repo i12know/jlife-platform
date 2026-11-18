@@ -71,7 +71,7 @@ Since D14 changed (#112) a participant is **solo** (no group) or in **up to 3 gr
 | Member of group A, asking for group B (not a member) | ❌ | ❌ | ❌ | ❌ | ❌ B | ❌ | ❌ | ❌ |
 | Solo reader (enrolled, no active membership) | ✅ own | ✅ own | ✅ | ❌ | ❌ no feed | ❌ no group to share to | ❌ | ❌ |
 | Group leader (P2) | ❌ | ❌ | ❌ | ✅ own group (D5) | ✅ as a member of that group | ❌ | ❌ | ❌ |
-| Group starter (#112 PR2) | same as any member of that group; **no extra view** of others' progress | | | | | | | |
+| Group starter (#112 PR2): the adult who made one group | same as any member of that group; **no extra view** of others' entries or progress. Their one extra right is to reset *that group's* invite code (§4c) | | | | | | | |
 | Former member after leaving or a move (D18) | own S only | own | own | ❌ | ❌ that group | remove own old shares only | ❌ | ❌ |
 | Site admin / organizer | ❌ (P1 review path only, audited) | ❌ | ✅ (D5) | ✅ | ❌ browse (D17) | ❌ | ✅ reported posts, audited, author told (D17) | ✅ |
 | Anonymous | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -115,6 +115,28 @@ Unchecking later never removes a post; removal stays with the per-group "Remove 
 | Enrollment removed by an organizer | All the person's memberships end with it |
 | Feed read or membership list of group G | Only active members of G (through an active enrollment); the gate never answers from `enrollments.group_id` |
 | Account deletion, test-campaign removal | Memberships are deleted with the enrollment (no orphan rows) |
+
+### 4c. Start a group (#112 part 2)
+
+An adult can make a group and hold its invite code. Holding the code is the **only** extra right; the starter reads exactly what any member reads.
+
+| Case | Result |
+|---|---|
+| Adult with an active enrollment and a free slot starts a group | One `groups` row (campaign = the open campaign, `started_by` = them) and a `starter` membership that counts toward their 3 groups; the code is shown once; audited (`group_started`, `group_joined`, `invite_reset`) |
+| Minor (13–17) starts a group | **Always refused**, on the stored enrollment's age band (a form field cannot override it): `jlife_minor_cannot_start`; no group, no membership; the form is never shown; `/join/?mode=start` refuses a minor before any email is sent; audited as `group_start_refused` |
+| Person with no enrollment | Denied, nothing created |
+| Third started group in a campaign | Refused (`jlife_start_limit`): at most 2 per person per campaign, counted over every status, so leaving or an organizer disabling the group does not free the count |
+| Start while already in 3 groups | Refused (`jlife_group_limit`); no group row is created (no orphan) |
+| More than 5 creation attempts in an hour (refused ones count) | Refused (`jlife_start_rate`) |
+| Group name | Sanitized (`sanitize_text_field`), 1–60 characters, never a blank; anything else is refused (`jlife_group_name_invalid`) |
+| Reset the invite code: the group's own active starter, or an organizer | New code; the old one stops working at once; audited with who did it |
+| Reset: another member, a non-member, a starter of a different group, a former starter, anonymous, or a starter of a disabled group | Denied (`jlife_denied`); the code is unchanged |
+| Starter reads a member's entry, progress, score counts, or a group they are not in | ❌ denied; the group feed returns only what members shared, the same as for a member |
+| Organizer lists, renames, disables or re-enables any group (starter-made included) | ✅ audited. Listing shows names, status, starter's user ID and active member counts; never codes, hashes, entries or member names |
+| Disabled group | Its code stops working; members lose its feed and the slot is freed; past shares stay stored (re-enabling restores them) but are readable by nobody meanwhile. Re-enabling is refused if it would put a member over 3 groups |
+| Group name seen by | Its active members and organizers only. Another participant asking for the group by ID gets "Not found or not allowed" with no name; `/join` never prints a group name; the audit log holds IDs |
+| Leave a group | Feed access ends and the slot frees; the person's past shares stay with the group (D18) until they remove them from "Groups you left" on `/share`; audited (`group_left`). A starter who leaves stops holding the code (organizers can still reset or disable) |
+| Author removes an old share in a group they left (or one an organizer closed) | ✅ only their own; others get denied; audited (`share_removed`) |
 
 ## 5. Required tests (written first; CI)
 
