@@ -52,38 +52,59 @@ Whether an entry earns the day's point is decided by a separate, pluggable **sco
 
 Extends the [S5 matrix](spikes/S5-privacy-model.md) with the M5 objects. S = SOAP entry and its revisions; L-self = own ledger detail; L-counts = per-day/group counts; GS = group share; X = score export (CSV, no SOAP text, no email, no tokens). Site-admin reads apply only to a **confirmed** group (#48, fixed in #68).
 
+Since D14 changed (#112) a participant is **solo** (no group) or in **up to 3 groups** per campaign. "Group" in the GS columns means *that one group*: every row is read per group, so a person's rights in group A say nothing about group B.
+
 | Actor | S read | S write | L-self | L-counts | GS read | GS create / remove | GS hide | X |
 |---|---|---|---|---|---|---|---|---|
-| Author (participant) | ✅ own | ✅ own | ✅ | own group's counts only if D5 allows (default ❌) | ✅ own group | ✅ own entries, own current group | ❌ | ❌ |
-| Same-group member | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ (not others') | ❌ | ❌ |
-| Other-group member | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Author (participant) | ✅ own | ✅ own | ✅ | own group's counts only if D5 allows (default ❌) | ✅ each group they are in | ✅ own entries, to each group they are in (≤3, one choice per group) | ❌ | ❌ |
+| Member of group A (reading group A's feed) | ❌ | ❌ | ❌ | ❌ | ✅ A's shares only | ❌ (not others') | ❌ | ❌ |
+| Member of group A, asking for group B (not a member) | ❌ | ❌ | ❌ | ❌ | ❌ B | ❌ | ❌ | ❌ |
+| Solo reader (enrolled, no active membership) | ✅ own | ✅ own | ✅ | ❌ | ❌ no feed | ❌ no group to share to | ❌ | ❌ |
 | Group leader (P2) | ❌ | ❌ | ❌ | ✅ own group (D5) | ✅ as a member of that group | ❌ | ❌ | ❌ |
-| Former member after a move (D18) | own S only | own | own | ❌ | ❌ old group | remove own old shares only | ❌ | ❌ |
+| Group starter (#112 PR2) | same as any member of that group; **no extra view** of others' progress | | | | | | | |
+| Former member after leaving or a move (D18) | own S only | own | own | ❌ | ❌ that group | remove own old shares only | ❌ | ❌ |
 | Site admin / organizer | ❌ (P1 review path only, audited) | ❌ | ✅ (D5) | ✅ | ❌ browse (D17) | ❌ | ✅ reported posts, audited, author told (D17) | ✅ |
 | Anonymous | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Magic-link actor | ❌ (bridge off at launch) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 Unknown campaign, group or entry → **denied, indistinguishable from "not found."**
 
-### 4a. Share on save (#98): the "Share this with my group" checkbox
+### 4a. Share on save (#98, per group since #112): one checkbox per group
 
-The SOAP form has one **unchecked** checkbox. It is a second way to create the same group share (GS create), not a new kind of access. The whole saved entry, including Prayer, is the snapshot; there are no field choices any more. The share engine's rules apply unchanged; this table is the row that the access-control tests in `test-share-on-save.php` pin down.
+The SOAP form has **one unchecked checkbox for each group the participant is in**, labelled with the group's name. There is no "share with all" box and no default tick. A **solo reader** (no active membership) sees no share box at all. It is a second way to create the same group share (GS create), not a new kind of access. The whole saved entry, including Prayer, is the snapshot; there are no field choices. The share engine's rules apply unchanged, per group; this table is the row that the access-control tests in `test-share-on-save.php` and `test-multi-group-sharing.php` pin down.
 
 | Case | Result |
 |---|---|
-| Box unchecked, or a draft save/autosave | No post is created or changed |
-| Box checked on Submit / Save changes, save succeeded | One post for the author's **current** group (create, or update the same one; retries never duplicate). Saved without a point still counts as saved |
-| Box checked, save failed (denied, closed day) | No post |
-| Same-group member | Reads the post (first name only) |
-| Other-group member, outsider, organizer, anonymous | Cannot read the post or the feed |
+| No box ticked, or a draft save/autosave | No post is created or changed |
+| Box(es) ticked on Submit / Save changes, save succeeded | One post **per ticked group** (create, or update the same one; retries never duplicate). Groups not ticked get nothing. Saved without a point still counts as saved |
+| Box ticked, save failed (denied, closed day) | No post |
+| Member of a ticked group | Reads the post (first name only) in that group's feed only |
+| Member of a group that was **not** ticked, other-group member, outsider, organizer, anonymous | Cannot read the post or that feed |
+| Group ID in the request that is not one of the author's active groups | Refused for that group (denied, same as "not found"); nothing is posted there |
+| Solo reader (no active membership) | No share box; any share request is denied; no group row is ever created |
 | Someone else's entry | Cannot be shared: denied, same as "not found" |
-| Minor, 13–17 (D19, decided 2026-11-05) | Same as any member: posts to their own group, with no guardian step in J-Life (the church's consent process covers it) |
-| Minor awaiting guardian consent, only where a deployment turns `jlife_challenges_require_guardian_consent` on | Save and point stand, no post, the page says so |
-| Post hidden by an organizer (D17) | Not re-posted, not updated, not un-hidden; the page says so; save and point stand |
-| Member who moved group (D18) | Posts go to the new group only; older posts stay with the old group |
-| Share failed after a good save | The page says so plainly; the entry and any point are kept |
+| Fourth group | Refused at join (never a fourth box); the share rules never need a limit check |
+| Minor, 13–17 (D19, decided 2026-11-05) | Same as any member, per group: posts to the groups they tick, with no guardian step in J-Life (the church's consent process covers it). Minors may belong to up to 3 groups like adults |
+| Minor awaiting guardian consent, only where a deployment turns `jlife_challenges_require_guardian_consent` on | Save and point stand, no post to **any** group, the page says so |
+| Post hidden by an organizer (D17) | In that group only: not re-posted, not updated, not un-hidden; the page says so; save and point stand. Posts to the author's other groups are unaffected |
+| Entry saved **before** joining a group | Stays private; it reaches the new group only if the author ticks that group on a later save (or posts it from `/share`) |
+| Member who left or was moved from a group (D18) | Past shares stay with the old group; the person loses that feed; the new group never sees their old shares; they can still remove their own old shares |
+| Share failed after a good save | The page says so plainly, naming the groups; the entry and any point are kept |
 
-Unchecking later never removes a post; removal stays with the existing "Remove from my group" flow on `/share`.
+Unchecking later never removes a post; removal stays with the per-group "Remove from this group" flow on `/share`.
+
+### 4b. Membership rows (#112)
+
+| Case | Result |
+|---|---|
+| Join with a valid code (signed in) | Adds one active membership for that group; the enrollment (consent, progress, points) is unchanged; audited |
+| Join a group the person is already in | Refused (`jlife_already_enrolled`), no duplicate row |
+| Fourth active membership in one campaign | Refused (`jlife_group_limit`), for adults, minors and organizer enrollment alike; the first three are untouched |
+| Leave a group, then join another | The slot frees up; the left group's shares stay there (D18); audited |
+| "Read on my own" (`/join/?mode=solo`) | Creates or keeps the enrollment with **no** membership; consent and age band recorded as for any join |
+| Enrollment removed by an organizer | All the person's memberships end with it |
+| Feed read or membership list of group G | Only active members of G (through an active enrollment); the gate never answers from `enrollments.group_id` |
+| Account deletion, test-campaign removal | Memberships are deleted with the enrollment (no orphan rows) |
 
 ## 5. Required tests (written first; CI)
 
