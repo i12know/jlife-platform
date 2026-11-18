@@ -146,9 +146,27 @@ class Test_Shares extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * D19: a minor's shares wait for guardian consent; private SOAP and points work at once.
+	 * D19 (owner decision 2026-11-05): by default a minor (13-17) shares with
+	 * their own group like anyone else, with no guardian step in J-Life; the
+	 * church's existing consent process covers it.
 	 */
-	public function test_minor_needs_guardian_consent_to_share() {
+	public function test_minor_shares_without_a_guardian_step_by_default() {
+		$teen = self::factory()->user->create( array( 'role' => 'subscriber' ) );
+		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $teen, $this->g['g1'], 'minor' ) );
+		$r = jlife_challenges_submit( $teen, $this->campaign, null, $this->soap() );
+		$this->assertSame( 1, $r['points'] );
+
+		$this->assertIsInt( jlife_challenges_share( $teen, $r['entry_id'] ), 'no guardian consent needed by default' );
+		$this->assertTrue( jlife_challenges_can_read_feed( $this->u['b'], $this->g['g1'] ), 'their own group reads it' );
+		$this->assertFalse( jlife_challenges_can_read_feed( $teen, $this->g['g2'] ), 'still only their own group' );
+	}
+
+	/**
+	 * Opt-in for a deployment that needs it: with the setting on, a minor's
+	 * shares wait for recorded guardian consent; private SOAP and points work at once.
+	 */
+	public function test_minor_needs_guardian_consent_to_share_when_required() {
+		update_option( 'jlife_challenges_require_guardian_consent', '1' );
 		$teen = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $teen, $this->g['g1'], 'minor' ) );
 		$r = jlife_challenges_submit( $teen, $this->campaign, null, $this->soap() );
@@ -162,9 +180,10 @@ class Test_Shares extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * D19 option (b): turning the consent requirement off lets minors share.
+	 * Turning the requirement back off (after it was on) lets minors share again.
 	 */
 	public function test_guardian_consent_requirement_is_a_setting() {
+		update_option( 'jlife_challenges_require_guardian_consent', '1' );
 		update_option( 'jlife_challenges_require_guardian_consent', '0' );
 		$teen = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		jlife_challenges_enroll( $this->u['organizer'], $teen, $this->g['g1'], 'minor' );

@@ -28,7 +28,7 @@ The Bible Marathon engine (M5, #60): campaigns, groups and enrollment, private S
 
 ## Settings
 
-- `jlife_challenges_require_guardian_consent` (option `'1'` default / `'0'`): with `'1'`, minors share only after a guardian's consent is recorded (D19 option a); `'0'` allows self-attested sharing (option b). Set with `wp option update jlife_challenges_require_guardian_consent 0`.
+- `jlife_challenges_require_guardian_consent` (option `'0'` default / `'1'`): off by default per D19 (owner decision 2026-11-05, #55): participants aged 13–17 share with their own group with no guardian step in J-Life, because the church's existing consent process covers it. A deployment whose church needs a recorded guardian consent turns it on with `wp option update jlife_challenges_require_guardian_consent 1`; minors then share only after an organizer records it.
 
 ## Tests
 

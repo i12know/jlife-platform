@@ -93,13 +93,19 @@ function jlife_challenges_can_read_feed( $viewer_user_id, $group_id ) {
 /**
  * Does a participant still need guardian consent before sharing (D19)?
  *
+ * D19 (owner decision 2026-11-05, #55): participants aged 13-17 share with
+ * their own (youth) group without a separate guardian step in J-Life; the
+ * church's existing consent process covers it. So the requirement is off by
+ * default. A deployment whose church needs a recorded guardian consent turns
+ * it on with the option set to '1' (or the filter).
+ *
  * @param array $enrollment Enrollment row.
  * @return bool
  */
 function jlife_challenges_needs_guardian_consent( $enrollment ) {
-	// Option values are '1' (default) or '0'; update_option( ..., false ) on a
+	// Option values are '1' or '0' (default); update_option( ..., false ) on a
 	// missing option is a no-op in WordPress, so booleans are not used.
-	$required = (bool) apply_filters( 'jlife_challenges_require_guardian_consent', '0' !== (string) get_option( 'jlife_challenges_require_guardian_consent', '1' ) );
+	$required = (bool) apply_filters( 'jlife_challenges_require_guardian_consent', '1' === (string) get_option( 'jlife_challenges_require_guardian_consent', '0' ) );
 	return $required && 'minor' === $enrollment['age_band'] && empty( $enrollment['guardian_consent'] );
 }
 

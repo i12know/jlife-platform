@@ -77,7 +77,8 @@ The SOAP form has one **unchecked** checkbox. It is a second way to create the s
 | Same-group member | Reads the post (first name only) |
 | Other-group member, outsider, organizer, anonymous | Cannot read the post or the feed |
 | Someone else's entry | Cannot be shared: denied, same as "not found" |
-| Minor awaiting guardian consent (D19) | Save and point stand, no post, the page says so |
+| Minor, 13–17 (D19, decided 2026-11-05) | Same as any member: posts to their own group, with no guardian step in J-Life (the church's consent process covers it) |
+| Minor awaiting guardian consent, only where a deployment turns `jlife_challenges_require_guardian_consent` on | Save and point stand, no post, the page says so |
 | Post hidden by an organizer (D17) | Not re-posted, not updated, not un-hidden; the page says so; save and point stand |
 | Member who moved group (D18) | Posts go to the new group only; older posts stay with the old group |
 | Share failed after a good save | The page says so plainly; the entry and any point are kept |
