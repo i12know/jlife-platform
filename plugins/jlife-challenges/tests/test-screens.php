@@ -906,6 +906,9 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	 * incomplete entry ticked to share is saved, shared and flagged incomplete.
 	 */
 	public function test_share_failure_and_incomplete_flags_in_the_redirect() {
+		// D19 (#111): the guardian step is off by default; turn it on so the
+		// minor's share fails and the redirect carries share_failed.
+		update_option( 'jlife_challenges_require_guardian_consent', '1' );
 		$teen = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		jlife_challenges_enroll( $this->u['organizer'], $teen, $this->g['g1'], 'minor' );
 		$this->post_soap( $teen, 'd001', 'submit', $this->soap( 'teen' ), true );
