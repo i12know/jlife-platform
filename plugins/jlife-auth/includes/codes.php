@@ -120,12 +120,20 @@ function jlife_auth_request_code( $email, $purpose = 'signin', $payload = array(
 		JLIFE_AUTH_CODE_TTL
 	);
 
-	/* translators: %s: site name. */
-	$subject = sprintf( __( 'Your %s sign-in code', 'jlife-auth' ), wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
-	$body    = sprintf(
-		/* translators: %s: 6-digit code. */
-		__( "Your code is: %s\n\nIt works once and expires in 10 minutes.\nIf you did not ask for it, you can ignore this email.", 'jlife-auth' ),
-		$code
+	// The email is in the language the person chose on the form (D13), else the page's.
+	list( $subject, $body ) = jlife_auth_in_locale(
+		(string) ( $payload['locale'] ?? '' ),
+		static function () use ( $code ) {
+			return array(
+				/* translators: %s: site name. */
+				sprintf( __( 'Your %s sign-in code', 'jlife-auth' ), wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ),
+				sprintf(
+					/* translators: %s: 6-digit code. */
+					__( "Your code is: %s\n\nIt works once and expires in 10 minutes.\nIf you did not ask for it, you can ignore this email.", 'jlife-auth' ),
+					$code
+				),
+			);
+		}
 	);
 	if ( ! wp_mail( $email, $subject, $body ) ) {
 		// The participant sees the same answer either way (no enumeration);

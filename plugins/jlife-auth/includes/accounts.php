@@ -3,9 +3,11 @@
  * Accounts: joining with an invite code or on one's own, finishing sign-in,
  * consent (#58, #112).
  *
- * - Two ways in: an invite code (a group; also how an existing participant
- *   joins another group later, up to the limit) or "Read on my own" (no code,
- *   no group; `mode=solo`). Both record the age band and need the same consent.
+ * - Three ways in: an invite code (a group; also how an existing participant
+ *   joins another group later, up to the limit), "Read on my own" (no code,
+ *   no group; `mode=solo`) and "Start a group" (`mode=start`, adults only: a
+ *   group name, then the invite code and link are shown once). All record the
+ *   age band and need the same consent.
  * - Participants are 13 or older; the age band (adult|minor) is recorded at
  *   join (D19). Under-13s cannot join.
  * - Language (English / Tiếng Việt) is chosen at join and stored as the
@@ -30,20 +32,35 @@ const JLIFE_AUTH_LOCALES = array(
 const JLIFE_AUTH_CONSENT_VERSION = 'draft-2026-11-05';
 
 /**
- * Which way in the join page is on: 'solo' ("Read on my own", no code) or the
- * default 'invite'. The route is /join/?mode=solo; the form carries it on.
+ * Which way in the join page is on: 'solo' ("Read on my own", no code),
+ * 'start' ("Start a group", adults only) or the default 'invite'. The route is
+ * /join/?mode=solo or ?mode=start; the form carries it on.
  *
  * @param string $raw Requested mode.
- * @return string invite|solo
+ * @return string invite|solo|start
  */
 function jlife_auth_join_mode( $raw ) {
-	return 'solo' === $raw ? 'solo' : 'invite';
+	return in_array( $raw, array( 'solo', 'start' ), true ) ? $raw : 'invite';
 }
+
+/**
+ * Errors after the emailed code is checked that must not stop sign-in: the
+ * person is signed in and told, on /join, what did not happen.
+ */
+const JLIFE_AUTH_SOFT_JOIN_ERRORS = array(
+	'jlife_already_enrolled',
+	'jlife_group_limit',
+	'jlife_minor_cannot_start',
+	'jlife_start_limit',
+	'jlife_start_rate',
+	'jlife_group_name_invalid',
+	'jlife_denied',
+);
 
 /**
  * Validate join details and send a join code.
  *
- * @param array  $input { email, first_name, invite_code, age_band (adult|minor), locale, mode (invite|solo) }.
+ * @param array  $input { email, first_name, invite_code, group_name, age_band (adult|minor), locale, mode (invite|solo|start) }.
  * @param string $ip    Requester IP.
  * @return true|WP_Error
  */
@@ -63,15 +80,26 @@ function jlife_auth_start_join( $input, $ip = '' ) {
 		$loc = 'en_US';
 	}
 	$campaign_id = 0;
-	if ( 'solo' === $mode ) {
-		// Read on my own: no code, no group. A code typed anyway is ignored.
+	$group_name  = '';
+	if ( 'solo' === $mode || 'start' === $mode ) {
+		// Read on my own / start a group: no code. A code typed anyway is ignored.
 		$campaign    = function_exists( 'jlife_challenges_open_campaign' ) ? jlife_challenges_open_campaign() : null;
 		$campaign_id = $campaign ? (int) $campaign['id'] : 0;
 		$code        = '';
 		if ( ! $campaign_id ) {
 			return new WP_Error( 'jlife_auth_no_campaign', __( 'There is no Marathon open to join right now. Please try again later.', 'jlife-auth' ) );
 		}
-	} elseif ( ! function_exists( 'jlife_challenges_group_for_invite' ) || ! jlife_challenges_group_for_invite( $code ) ) {
+	}
+	if ( 'start' === $mode ) {
+		// Adults only. This is checked again, on the stored age band, when the group is made.
+		if ( 'adult' !== $band ) {
+			return new WP_Error( 'jlife_auth_minor_cannot_start', __( 'Only adults (18 or older) can start a group. You can join a group with an invite code, or read on your own.', 'jlife-auth' ) );
+		}
+		$group_name = jlife_challenges_clean_group_name( (string) ( $input['group_name'] ?? '' ) );
+		if ( is_wp_error( $group_name ) ) {
+			return $group_name;
+		}
+	} elseif ( 'solo' !== $mode && ( ! function_exists( 'jlife_challenges_group_for_invite' ) || ! jlife_challenges_group_for_invite( $code ) ) ) {
 		return new WP_Error( 'jlife_invite_invalid', __( 'That invite code is not valid. Please ask your group for a new one.', 'jlife-auth' ) );
 	}
 	return jlife_auth_request_code(
@@ -80,6 +108,7 @@ function jlife_auth_start_join( $input, $ip = '' ) {
 		array(
 			'first_name'  => mb_substr( $first, 0, 60 ),
 			'invite_code' => $code,
+			'group_name'  => $group_name,
 			'mode'        => $mode,
 			'campaign_id' => $campaign_id,
 			'age_band'    => $band,
@@ -123,7 +152,7 @@ function jlife_auth_create_participant( $email, $payload ) {
  *
  * @param string $email Email address.
  * @param string $code  Code as typed.
- * @return array|WP_Error { user_id, purpose, notice }
+ * @return array|WP_Error { user_id, purpose, notice, notice_code, started? } `started` is { id, invite_code, name } when a group was just started; `notice` explains a join that did not happen (the person is still signed in).
  */
 function jlife_auth_complete( $email, $code ) {
 	$checked = jlife_auth_check_code( $email, $code );
@@ -135,9 +164,10 @@ function jlife_auth_complete( $email, $code ) {
 
 	if ( 'signin' === $checked['purpose'] ) {
 		return $user ? array(
-			'user_id' => (int) $user->ID,
-			'purpose' => 'signin',
-			'notice'  => '',
+			'user_id'     => (int) $user->ID,
+			'purpose'     => 'signin',
+			'notice'      => '',
+			'notice_code' => '',
 		) : new WP_Error( 'jlife_auth_code', __( 'That code is not valid. Please check it or ask for a new one.', 'jlife-auth' ) );
 	}
 
@@ -146,24 +176,75 @@ function jlife_auth_complete( $email, $code ) {
 	if ( is_wp_error( $user_id ) ) {
 		return $user_id;
 	}
-	$notice = '';
-	if ( 'solo' === jlife_auth_join_mode( (string) ( $payload['mode'] ?? '' ) ) ) {
+	// Messages from the join work are written in the person's own language (D13): their account's, else the one chosen on the form.
+	$chosen = $user ? (string) get_user_meta( $user_id, 'locale', true ) : (string) ( $payload['locale'] ?? '' );
+	$done   = jlife_auth_in_locale(
+		$chosen,
+		static function () use ( $user_id, $payload ) {
+			return jlife_auth_do_join( $user_id, $payload );
+		}
+	);
+	if ( is_wp_error( $done['error'] ) ) {
+		return $done['error'];
+	}
+	$result = array(
+		'user_id'     => $user_id,
+		'purpose'     => 'join',
+		'notice'      => $done['notice'],
+		'notice_code' => $done['notice_code'],
+	);
+	if ( $done['started'] ) {
+		$result['started'] = $done['started'];
+	}
+	return $result;
+}
+
+/**
+ * The join itself, after the emailed code is checked: a group by invite code,
+ * "Read on my own", or "Start a group". Errors that must not stop sign-in come
+ * back as a notice.
+ *
+ * @param int   $user_id Participant.
+ * @param array $payload Join details from the code request.
+ * @return array { error: WP_Error|null, notice: string, notice_code: string, started: array|null }
+ */
+function jlife_auth_do_join( $user_id, $payload ) {
+	$out  = array(
+		'error'       => null,
+		'notice'      => '',
+		'notice_code' => '',
+		'started'     => null,
+	);
+	$mode = jlife_auth_join_mode( (string) ( $payload['mode'] ?? '' ) );
+	if ( 'solo' === $mode ) {
 		$joined = jlife_challenges_enroll_solo( $user_id, (int) ( $payload['campaign_id'] ?? 0 ), $payload['age_band'] );
+	} elseif ( 'start' === $mode ) {
+		// The enrollment keeps its stored age band: a person already enrolled as 13-17 stays a minor here.
+		$campaign = jlife_challenges_open_campaign();
+		$joined   = $campaign ? jlife_challenges_enroll_solo( $user_id, (int) $campaign['id'], $payload['age_band'] ) : jlife_challenges_denied();
+		if ( ! is_wp_error( $joined ) ) {
+			$joined = jlife_challenges_start_group( $user_id, (string) ( $payload['group_name'] ?? '' ) );
+			if ( ! is_wp_error( $joined ) ) {
+				$out['started'] = array(
+					'id'          => (int) $joined['id'],
+					'invite_code' => (string) $joined['invite_code'],
+					'name'        => (string) $joined['name'],
+				);
+			}
+		}
 	} else {
 		$joined = jlife_challenges_join_with_code( $user_id, $payload['invite_code'], $payload['age_band'] );
 	}
 	if ( is_wp_error( $joined ) ) {
-		// Already in that group, or already in the most groups allowed: they are signed in; tell them.
-		if ( ! in_array( $joined->get_error_code(), array( 'jlife_already_enrolled', 'jlife_group_limit' ), true ) ) {
-			return $joined;
+		// Already in that group, at the group limit, or could not start a group: they are signed in; tell them.
+		if ( ! in_array( $joined->get_error_code(), JLIFE_AUTH_SOFT_JOIN_ERRORS, true ) ) {
+			$out['error'] = $joined;
+			return $out;
 		}
-		$notice = $joined->get_error_message();
+		$out['notice']      = $joined->get_error_message();
+		$out['notice_code'] = $joined->get_error_code();
 	}
-	return array(
-		'user_id' => $user_id,
-		'purpose' => 'join',
-		'notice'  => $notice,
-	);
+	return $out;
 }
 
 /**

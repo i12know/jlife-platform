@@ -29,6 +29,23 @@ const JLIFE_CHALLENGES_MAX_GROUPS = 3;
 const JLIFE_CHALLENGES_JOIN_TRIES = 10;
 
 /**
+ * Groups one adult may start per campaign (#112 part 2). Counted over every
+ * status, so leaving or an organizer disabling a group does not free the count.
+ */
+const JLIFE_CHALLENGES_MAX_STARTED_GROUPS = 2;
+
+/**
+ * Group-creation attempts one signed-in person may make per hour, refused ones
+ * included.
+ */
+const JLIFE_CHALLENGES_START_TRIES = 5;
+
+/**
+ * Longest group name, in characters.
+ */
+const JLIFE_CHALLENGES_GROUP_NAME_MAX = 60;
+
+/**
  * Create a campaign. Organizers only.
  *
  * @param int   $actor User creating it.
@@ -163,16 +180,20 @@ function jlife_challenges_create_group( $actor, $campaign_id, $name ) {
 }
 
 /**
- * Issue a new invite code for a group (the old one stops working).
+ * Issue a new invite code for a group (the old one stops working). An
+ * organizer may reset any group's code; otherwise only the group's own active
+ * starter may, and only while the group is active. Anyone else, including
+ * another member, a non-member and a starter who has left, is denied.
  *
- * @param int $actor    Organizer.
+ * @param int $actor    Organizer, or the group's starter.
  * @param int $group_id Group.
  * @param int $days     Days until the code expires.
  * @return string|WP_Error The new code (shown once).
  */
 function jlife_challenges_reset_invite( $actor, $group_id, $days = 60 ) {
-	$group = jlife_challenges_get_group( $group_id );
-	if ( ! jlife_challenges_is_organizer( $actor ) || ! $group ) {
+	$group     = jlife_challenges_get_group( $group_id );
+	$organizer = jlife_challenges_is_organizer( $actor );
+	if ( ! $group || ! ( $organizer || jlife_challenges_is_group_starter( $actor, $group_id ) ) ) {
 		return jlife_challenges_denied();
 	}
 	$alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No 0/O/1/I confusion.
@@ -191,8 +212,182 @@ function jlife_challenges_reset_invite( $actor, $group_id, $days = 60 ) {
 		array( '%s', '%s' ),
 		array( '%d' )
 	);
-	jlife_challenges_audit( $actor, 'invite_reset', 'group', (int) $group_id, (int) $group['campaign_id'] );
+	jlife_challenges_audit( $actor, 'invite_reset', 'group', (int) $group_id, (int) $group['campaign_id'], array( 'by' => $organizer ? 'organizer' : 'starter' ) );
 	return $code;
+}
+
+/**
+ * Is the user the active starter of this group (an active member whose
+ * membership role is `starter`, in an active group)? A starter who left, or
+ * whose group an organizer disabled, is not.
+ *
+ * @param int $user_id  User.
+ * @param int $group_id Group.
+ * @return bool
+ */
+function jlife_challenges_is_group_starter( $user_id, $group_id ) {
+	if ( (int) $user_id < 1 || ! jlife_challenges_is_group_member( $user_id, $group_id ) ) {
+		return false;
+	}
+	$m = jlife_challenges_get_membership( $group_id, $user_id );
+	return $m && 'starter' === $m['role'] && 'active' === $m['status'];
+}
+
+/**
+ * Clean and check a group name: plain text, 1 to JLIFE_CHALLENGES_GROUP_NAME_MAX
+ * characters after cleaning. Too long is refused, never silently cut.
+ *
+ * @param string $name Raw name.
+ * @return string|WP_Error The cleaned name.
+ */
+function jlife_challenges_clean_group_name( $name ) {
+	$name = sanitize_text_field( (string) $name );
+	if ( '' === $name || mb_strlen( $name ) > JLIFE_CHALLENGES_GROUP_NAME_MAX ) {
+		return new WP_Error(
+			'jlife_group_name_invalid',
+			sprintf(
+				/* translators: %d: the most characters a group name can have. */
+				__( 'Please give your group a name of up to %d characters.', 'jlife-challenges' ),
+				JLIFE_CHALLENGES_GROUP_NAME_MAX
+			)
+		);
+	}
+	return $name;
+}
+
+/**
+ * How many groups a person has started in a campaign, in any status.
+ *
+ * @param int $user_id     User.
+ * @param int $campaign_id Campaign.
+ * @return int
+ */
+function jlife_challenges_started_count( $user_id, $campaign_id ) {
+	global $wpdb;
+	return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'groups' ) . ' WHERE started_by = %d AND campaign_id = %d', (int) $user_id, (int) $campaign_id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+}
+
+/**
+ * Why the person cannot start a group right now, or null when they can. Checks
+ * everything except the name and the rate limit. Never writes.
+ *
+ * @param int $user_id User.
+ * @return WP_Error|null
+ */
+function jlife_challenges_start_blocker( $user_id ) {
+	$campaign = (int) $user_id > 0 ? jlife_challenges_open_campaign() : null;
+	$e        = $campaign ? jlife_challenges_active_enrollment( (int) $campaign['id'], (int) $user_id ) : null;
+	if ( ! $campaign || ! $e ) {
+		return jlife_challenges_denied();
+	}
+	if ( 'adult' !== $e['age_band'] ) {
+		return new WP_Error( 'jlife_minor_cannot_start', __( 'Only adults (18 or older) can start a group. You can join a group with an invite code, or read on your own.', 'jlife-challenges' ) );
+	}
+	if ( jlife_challenges_started_count( $user_id, (int) $campaign['id'] ) >= JLIFE_CHALLENGES_MAX_STARTED_GROUPS ) {
+		return new WP_Error(
+			'jlife_start_limit',
+			sprintf(
+				/* translators: %d: the most groups one person can start. */
+				_n( 'You have already started the most groups you can (%d).', 'You have already started the most groups you can (%d).', JLIFE_CHALLENGES_MAX_STARTED_GROUPS, 'jlife-challenges' ),
+				JLIFE_CHALLENGES_MAX_STARTED_GROUPS
+			)
+		);
+	}
+	if ( count( jlife_challenges_active_memberships( (int) $campaign['id'], (int) $user_id ) ) >= JLIFE_CHALLENGES_MAX_GROUPS ) {
+		return jlife_challenges_group_limit_error();
+	}
+	return null;
+}
+
+/**
+ * May the person be offered "Start a group" right now? An adult with an active
+ * enrollment in the open campaign, a free group slot and a start to spare.
+ *
+ * @param int $user_id User.
+ * @return bool
+ */
+function jlife_challenges_can_start_group( $user_id ) {
+	return null === jlife_challenges_start_blocker( $user_id );
+}
+
+/**
+ * An adult starts a group (#112 part 2). The group is made in the open campaign,
+ * the person becomes its `starter` member (it uses one of their 3 slots) and
+ * gets a fresh invite code, returned only here. Minors can never start one: the
+ * check reads the stored enrollment, not anything the form said. Limits: 2
+ * started per person per campaign, 5 attempts an hour. Audited (D18).
+ *
+ * @param int    $user_id Participant (signed in).
+ * @param string $name    Group name.
+ * @return array|WP_Error { id, invite_code, name, campaign_id }
+ */
+function jlife_challenges_start_group( $user_id, $name ) {
+	$user_id = (int) $user_id;
+	if ( $user_id < 1 ) {
+		return jlife_challenges_denied();
+	}
+	$key   = 'jlife_chal_start_tries_' . $user_id;
+	$tries = (int) get_transient( $key );
+	if ( $tries >= JLIFE_CHALLENGES_START_TRIES ) {
+		return new WP_Error( 'jlife_start_rate', __( 'Too many tries. Please wait an hour before starting a group.', 'jlife-challenges' ) );
+	}
+	set_transient( $key, $tries + 1, HOUR_IN_SECONDS );
+
+	$blocked = jlife_challenges_start_blocker( $user_id );
+	if ( $blocked ) {
+		$campaign = jlife_challenges_open_campaign();
+		$e        = $campaign ? jlife_challenges_active_enrollment( (int) $campaign['id'], $user_id ) : null;
+		if ( $e && 'jlife_denied' !== $blocked->get_error_code() ) {
+			jlife_challenges_audit( $user_id, 'group_start_refused', 'enrollment', (int) $e['id'], (int) $campaign['id'], array( 'reason' => $blocked->get_error_code() ) );
+		}
+		return $blocked;
+	}
+	$name = jlife_challenges_clean_group_name( $name );
+	if ( is_wp_error( $name ) ) {
+		return $name;
+	}
+	$campaign   = (array) jlife_challenges_open_campaign();
+	$enrollment = (array) jlife_challenges_active_enrollment( (int) $campaign['id'], $user_id );
+
+	global $wpdb;
+	$groups = jlife_challenges_table( 'groups' );
+	$ok     = $wpdb->insert(
+		$groups,
+		array(
+			'campaign_id' => (int) $campaign['id'],
+			'name'        => $name,
+			'status'      => 'active',
+			'started_by'  => $user_id,
+			'created'     => current_time( 'mysql', true ),
+		),
+		array( '%d', '%s', '%s', '%d', '%s' )
+	);
+	if ( false === $ok ) {
+		return new WP_Error( 'jlife_db', 'Could not create group.' );
+	}
+	$group_id = (int) $wpdb->insert_id;
+	// Two requests can both pass the checks above; whoever finishes over a limit backs out.
+	if ( jlife_challenges_started_count( $user_id, (int) $campaign['id'] ) > JLIFE_CHALLENGES_MAX_STARTED_GROUPS ) {
+		$fail = new WP_Error( 'jlife_start_limit', __( 'You have already started the most groups you can.', 'jlife-challenges' ) );
+	} else {
+		$added = jlife_challenges_add_membership( $user_id, $enrollment, (array) jlife_challenges_get_group( $group_id ), 'starter', 'start_group' );
+		$fail  = is_wp_error( $added ) ? $added : null;
+	}
+	if ( $fail ) {
+		$wpdb->delete( $groups, array( 'id' => $group_id ), array( '%d' ) );
+		return $fail;
+	}
+	jlife_challenges_audit( $user_id, 'group_started', 'group', $group_id, (int) $campaign['id'] );
+	$code = jlife_challenges_reset_invite( $user_id, $group_id );
+	if ( is_wp_error( $code ) ) {
+		return $code;
+	}
+	return array(
+		'id'          => $group_id,
+		'invite_code' => $code,
+		'name'        => $name,
+		'campaign_id' => (int) $campaign['id'],
+	);
 }
 
 /**
@@ -261,7 +456,7 @@ function jlife_challenges_open_enrollment( $user_id, $campaign_id, $age_band ) {
  * @param array  $enrollment The person's active enrollment row.
  * @param array  $group      Group row (active, same campaign).
  * @param string $role       member|starter.
- * @param string $source     invite_code|organizer|move (recorded in the audit).
+ * @param string $source     invite_code|organizer|start_group|move (recorded in the audit).
  * @return int|WP_Error Membership ID.
  */
 function jlife_challenges_add_membership( $actor, $enrollment, $group, $role = 'member', $source = 'invite_code' ) {

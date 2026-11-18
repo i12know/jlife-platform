@@ -1,13 +1,14 @@
 # jlife-auth
 
-Participant sign-in for J-Life (M3, #58): **a 6-digit code by email, no passwords and no sign-in links**, plus joining a group with an invite code or reading on your own, the age band (13+), language choice and the consent step.
+Participant sign-in for J-Life (M3, #58): **a 6-digit code by email, no passwords and no sign-in links**, plus joining a group with an invite code, reading on your own or starting a group (adults), the age band (13+), language choice and the consent step.
 
 ## Pages
 
 | Route | What it does |
 |---|---|
 | `/join/?code=INVITE` | Invite code, first name, email, age (18+ / 13–17; under-13s cannot join), language (English / Tiếng Việt) → emailed code → account created, group joined → consent |
-| `/join/?mode=solo` | **Read on my own** (#112): the same form without a code → emailed code → account created and enrolled in the open campaign with **no group** → consent. The page is a choice: `/join/` (invite code) links to it, and it links back. A person who is already signed in can join a group later from `/group/` ("Have a code? Join a group", up to 3 groups). "Start a group" is separate (#112 PR2) |
+| `/join/?mode=solo` | **Read on my own** (#112): the same form without a code → emailed code → account created and enrolled in the open campaign with **no group** → consent. The page is a choice: `/join/` (invite code) links to it, and it links back. A person who is already signed in can join a group later from `/group/` ("Have a code? Join a group", up to 3 groups). |
+| `/join/?mode=start` | **Start a group** (#112 part 2, adults only): group name instead of a code → emailed code → account created, the group made with the person as its starter → a page shows the **invite code and link once** (copy buttons) → consent. A minor is refused before any email is sent, and again on the stored age band. The three paths link to one another |
 | `/signin/` | Email → emailed code → signed in on this phone for 180 days |
 | `/consent/` | The consent points (D15 draft wording, version `draft-2026-11-05`); asked again whenever the version changes |
 
@@ -18,7 +19,8 @@ Participant sign-in for J-Life (M3, #58): **a 6-digit code by email, no password
 - Rate limits: 3 codes per email per 15 minutes; 10 per IP per hour.
 - Participants (no editing rights) never see wp-admin or the admin bar; staff keep WordPress's normal sessions.
 - In-app browsers (Messenger, Zalo, …) get a tip to open the page in Safari or Chrome so the session sticks.
-- Signed-in participants see J-Life in their chosen language (strings are translation-ready; Vietnamese translations still to be written).
+- After the emailed code is checked, a join that did not happen (already in that group, at the 3-group limit, a minor starting a group) shows a short notice page with **Continue**; the person is signed in either way.
+- Signed-in participants see J-Life in their chosen language (D13). `languages/jlife-auth-vi.l10n.php` is a **machine-assisted DRAFT** Vietnamese translation of every string, awaiting a native-speaking translator's review. Signed-out visitors see the site language, or pick **English | Tiếng Việt** on `/join`, `/signin` and `/consent` (`?lang=`); the emailed code is in the language chosen on the form.
 
 ## Owner follow-ups
 

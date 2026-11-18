@@ -442,7 +442,7 @@ class Test_Multi_Group_Sharing extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( '(to-one)', $body );
 
 		$single = jlife_challenges_group_body( jlife_challenges_group_view( $this->u['b'] ) );
-		$this->assertStringNotContainsString( 'group/?g=', $single, 'no picker for one group' );
+		$this->assertStringNotContainsString( 'class="jl-chips"', $single, 'no picker for one group' );
 
 		$solo = jlife_challenges_group_body( jlife_challenges_group_view( $this->u['solo'] ) );
 		$this->assertStringContainsString( 'Have a code? Join a group', $solo );

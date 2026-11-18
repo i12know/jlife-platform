@@ -87,7 +87,9 @@ function jlife_auth_block_admin() {
 add_filter( 'determine_locale', 'jlife_auth_front_locale' );
 
 /**
- * On the front end, signed-in participants see their chosen language.
+ * On the front end, signed-in participants see their chosen language (D13). A
+ * visitor who is not signed in sees the site language, or the one picked with
+ * the language links on /join, /signin and /consent (`?lang=vi` or `?lang=en`).
  *
  * @param string $locale Locale.
  * @return string
@@ -102,6 +104,59 @@ function jlife_auth_front_locale( $locale ) {
 		if ( is_string( $chosen ) && array_key_exists( $chosen, JLIFE_AUTH_LOCALES ) ) {
 			return $chosen;
 		}
+		return $locale;
 	}
-	return $locale;
+	return jlife_auth_visitor_locale( $locale );
+}
+
+/**
+ * The language a signed-out visitor picked on one of the sign-in pages, if any.
+ *
+ * @param string $locale Locale otherwise in effect.
+ * @return string
+ */
+function jlife_auth_visitor_locale( $locale ) {
+	$uri  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+	$path = (string) wp_parse_url( $uri, PHP_URL_PATH );
+	if ( 1 !== preg_match( '#/(join|signin|consent)/?$#', $path ) || ! isset( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
+		return $locale;
+	}
+	$lang = sanitize_key( wp_unslash( $_GET['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
+	return 'vi' === $lang ? 'vi' : ( 'en' === $lang ? 'en_US' : $locale );
+}
+
+/**
+ * Make the plugins' strings follow the locale now in effect (for example right
+ * after sign-in, when the page was first built for a visitor). WordPress loads
+ * translations on first use, so unloading the domains is enough.
+ */
+function jlife_auth_refresh_translations() {
+	foreach ( array( 'jlife-auth', 'jlife-challenges' ) as $domain ) {
+		unload_textdomain( $domain, true );
+	}
+}
+
+/**
+ * Run a callback with the plugins' strings in another language, then put the
+ * page's language back. WordPress's own switch_to_locale() only switches to a
+ * language pack that is installed on the site; the plugins' catalogs ship with
+ * the plugins, so this does not depend on that.
+ *
+ * @param string   $locale   en_US|vi (anything else runs the callback as is).
+ * @param callable $callback What to run.
+ * @return mixed The callback's result.
+ */
+function jlife_auth_in_locale( $locale, $callback ) {
+	if ( ! array_key_exists( $locale, JLIFE_AUTH_LOCALES ) || determine_locale() === $locale ) {
+		return $callback();
+	}
+	$force = static fn() => $locale;
+	add_filter( 'determine_locale', $force, 99 );
+	jlife_auth_refresh_translations();
+	try {
+		return $callback();
+	} finally {
+		remove_filter( 'determine_locale', $force, 99 );
+		jlife_auth_refresh_translations();
+	}
 }

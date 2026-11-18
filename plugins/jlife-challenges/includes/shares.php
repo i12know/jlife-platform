@@ -204,6 +204,7 @@ function jlife_challenges_unshare( $user_id, $share_id ) {
 		),
 		array( 'id' => (int) $share_id )
 	);
+	jlife_challenges_audit( $user_id, 'share_removed', 'group_share', (int) $share_id, (int) $share['campaign_id'], array( 'group_id' => (int) $share['group_id'] ) );
 	return true;
 }
 
@@ -307,4 +308,44 @@ function jlife_challenges_my_shares( $user_id, $campaign_id ) {
 	}
 	global $wpdb;
 	return $wpdb->get_results( $wpdb->prepare( 'SELECT id, entry_id, group_id, day_key, status, hidden_reason, updated FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE user_id = %d AND campaign_id = %d AND status <> 'removed' ORDER BY day_key DESC", (int) $user_id, (int) $campaign_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+}
+
+/**
+ * The author's own live shares in groups they are no longer an active member of
+ * (they left, an organizer removed them, or the group was disabled), oldest day
+ * last, with the group's name: the "Groups you left" list on /share (D18). The
+ * author was in these groups, so they may see the name; nobody else is shown
+ * anything here. Hidden posts are listed too (removing one clears its text and
+ * keeps it hidden).
+ *
+ * @param int $user_id     Author.
+ * @param int $campaign_id Campaign.
+ * @return array[] Rows of { id, group_id, group_name, group_status, day_key, index, status, hidden_reason, updated }.
+ */
+function jlife_challenges_left_group_shares( $user_id, $campaign_id ) {
+	$mine = jlife_challenges_my_shares( (int) $user_id, (int) $campaign_id );
+	if ( is_wp_error( $mine ) || ! $mine ) {
+		return array();
+	}
+	$campaign = jlife_challenges_get_campaign( $campaign_id );
+	$active   = array_map( 'intval', array_column( jlife_challenges_active_memberships( (int) $campaign_id, (int) $user_id ), 'group_id' ) );
+	$out      = array();
+	foreach ( $mine as $s ) {
+		if ( in_array( (int) $s['group_id'], $active, true ) ) {
+			continue;
+		}
+		$group = jlife_challenges_get_group( (int) $s['group_id'] );
+		$out[] = array(
+			'id'            => (int) $s['id'],
+			'group_id'      => (int) $s['group_id'],
+			'group_name'    => $group ? (string) $group['name'] : '',
+			'group_status'  => $group ? (string) $group['status'] : '',
+			'day_key'       => (string) $s['day_key'],
+			'index'         => $campaign ? (int) jlife_challenges_day_index( $campaign, (string) $s['day_key'] ) : 0,
+			'status'        => (string) $s['status'],
+			'hidden_reason' => (string) $s['hidden_reason'],
+			'updated'       => (string) $s['updated'],
+		);
+	}
+	return $out;
 }

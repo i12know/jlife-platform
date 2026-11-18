@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const JLIFE_CHALLENGES_DB_VERSION = '3';
+const JLIFE_CHALLENGES_DB_VERSION = '4';
 
 /**
  * Table name helper.
@@ -60,10 +60,12 @@ function jlife_challenges_install_tables() {
 			invite_hash CHAR(64) NOT NULL DEFAULT '',
 			invite_expires DATETIME NULL,
 			status VARCHAR(20) NOT NULL DEFAULT 'active',
+			started_by BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
 			created DATETIME NOT NULL,
 			PRIMARY KEY  (id),
 			KEY campaign (campaign_id),
-			KEY invite_hash (invite_hash)
+			KEY invite_hash (invite_hash),
+			KEY started_by (started_by, campaign_id)
 		) {$c};"
 	);
 

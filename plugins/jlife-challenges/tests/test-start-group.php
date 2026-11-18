@@ -215,6 +215,7 @@ class Test_Start_Group extends Jlife_Challenges_TestCase {
 		$this->assertSame( $r['name'], jlife_challenges_get_group( $r['id'] )['name'] );
 		$this->assertStringContainsString( 'Thursday', $r['name'] );
 
+		delete_transient( 'jlife_chal_start_tries_' . $u ); // This test is about names, not the rate limit.
 		$before = $this->group_rows();
 		foreach ( array( '', '   ', '<b></b>', str_repeat( 'x', 61 ), str_repeat( 'ế', 61 ) ) as $bad ) {
 			$e = jlife_challenges_start_group( $u, $bad );
@@ -222,6 +223,7 @@ class Test_Start_Group extends Jlife_Challenges_TestCase {
 			$this->assertSame( 'jlife_group_name_invalid', $e->get_error_code() );
 		}
 		$this->assertSame( $before, $this->group_rows() );
+		delete_transient( 'jlife_chal_start_tries_' . $u );
 		$ok = $this->start( $u, str_repeat( 'ế', 60 ) );
 		$this->assertSame( 60, mb_strlen( $ok['name'] ) );
 	}
@@ -291,9 +293,9 @@ class Test_Start_Group extends Jlife_Challenges_TestCase {
 	 * A starter cannot reset the code of a group they only belong to as a member, nor an organizer-made one.
 	 */
 	public function test_a_starter_has_no_power_over_other_groups() {
-		$u     = $this->adult();
-		$mine  = $this->start( $u, 'Mine' );
-		$other = $this->adult( 'Other' );
+		$u      = $this->adult();
+		$mine   = $this->start( $u, 'Mine' );
+		$other  = $this->adult( 'Other' );
 		$theirs = $this->start( $other, 'Theirs' );
 		jlife_challenges_join_with_code( $u, $theirs['invite_code'], 'adult' );
 
