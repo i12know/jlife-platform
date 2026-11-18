@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "record_type": "scripture_provider_entitlement_research",
+  "last_updated": "2026-11-18",
+  "warning": "Research and entitlement inventory, NOT an authorization for production rendering. Runtime bible-links.json remains authoritative for current external link behavior.",
+  "active_latoc_links": {
+    "config_path": "content/reading-plans/bible-links.json",
+    "english": "ERV via Bible Gateway",
+    "vietnamese": "BPT via Bible Gateway",
+    "native_text_rendering_activated": false
+  },
+  "youversion": {
+    "verification_date": "2026-11-14",
+    "evidence": "https://github.com/i12know/jlife-platform/actions/runs/43537910398",
+    "issue": "https://github.com/i12know/jlife-platform/issues/78",
+    "application_catalog_entitlements_count": 21,
+    "license_agreements_reviewed_for_production": false,
+    "noncommercial_cash_prize_permission_confirmed": false,
+    "versions": [
+      {
+        "id": 1588,
+        "code": "AMP",
+        "name": "Amplified Bible",
+        "language": "en",
+        "license_id": 3,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 12,
+        "code": "ASV",
+        "name": "American Standard Version",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 3034,
+        "code": "BSB",
+        "name": "Berean Standard Bible",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 42,
+        "code": "CPDV",
+        "name": "Catholic Public Domain Version",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 2079,
+        "code": "EASY",
+        "name": "EasyEnglish Bible 2024",
+        "language": "en",
+        "license_id": 5,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "john_1_1_18_success",
+        "ready_for_production": false
+      },
+      {
+        "id": 1932,
+        "code": "FBV",
+        "name": "Free Bible Version",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 2163,
+        "code": "GNV",
+        "name": "Geneva Bible",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 2660,
+        "code": "LSV",
+        "name": "Literal Standard Version",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 100,
+        "code": "NASB1995",
+        "name": "New American Standard Bible 1995",
+        "language": "en",
+        "license_id": 3,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 2692,
+        "code": "NASB2020",
+        "name": "New American Standard Bible 2020",
+        "language": "en",
+        "license_id": 3,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 110,
+        "code": "NIrV",
+        "name": "New International Reader's Version",
+        "language": "en",
+        "license_id": 2,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "john_1_1_18_success",
+        "ready_for_production": false
+      },
+      {
+        "id": 111,
+        "code": "NIV",
+        "name": "New International Version (2011)",
+        "language": "en",
+        "license_id": 2,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 113,
+        "code": "NIVUK",
+        "name": "New International Version, Anglicised",
+        "language": "en",
+        "license_id": 2,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 2530,
+        "code": "PEV",
+        "name": "Plain English Version",
+        "language": "en",
+        "license_id": 7,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 3427,
+        "code": "TCENT",
+        "name": "The Text-Critical English New Testament",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 130,
+        "code": "TOJB2011",
+        "name": "The Orthodox Jewish Bible",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 1849,
+        "code": "TPT",
+        "name": "The Passion Translation (In Review)",
+        "language": "en",
+        "license_id": 4,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false,
+        "note": "Catalog title contains 'In Review'; do not enable without independent review."
+      },
+      {
+        "id": 206,
+        "code": "WEBUS",
+        "name": "World English Bible, American English Edition",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 1209,
+        "code": "WMB",
+        "name": "World Messianic Bible",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 1207,
+        "code": "WMBBE",
+        "name": "World Messianic Bible British Edition",
+        "language": "en",
+        "license_id": 1,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "not_tested",
+        "ready_for_production": false
+      },
+      {
+        "id": 1638,
+        "code": "KTHD",
+        "name": "Kinh Thanh Hien Dai / Vietnamese Contemporary Bible",
+        "language": "vi",
+        "license_id": 2,
+        "entitlement": "app_catalog_licensed",
+        "passage_probe": "john_1_1_18_success",
+        "ready_for_production": false
+      }
+    ]
+  },
+  "api_bible": {
+    "account_and_licensed_translations_verified": false,
+    "starter_plan": "up to 3 eligible copyrighted Bibles plus open-access translations; current individual entitlements unknown",
+    "candidate_versions": [
+      {
+        "code": "NLT",
+        "status": "candidate_not_licensed_to_jlife",
+        "bible_id": null
+      },
+      {
+        "code": "CSB",
+        "status": "candidate_not_licensed_to_jlife",
+        "bible_id": null
+      },
+      {
+        "code": "NKJV",
+        "status": "candidate_not_licensed_to_jlife",
+        "bible_id": null
+      }
+    ],
+    "requirements_before_use": [
+      "Register application and select eligible editions",
+      "Record exact API.Bible Bible IDs and active license",
+      "Review use with church-sponsored cash prize",
+      "Implement FUMS tracking and publisher attribution",
+      "Enforce provider-specific caching rules and quotas"
+    ]
+  },
+  "bible_league": {
+    "versions": [
+      {
+        "code": "ERV",
+        "status": "hosted_text_permission_requested_not_granted"
+      },
+      {
+        "code": "BPT",
+        "status": "hosted_text_permission_requested_not_granted"
+      }
+    ],
+    "note": "Owner contacted Bible League on 2026-11-18. Do not embed hosted Scripture text absent written approval. Current Bible Gateway links remain distinct from hosting rights."
+  },
+  "owner_decision": {
+    "recorded_on": "2026-11-14",
+    "conditional_native_reader_fallbacks": {
+      "en": {
+        "provider": "youversion",
+        "id": 110,
+        "code": "NIrV"
+      },
+      "vi": {
+        "provider": "youversion",
+        "id": 1638,
+        "code": "KTHD"
+      }
+    },
+    "note": "Previously recorded conditional plan; later discussion proposed NIV as possible default but no replacement decision has been recorded."
+  }
+}
