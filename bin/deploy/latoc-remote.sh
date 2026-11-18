@@ -10,6 +10,7 @@
 #   WP_PATH, SITE_URL, WP_VERSION, DB_NAME, DB_USER, DB_PASSWORD
 # Optional: TEST_CAMPAIGN (none|create|remove), DB_HOST (localhost), PHP_BIN (cPanel ea-php82), STATE_DIR (~/.latoc),
 #   BUNDLE (the uploaded plugin tarball, $STATE_DIR/jlife-plugins.tgz)
+#   POLYLANG_VERSION (the pinned Polylang release, default below)
 #
 # Never prints secrets. The first-install admin password is written to
 # $STATE_DIR/admin-password (0600) for the owner to read via File Manager.
@@ -31,6 +32,11 @@ PHP_BIN="${PHP_BIN:-/opt/cpanel/ea-php82/root/usr/bin/php}"
 WP_CLI_VERSION="2.11.0"
 WP_CLI="${STATE_DIR}/wp-cli-${WP_CLI_VERSION}.phar"
 PLUGINS=(jlife-studies jlife-huddles jlife-challenges jlife-auth) # jlife-bridge stays off at launch (#49 M2)
+# Public bilingual landing page (#110). Pinned: bumping it is a reviewed PR that
+# re-runs the route checks in docs/spikes/2026-11-18-polylang-latoc-landing.md.
+POLYLANG_VERSION="${POLYLANG_VERSION:-3.9.2}"
+LANDING_DIR="${STATE_DIR}/landing"
+LANDING_STATE="${STATE_DIR}/landing-state"
 
 log() { printf '\n==> %s\n' "$*"; }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
@@ -138,16 +144,28 @@ if [ -d "${stage}/reading-plans" ]; then
   rm -rf "${STATE_DIR}/reading-plans"
   mv "${stage}/reading-plans" "${STATE_DIR}/reading-plans"
 fi
+# Landing-page seed (#110): the configuration script and its copy, same bundle.
+for f in latoc-landing.php latoc-landing-content.php; do
+  [ -f "${stage}/${f}" ] || die "Bundle is missing ${f}"
+done
+rm -rf "${LANDING_DIR}"
+mkdir -p "${LANDING_DIR}"
+mv "${stage}/latoc-landing.php" "${stage}/latoc-landing-content.php" "${LANDING_DIR}/"
 rm -rf "${stage}" "${BUNDLE}"
 
 # The strict umask above protects ~/.latoc (backups, admin password). Web
 # files must be world-readable or Apache cannot serve wp-admin/, CSS or JS
-# ("Server unable to read htaccess file" 403s). Reset them on every run;
-# wp-config.php stays owner-only (PHP runs as the account owner on cPanel).
+# ("Server unable to read htaccess file" 403s). Reset them on every run, and
+# again after anything that writes into the document root later in the run
+# (Polylang, language packs); wp-config.php stays owner-only (PHP runs as the
+# account owner on cPanel).
+fix_web_permissions() {
+  find "${WP_PATH}" -type d ! -perm 755 -exec chmod 755 {} +
+  find "${WP_PATH}" -type f ! -name wp-config.php ! -perm 644 -exec chmod 644 {} +
+  chmod 600 "${WP_PATH}/wp-config.php"
+}
 log "Setting web file permissions"
-find "${WP_PATH}" -type d ! -perm 755 -exec chmod 755 {} +
-find "${WP_PATH}" -type f ! -name wp-config.php ! -perm 644 -exec chmod 644 {} +
-chmod 600 "${WP_PATH}/wp-config.php"
+fix_web_permissions
 
 wp plugin activate "${PLUGINS[@]}" >/dev/null
 # Never active at launch, even if a copy is present from a manual upload.
@@ -155,6 +173,43 @@ wp plugin deactivate jlife-bridge >/dev/null 2>&1 || true
 if wp plugin is-active jlife-bridge >/dev/null 2>&1; then
   die "jlife-bridge (magic links) is active; it must stay off until #37/#38 land."
 fi
+
+# ---- Public bilingual landing page (#110): Polylang + one-time draft seed ----
+# Conditions are in docs/spikes/2026-11-18-polylang-latoc-landing.md. In short:
+# per-site activation (never --network), pinned version, vi language packs,
+# no subsite named like a language, and the pages are created once, as drafts.
+log "Polylang ${POLYLANG_VERSION} (pinned)"
+if wp plugin is-active polylang --network >/dev/null 2>&1; then
+  die "Polylang is network-activated; it must be activated per site only (spike 2026-11-18 s1)."
+fi
+# A subsite at /vi/ or /en/ would shadow the language (spike s2).
+site_paths="$(wp site list --field=path 2>/dev/null || true)"
+if grep -Eq '^/(vi|en)/$' <<<"${site_paths}"; then
+  die "A subsite uses a language slug (vi or en); it would shadow the Polylang language URL."
+fi
+current="$(wp plugin get polylang --field=version 2>/dev/null || true)"
+if [ "${current}" != "${POLYLANG_VERSION}" ]; then
+  wp plugin install polylang --version="${POLYLANG_VERSION}" --force
+fi
+wp plugin verify-checksums polylang || die "Polylang checksum verification failed."
+wp plugin activate polylang # per site: never --network
+# Language packs so the Vietnamese page's chrome (switcher label, 404s, feeds)
+# is Vietnamese. Failing to fetch them (translate.wordpress.org down) must not
+# block a deploy: warn and carry on.
+theme="$(wp option get stylesheet)"
+wp language core is-installed vi >/dev/null 2>&1 || wp language core install vi \
+  || printf 'WARNING: Vietnamese core language pack not installed.\n' >&2
+wp language plugin is-installed polylang vi >/dev/null 2>&1 || wp language plugin install polylang vi \
+  || printf 'WARNING: Vietnamese Polylang language pack not installed.\n' >&2
+wp language theme is-installed "${theme}" vi >/dev/null 2>&1 || wp language theme install "${theme}" vi \
+  || printf 'WARNING: Vietnamese language pack for theme %s not installed.\n' "${theme}" >&2
+fix_web_permissions
+rm -f "${LANDING_STATE}"
+LATOC_LANDING_STATE="${LANDING_STATE}" wp eval-file "${LANDING_DIR}/latoc-landing.php"
+# Polylang caches its language list (with each language's front page); rebuild
+# it in a fresh process, or /vi/ can keep redirecting to the VI page's slug.
+wp transient delete pll_languages_list >/dev/null 2>&1 || true
+wp rewrite flush >/dev/null
 
 log "Hardening staging settings"
 wp option update blog_public 0 >/dev/null # discourage search engines

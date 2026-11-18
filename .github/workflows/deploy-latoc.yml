@@ -46,7 +46,8 @@ jobs:
             --exclude='phpunit.xml*' --exclude='.phpunit.result.cache' \
             jlife-studies jlife-huddles jlife-challenges jlife-auth \
             -C "$GITHUB_WORKSPACE/content" reading-plans/2026-12-20_life-and-teachings-of-jesus_primary.json \
-            reading-plans/2026-12-20_harmony-parallel_supplemental.json
+            reading-plans/2026-12-20_harmony-parallel_supplemental.json \
+            -C "$GITHUB_WORKSPACE/bin/deploy" latoc-landing.php latoc-landing-content.php
           tar -tzf "$RUNNER_TEMP/jlife-plugins.tgz" | head -50
 
       - name: Configure SSH
@@ -110,6 +111,42 @@ jobs:
             exit 1
           fi
           echo "Magic-link route: off"
+
+          # Public landing pages (#110). They are seeded as DRAFTS and the owner
+          # publishes them in wp-admin, so what to expect depends on their state.
+          # The server script writes that state (statuses and slugs, no secrets).
+          state="$(ssh latoc 'cat ~/.latoc/landing-state' 2>/dev/null || true)"
+          val() { printf '%s\n' "$state" | sed -n "s/^$1=//p" | head -n 1; }
+          en_status="$(val en_status)"; vi_status="$(val vi_status)"
+          en_slug="$(val en_slug)"; vi_slug="$(val vi_slug)"; front="$(val front)"
+          echo "Landing pages: EN ${en_status:-unknown}, VI ${vi_status:-unknown}, front page ${front:-unknown}"
+
+          # /vi/ must never fail or loop (curl stops after 5 redirects and errors).
+          vi_code="$(curl -sS -o "$RUNNER_TEMP/vi.html" -w '%{http_code}' --max-redirs 5 -L "$SITE_URL/vi/")"
+          echo "/vi/: HTTP $vi_code"
+          case "$vi_code" in 200|404) ;; *) echo "::error::/vi/ answered HTTP $vi_code"; exit 1 ;; esac
+
+          # A draft must not be public, by its slug or through the language URL.
+          if [ "$en_status" = "draft" ] && [ -n "$en_slug" ]; then
+            c="$(curl -sS -o /dev/null -w '%{http_code}' -L "$SITE_URL/$en_slug/")"
+            echo "Draft EN page /$en_slug/: HTTP $c (expect 404)"
+            [ "$c" = "404" ]
+          fi
+          if [ "$vi_status" = "draft" ] && [ -n "$vi_slug" ]; then
+            c="$(curl -sS -o /dev/null -w '%{http_code}' -L "$SITE_URL/vi/$vi_slug/")"
+            echo "Draft VI page /vi/$vi_slug/: HTTP $c (expect 404)"
+            [ "$c" = "404" ]
+          fi
+
+          # Both published and the EN page is the front page: check the pair.
+          if [ "$en_status" = "publish" ] && [ "$vi_status" = "publish" ] && [ "$front" = "en-landing" ]; then
+            curl -sS -L -o "$RUNNER_TEMP/en.html" "$SITE_URL/"
+            [ "$vi_code" = "200" ] || { echo "::error::/vi/ should serve the Vietnamese page"; exit 1; }
+            grep -Eq '<html[^>]* lang="vi' "$RUNNER_TEMP/vi.html" || { echo "::error::/vi/ is not lang=vi"; exit 1; }
+            grep -Eq '<html[^>]* lang="en' "$RUNNER_TEMP/en.html" || { echo "::error::/ is not lang=en"; exit 1; }
+            grep -Eq 'hreflang="vi"' "$RUNNER_TEMP/en.html" || { echo "::error::/ has no hreflang=vi alternate"; exit 1; }
+            echo "Landing pair: / is English, /vi/ is Vietnamese, hreflang present"
+          fi
 
       - name: Remove SSH material
         if: always()
