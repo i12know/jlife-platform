@@ -25,7 +25,7 @@ Participant sign-in for J-Life (M3, #58): **a 6-digit code by email, no password
 ## Owner follow-ups
 
 - Replace the consent wording with the final text from #65 and bump `JLIFE_AUTH_CONSENT_VERSION`.
-- Email delivery uses WordPress `wp_mail`; reliable delivery comes with the transactional email provider in #63 (M8). Delivery failures are logged on the server.
+- Email uses WordPress `wp_mail`, with an opt-in, site-scoped Brevo SMTP transport (#63). Private credentials come from `~/.latoc/mail.php`, included by `wp-config.php`; see `config/latoc-mail.example.php` and the staging runbook. With Brevo enabled, invalid configuration and send failures do not fall back to host mail. Only a status code and timestamp are stored, never recipients, codes, bodies or raw provider errors. `wp jlife mail status` reports configuration health; `wp jlife mail probe` checks verified TLS without sending. A successful send means acceptance, not inbox delivery. Daily reminders remain separate work.
 
 ## Depends on
 
