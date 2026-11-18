@@ -100,7 +100,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '' )
 	$html   = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=6' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=7' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>' . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. ( in_array( $script, array( 'soap', 'share' ), true ) ? '<script src="' . esc_url( $base . $script . '.js?v=3' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -369,7 +369,9 @@ function jlife_challenges_render_no_day( $view ) {
 	switch ( $view['state'] ) {
 		case 'not_enrolled':
 			return '<h1>' . esc_html__( 'Welcome', 'jlife-challenges' ) . '</h1><p>'
-				. esc_html__( 'You are not in a group yet. Open the invite link your group shared with you to join.', 'jlife-challenges' ) . '</p>';
+				. esc_html__( 'You have not joined the Marathon yet. Open the invite link your group shared with you, or read on your own.', 'jlife-challenges' ) . '</p>'
+				. '<p><a class="jl-button jl-primary" href="' . esc_url( home_url( '/join/' ) ) . '">' . esc_html__( 'I have an invite code', 'jlife-challenges' ) . '</a> '
+				. '<a class="jl-button" href="' . esc_url( add_query_arg( 'mode', 'solo', home_url( '/join/' ) ) ) . '">' . esc_html__( 'Read on my own', 'jlife-challenges' ) . '</a></p>';
 		case 'before':
 			/* translators: %s: start date. */
 			return '<h1>' . esc_html__( 'Almost time', 'jlife-challenges' ) . '</h1><p>' . esc_html( sprintf( __( 'The Marathon starts on %s. See you on Day 1!', 'jlife-challenges' ), jlife_challenges_format_date( $view['start_date'] ) ) ) . '</p>';
@@ -453,33 +455,35 @@ function jlife_challenges_soap_return_url( $view, $screen ) {
  * Handle a SOAP form POST (Submit SOAP, Save changes or Save draft) for Today
  * and /soap alike.
  *
- * Submit saves the text, scores it and, with the box ticked, shares it. The
- * result is shown after a redirect (?done=1 or ?incomplete=1, plus ?shared=1 or
- * ?share_failed=code), so a refresh never re-posts. A draft save never shares.
+ * Submit saves the text, scores it and shares it to each group whose box is
+ * ticked (one box per group; none by default). The result is shown after a
+ * redirect (?done=1 or ?incomplete=1, plus ?shared=ID,ID and
+ * ?share_failed[ID]=code), so a refresh never re-posts. A draft save never shares.
  *
  * @param int    $user_id Participant.
  * @param array  $view    Day view.
  * @param string $screen  'today' or 'soap': where the form lives.
- * @return array { error: string, text: string, share: bool, redirect: string }
+ * @return array { error: string, text: string, share_groups: int[], redirect: string }
  *               With a redirect, send the participant there. Otherwise show
  *               "error" and keep the typed "text". Without a POST, "text" is
  *               the saved entry (or the template).
  */
 function jlife_challenges_process_soap_request( $user_id, $view, $screen ) {
 	$state = array(
-		'error'    => '',
-		'text'     => jlife_challenges_entry_text( $view ),
-		'share'    => false,
-		'redirect' => '',
+		'text'         => jlife_challenges_entry_text( $view ),
+		'share_groups' => array(),
+		'redirect'     => '',
+		'error'        => '',
 	);
 	if ( ! isset( $_POST['jl_action'] ) || ! check_admin_referer( 'jlife_soap_' . $view['day_key'], '_jlife_soap' ) ) {
 		return $state;
 	}
-	$text           = jlife_challenges_posted_text();
-	$state['text']  = $text;
-	$state['share'] = isset( $_POST['jl_share'] );
-	$return         = jlife_challenges_soap_return_url( $view, $screen );
-	$cid            = (int) $view['campaign']['id'];
+	$text          = jlife_challenges_posted_text();
+	$state['text'] = $text;
+	// One box per group; only the ticked ones arrive. IDs are checked against the author's own groups by the gate.
+	$state['share_groups'] = isset( $_POST['jl_share_groups'] ) ? jlife_challenges_clean_group_ids( array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['jl_share_groups'] ) ) ) : array();
+	$return                = jlife_challenges_soap_return_url( $view, $screen );
+	$cid                   = (int) $view['campaign']['id'];
 	if ( 'draft' === sanitize_key( wp_unslash( $_POST['jl_action'] ) ) ) {
 		$r = jlife_challenges_save_draft( $user_id, $cid, $view['day_key'], $text );
 		if ( is_wp_error( $r ) ) {
@@ -489,17 +493,27 @@ function jlife_challenges_process_soap_request( $user_id, $view, $screen ) {
 		}
 		return $state;
 	}
-	$r = jlife_challenges_save_and_share( $user_id, $cid, $view['day_key'], $text, $state['share'] );
+	$r = jlife_challenges_save_and_share( $user_id, $cid, $view['day_key'], $text, $state['share_groups'] );
 	if ( is_wp_error( $r ) ) {
 		$state['error'] = $r->get_error_message();
 		return $state;
 	}
-	$key   = $r['passes'] ? 'done' : 'incomplete';
-	$flags = array( $key => 1 );
-	if ( 'shared' === $r['share']['status'] ) {
-		$flags['shared'] = 1;
-	} elseif ( 'failed' === $r['share']['status'] ) {
-		$flags['share_failed'] = $r['share']['code'];
+	$key    = $r['passes'] ? 'done' : 'incomplete';
+	$flags  = array( $key => 1 );
+	$shared = array();
+	$failed = array();
+	foreach ( $r['share']['results'] as $group_id => $result ) {
+		if ( 'shared' === $result['status'] ) {
+			$shared[] = (int) $group_id;
+		} else {
+			$failed[ (int) $group_id ] = $result['code'];
+		}
+	}
+	if ( $shared ) {
+		$flags['shared'] = implode( ',', $shared );
+	}
+	if ( $failed ) {
+		$flags['share_failed'] = $failed;
 	}
 	$state['redirect'] = add_query_arg( $flags, $return );
 	return $state;
@@ -508,15 +522,24 @@ function jlife_challenges_process_soap_request( $user_id, $view, $screen ) {
 /**
  * What the page says after a save, from the redirect's display flags.
  *
- * @return array { done: bool, incomplete: bool, shared: bool, share_failed: string }
+ * @return array { done: bool, incomplete: bool, shared: int[] (group IDs), share_failed: array<int,string> (group ID => error code) }
  */
 function jlife_challenges_return_flags() {
-	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- display flags after a redirect; nothing is changed by them.
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- display flags after a redirect; nothing is changed by them (and group names are only ever read from the viewer's own groups).
+	$shared = isset( $_GET['shared'] ) && is_string( $_GET['shared'] ) ? jlife_challenges_clean_group_ids( explode( ',', sanitize_text_field( wp_unslash( $_GET['shared'] ) ) ) ) : array();
+	$failed = array();
+	if ( isset( $_GET['share_failed'] ) && is_array( $_GET['share_failed'] ) ) {
+		foreach ( wp_unslash( $_GET['share_failed'] ) as $group_id => $code ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- the key is cast to int and the value goes through sanitize_key() below.
+			if ( (int) $group_id > 0 && is_string( $code ) ) {
+				$failed[ (int) $group_id ] = sanitize_key( $code );
+			}
+		}
+	}
 	return array(
 		'done'         => isset( $_GET['done'] ),
 		'incomplete'   => isset( $_GET['incomplete'] ),
-		'shared'       => isset( $_GET['shared'] ),
-		'share_failed' => isset( $_GET['share_failed'] ) ? sanitize_key( wp_unslash( $_GET['share_failed'] ) ) : '',
+		'shared'       => $shared,
+		'share_failed' => $failed,
 	);
 	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 }
@@ -526,16 +549,16 @@ function jlife_challenges_return_flags() {
  * jlife_challenges_return_flags()) with its defaults.
  *
  * @param array $state Partial state.
- * @return array { error: string, text: string|null, share: bool, flags: array }
+ * @return array { error: string, text: string|null, share_groups: int[] (boxes to show ticked), flags: array }
  */
 function jlife_challenges_page_state( $state ) {
 	$state          = wp_parse_args(
 		$state,
 		array(
-			'error' => '',
-			'text'  => null,
-			'share' => false,
-			'flags' => array(),
+			'error'        => '',
+			'text'         => null,
+			'share_groups' => array(),
+			'flags'        => array(),
 		)
 	);
 	$state['flags'] = wp_parse_args(
@@ -543,27 +566,31 @@ function jlife_challenges_page_state( $state ) {
 		array(
 			'done'         => false,
 			'incomplete'   => false,
-			'shared'       => false,
-			'share_failed' => '',
+			'shared'       => array(),
+			'share_failed' => array(),
 		)
 	);
 	return $state;
 }
 
 /**
- * Plain words for why sharing didn't happen after a good save.
+ * Plain words for why sharing to one group didn't happen after a good save.
  *
- * @param string $code Share error code from the redirect.
+ * @param string $code       Share error code from the redirect.
+ * @param string $group_name The group's name (one of the viewer's own).
  * @return string
  */
-function jlife_challenges_share_failed_message( $code ) {
+function jlife_challenges_share_failed_message( $code, $group_name ) {
 	switch ( $code ) {
 		case 'jlife_guardian_consent_required':
-			return __( 'It was not shared: sharing with your group starts once a parent or guardian has agreed. Your entry is saved.', 'jlife-challenges' );
+			/* translators: %s: group name. */
+			return sprintf( __( 'It was not shared with %s: sharing with a group starts once a parent or guardian has agreed. Your entry is saved.', 'jlife-challenges' ), $group_name );
 		case 'jlife_share_hidden':
-			return __( 'It was not shared: an organizer hid your post for this day, so it was not posted again. Your entry is saved.', 'jlife-challenges' );
+			/* translators: %s: group name. */
+			return sprintf( __( 'It was not shared with %s: an organizer hid your post for this day, so it was not posted again. Your entry is saved.', 'jlife-challenges' ), $group_name );
 		default:
-			return __( 'Your entry is saved, but it could not be shared with your group this time. Tap Save changes with the box ticked to try again.', 'jlife-challenges' );
+			/* translators: %s: group name. */
+			return sprintf( __( 'Your entry is saved, but it could not be shared with %s this time. Tap Save changes with its box ticked to try again.', 'jlife-challenges' ), $group_name );
 	}
 }
 
@@ -606,10 +633,22 @@ function jlife_challenges_render_soap_feedback( $view, $state ) {
 			$out .= '</ul></div>';
 		}
 	}
-	if ( $flags['shared'] ) {
-		$out .= '<p class="jl-ok" role="status">' . esc_html__( 'Shared with your group.', 'jlife-challenges' ) . ' <a href="' . esc_url( home_url( '/group/' ) ) . '">' . esc_html__( 'See My Group', 'jlife-challenges' ) . '</a></p>';
-	} elseif ( '' !== $flags['share_failed'] ) {
-		$out .= '<p class="jl-err" role="alert">' . esc_html( jlife_challenges_share_failed_message( $flags['share_failed'] ) ) . '</p>';
+	// Group names come only from the viewer's own active groups, never from the URL.
+	$names = array_column( (array) ( $view['share_groups'] ?? array() ), 'name', 'id' );
+	$ok    = array();
+	foreach ( (array) $flags['shared'] as $group_id ) {
+		if ( isset( $names[ (int) $group_id ] ) ) {
+			$ok[] = $names[ (int) $group_id ];
+		}
+	}
+	if ( $ok ) {
+		/* translators: %l: a list of group names, e.g. "Group One and Group Two". */
+		$out .= '<p class="jl-ok" role="status">' . esc_html( wp_sprintf( __( 'Shared with %l.', 'jlife-challenges' ), $ok ) ) . ' <a href="' . esc_url( home_url( '/group/' ) ) . '">' . esc_html__( 'See My Group', 'jlife-challenges' ) . '</a></p>';
+	}
+	foreach ( (array) $flags['share_failed'] as $group_id => $code ) {
+		if ( isset( $names[ (int) $group_id ] ) ) {
+			$out .= '<p class="jl-err" role="alert">' . esc_html( jlife_challenges_share_failed_message( (string) $code, $names[ (int) $group_id ] ) ) . '</p>';
+		}
 	}
 	return $out;
 }
@@ -643,7 +682,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$text      = null === $state['text'] ? jlife_challenges_entry_text( $view ) : (string) $state['text'];
 	$submitted = jlife_challenges_is_submitted( $view );
 	$headings  = jlife_challenges_soap_headings();
-	$shared    = $view['share_status'] ?? '';
+	$groups    = (array) ( $view['share_groups'] ?? array() );
 	$chips     = '';
 	foreach ( (array) ( $view['reading']['day']['passages'] ?? array() ) as $p ) {
 		$chips .= '<button type="button" class="jl-chip" data-insert="' . esc_attr( (string) $p['display'] ) . '">' . esc_html( (string) $p['display'] ) . '</button>';
@@ -677,15 +716,37 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	}
 	$out .= '</ul></details>'
 		. '<p class="jl-saved" aria-live="polite"></p>'
-		. '<label class="jl-share-opt"><input type="checkbox" name="jl_share" value="1"' . checked( $state['share'], true, false ) . '> <span>' . esc_html__( 'Share this with my group', 'jlife-challenges' ) . '</span></label>'
-		. '<small class="jl-share-note">' . esc_html__( 'This shares the whole entry, including your Prayer, with your group. Leave it unticked to keep it private.', 'jlife-challenges' ) . '</small>';
-	if ( 'shared' === $shared ) {
-		$out .= '<small class="jl-share-note">' . esc_html__( 'Your group already has this day. Tick the box and save to update it.', 'jlife-challenges' ) . '</small>';
-	}
+		. jlife_challenges_render_share_boxes( $groups, (array) $state['share_groups'] );
 	return $out
 		. '<button type="submit" name="jl_action" value="submit" class="jl-button jl-primary">' . esc_html( $submitted ? __( 'Save changes', 'jlife-challenges' ) : __( 'Submit SOAP', 'jlife-challenges' ) ) . '</button>'
 		. ( $submitted ? '' : '<button type="submit" name="jl_action" value="draft" class="jl-button" formnovalidate>' . esc_html__( 'Save draft', 'jlife-challenges' ) . '</button>' )
 		. '</form>';
+}
+
+/**
+ * The share choice on the SOAP form: one checkbox per group the person is in,
+ * labelled with the group's name, unticked unless the person ticked it on the
+ * last try. No "share with all". A solo reader (no groups) gets nothing at all.
+ *
+ * @param array[] $groups Rows of { id, name, status } (see jlife_challenges_share_groups()).
+ * @param int[]   $ticked Group IDs to show ticked.
+ * @return string
+ */
+function jlife_challenges_render_share_boxes( $groups, $ticked ) {
+	if ( ! $groups ) {
+		return '';
+	}
+	$ticked = array_map( 'intval', $ticked );
+	$out    = '<fieldset class="jl-share-groups"><legend>' . esc_html__( 'Share this with', 'jlife-challenges' ) . '</legend>';
+	foreach ( $groups as $g ) {
+		$out .= '<label class="jl-share-opt"><input type="checkbox" name="jl_share_groups[]" value="' . esc_attr( (string) (int) $g['id'] ) . '"' . checked( in_array( (int) $g['id'], $ticked, true ), true, false ) . '> <span>' . esc_html( (string) $g['name'] ) . '</span></label>';
+		if ( 'shared' === $g['status'] ) {
+			/* translators: %s: group name. */
+			$out .= '<small class="jl-share-note">' . esc_html( sprintf( __( '%s already has this day. Tick its box and save to update it.', 'jlife-challenges' ), (string) $g['name'] ) ) . '</small>';
+		}
+	}
+	return $out . '</fieldset>'
+		. '<small class="jl-share-note">' . esc_html__( 'This shares the whole entry, including your Prayer, with each group you tick. Leave every box unticked to keep it private.', 'jlife-challenges' ) . '</small>';
 }
 
 /**

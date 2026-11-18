@@ -2,8 +2,11 @@
 /**
  * Campaigns, groups and enrollment (docs/challenges-engine-design.md §2).
  *
- * One primary group per participant per campaign (D14). Invite codes are
- * stored hashed and shown once. Moves and removals are audited (D18).
+ * A participant has ONE enrollment per campaign (consent, progress, entries and
+ * points are personal) and is solo (no group) or in up to
+ * JLIFE_CHALLENGES_MAX_GROUPS groups through `group_members` rows (D14 as
+ * changed in #112). Scoring never depends on groups. Invite codes are stored
+ * hashed and shown once. Joins, leaves, moves and removals are audited (D18).
  *
  * @package jlife-challenges
  */
@@ -13,6 +16,17 @@ defined( 'ABSPATH' ) || exit;
 // phpcs:disable WordPress.DB.DirectDatabaseQuery -- custom tables are this plugin's data layer; every query goes through the gate; WordPress has no API for them.
 
 const JLIFE_CHALLENGES_AGE_BANDS = array( 'adult', 'minor' );
+
+/**
+ * Most groups one person can be in at once, per campaign (D14 changed, #112).
+ * Adults and minors alike.
+ */
+const JLIFE_CHALLENGES_MAX_GROUPS = 3;
+
+/**
+ * Wrong invite codes one signed-in person may try per hour before waiting.
+ */
+const JLIFE_CHALLENGES_JOIN_TRIES = 10;
 
 /**
  * Create a campaign. Organizers only.
@@ -195,62 +209,275 @@ function jlife_challenges_get_enrollment( $campaign_id, $user_id ) {
 }
 
 /**
- * Insert or reactivate an enrollment.
+ * Open (create or reactivate) a person's enrollment in a campaign, with no
+ * group. Groups are separate membership rows. An enrollment that is already
+ * active is returned unchanged: its age band and consent are never rewritten by
+ * a later join.
  *
- * @param int    $actor    Acting user (participant or organizer).
- * @param int    $user_id  Participant.
- * @param array  $group    Group row.
- * @param string $age_band adult|minor.
- * @return int|WP_Error Enrollment ID.
+ * @param int    $user_id     Participant.
+ * @param int    $campaign_id Campaign.
+ * @param string $age_band    adult|minor (used only when creating or reactivating).
+ * @return array|WP_Error { enrollment: row, created: bool } `created` is true for a new or reactivated enrollment.
  */
-function jlife_challenges_write_enrollment( $actor, $user_id, $group, $age_band ) {
+function jlife_challenges_open_enrollment( $user_id, $campaign_id, $age_band ) {
 	if ( ! in_array( $age_band, JLIFE_CHALLENGES_AGE_BANDS, true ) ) {
 		return new WP_Error( 'jlife_age_band', 'age_band must be adult or minor (participants are 13 or older).' );
 	}
-	$campaign_id = (int) $group['campaign_id'];
-	$existing    = jlife_challenges_get_enrollment( $campaign_id, $user_id );
+	$existing = jlife_challenges_get_enrollment( $campaign_id, $user_id );
 	if ( $existing && 'active' === $existing['status'] ) {
-		return new WP_Error( 'jlife_already_enrolled', __( 'You are already in a group for this campaign.', 'jlife-challenges' ) );
+		return array(
+			'enrollment' => $existing,
+			'created'    => false,
+		);
 	}
 	global $wpdb;
-	$now  = current_time( 'mysql', true );
 	$data = array(
-		'campaign_id' => $campaign_id,
+		'campaign_id' => (int) $campaign_id,
 		'user_id'     => (int) $user_id,
-		'group_id'    => (int) $group['id'],
+		'group_id'    => 0, // Retired column (see upgrade.php): membership lives in group_members.
 		'status'      => 'active',
 		'age_band'    => $age_band,
-		'joined'      => $now,
+		'joined'      => current_time( 'mysql', true ),
 		'left_at'     => null,
 	);
 	if ( $existing ) {
 		$wpdb->update( jlife_challenges_table( 'enrollments' ), $data, array( 'id' => (int) $existing['id'] ) );
-		$id = (int) $existing['id'];
 	} else {
 		$wpdb->insert( jlife_challenges_table( 'enrollments' ), $data );
+	}
+	$row = jlife_challenges_get_enrollment( $campaign_id, $user_id );
+	return $row ? array(
+		'enrollment' => $row,
+		'created'    => true,
+	) : new WP_Error( 'jlife_db', 'Could not enroll.' );
+}
+
+/**
+ * Add a person to a group (up to JLIFE_CHALLENGES_MAX_GROUPS per campaign).
+ * Reactivates a membership they left. Audited, except a move (the move writes
+ * its own audit row).
+ *
+ * @param int    $actor      Acting user (the participant, or an organizer).
+ * @param array  $enrollment The person's active enrollment row.
+ * @param array  $group      Group row (active, same campaign).
+ * @param string $role       member|starter.
+ * @param string $source     invite_code|organizer|move (recorded in the audit).
+ * @return int|WP_Error Membership ID.
+ */
+function jlife_challenges_add_membership( $actor, $enrollment, $group, $role = 'member', $source = 'invite_code' ) {
+	if ( 'active' !== $group['status'] || (int) $group['campaign_id'] !== (int) $enrollment['campaign_id'] || 'active' !== $enrollment['status'] ) {
+		return jlife_challenges_denied();
+	}
+	$role        = in_array( $role, array( 'starter', 'member' ), true ) ? $role : 'member';
+	$user_id     = (int) $enrollment['user_id'];
+	$campaign_id = (int) $enrollment['campaign_id'];
+	$existing    = jlife_challenges_get_membership( (int) $group['id'], $user_id );
+	if ( $existing && 'active' === $existing['status'] ) {
+		return new WP_Error( 'jlife_already_enrolled', __( 'You are already in this group.', 'jlife-challenges' ) );
+	}
+	$before = count( jlife_challenges_active_memberships( $campaign_id, $user_id ) );
+	if ( $before >= JLIFE_CHALLENGES_MAX_GROUPS ) {
+		return jlife_challenges_group_limit_error();
+	}
+	global $wpdb;
+	$t    = jlife_challenges_table( 'group_members' );
+	$data = array(
+		'campaign_id'   => $campaign_id,
+		'enrollment_id' => (int) $enrollment['id'],
+		'user_id'       => $user_id,
+		'group_id'      => (int) $group['id'],
+		'role'          => $role,
+		'status'        => 'active',
+		'joined_at'     => current_time( 'mysql', true ),
+		'left_at'       => null,
+	);
+	if ( $existing ) {
+		$wpdb->update( $t, $data, array( 'id' => (int) $existing['id'] ) );
+		$id = (int) $existing['id'];
+	} elseif ( false === $wpdb->insert( $t, $data ) ) {
+		// UNIQUE (group_id, user_id): a concurrent request just added them.
+		return new WP_Error( 'jlife_already_enrolled', __( 'You are already in this group.', 'jlife-challenges' ) );
+	} else {
 		$id = (int) $wpdb->insert_id;
 	}
-	jlife_challenges_audit( $actor, 'enrolled', 'enrollment', $id, $campaign_id, array( 'group_id' => (int) $group['id'] ) );
+	// Two requests can both pass the count above; whoever finishes over the limit backs out.
+	$after = count( jlife_challenges_active_memberships( $campaign_id, $user_id ) );
+	if ( $after > JLIFE_CHALLENGES_MAX_GROUPS ) {
+		$wpdb->update(
+			$t,
+			array(
+				'status'  => 'left',
+				'left_at' => current_time( 'mysql', true ),
+			),
+			array( 'id' => $id )
+		);
+		return jlife_challenges_group_limit_error();
+	}
+	if ( 'move' !== $source ) {
+		jlife_challenges_audit(
+			$actor,
+			'group_joined',
+			'enrollment',
+			(int) $enrollment['id'],
+			$campaign_id,
+			array(
+				'group_id' => (int) $group['id'],
+				'role'     => $role,
+				'source'   => $source,
+			)
+		);
+	}
 	return $id;
 }
 
 /**
- * A participant joins a group with an invite code.
+ * The refusal for a fourth group.
+ *
+ * @return WP_Error
+ */
+function jlife_challenges_group_limit_error() {
+	return new WP_Error(
+		'jlife_group_limit',
+		sprintf(
+			/* translators: %d: the most groups one person can be in. */
+			_n(
+				'You are already in the most groups you can join (%d). Ask an organizer if you need to change one.',
+				'You are already in the most groups you can join (%d). Ask an organizer if you need to change one.',
+				JLIFE_CHALLENGES_MAX_GROUPS,
+				'jlife-challenges'
+			),
+			JLIFE_CHALLENGES_MAX_GROUPS
+		)
+	);
+}
+
+/**
+ * A membership row for a person and group, any status.
+ *
+ * @param int $group_id Group.
+ * @param int $user_id  User.
+ * @return array|null
+ */
+function jlife_challenges_get_membership( $group_id, $user_id ) {
+	global $wpdb;
+	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'group_members' ) . ' WHERE group_id = %d AND user_id = %d', (int) $group_id, (int) $user_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	return $row ? $row : null;
+}
+
+/**
+ * A participant joins a group with an invite code. With no enrollment yet it
+ * creates one; with one (solo, or already in other groups) it keeps it and adds
+ * the group, up to the limit. Wrong guesses are rate limited per person.
  *
  * @param int    $user_id  Participant (signed in).
  * @param string $code     Invite code.
- * @param string $age_band adult|minor (the sign-up flow blocks under-13s).
- * @return int|WP_Error Enrollment ID.
+ * @param string $age_band adult|minor (the sign-up flow blocks under-13s); ignored for an existing enrollment.
+ * @return int|WP_Error Membership ID.
  */
 function jlife_challenges_join_with_code( $user_id, $code, $age_band ) {
 	if ( $user_id < 1 ) {
 		return jlife_challenges_denied();
 	}
+	$key   = 'jlife_chal_join_tries_' . (int) $user_id;
+	$tries = (int) get_transient( $key );
+	if ( $tries >= JLIFE_CHALLENGES_JOIN_TRIES ) {
+		return new WP_Error( 'jlife_join_rate', __( 'Too many codes were tried. Please wait an hour, or ask your group for a new one.', 'jlife-challenges' ) );
+	}
 	$group = jlife_challenges_group_for_invite( $code );
 	if ( ! $group ) {
+		set_transient( $key, $tries + 1, HOUR_IN_SECONDS );
 		return new WP_Error( 'jlife_invite_invalid', __( 'That invite code is not valid. Please ask your group for a new one.', 'jlife-challenges' ) );
 	}
-	return jlife_challenges_write_enrollment( $user_id, $user_id, $group, $age_band );
+	$opened = jlife_challenges_open_enrollment( $user_id, (int) $group['campaign_id'], $age_band );
+	if ( is_wp_error( $opened ) ) {
+		return $opened;
+	}
+	if ( $opened['created'] ) {
+		jlife_challenges_audit( $user_id, 'enrolled', 'enrollment', (int) $opened['enrollment']['id'], (int) $group['campaign_id'], array( 'mode' => 'invite_code' ) );
+	}
+	$id = jlife_challenges_add_membership( $user_id, $opened['enrollment'], $group, 'member', 'invite_code' );
+	if ( ! is_wp_error( $id ) ) {
+		delete_transient( $key );
+	}
+	return $id;
+}
+
+/**
+ * The campaign "Read on my own" enrolls into: an active campaign that has not
+ * finished, preferring real campaigns over staging test ones, then the most
+ * recently started. Filterable.
+ *
+ * @return array|null Campaign row.
+ */
+function jlife_challenges_open_campaign() {
+	global $wpdb;
+	$rows = (array) $wpdb->get_results( 'SELECT * FROM ' . jlife_challenges_table( 'campaigns' ) . " WHERE status = 'active'", ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix.
+	$open = array_values( array_filter( $rows, 'jlife_challenges_campaign_is_open' ) );
+	usort(
+		$open,
+		static function ( $a, $b ) {
+			$a_test = 0 === strpos( (string) $a['campaign_key'], 'test-' );
+			$b_test = 0 === strpos( (string) $b['campaign_key'], 'test-' );
+			return $a_test === $b_test ? strcmp( (string) $b['start_date'], (string) $a['start_date'] ) : ( $a_test <=> $b_test );
+		}
+	);
+	$campaign = $open ? $open[0] : null;
+	/**
+	 * Filters the campaign "Read on my own" enrolls into.
+	 *
+	 * @param mixed $campaign Campaign row (array), or null when none is open.
+	 */
+	$filtered = apply_filters( 'jlife_challenges_open_campaign', $campaign );
+	return $filtered ? (array) $filtered : null;
+}
+
+/**
+ * Can people still enroll in this campaign (active and not yet finished)?
+ *
+ * @param array $campaign Campaign row.
+ * @return bool
+ */
+function jlife_challenges_campaign_is_open( $campaign ) {
+	return 'active' === $campaign['status']
+		&& jlife_challenges_local_date( $campaign, jlife_challenges_now() ) <= $campaign['end_date'];
+}
+
+/**
+ * "Read on my own": enroll with no group. Consent and the age band are kept as
+ * for any join. An existing active enrollment is returned unchanged.
+ *
+ * @param int    $user_id     Participant (signed in).
+ * @param int    $campaign_id Campaign (see jlife_challenges_open_campaign()).
+ * @param string $age_band    adult|minor.
+ * @return int|WP_Error Enrollment ID.
+ */
+function jlife_challenges_enroll_solo( $user_id, $campaign_id, $age_band ) {
+	if ( ! in_array( $age_band, JLIFE_CHALLENGES_AGE_BANDS, true ) ) {
+		return new WP_Error( 'jlife_age_band', 'age_band must be adult or minor (participants are 13 or older).' );
+	}
+	$campaign = jlife_challenges_get_campaign( $campaign_id );
+	if ( $user_id < 1 || ! $campaign || ! jlife_challenges_campaign_is_open( $campaign ) ) {
+		return jlife_challenges_denied();
+	}
+	$opened = jlife_challenges_open_enrollment( $user_id, (int) $campaign_id, $age_band );
+	if ( is_wp_error( $opened ) ) {
+		return $opened;
+	}
+	if ( $opened['created'] ) {
+		jlife_challenges_audit( $user_id, 'enrolled', 'enrollment', (int) $opened['enrollment']['id'], (int) $campaign_id, array( 'mode' => 'solo' ) );
+	}
+	return (int) $opened['enrollment']['id'];
+}
+
+/**
+ * A user's active enrollments across campaigns.
+ *
+ * @param int $user_id User.
+ * @return array[] Enrollment rows.
+ */
+function jlife_challenges_user_enrollments( $user_id ) {
+	global $wpdb;
+	return (array) $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'enrollments' ) . " WHERE user_id = %d AND status = 'active'", (int) $user_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 }
 
 /**
@@ -272,43 +499,69 @@ function jlife_challenges_group_for_invite( $code ) {
 }
 
 /**
- * A user's active enrollments across campaigns.
- *
- * @param int $user_id User.
- * @return array[] Enrollment rows.
- */
-function jlife_challenges_user_enrollments( $user_id ) {
-	global $wpdb;
-	return (array) $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'enrollments' ) . " WHERE user_id = %d AND status = 'active'", (int) $user_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
-}
-
-/**
- * An organizer adds a participant to a group.
+ * An organizer adds a participant to a group (creating the enrollment if they
+ * have none). The limit of JLIFE_CHALLENGES_MAX_GROUPS applies to organizers too.
  *
  * @param int    $actor    Organizer.
  * @param int    $user_id  Participant.
  * @param int    $group_id Group.
- * @param string $age_band adult|minor.
- * @return int|WP_Error Enrollment ID.
+ * @param string $age_band adult|minor (used only when this creates the enrollment).
+ * @return int|WP_Error Membership ID.
  */
 function jlife_challenges_enroll( $actor, $user_id, $group_id, $age_band = 'adult' ) {
 	$group = jlife_challenges_get_group( $group_id );
 	if ( ! jlife_challenges_is_organizer( $actor ) || ! $group || 'active' !== $group['status'] ) {
 		return jlife_challenges_denied();
 	}
-	return jlife_challenges_write_enrollment( $actor, $user_id, $group, $age_band );
+	$opened = jlife_challenges_open_enrollment( $user_id, (int) $group['campaign_id'], $age_band );
+	if ( is_wp_error( $opened ) ) {
+		return $opened;
+	}
+	if ( $opened['created'] ) {
+		jlife_challenges_audit( $actor, 'enrolled', 'enrollment', (int) $opened['enrollment']['id'], (int) $group['campaign_id'], array( 'mode' => 'organizer' ) );
+	}
+	return jlife_challenges_add_membership( $actor, $opened['enrollment'], $group, 'member', 'organizer' );
 }
 
 /**
- * Move a participant to another group in the same campaign (D18: their past
- * shares stay with the old group).
+ * A participant leaves a group. Their shares there stay with that group (D18);
+ * they lose its feed; the slot is free for another group. The enrollment, their
+ * entries and their points are untouched.
  *
- * @param int $actor        Organizer.
- * @param int $user_id      Participant.
- * @param int $new_group_id Destination group.
+ * @param int $user_id  Participant.
+ * @param int $group_id Group.
  * @return true|WP_Error
  */
-function jlife_challenges_move_member( $actor, $user_id, $new_group_id ) {
+function jlife_challenges_leave_group( $user_id, $group_id ) {
+	$m = jlife_challenges_get_membership( $group_id, $user_id );
+	if ( $user_id < 1 || ! $m || 'active' !== $m['status'] ) {
+		return jlife_challenges_denied();
+	}
+	global $wpdb;
+	$wpdb->update(
+		jlife_challenges_table( 'group_members' ),
+		array(
+			'status'  => 'left',
+			'left_at' => current_time( 'mysql', true ),
+		),
+		array( 'id' => (int) $m['id'] )
+	);
+	jlife_challenges_audit( $user_id, 'group_left', 'enrollment', (int) $m['enrollment_id'], (int) $m['campaign_id'], array( 'group_id' => (int) $group_id ) );
+	return true;
+}
+
+/**
+ * Move a participant to another group in the same campaign: one membership is
+ * swapped for another and the rest are kept (D18: their past shares stay with
+ * the old group).
+ *
+ * @param int $actor         Organizer.
+ * @param int $user_id       Participant.
+ * @param int $new_group_id  Destination group.
+ * @param int $from_group_id Group they leave. May be 0 only when they are in exactly one.
+ * @return true|WP_Error
+ */
+function jlife_challenges_move_member( $actor, $user_id, $new_group_id, $from_group_id = 0 ) {
 	$group = jlife_challenges_get_group( $new_group_id );
 	if ( ! jlife_challenges_is_organizer( $actor ) || ! $group || 'active' !== $group['status'] ) {
 		return jlife_challenges_denied();
@@ -317,8 +570,40 @@ function jlife_challenges_move_member( $actor, $user_id, $new_group_id ) {
 	if ( ! $e ) {
 		return jlife_challenges_denied();
 	}
+	$current = jlife_challenges_active_memberships( (int) $group['campaign_id'], $user_id );
+	if ( ! $from_group_id && 1 === count( $current ) ) {
+		$from_group_id = (int) $current[0]['group_id'];
+	}
+	if ( ! $from_group_id ) {
+		return new WP_Error( 'jlife_move_ambiguous', 'Name the group the person is leaving.' );
+	}
+	$from = jlife_challenges_get_membership( $from_group_id, $user_id );
+	if ( ! $from || 'active' !== $from['status'] || (int) $from['campaign_id'] !== (int) $group['campaign_id'] ) {
+		return jlife_challenges_denied();
+	}
 	global $wpdb;
-	$wpdb->update( jlife_challenges_table( 'enrollments' ), array( 'group_id' => (int) $new_group_id ), array( 'id' => (int) $e['id'] ), array( '%d' ), array( '%d' ) );
+	$t = jlife_challenges_table( 'group_members' );
+	// End the old membership first so the swap never trips the limit; put it back if the new one fails.
+	$wpdb->update(
+		$t,
+		array(
+			'status'  => 'left',
+			'left_at' => current_time( 'mysql', true ),
+		),
+		array( 'id' => (int) $from['id'] )
+	);
+	$added = jlife_challenges_add_membership( $actor, $e, $group, 'member', 'move' );
+	if ( is_wp_error( $added ) ) {
+		$wpdb->update(
+			$t,
+			array(
+				'status'  => 'active',
+				'left_at' => null,
+			),
+			array( 'id' => (int) $from['id'] )
+		);
+		return $added;
+	}
 	jlife_challenges_audit(
 		$actor,
 		'member_moved',
@@ -326,7 +611,7 @@ function jlife_challenges_move_member( $actor, $user_id, $new_group_id ) {
 		(int) $e['id'],
 		(int) $group['campaign_id'],
 		array(
-			'from_group' => (int) $e['group_id'],
+			'from_group' => (int) $from_group_id,
 			'to_group'   => (int) $new_group_id,
 		)
 	);
@@ -334,7 +619,8 @@ function jlife_challenges_move_member( $actor, $user_id, $new_group_id ) {
 }
 
 /**
- * Remove a participant from the campaign (their entries and points remain theirs).
+ * Remove a participant from the campaign: the enrollment and every membership
+ * end (their entries and points remain theirs).
  *
  * @param int $actor       Organizer.
  * @param int $campaign_id Campaign.
@@ -347,15 +633,28 @@ function jlife_challenges_remove_member( $actor, $campaign_id, $user_id ) {
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
+	$now       = current_time( 'mysql', true );
+	$group_ids = array_map( 'intval', array_column( jlife_challenges_active_memberships( $campaign_id, $user_id ), 'group_id' ) );
 	$wpdb->update(
 		jlife_challenges_table( 'enrollments' ),
 		array(
 			'status'  => 'removed',
-			'left_at' => current_time( 'mysql', true ),
+			'left_at' => $now,
 		),
 		array( 'id' => (int) $e['id'] )
 	);
-	jlife_challenges_audit( $actor, 'member_removed', 'enrollment', (int) $e['id'], (int) $campaign_id, array( 'group_id' => (int) $e['group_id'] ) );
+	$wpdb->update(
+		jlife_challenges_table( 'group_members' ),
+		array(
+			'status'  => 'removed',
+			'left_at' => $now,
+		),
+		array(
+			'enrollment_id' => (int) $e['id'],
+			'status'        => 'active',
+		)
+	);
+	jlife_challenges_audit( $actor, 'member_removed', 'enrollment', (int) $e['id'], (int) $campaign_id, array( 'group_ids' => $group_ids ) );
 	return true;
 }
 
@@ -422,7 +721,9 @@ function jlife_challenges_membership_source( $membership, $group_id ) {
 		return $membership;
 	}
 	global $wpdb;
-	$members = $wpdb->get_col( $wpdb->prepare( 'SELECT user_id FROM ' . jlife_challenges_table( 'enrollments' ) . " WHERE group_id = %d AND status = 'active'", (int) $group_id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	$m       = jlife_challenges_table( 'group_members' );
+	$e       = jlife_challenges_table( 'enrollments' );
+	$members = $wpdb->get_col( $wpdb->prepare( "SELECT m.user_id FROM {$m} m JOIN {$e} e ON e.id = m.enrollment_id AND e.status = 'active' WHERE m.group_id = %d AND m.status = 'active'", (int) $group_id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tables from $wpdb->prefix.
 	return array(
 		'exists'          => 'active' === $group['status'],
 		'leader_user_ids' => array(),

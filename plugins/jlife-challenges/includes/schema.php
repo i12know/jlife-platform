@@ -3,15 +3,16 @@
  * Custom tables for the Bible Marathon engine (docs/challenges-engine-design.md §2).
  *
  * Uniqueness that protects scoring and privacy is enforced by the database:
- * one enrollment per person per campaign, one entry per person per day, one
- * ledger row per person per day, one share per entry per group.
+ * one enrollment per person per campaign, one membership per person per group,
+ * one entry per person per day, one ledger row per person per day, one share per
+ * entry per group.
  *
  * @package jlife-challenges
  */
 
 defined( 'ABSPATH' ) || exit;
 
-const JLIFE_CHALLENGES_DB_VERSION = '2';
+const JLIFE_CHALLENGES_DB_VERSION = '3';
 
 /**
  * Table name helper.
@@ -71,7 +72,7 @@ function jlife_challenges_install_tables() {
 			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			campaign_id BIGINT(20) UNSIGNED NOT NULL,
 			user_id BIGINT(20) UNSIGNED NOT NULL,
-			group_id BIGINT(20) UNSIGNED NOT NULL,
+			group_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
 			status VARCHAR(20) NOT NULL DEFAULT 'active',
 			age_band VARCHAR(10) NOT NULL DEFAULT 'adult',
 			guardian_consent DATETIME NULL,
@@ -82,6 +83,29 @@ function jlife_challenges_install_tables() {
 			PRIMARY KEY  (id),
 			UNIQUE KEY campaign_user (campaign_id, user_id),
 			KEY group_status (group_id, status)
+		) {$c};"
+	);
+
+	// Group membership (#112, D14 changed): a participant is solo (no active row)
+	// or in up to JLIFE_CHALLENGES_MAX_GROUPS groups per campaign. The enrollment
+	// above stays one per person per campaign; its group_id column is retired
+	// (kept, default 0, read only by the one-time migration; see upgrade.php).
+	dbDelta(
+		'CREATE TABLE ' . $t( 'group_members' ) . " (
+			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			campaign_id BIGINT(20) UNSIGNED NOT NULL,
+			enrollment_id BIGINT(20) UNSIGNED NOT NULL,
+			user_id BIGINT(20) UNSIGNED NOT NULL,
+			group_id BIGINT(20) UNSIGNED NOT NULL,
+			role VARCHAR(20) NOT NULL DEFAULT 'member',
+			status VARCHAR(20) NOT NULL DEFAULT 'active',
+			joined_at DATETIME NOT NULL,
+			left_at DATETIME NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY group_user (group_id, user_id),
+			KEY user_campaign (user_id, campaign_id, status),
+			KEY campaign_status (campaign_id, status),
+			KEY enrollment (enrollment_id)
 		) {$c};"
 	);
 
@@ -171,8 +195,10 @@ function jlife_challenges_install_tables() {
 	);
 
 	// Move rows written before the single-text entry (#98) into the new column,
-	// then record the version. Idempotent: a no-op once the old columns are gone.
+	// and enrollments' single group into membership rows (#112), then record the
+	// version. Both are idempotent.
 	jlife_challenges_upgrade_data();
+	jlife_challenges_upgrade_memberships();
 	update_option( 'jlife_challenges_db_version', JLIFE_CHALLENGES_DB_VERSION, false );
 }
 

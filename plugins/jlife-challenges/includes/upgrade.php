@@ -1,11 +1,16 @@
 <?php
 /**
- * Data upgrade for the single-text entry (#98): the four SOAP columns on
- * entries, revisions and group shares become one `body`, joined under the four
- * headings with line breaks kept. Runs from jlife_challenges_install_tables().
+ * Data upgrades, both run from jlife_challenges_install_tables() and both
+ * idempotent:
  *
- * Pre-launch data is test-only, but the step is still careful: it only drops
- * the old columns after every row that had text has been copied.
+ * 1. Single-text entry (#98): the four SOAP columns on entries, revisions and
+ *    group shares become one `body`, joined under the four headings with line
+ *    breaks kept. Pre-launch data is test-only, but the step is still careful:
+ *    it only drops the old columns after every row that had text has been
+ *    copied.
+ * 2. Group membership (#112, D14 changed): each enrollment's single
+ *    `enrollments.group_id` becomes a row in `group_members`. See
+ *    jlife_challenges_upgrade_memberships() for the column's fate.
  *
  * @package jlife-challenges
  */
@@ -163,4 +168,57 @@ function jlife_challenges_upgrade_data() {
 		}
 	}
 	return $total;
+}
+
+/**
+ * Copy each enrollment's single group (`enrollments.group_id`, D14 before #112)
+ * into a `group_members` row. Idempotent and safe to run on every deploy:
+ *
+ * - Only enrollments with a group (group_id > 0) whose group still exists, and
+ *   that have no membership row for that person and group (in ANY status), are
+ *   copied. A membership that was later ended (left or removed) is therefore
+ *   never resurrected by a re-run.
+ * - An active enrollment becomes an active membership; any other enrollment
+ *   status (removed) becomes a removed membership, with its left_at kept.
+ *   joined_at is the enrollment's joined time; the role is `member` (nobody was
+ *   a starter before PR2 of #112).
+ * - INSERT IGNORE on UNIQUE (group_id, user_id) makes a concurrent run harmless.
+ *
+ * What happens to `enrollments.group_id`: it is RETIRED, not dropped. It stays
+ * as `NOT NULL DEFAULT 0`, nothing writes it any more (new enrollments get 0,
+ * "solo") and nothing reads it except this upgrade; the gate and every feed use
+ * `group_members` only. It is kept for one release as the migration's source and
+ * so a rollback of the plugin code still finds each person's old group. It is not
+ * zeroed after copying, because the membership-exists check above is what makes
+ * the copy idempotent. A later release drops it once the migration has been
+ * verified on every deployment.
+ *
+ * @return int Membership rows created.
+ */
+function jlife_challenges_upgrade_memberships() {
+	global $wpdb;
+	$e = jlife_challenges_table( 'enrollments' );
+	$m = jlife_challenges_table( 'group_members' );
+	$g = jlife_challenges_table( 'groups' );
+	if ( ! jlife_challenges_safe_table( $e ) || ! jlife_challenges_safe_table( $m ) || ! jlife_challenges_safe_table( $g ) ) {
+		return 0;
+	}
+	if ( ! in_array( 'group_id', jlife_challenges_table_columns( $e ), true ) || ! jlife_challenges_table_columns( $m ) ) {
+		return 0;
+	}
+	$wpdb->query(
+		"INSERT IGNORE INTO `{$m}` (campaign_id, enrollment_id, user_id, group_id, role, status, joined_at, left_at)
+		SELECT e.campaign_id, e.id, e.user_id, e.group_id, 'member', IF(e.status = 'active', 'active', 'removed'), e.joined, e.left_at
+		FROM `{$e}` e
+		JOIN `{$g}` g ON g.id = e.group_id
+		LEFT JOIN `{$m}` x ON x.group_id = e.group_id AND x.user_id = e.user_id
+		WHERE e.group_id > 0 AND x.id IS NULL"
+	);
+	$created = max( 0, (int) $wpdb->rows_affected );
+	// dbDelta does not add a default to an existing column: give the retired column its DEFAULT 0 explicitly, once.
+	$col = $wpdb->get_row( "SHOW COLUMNS FROM `{$e}` LIKE 'group_id'", ARRAY_A );
+	if ( is_array( $col ) && null === $col['Default'] ) {
+		$wpdb->query( "ALTER TABLE `{$e}` ALTER COLUMN `group_id` SET DEFAULT 0" );
+	}
+	return $created;
 }

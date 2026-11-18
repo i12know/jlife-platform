@@ -1,12 +1,13 @@
 # jlife-auth
 
-Participant sign-in for J-Life (M3, #58): **a 6-digit code by email, no passwords and no sign-in links**, plus joining a group with an invite code, the age band (13+), language choice and the consent step.
+Participant sign-in for J-Life (M3, #58): **a 6-digit code by email, no passwords and no sign-in links**, plus joining a group with an invite code or reading on your own, the age band (13+), language choice and the consent step.
 
 ## Pages
 
 | Route | What it does |
 |---|---|
 | `/join/?code=INVITE` | Invite code, first name, email, age (18+ / 13–17; under-13s cannot join), language (English / Tiếng Việt) → emailed code → account created, group joined → consent |
+| `/join/?mode=solo` | **Read on my own** (#112): the same form without a code → emailed code → account created and enrolled in the open campaign with **no group** → consent. The page is a choice: `/join/` (invite code) links to it, and it links back. A person who is already signed in can join a group later from `/group/` ("Have a code? Join a group", up to 3 groups). "Start a group" is separate (#112 PR2) |
 | `/signin/` | Email → emailed code → signed in on this phone for 180 days |
 | `/consent/` | The consent points (D15 draft wording, version `draft-2026-11-05`); asked again whenever the version changes |
 

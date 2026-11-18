@@ -90,8 +90,8 @@ function jlife_challenges_create_test_campaign( $actor, $plan_id = 'rpl-life-and
 }
 
 /**
- * Remove all test campaigns: their groups, enrollments, SOAP entries and
- * revisions, points, shares and audit rows. Participant accounts that were
+ * Remove all test campaigns: their groups, memberships, enrollments, SOAP
+ * entries and revisions, points, shares and audit rows. Participant accounts that were
  * only ever in test campaigns are deleted too, so testers start fresh in the
  * real Marathon. Staff accounts (who can edit posts) are never deleted.
  *
@@ -118,7 +118,7 @@ function jlife_challenges_remove_test_campaigns( $actor ) {
 	$testers   = array_map( 'intval', $wpdb->get_col( "SELECT DISTINCT user_id FROM {$enroll} WHERE campaign_id IN ({$in})" ) );
 	$n_entries = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$entries} WHERE campaign_id IN ({$in})" );
 	$wpdb->query( 'DELETE r FROM ' . jlife_challenges_table( 'soap_revisions' ) . " r JOIN {$entries} e ON e.id = r.entry_id WHERE e.campaign_id IN ({$in})" );
-	foreach ( array( 'group_shares', 'score_ledger', 'soap_entries', 'enrollments', 'groups', 'audit_log' ) as $table ) {
+	foreach ( array( 'group_shares', 'score_ledger', 'soap_entries', 'group_members', 'enrollments', 'groups', 'audit_log' ) as $table ) {
 		$wpdb->query( 'DELETE FROM ' . jlife_challenges_table( $table ) . " WHERE campaign_id IN ({$in})" );
 	}
 	$wpdb->query( 'DELETE FROM ' . jlife_challenges_table( 'campaigns' ) . " WHERE id IN ({$in})" );

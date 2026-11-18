@@ -33,7 +33,7 @@ class Test_Share_Screens extends Jlife_Challenges_TestCase {
 		jlife_challenges_save_draft( $this->u['a'], $this->campaign, 'd001', 'S: a half-written thought' );
 		$v = jlife_challenges_share_view( $this->u['a'], 'd001' );
 		$this->assertTrue( $v['shareable'] );
-		$this->assertNull( $v['share'] );
+		$this->assertNull( $v['destinations'][0]['share'] );
 		$this->assertSame( array(), jlife_challenges_group_view( $this->u['b'] )['posts'], 'no post until the author posts it' );
 	}
 
@@ -44,14 +44,17 @@ class Test_Share_Screens extends Jlife_Challenges_TestCase {
 		$entry = $this->submit_day1();
 		$v     = jlife_challenges_share_view( $this->u['a'], 'd001' );
 		$this->assertTrue( $v['shareable'] );
-		$this->assertTrue( $v['can_post'] );
-		$this->assertNull( $v['share'] );
+		$this->assertCount( 1, $v['destinations'], 'a is in one group' );
+		$this->assertSame( (int) $this->g['g1'], $v['destinations'][0]['group_id'] );
+		$this->assertSame( 'Group One', $v['destinations'][0]['group_name'] );
+		$this->assertTrue( $v['destinations'][0]['can_post'] );
+		$this->assertNull( $v['destinations'][0]['share'] );
 		$this->assertArrayNotHasKey( 'checked', $v, 'the whole entry is shared; no parts to choose' );
 
-		jlife_challenges_share( $this->u['a'], $entry );
+		jlife_challenges_share( $this->u['a'], $entry, $this->g['g1'] );
 		$v = jlife_challenges_share_view( $this->u['a'], 'd001' );
-		$this->assertSame( 'shared', $v['share']['status'] );
-		$this->assertSame( 'shared', jlife_challenges_day_view( $this->u['a'], 'd001' )['share_status'] );
+		$this->assertSame( 'shared', $v['destinations'][0]['share']['status'] );
+		$this->assertSame( 'shared', jlife_challenges_day_view( $this->u['a'], 'd001' )['share_groups'][0]['status'] );
 	}
 
 	/**
@@ -59,9 +62,9 @@ class Test_Share_Screens extends Jlife_Challenges_TestCase {
 	 */
 	public function test_repost_replaces_and_remove_keeps_points() {
 		$entry = $this->submit_day1();
-		$id1   = jlife_challenges_share( $this->u['a'], $entry );
-		$id2   = jlife_challenges_share( $this->u['a'], $entry );
-		$id3   = jlife_challenges_share( $this->u['a'], $entry );
+		$id1   = jlife_challenges_share( $this->u['a'], $entry, $this->g['g1'] );
+		$id2   = jlife_challenges_share( $this->u['a'], $entry, $this->g['g1'] );
+		$id3   = jlife_challenges_share( $this->u['a'], $entry, $this->g['g1'] );
 		$this->assertSame( $id1, $id2 );
 		$this->assertSame( $id1, $id3 );
 		$posts = jlife_challenges_group_view( $this->u['b'] )['posts'];
@@ -70,7 +73,7 @@ class Test_Share_Screens extends Jlife_Challenges_TestCase {
 
 		$this->assertTrue( jlife_challenges_unshare( $this->u['a'], $id1 ) );
 		$this->assertSame( array(), jlife_challenges_group_view( $this->u['b'] )['posts'] );
-		$this->assertNull( jlife_challenges_share_view( $this->u['a'], 'd001' )['share'] );
+		$this->assertNull( jlife_challenges_share_view( $this->u['a'], 'd001' )['destinations'][0]['share'] );
 		$this->assertSame( 1, jlife_challenges_progress( $this->u['a'], $this->u['a'], $this->campaign )['points'] );
 	}
 
@@ -79,7 +82,7 @@ class Test_Share_Screens extends Jlife_Challenges_TestCase {
 	 */
 	public function test_feed_visibility_and_ownership() {
 		$entry = $this->submit_day1();
-		$id    = jlife_challenges_share( $this->u['a'], $entry );
+		$id    = jlife_challenges_share( $this->u['a'], $entry, $this->g['g1'] );
 
 		$b = jlife_challenges_group_view( $this->u['b'] );
 		$this->assertSame( 'ok', $b['state'] );
@@ -91,9 +94,10 @@ class Test_Share_Screens extends Jlife_Challenges_TestCase {
 		$this->assertTrue( jlife_challenges_group_view( $this->u['a'] )['posts'][0]['mine'] );
 
 		$this->assertSame( array(), jlife_challenges_group_view( $this->u['c'] )['posts'], 'other group sees nothing' );
+		$this->assertSame( 'denied', jlife_challenges_group_view( $this->u['c'], $this->g['g1'] )['state'], 'and cannot ask for this one' );
 		$this->assertSame( 'not_enrolled', jlife_challenges_group_view( $this->u['outsider'] )['state'] );
 
-		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['b'], $entry )->get_error_code() );
+		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['b'], $entry, $this->g['g1'] )->get_error_code() );
 		$this->assertSame( 'jlife_denied', jlife_challenges_unshare( $this->u['b'], $id )->get_error_code() );
 		$this->assertCount( 1, jlife_challenges_group_view( $this->u['b'] )['posts'] );
 	}
@@ -107,8 +111,8 @@ class Test_Share_Screens extends Jlife_Challenges_TestCase {
 		jlife_challenges_enroll( $this->u['organizer'], $minor, $this->g['g1'], 'minor' );
 		jlife_challenges_submit( $minor, $this->campaign, 'd001', $this->soap( 'minor' ) );
 		$v = jlife_challenges_share_view( $minor, 'd001' );
-		$this->assertTrue( $v['can_post'] );
-		$this->assertNotSame( 'guardian', $v['post_block'] );
+		$this->assertTrue( $v['destinations'][0]['can_post'] );
+		$this->assertNotSame( 'guardian', $v['destinations'][0]['post_block'] );
 	}
 
 	/**
@@ -120,19 +124,19 @@ class Test_Share_Screens extends Jlife_Challenges_TestCase {
 		jlife_challenges_enroll( $this->u['organizer'], $minor, $this->g['g1'], 'minor' );
 		jlife_challenges_submit( $minor, $this->campaign, 'd001', $this->soap( 'minor' ) );
 		$v = jlife_challenges_share_view( $minor, 'd001' );
-		$this->assertFalse( $v['can_post'] );
-		$this->assertSame( 'guardian', $v['post_block'] );
+		$this->assertFalse( $v['destinations'][0]['can_post'] );
+		$this->assertSame( 'guardian', $v['destinations'][0]['post_block'] );
 	}
 
 	/**
 	 * A post hidden by an organizer cannot be re-posted by the author.
 	 */
 	public function test_hidden_post_block() {
-		$id = jlife_challenges_share( $this->u['a'], $this->submit_day1() );
+		$id = jlife_challenges_share( $this->u['a'], $this->submit_day1(), $this->g['g1'] );
 		jlife_challenges_hide_share( $this->u['organizer'], $id, 'Reported' );
 		$v = jlife_challenges_share_view( $this->u['a'], 'd001' );
-		$this->assertSame( 'hidden', $v['post_block'] );
-		$this->assertFalse( $v['can_post'] );
+		$this->assertSame( 'hidden', $v['destinations'][0]['post_block'] );
+		$this->assertFalse( $v['destinations'][0]['can_post'] );
 		$this->assertSame( array(), jlife_challenges_group_view( $this->u['b'] )['posts'] );
 	}
 

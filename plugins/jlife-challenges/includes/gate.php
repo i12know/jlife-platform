@@ -5,8 +5,13 @@
  *
  * - SOAP entries: author only. Organizers and leaders never read SOAP text
  *   through these functions (the P1 review path will be separate and audited).
- * - Group shares: readable by current members of that group only; created
- *   and removed by their author only; organizers may hide (D17), never browse.
+ * - Group shares: readable by current members of THAT group only (a person may
+ *   be in up to 3 groups, #112; being in one says nothing about another);
+ *   created for a group the author is in and removed by their author only;
+ *   organizers may hide (D17), never browse. A solo reader (enrolled, no active
+ *   membership) has no group to read or share to.
+ * - Membership comes from `group_members` only; the retired
+ *   `enrollments.group_id` column is never consulted.
  * - Scores: a participant sees their own; organizers see detail and counts.
  * - Unknown objects are denied the same way as forbidden ones.
  *
@@ -75,19 +80,59 @@ function jlife_challenges_can_read_entry( $viewer_user_id, $entry ) {
 }
 
 /**
- * May the viewer read a group's feed? Current active members only.
+ * The user's active group memberships in a campaign, oldest first, each with the
+ * group's name. Only memberships on an active enrollment and an active group
+ * count; a solo reader gets an empty list.
+ *
+ * @param int $campaign_id Campaign ID.
+ * @param int $user_id     User ID.
+ * @return array[] Rows of { id, enrollment_id, group_id, role, joined_at, name }.
+ */
+function jlife_challenges_active_memberships( $campaign_id, $user_id ) {
+	$campaign_id = (int) $campaign_id;
+	$user_id     = (int) $user_id;
+	if ( $user_id < 1 || $campaign_id < 1 ) {
+		return array();
+	}
+	global $wpdb;
+	$m = jlife_challenges_table( 'group_members' );
+	$e = jlife_challenges_table( 'enrollments' );
+	$g = jlife_challenges_table( 'groups' );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom tables; names from $wpdb->prefix.
+	$rows = $wpdb->get_results( $wpdb->prepare( "SELECT m.id, m.enrollment_id, m.group_id, m.role, m.joined_at, g.name FROM {$m} m JOIN {$e} e ON e.id = m.enrollment_id AND e.status = 'active' JOIN {$g} g ON g.id = m.group_id AND g.status = 'active' WHERE m.user_id = %d AND m.campaign_id = %d AND m.status = 'active' ORDER BY m.joined_at, m.id", $user_id, $campaign_id ), ARRAY_A );
+	return is_array( $rows ) ? $rows : array();
+}
+
+/**
+ * Is the user an active member of this group (active enrollment, active group,
+ * active membership)? Unknown groups answer false, like forbidden ones.
+ *
+ * @param int $user_id  User ID.
+ * @param int $group_id Group ID.
+ * @return bool
+ */
+function jlife_challenges_is_group_member( $user_id, $group_id ) {
+	$group = jlife_challenges_get_group( $group_id );
+	if ( ! $group || 'active' !== $group['status'] || (int) $user_id < 1 ) {
+		return false;
+	}
+	foreach ( jlife_challenges_active_memberships( (int) $group['campaign_id'], (int) $user_id ) as $m ) {
+		if ( (int) $m['group_id'] === (int) $group_id ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * May the viewer read a group's feed? Current active members of THAT group only.
  *
  * @param int $viewer_user_id Viewer.
  * @param int $group_id       Group ID.
  * @return bool
  */
 function jlife_challenges_can_read_feed( $viewer_user_id, $group_id ) {
-	$group = jlife_challenges_get_group( $group_id );
-	if ( ! $group || 'active' !== $group['status'] ) {
-		return false;
-	}
-	$e = jlife_challenges_active_enrollment( (int) $group['campaign_id'], $viewer_user_id );
-	return null !== $e && (int) $e['group_id'] === (int) $group_id;
+	return jlife_challenges_is_group_member( $viewer_user_id, $group_id );
 }
 
 /**

@@ -1,7 +1,11 @@
 <?php
 /**
- * Accounts: joining with an invite code, finishing sign-in, consent (#58).
+ * Accounts: joining with an invite code or on one's own, finishing sign-in,
+ * consent (#58, #112).
  *
+ * - Two ways in: an invite code (a group; also how an existing participant
+ *   joins another group later, up to the limit) or "Read on my own" (no code,
+ *   no group; `mode=solo`). Both record the age band and need the same consent.
  * - Participants are 13 or older; the age band (adult|minor) is recorded at
  *   join (D19). Under-13s cannot join.
  * - Language (English / Tiếng Việt) is chosen at join and stored as the
@@ -26,9 +30,20 @@ const JLIFE_AUTH_LOCALES = array(
 const JLIFE_AUTH_CONSENT_VERSION = 'draft-2026-11-05';
 
 /**
+ * Which way in the join page is on: 'solo' ("Read on my own", no code) or the
+ * default 'invite'. The route is /join/?mode=solo; the form carries it on.
+ *
+ * @param string $raw Requested mode.
+ * @return string invite|solo
+ */
+function jlife_auth_join_mode( $raw ) {
+	return 'solo' === $raw ? 'solo' : 'invite';
+}
+
+/**
  * Validate join details and send a join code.
  *
- * @param array  $input { email, first_name, invite_code, age_band (adult|minor), locale }.
+ * @param array  $input { email, first_name, invite_code, age_band (adult|minor), locale, mode (invite|solo) }.
  * @param string $ip    Requester IP.
  * @return true|WP_Error
  */
@@ -37,6 +52,7 @@ function jlife_auth_start_join( $input, $ip = '' ) {
 	$band  = (string) ( $input['age_band'] ?? '' );
 	$loc   = (string) ( $input['locale'] ?? 'en_US' );
 	$code  = strtoupper( preg_replace( '/[^A-Za-z0-9]/', '', (string) ( $input['invite_code'] ?? '' ) ) );
+	$mode  = jlife_auth_join_mode( (string) ( $input['mode'] ?? '' ) );
 	if ( '' === $first ) {
 		return new WP_Error( 'jlife_auth_name', __( 'Please enter your first name.', 'jlife-auth' ) );
 	}
@@ -46,7 +62,16 @@ function jlife_auth_start_join( $input, $ip = '' ) {
 	if ( ! array_key_exists( $loc, JLIFE_AUTH_LOCALES ) ) {
 		$loc = 'en_US';
 	}
-	if ( ! function_exists( 'jlife_challenges_group_for_invite' ) || ! jlife_challenges_group_for_invite( $code ) ) {
+	$campaign_id = 0;
+	if ( 'solo' === $mode ) {
+		// Read on my own: no code, no group. A code typed anyway is ignored.
+		$campaign    = function_exists( 'jlife_challenges_open_campaign' ) ? jlife_challenges_open_campaign() : null;
+		$campaign_id = $campaign ? (int) $campaign['id'] : 0;
+		$code        = '';
+		if ( ! $campaign_id ) {
+			return new WP_Error( 'jlife_auth_no_campaign', __( 'There is no Marathon open to join right now. Please try again later.', 'jlife-auth' ) );
+		}
+	} elseif ( ! function_exists( 'jlife_challenges_group_for_invite' ) || ! jlife_challenges_group_for_invite( $code ) ) {
 		return new WP_Error( 'jlife_invite_invalid', __( 'That invite code is not valid. Please ask your group for a new one.', 'jlife-auth' ) );
 	}
 	return jlife_auth_request_code(
@@ -55,6 +80,8 @@ function jlife_auth_start_join( $input, $ip = '' ) {
 		array(
 			'first_name'  => mb_substr( $first, 0, 60 ),
 			'invite_code' => $code,
+			'mode'        => $mode,
+			'campaign_id' => $campaign_id,
 			'age_band'    => $band,
 			'locale'      => $loc,
 		),
@@ -120,9 +147,14 @@ function jlife_auth_complete( $email, $code ) {
 		return $user_id;
 	}
 	$notice = '';
-	$joined = jlife_challenges_join_with_code( $user_id, $payload['invite_code'], $payload['age_band'] );
+	if ( 'solo' === jlife_auth_join_mode( (string) ( $payload['mode'] ?? '' ) ) ) {
+		$joined = jlife_challenges_enroll_solo( $user_id, (int) ( $payload['campaign_id'] ?? 0 ), $payload['age_band'] );
+	} else {
+		$joined = jlife_challenges_join_with_code( $user_id, $payload['invite_code'], $payload['age_band'] );
+	}
 	if ( is_wp_error( $joined ) ) {
-		if ( 'jlife_already_enrolled' !== $joined->get_error_code() ) {
+		// Already in that group, or already in the most groups allowed: they are signed in; tell them.
+		if ( ! in_array( $joined->get_error_code(), array( 'jlife_already_enrolled', 'jlife_group_limit' ), true ) ) {
 			return $joined;
 		}
 		$notice = $joined->get_error_message();

@@ -34,6 +34,11 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-guidance{margin:.5rem 0;font-size:.9375rem}.jl-guidance ul{margin:.4rem 0 0;padding-left:1.1rem}
 .jl-soap .jl-share-opt{display:flex;gap:.6rem;align-items:flex-start;margin-top:.75rem;padding:.7rem;border:1px solid var(--line);border-radius:.6rem;cursor:pointer}
 .jl-share-opt input{width:1.25rem;height:1.25rem;flex:none;margin-top:.2rem}
+.jl-share-groups{border:0;padding:0;margin:1rem 0 0}
+.jl-share-groups legend{font-weight:600;padding:0}
+.jl-join{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:.5rem}
+.jl-join input[type=text]{width:100%;box-sizing:border-box;padding:.7rem;font:inherit;border:1px solid var(--line);border-radius:.5rem;background:var(--bg);color:var(--ink)}
+.jl-join .jl-button{margin-top:.6rem}
 .jl-share-note{margin:.35rem 0 .5rem}
 .jl-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.3rem;margin:1rem 0}
 .jl-cell{display:flex;align-items:center;justify-content:center;aspect-ratio:1;min-width:1.5rem;border-radius:.4rem;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:.8125rem}
