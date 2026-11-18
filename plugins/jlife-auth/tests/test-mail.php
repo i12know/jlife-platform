@@ -230,6 +230,31 @@ class Test_Mail extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Actual multisite switch: sibling mail is untouched and returning is safe.
+	 */
+	public function test_switching_sites_does_not_share_the_smtp_mailer() {
+		if ( ! is_multisite() ) {
+			$this->markTestSkipped( 'Also run this class with WP_MULTISITE=1.' );
+		}
+		$this->configure();
+		$original = $GLOBALS['phpmailer'];
+		$this->assertSame( 'smtp', $this->send_and_capture()->Mailer );
+		$sibling = self::factory()->blog->create();
+		switch_to_blog( $sibling );
+		try {
+			$this->assertFalse( jlife_mail_is_enabled() );
+			$this->assertSame( $original, $this->send_and_capture() );
+			$this->assertSame( 'mail', $original->Mailer );
+			$this->assertSame( '', $original->Password );
+		} finally {
+			restore_current_blog();
+		}
+		$this->assertTrue( jlife_mail_is_enabled() );
+		$this->assertSame( 'smtp', $this->send_and_capture()->Mailer );
+		$this->assertSame( $original, $GLOBALS['phpmailer'] );
+	}
+
+	/**
 	 * A copied configuration fails closed on a different home URL.
 	 */
 	public function test_wrong_installation_url_is_rejected() {
