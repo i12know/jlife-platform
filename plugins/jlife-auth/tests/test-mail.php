@@ -41,6 +41,43 @@ class Jlife_Test_Mailer extends MockPHPMailer {
  */
 class Test_Mail extends WP_UnitTestCase {
 	/**
+	 * Temporary operational log inspected for secrets and message content.
+	 *
+	 * @var string
+	 */
+	private $log_file = '';
+
+	/**
+	 * Original PHP error-log destination.
+	 *
+	 * @var string
+	 */
+	private $old_error_log = '';
+
+	/**
+	 * Capture expected failure logs instead of subprocess stderr.
+	 */
+	public function set_up() {
+		parent::set_up();
+		$this->log_file      = wp_tempnam( 'jlife-mail-test' );
+		$this->old_error_log = ini_get( 'error_log' );
+		ini_set( 'error_log', $this->log_file ); // phpcs:ignore WordPress.PHP.IniSet.Risky -- restore in tear_down; inspect operational redaction.
+	}
+
+	/**
+	 * Verify redaction in the actual log, then restore the test process.
+	 */
+	public function tear_down() {
+		$log = (string) file_get_contents( $this->log_file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- test-owned temporary log.
+		ini_set( 'error_log', $this->old_error_log ); // phpcs:ignore WordPress.PHP.IniSet.Risky -- restore the original test-process setting.
+		wp_delete_file( $this->log_file );
+		foreach ( array( 'fake-key-never-send', 'fake-login@example.test', 'Synthetic body', 'recipient@example.test', 'authentication rejected', 'connection timeout' ) as $private ) {
+			$this->assertStringNotContainsString( $private, $log );
+		}
+		parent::tear_down();
+	}
+
+	/**
 	 * Install fake runtime settings for only the current site.
 	 *
 	 * @param array $overrides Values to replace; null omits a constant.
@@ -113,7 +150,7 @@ class Test_Mail extends WP_UnitTestCase {
 		$this->assertFalse( $mailer->SMTPOptions['ssl']['allow_self_signed'] );
 		$this->assertSame( JLIFE_MAIL_FROM_EMAIL, $mailer->From );
 		$this->assertSame( JLIFE_MAIL_FROM_NAME, $mailer->FromName );
-		$this->assertArrayHasKey( JLIFE_MAIL_REPLY_TO, $mailer->getReplyToAddresses() );
+		$this->assertContains( array( JLIFE_MAIL_REPLY_TO, '' ), $mailer->getReplyToAddresses() );
 		$this->assertSame( $original, $GLOBALS['phpmailer'] );
 		$this->assertSame( '', $original->Password );
 		$this->assertSame( 'accepted', get_option( 'jlife_mail_health' )['result'] );

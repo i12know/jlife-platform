@@ -72,5 +72,7 @@ return array(
 		'Your age' => 'Độ tuổi của bạn',
 		"Your code is: %s\n\nIt works once and expires in 10 minutes.\nIf you did not ask for it, you can ignore this email." => "Mã của bạn là: %s\n\nMã chỉ dùng được một lần và hết hạn sau 10 phút.\nNếu bạn không yêu cầu mã này, bạn có thể bỏ qua email này.",
 		'Your group is ready' => 'Nhóm của bạn đã sẵn sàng',
+		'J-Life email: Brevo is enabled but its private configuration is incomplete. Email delivery is blocked.' => 'Email J-Life: Brevo đã được bật nhưng cấu hình riêng chưa đầy đủ. Việc gửi email đang bị chặn.',
+		'J-Life email: the last sending attempt failed. Check Brevo delivery events and the private runtime configuration.' => 'Email J-Life: lần gửi gần nhất đã thất bại. Hãy kiểm tra các sự kiện gửi thư trong Brevo và cấu hình riêng trên máy chủ.',
 	),
 );
