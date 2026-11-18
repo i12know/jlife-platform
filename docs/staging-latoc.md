@@ -50,7 +50,7 @@ On the first run after this change (and only then) it creates two **drafts**, bo
 
 - **Copy:** only the "Page copy" and "CTA block" sections of `landing-page.md` and `landing-page.vi.md`. Reviewer notes, PENDING/decision blockquotes, translator notes, the logo section and the unapproved acknowledgement line are **not** included (add the acknowledgement in wp-admin once its wording is approved).
 - **The Vietnamese is an unreviewed, machine-assisted draft.** The translator must review it before it is published.
-- **CTA routes:** "Read on my own" and "Start a group" do not exist yet ([#112](https://github.com/i12know/jlife-platform/issues/112)), so both point at `/join/` for now, like "I have an invite code"; "Sign in" goes to `/signin/`. Each page holds two invisible HTML-comment blocks (`TODO(#112)`, one in the hero and one above the final call) marking the two buttons to update when #112 ships. `/join/` and `/signin/` are English-only until #112 PR2 adds Vietnamese strings.
+- **CTA routes:** the buttons use the real [#112](https://github.com/i12know/jlife-platform/issues/112) routes, in both the hero and the final call: "Read on my own" is `/join/?mode=solo`, "Start a group" is `/join/?mode=start`, "I have an invite code" is `/join/`, and "Sign in" is `/signin/`. The Vietnamese page adds `lang=vi` to each (the app screens show Vietnamese only when the URL says so; without it a Vietnamese visitor lands on an English form). The seed holds no hidden notes. Seeding is unchanged: these links only apply to a first seed; see "Owner step" below for pages that already exist.
 - **No logo:** none is checked in. Add the approved logo in the editor (an Image block at the top, with the alt text from `design/latoc/brand-guidelines.md`).
 - The page title is the theme's single h1; the content starts at h2.
 
@@ -58,6 +58,19 @@ On the first run after this change (and only then) it creates two **drafts**, bo
 
 - **Edits are never overwritten.** An edit saved in the block editor survived later deploys byte for byte.
 - **A page the owner deletes or trashes is not recreated.** To recreate on purpose, delete the option (`wp option delete jlife_landing_seeded`) and re-deploy: only missing pages are created, as drafts, and linked to the surviving one.
+
+### Owner step: point the live buttons at the real routes
+
+The seed is applied once and never overwrites an edit, so the seeded pages that already exist on the site still have the old links (all three sign-up buttons on `/join/`). Updating the seed file does not change them. In wp-admin, edit each landing page and set the button links (each appears twice: the hero and the final call) to the values below. Use the page's **Link** field on each button; type the address exactly, `&` included.
+
+| Button | English page (`/`) | Vietnamese page (`/vi/`) |
+|---|---|---|
+| Read on my own / Đọc một mình | `/join/?mode=solo` | `/join/?mode=solo&lang=vi` |
+| Start a group / Lập một nhóm | `/join/?mode=start` | `/join/?mode=start&lang=vi` |
+| I have an invite code / Tôi có mã mời | `/join/` | `/join/?lang=vi` |
+| Sign in / Đăng nhập (text link) | `/signin/` | `/signin/?lang=vi` |
+
+Check afterwards: from `/vi/` every sign-up button opens a Vietnamese form, and from `/` an English one. The old hidden `TODO(#112)` notes, if the page has them, can be deleted (they are invisible Custom HTML blocks).
 
 ### Nothing new is public until the owner publishes
 
@@ -228,7 +241,7 @@ The same commands exist on the server: `wp jlife test-campaign create|remove|sta
   - an edit saved in the block editor survived a later deploy; a trashed page stayed trashed and a permanently deleted page was not recreated while the seed option was set; deleting the option recreated only the missing page and re-linked it;
   - the seeded markup opens in the block editor with no invalid or recovered blocks;
   - app routes (`/today /soap /marathon /share /group /signout /join /signin /consent`, `/reading/` day pages, `/wp-login.php`, `/wp-admin/`, `/wp-json/`, feeds) gave identical status, redirect chain, `lang`, canonical and robots with Polylang active (drafts and published) and with it deactivated; only the landing URLs differ;
-  - with both pages published: `/` is English (`lang="en-US"`, canonical `/`, hreflang en and vi), `/vi/` is Vietnamese (`lang="vi"`, canonical `/vi/`); the switcher works both ways by mouse and keyboard at 360 px width with a visible 2 px focus outline; no horizontal scroll; one h1; the CTAs' targets `/join/` and `/signin/` return 200;
+  - with both pages published: `/` is English (`lang="en-US"`, canonical `/`, hreflang en and vi), `/vi/` is Vietnamese (`lang="vi"`, canonical `/vi/`); the switcher works both ways by mouse and keyboard at 360 px width with a visible 2 px focus outline; no horizontal scroll; one h1; the CTAs' targets (`/join/`, `/join/?mode=solo`, `/join/?mode=start`, `/signin/`, with and without `lang=vi`) return 200;
   - Settings > Reading (the owner's one-click path) made `/` and `/vi/` work with no deploy; a drifted Polylang version was reinstalled to the pin; rollback with `PLL_REMOVE_ALL_DATA` left no Polylang data;
   - the smoke-test logic passed in the drafts-only, English-only and both-published states.
   

@@ -47,13 +47,46 @@ test('no reviewer-only or draft-status text is seeded', { skip: !hasPhp }, each(
   }
 }));
 
-test('no image is seeded (the logo is not checked in) and links are the real routes', { skip: !hasPhp }, each((code, html) => {
+test('no image is seeded (the logo is not checked in)', { skip: !hasPhp }, each((code, html) => {
   assert.ok(!/<img|wp:image|wp:cover/.test(html), `${code} page has an image block`);
-  const hrefs = [...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]);
-  assert.deepEqual([...new Set(hrefs)].sort(), ['/join/', '/signin/']);
-  assert.equal(hrefs.filter((h) => h === '/join/').length, 6); // 3 ways in, in the hero and in the final call
-  assert.equal(hrefs.filter((h) => h === '/signin/').length, 2);
-  assert.equal((html.match(/TODO\(#112\)/g) || []).length, 2, 'both #112 reminders are present');
+}));
+
+// The real #112 routes. In a block's href an "&" is saved as "&amp;".
+const ROUTES = {
+  en: { solo: '/join/?mode=solo', start: '/join/?mode=start', code: '/join/', signin: '/signin/' },
+  vi: { solo: '/join/?mode=solo&amp;lang=vi', start: '/join/?mode=start&amp;lang=vi', code: '/join/?lang=vi', signin: '/signin/?lang=vi' },
+};
+const hrefsOf = (html) => [...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]);
+
+test('sign-up buttons use the exact #112 routes, in the hero and the final call', { skip: !hasPhp }, each((code, html) => {
+  const r = ROUTES[code];
+  // Document order: hero (solo, start, code, sign in), then the final call (solo, start, code, sign in).
+  assert.deepEqual(hrefsOf(html), [r.solo, r.start, r.code, r.signin, r.solo, r.start, r.code, r.signin]);
+  // Each button's label is attached to its own route.
+  const link = (label, href) => assert.equal(html.split(`href="${href}"`).length - 1, 2, `${code}: "${label}" -> ${href} twice`);
+  const t = code === 'en'
+    ? { solo: 'Read on my own', start: 'Start a group', code: 'I have an invite code', signin: 'Sign in' }
+    : { solo: 'Đọc một mình', start: 'Lập một nhóm', code: 'Tôi có mã mời', signin: 'Đăng nhập' };
+  for (const key of Object.keys(r)) {
+    link(t[key], r[key]);
+    assert.ok(new RegExp(`href="${r[key].replace(/[?]/g, '\\?')}"[^>]*>${t[key]}</a>`).test(html), `${code}: label "${t[key]}" is on ${r[key]}`);
+  }
+}));
+
+test('the Vietnamese page has no auth link without lang=vi, and English has none with it', { skip: !hasPhp }, () => {
+  const auth = (h) => /^\/(join|signin)\//.test(h);
+  const vi = hrefsOf(pages.vi.content).filter(auth);
+  assert.equal(vi.length, 8);
+  for (const h of vi) assert.ok(/(\?|&amp;)lang=vi$/.test(h), `vi link lacks lang=vi: ${h}`);
+  for (const h of hrefsOf(pages.en.content).filter(auth)) assert.ok(!h.includes('lang='), `en link has lang: ${h}`);
+  // The query is escaped for the attribute: no raw "&" in any href.
+  for (const code of ['en', 'vi']) for (const h of hrefsOf(pages[code].content)) assert.ok(!/&(?!amp;)/.test(h), `${code}: unescaped & in ${h}`);
+});
+
+test('no TODO(#112) reminder or hidden HTML-comment block is left in the seed', { skip: !hasPhp }, each((code, html) => {
+  assert.ok(!html.includes('TODO(#112)'), `${code} page still has a #112 TODO`);
+  assert.ok(!/wp:html/.test(html), `${code} page has a Custom HTML block`);
+  assert.ok(!fs.readFileSync(CONTENT, 'utf8').includes('TODO(#112)'), 'the seed source still has a #112 TODO');
 }));
 
 test('headings start at h2 (the theme prints the one h1)', { skip: !hasPhp }, each((code, html) => {

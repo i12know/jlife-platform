@@ -93,22 +93,22 @@ Vài câu chân thật là đủ. Không cần phải viết cho "đúng".
 
 ## Khối CTA
 
-> **Đã quyết định 2026-11-18 (#110, #112):** ba cách tham gia. Đường dẫn chính xác được xác định trong #112. Bản dịch này vẫn là BẢN NHÁP, cần người dịch duyệt.
+> **Đã quyết định 2026-11-18 (#110, #112):** ba cách tham gia. Cả ba đường dẫn đã có (#112); mỗi đường dẫn trong trang tiếng Việt thêm `lang=vi` để biểu mẫu hiện bằng tiếng Việt. Bản dịch này vẫn là BẢN NHÁP, cần người dịch duyệt.
 
 **Tiêu đề:** Bạn muốn tham gia theo cách nào?
 
-**Nút 1:** Đọc một mình -> đăng ký đọc một mình (đường dẫn theo #112)
+**Nút 1:** Đọc một mình -> `/join/?mode=solo&lang=vi`
 *Chữ nhỏ:* Đọc mỗi ngày theo nhịp của bạn. Những suy ngẫm của bạn được giữ riêng tư.
 
-**Nút 2:** Lập một nhóm -> đăng ký lập nhóm (đường dẫn theo #112)
+**Nút 2:** Lập một nhóm -> `/join/?mode=start&lang=vi`
 *Chữ nhỏ:* Dành cho người lớn. Nhận đường dẫn mời để cùng đọc với bạn bè, gia đình hoặc những người bạn đang dìu dắt.
 
-**Nút 3:** Tôi có mã mời -> `/join/`
+**Nút 3:** Tôi có mã mời -> `/join/?lang=vi`
 *Chữ nhỏ:* Có người mời bạn? Nhập mã của họ để vào nhóm.
 
 **Ghi chú dưới các nút:** Bạn có thể tham gia tối đa ba nhóm, ví dụ một nhóm bạn hướng dẫn và một nhóm với bạn bè. Việc chia sẻ suy ngẫm với nhóm luôn do bạn chọn, từng nhóm một.
 
-**Liên kết phụ:** Đã tham gia? Đăng nhập -> `/signin/`
+**Liên kết phụ:** Đã tham gia? Đăng nhập -> `/signin/?lang=vi`
 
 ---
 

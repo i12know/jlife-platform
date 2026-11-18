@@ -18,6 +18,8 @@
  *   images (the logo is not checked in yet; the owner adds it in the editor).
  * - The theme prints the page title as the only h1, so content starts at h2.
  * - Links are root-relative (/join/, /signin/); Polylang does not prefix them.
+ *   The Vietnamese page adds lang=vi so the app screens open in Vietnamese
+ *   (jlife_auth_visitor_locale). Query strings are escaped for the attribute.
  * - Markup mirrors what the block editor serialises, so the owner can edit
  *   every block without a "block recovery" prompt (checked in the editor).
  *
@@ -88,8 +90,13 @@ $ul = static function ( array $items ) use ( $blk, $inline ) {
 	return $blk( 'list', array(), '<ul class="wp-block-list">' . implode( "\n\n", $lis ) . '</ul>' );
 };
 
-/** One button (a link styled as a button), with the given fill. */
-$btn = static function ( $label, $href, $bg ) use ( $blk, $inline, $cream ) {
+/** Escapes a URL for a double-quoted attribute (& becomes &amp;, as the editor saves it). */
+$attr = static function ( $url ) {
+	return htmlspecialchars( $url, ENT_QUOTES, 'UTF-8' );
+};
+
+/** One button (a link styled as a button), with the given fill. $href is escaped here (& becomes &amp;). */
+$btn = static function ( $label, $href, $bg ) use ( $blk, $inline, $cream, $attr ) {
 	$pad   = array(
 		'top'    => '0.75rem',
 		'bottom' => '0.75rem',
@@ -109,7 +116,7 @@ $btn = static function ( $label, $href, $bg ) use ( $blk, $inline, $cream ) {
 	return $blk(
 		'button',
 		$attrs,
-		'<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="' . $href . '" style="' . $style . '">' . $inline( $label ) . '</a></div>'
+		'<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" href="' . $attr( $href ) . '" style="' . $style . '">' . $inline( $label ) . '</a></div>'
 	);
 };
 
@@ -146,31 +153,35 @@ $section = static function ( $bg, array $children ) use ( $blk, $brown, $red ) {
 	);
 };
 
-/** A Custom HTML block holding only an HTML comment (invisible on the page). */
-$note = static function ( $comment ) use ( $blk ) {
-	return $blk( 'html', array(), '<!-- ' . $comment . ' -->' );
-};
-
 /** Language switcher, in the page content (owner decision, #110). */
 $switcher = '<!-- wp:polylang/language-switcher {"layout":"horizontal"} /-->';
-
-$todo = 'TODO(#112): "Read on my own" and "Start a group" point at /join/ only until the solo and start-a-group sign-up routes ship (#112). Update both buttons here (hero and final call) once those routes exist.';
 
 /**
  * Builds one page from its translated strings.
  */
-$build = static function ( array $t ) use ( $p, $h, $ul, $btn, $buttons, $section, $note, $switcher, $todo, $red, $brown, $cream, $tan, $inline, $blk ) {
-	$join = static function () use ( $btn, $t, $red, $brown ) {
+$build = static function ( array $t, $suffix ) use ( $p, $h, $ul, $btn, $buttons, $section, $switcher, $attr, $red, $brown, $cream, $tan, $inline, $blk ) {
+	// The real #112 routes. $suffix is '' (English) or 'lang=vi' (Vietnamese).
+	$url    = static function ( $path, array $query = array() ) use ( $suffix ) {
+		if ( '' !== $suffix ) {
+			$query[] = $suffix;
+		}
+		return $path . ( $query ? '?' . implode( '&', $query ) : '' );
+	};
+	$solo   = $url( '/join/', array( 'mode=solo' ) );
+	$start  = $url( '/join/', array( 'mode=start' ) );
+	$code   = $url( '/join/' );
+	$signin_url = $url( '/signin/' );
+	$join   = static function () use ( $btn, $t, $red, $brown, $solo, $start, $code ) {
 		return array(
-			$btn( $t['btn_solo'], '/join/', $red ), // TODO(#112): solo sign-up route.
-			$btn( $t['btn_group'], '/join/', $red ), // TODO(#112): start-a-group route.
-			$btn( $t['btn_code'], '/join/', $brown ),
+			$btn( $t['btn_solo'], $solo, $red ),
+			$btn( $t['btn_group'], $start, $red ),
+			$btn( $t['btn_code'], $code, $brown ),
 		);
 	};
 	$signin = $blk(
 		'paragraph',
 		array(),
-		'<p>' . $inline( $t['signin_lead'] ) . ' <a href="/signin/">' . $inline( $t['signin_link'] ) . '</a></p>'
+		'<p>' . $inline( $t['signin_lead'] ) . ' <a href="' . $attr( $signin_url ) . '">' . $inline( $t['signin_link'] ) . '</a></p>'
 	);
 
 	// Hero: the three ways in, compactly (buttons only, no small text).
@@ -179,7 +190,6 @@ $build = static function ( array $t ) use ( $p, $h, $ul, $btn, $buttons, $sectio
 		array(
 			$h( 2, $t['hero_h'] ),
 			$p( $t['hero_p'] ),
-			$note( $todo ),
 			$buttons( $join() ),
 			$signin,
 		)
@@ -212,15 +222,12 @@ $build = static function ( array $t ) use ( $p, $h, $ul, $btn, $buttons, $sectio
 	// Final call: the full CTA block (each way in with its small text).
 	$options = array();
 	$routes  = array(
-		array( $t['btn_solo'], $red, $t['small_solo'] ),
-		array( $t['btn_group'], $red, $t['small_group'] ),
-		array( $t['btn_code'], $brown, $t['small_code'] ),
+		array( $t['btn_solo'], $red, $t['small_solo'], $solo ),
+		array( $t['btn_group'], $red, $t['small_group'], $start ),
+		array( $t['btn_code'], $brown, $t['small_code'], $code ),
 	);
-	foreach ( $routes as $i => $r ) {
-		if ( 0 === $i ) {
-			$options[] = $note( $todo );
-		}
-		$options[] = $buttons( array( $btn( $r[0], '/join/', $r[1] ) ) );
+	foreach ( $routes as $r ) {
+		$options[] = $buttons( array( $btn( $r[0], $r[3], $r[1] ) ) );
 		$options[] = $p( $r[2], true );
 	}
 	$final = $section(
@@ -340,12 +347,12 @@ return array(
 		'key'     => 'latoc-landing-en',
 		'title'   => 'Life and Teaching of Christ (LATOC)',
 		'slug'    => 'welcome',
-		'content' => $build( $en ),
+		'content' => $build( $en, '' ),
 	),
 	'vi' => array(
 		'key'     => 'latoc-landing-vi',
 		'title'   => 'Life and Teaching of Christ (LATOC)',
 		'slug'    => 'chao-mung',
-		'content' => $build( $vi ),
+		'content' => $build( $vi, 'lang=vi' ),
 	),
 );
