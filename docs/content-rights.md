@@ -4,6 +4,8 @@ Status: Living document — update whenever a rights conversation advances
 Created: 2026-07-03
 Related: [PRD.md](PRD.md) §12, [roadmap.md](roadmap.md)
 
+**Bible API entitlement inventory (2026-11-18):** [J-Life Scripture provider entitlement registry](bible-provider-entitlements.md) records the 21 YouVersion app-catalog versions and separates API.Bible candidates / pending Bible League requests from currently authorized display. It is research-only; it does not replace the current Bible Gateway link configuration.
+
 Rule of the repo: **do not publish or commit third-party copyrighted expression without appropriate rights.** Bare Scripture references, factual chronology, bibliographic identifiers, ordinary short headings, and deep links do **not** require a blanket publisher license merely because an existing curriculum helped organize the readings. Original selection and arrangement may receive limited protection where sufficiently creative, so do not copy substantial proprietary expressive compilations without review. For actual reproduced text, translations of copyrighted works, images, maps, video or audio, document the relevant rights before publishing.
 
 **Standing context (2026-07-03):** existing ministry relationships may make several rights conversations relationship-based rather than cold external negotiations. The register is kept anyway, for three reasons: (1) written confirmations protect future volunteers and partners; (2) related organizations still need explicit coordination before content or platform data is reused; (3) Vietnamese Bible text is owned outside the project and requires its own permission path.
