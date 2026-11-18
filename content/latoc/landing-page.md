@@ -103,14 +103,14 @@ A few honest sentences are enough. There is no right answer to perform.
 
 ## CTA block
 
-> **Decided 2026-11-18 (#110, #112):** three ways in. The "read on my own" and "start a group" paths are built in #112; until they reach staging, only the invite-code path works. Final routes are set in #112, so verify every link at build time. The live page is edited on the site, so adjust the buttons there once #112 ships.
+> **Decided 2026-11-18 (#110, #112):** three ways in. All three paths are built (#112); the routes below are final. The seed uses them for a first seed only. The live page is edited on the site, so its buttons are updated there (see `docs/staging-latoc.md`, "Owner step").
 
 **Heading:** How would you like to join?
 
-**Button 1:** Read on my own -> solo sign-up (route set in #112)
+**Button 1:** Read on my own -> `/join/?mode=solo`
 *Small text:* Read each day at your own pace. Your reflections stay private.
 
-**Button 2:** Start a group -> start-a-group sign-up (route set in #112)
+**Button 2:** Start a group -> `/join/?mode=start`
 *Small text:* For adults. Get an invite link to read together with friends, family or the people you mentor.
 
 **Button 3:** I have an invite code -> `/join/`
@@ -143,4 +143,4 @@ Notes:
 4. **SOAP** here is Scripture, Observation, Application, Prayer. Confirm this matches the app screens.
 5. **Milestone wording** matches the primary CSV; see the facts file for caveats (Dec 24 holds two readings; Good Friday is the crucifixion reading, his death is on Mar 27).
 6. **Not on this page, by design:** contact details, church or partner names, participant data, screenshots, Bible text.
-7. **Open items:** CTA routes (#112); logo export; final footer wording; Vietnamese reviewer.
+7. **Open items:** update the live page's buttons to the #112 routes (staging runbook); logo export; final footer wording; Vietnamese reviewer.
