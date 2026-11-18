@@ -1,6 +1,6 @@
 # `jlife-challenges` engine: design for review (M5, #60)
 
-Status: **design draft for owner/consultant review. No code yet.** Building starts after #60 is approved and the #55 decisions D1–D5, D6, D14, D16–D18 are settled ([decision sheet](https://github.com/i12know/jlife-platform/issues/55#issuecomment-6651386035)). Defaults below follow the recommended answers. A changed decision changes the marked rule, not the structure.
+Status: **design draft for owner/consultant review. No code yet.** Building starts after #60 is approved and the #55 decisions D1–D5, D6, D14, D16–D18 are settled ([decision sheet](https://github.com/i12know/jlife-platform/issues/55#issuecomment-6651386035)). Defaults below follow the recommended answers. A changed decision changes the marked rule, not the structure. **D14 changed on 2026-11-18** ([#55](https://github.com/i12know/jlife-platform/issues/55#issuecomment-6983874900), [#112](https://github.com/i12know/jlife-platform/issues/112)): a participant is solo or in up to 3 groups per campaign; see §2 "Group membership" and §4–4b.
 
 Related: [#49](https://github.com/i12know/jlife-platform/issues/49) (spec); #60 (engine) with #61 (screens), #62 (sharing) and #64 (groups/admin); [S5 privacy model](spikes/S5-privacy-model.md); [reading plans](../content/reading-plans/README.md) (#59, done).
 
@@ -20,12 +20,22 @@ Related: [#49](https://github.com/i12know/jlife-platform/issues/49) (spec); #60 
 |---|---|---|
 | `campaigns` | `id`, `campaign_key` (unique slug), `plan_id` (e.g. `rpl-life-and-teachings-of-jesus-2026`), `title`, `start_date`, `end_date`, `timezone` (`America/Los_Angeles`), `grace_days` (D1: `1`), `status` (`draft`/`active`/`finished`), `scoring_engine` | Day content comes from the reading plan (#59) by `day_id`; nothing copied. `scoring_engine` (default `soap-regex`) names the campaign's scoring engine (#98) |
 | `groups` | `id`, `campaign_id`, `name`, `invite_code_hash`, `invite_expires_at`, `status` (`active`/`archived`) | Invite codes stored **hashed**; a code is shown once to the admin |
-| `enrollments` | `id`, `campaign_id`, `user_id`, `group_id`, `status` (`active`/`removed`), `consent_version`, `consented_at`, `joined_at`, `left_at`; **UNIQUE (`campaign_id`, `user_id`)** | One primary group per person (D14). A move updates `group_id` and writes the audit log |
+| `enrollments` | `id`, `campaign_id`, `user_id`, `group_id` (**retired**, see below), `status` (`active`/`removed`), `age_band`, `guardian_consent`, `consent_version`, `consented`, `joined`, `left_at`; **UNIQUE (`campaign_id`, `user_id`)** | **One per person per campaign**: consent, age band, progress, entries and points are personal. It says *that* the person takes part, not *which group* (D14 as changed in #112). "Read on my own" is an enrollment with no membership. `group_id` is no longer written (new rows get `0`) or read; see the note under the table |
+| `group_members` | `id`, `campaign_id`, `enrollment_id`, `user_id`, `group_id`, `role` (`member`/`starter`), `status` (`active`/`left`/`removed`), `joined_at`, `left_at`; **UNIQUE (`group_id`, `user_id`)** | **A person is solo (no active row) or in up to 3 groups per campaign** (D14 changed, #112), adults and minors alike. The only source of "who is in this group": the gate, the feed and the `jlife_huddles_group_membership` filter read it. Joining, leaving, moving and removal are audited (D18). `starter` is written by "start a group" (#112 PR2); it gives no extra view of other members |
 | `soap_entries` | `id`, `user_id`, `campaign_id` (0 = unscored/personal), `day_id` (`''` if none), `entry_date` (campaign-local date), `body` (**one** text; #98), `status` (`draft`/`submitted`), `submitted_at`, `revision`, timestamps; **UNIQUE (`user_id`, `campaign_id`, `day_id`)** for campaign entries | Drafts autosave server-side (M6). New entries are prefilled with the S/O/A/P heading template (never Bible text). `submitted` means the entry has passed the engine; an entry that has not passed stays `draft` with its text saved |
 | `soap_revisions` | `id`, `entry_id`, `revision`, `body`, `saved_at` | Edit history after submission (D3) |
 | `score_ledger` | `id`, `campaign_id`, `user_id`, `day_id`, `entry_id`, `points` (0/1), `status` (`earned`/`late_no_point`/`removed_by_review`), `reason`, `source` (`platform`/`review`), `engine`, `engine_version` (which scoring engine awarded the row; #98), `created_at`; **UNIQUE (`campaign_id`, `user_id`, `day_id`)** | Written once per person and day, append-only: points are never taken back. Review changes (P1) go through an audited path |
-| `group_shares` | `id`, `entry_id`, `user_id`, `group_id`, `campaign_id`, `day_id`, `body` (snapshot of the **whole** entry; #98), `status` (`shared`/`removed`/`hidden`), `hidden_reason`, timestamps; **UNIQUE (`entry_id`, `group_id`)** | A **snapshot**: editing the private SOAP never changes it; sharing again replaces it |
+| `group_shares` | `id`, `entry_id`, `user_id`, `group_id`, `campaign_id`, `day_id`, `body` (snapshot of the **whole** entry; #98), `status` (`shared`/`removed`/`hidden`), `hidden_reason`, timestamps; **UNIQUE (`entry_id`, `group_id`)** | A **snapshot**: editing the private SOAP never changes it; sharing again replaces it. One row per entry **per group**: a share to group A is a different row from a share to group B and is read only through group A's feed |
 | `audit_log` | `id`, `actor_user_id`, `action`, `object_type`, `object_id`, `campaign_id`, `detail` (JSON, **never SOAP text**), `created_at` | Enrollment changes, moves, review actions, hides, exports |
+
+**Group membership (D14 changed, #112).** On 2026-11-18 the owner replaced "one primary group per person" with: a participant is **solo or in up to 3 groups per campaign**, minors too. The `enrollments` row stays one per person per campaign because consent, progress, entries and points are personal; groups only decide *who can read what a person chose to share*. Consequences:
+
+- **Scoring never depends on groups.** Solo, one group and three groups earn the same one point per day from the same ledger row. Organizer counts are per group for reporting only (a person in two groups appears in both rows; a solo reader under group `0`); use the ledger for totals. The score export lists a person's active groups in one cell (`A; B`), one row per participant and day.
+- **Limit:** at most `JLIFE_CHALLENGES_MAX_GROUPS` (3) *active* memberships per person per campaign, enforced when a membership is added (code join, organizer enrollment, a re-join) and re-checked after the write so two simultaneous joins cannot exceed it. A fourth is refused with `jlife_group_limit`. Leaving frees a slot.
+- **Migration.** The upgrade `jlife_challenges_upgrade_memberships()` (run by the installer on every deploy, idempotent) copies each `enrollments.group_id > 0` into a `group_members` row (active enrollment → active membership; removed enrollment → removed membership with its `left_at`; `joined_at` = the enrollment's `joined`; role `member`). A row is copied only if no membership exists for that person and group *in any status*, so a re-run never resurrects someone who left. The old column is **retired, not dropped**: it stays `NOT NULL DEFAULT 0` for one release as the migration's source and a rollback aid, nothing writes it and nothing but the upgrade reads it (a test pins that the gate ignores it). A later release drops it once every deployment has migrated.
+- **Joining later.** A solo reader or a member can enter another code up to the limit (`/group` has the "Have a code? Join a group" box; the emailed-code join does the same for a new sign-in). Entries saved before joining stay private; they reach the new group only if the author ticks that group on a later save or posts from `/share`. Every join and leave is audited (`group_joined`, `group_left`, `member_moved`, `member_removed`); wrong codes are rate limited per person.
+- **Sharing.** One unticked checkbox per active group on the SOAP form, no "share with all", none for a solo reader; `/share` has one section per group; `/group` has a picker when there is more than one group. See §4a.
+- **Organizers** can still enroll, move (naming which group is left when there are several) and remove. They never browse feeds (D17).
 
 ## 3. Days and scoring
 
@@ -141,15 +151,27 @@ Unchecking later never removes a post; removal stays with the per-group "Remove 
 - history readable after Apr 2
 - export contains no SOAP text, emails or tokens
 
-**Membership:** an integration test through `jlife_huddles_group_membership` with real enrollment rows, not fixtures only.
+**Membership:** an integration test through `jlife_huddles_group_membership` with real membership rows, not fixtures only.
+
+**Multi-group (#112; written first, `test-memberships.php`, `test-multi-group-sharing.php`, jlife-auth `test-join-modes.php`):**
+- a member of group A can't read group B's shares or feed
+- a non-member (not enrolled, solo, organizer, anonymous) can't read a feed
+- a 4th membership is refused, for adults, minors and organizer enrollment
+- a solo reader has no share route or share effect, and sees no share box
+- sharing to two groups reaches exactly those two
+- one unticked box per group, none for a solo reader, no "share with all"
+- migration of existing single-group enrollments (idempotent, never resurrects a left membership)
+- the test-campaign create/remove command and account deletion clean up memberships
+- points are identical for solo, one-group and three-group participants
 
 ## 6. Interfaces for the screens (M6/M7)
 
 - **PHP functions:**
   - `jlife_challenges_today( $user_id )` → day, reading (via `jlife_studies_get_reading_day()`), own entry status
   - `…_save_draft()`, `…_submit()`, `…_get_entry()`
-  - `…_share()` and `…_unshare()`
-  - `…_group_feed( $user_id )`
+  - `…_share( $user_id, $entry_id, $group_id )` and `…_unshare()`; `…_save_and_share( …, $group_ids )`
+  - `…_group_feed( $viewer_user_id, $group_id )`
+  - `…_active_memberships( $campaign_id, $user_id )`, `…_join_with_code()`, `…_enroll_solo()`, `…_leave_group()`
   - `…_progress( $user_id )`
 - **REST (logged-in, nonce-checked)** for autosave and submit, so a dropped connection can retry safely: `POST /jlife/v1/soap/draft`, `POST /jlife/v1/soap/submit`.
 
