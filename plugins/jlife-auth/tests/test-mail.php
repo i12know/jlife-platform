@@ -68,6 +68,9 @@ class Test_Mail extends WP_UnitTestCase {
 			}
 		}
 		$GLOBALS['phpmailer'] = new Jlife_Test_Mailer( true );
+		// Core validates its initial From before phpmailer_init; localhost is not
+		// a valid mail domain in wp-env. The transport overrides this later.
+		add_filter( 'wp_mail_from', static fn() => 'wordpress@example.test' );
 	}
 
 	/**
