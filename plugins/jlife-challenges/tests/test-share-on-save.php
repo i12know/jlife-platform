@@ -1,8 +1,10 @@
 <?php
 /**
- * Share on save (#98): the "Share this with my group" checkbox. Access-control
+ * Share on save (#98, per group since #112): one checkbox per group. Access-control
  * tests for the sensitivity-matrix row in docs/challenges-engine-design.md §4a.
- * They were written before the feature.
+ * They were written before the feature. (The multi-group cases live in
+ * test-multi-group-sharing.php; here each person is in one group: a and b in
+ * Group One, c in Group Two.)
  *
  * @package jlife-challenges
  */
@@ -13,26 +15,38 @@
 class Test_Share_On_Save extends Jlife_Challenges_TestCase {
 
 	/**
+	 * A fixture user's own group (Group One unless they are c).
+	 *
+	 * @param string $who Fixture user.
+	 * @return int
+	 */
+	private function home( $who ) {
+		return (int) ( 'c' === $who ? $this->g['g2'] : $this->g['g1'] );
+	}
+
+	/**
 	 * Save (submit) a day for a fixture user, optionally sharing it.
 	 *
 	 * @param string      $who   Fixture user.
 	 * @param string      $text  Entry text.
-	 * @param bool        $share Whether the checkbox is ticked.
+	 * @param bool|int[]  $share true ticks the user's own group's box, false ticks none, an array ticks those groups.
 	 * @param string|null $day   Day key (null = today).
 	 * @return array|WP_Error
 	 */
 	private function save( $who, $text, $share = true, $day = null ) {
-		return jlife_challenges_save_and_share( $this->u[ $who ], $this->campaign, $day, $text, $share );
+		$groups = is_array( $share ) ? $share : ( $share ? array( $this->home( $who ) ) : array() );
+		return jlife_challenges_save_and_share( $this->u[ $who ], $this->campaign, $day, $text, $groups );
 	}
 
 	/**
-	 * The group feed as a fixture user sees it.
+	 * The feed of a group (default: the user's own) as a fixture user sees it.
 	 *
-	 * @param string $who Fixture user.
+	 * @param string   $who   Fixture user.
+	 * @param int|null $group Group ID.
 	 * @return array|WP_Error
 	 */
-	private function feed( $who ) {
-		return jlife_challenges_group_feed( $this->u[ $who ], $this->campaign );
+	private function feed( $who, $group = null ) {
+		return jlife_challenges_group_feed( $this->u[ $who ], $group ?? $this->home( $who ) );
 	}
 
 	/**
@@ -61,7 +75,7 @@ class Test_Share_On_Save extends Jlife_Challenges_TestCase {
 		$this->assertSame( array(), $this->feed( 'c' ), 'other group sees nothing' );
 		$this->assertWPError( $this->feed( 'outsider' ), 'not enrolled: denied' );
 		$this->assertWPError( $this->feed( 'organizer' ), 'organizers cannot browse feeds (D17)' );
-		$this->assertWPError( jlife_challenges_group_feed( 0, $this->campaign ), 'anonymous: denied' );
+		$this->assertWPError( jlife_challenges_group_feed( 0, $this->g['g1'] ), 'anonymous: denied' );
 	}
 
 	/**
@@ -92,11 +106,11 @@ class Test_Share_On_Save extends Jlife_Challenges_TestCase {
 	 */
 	public function test_nobody_can_share_someone_elses_entry() {
 		$entry = $this->save( 'a', $this->soap( 'mine' ), false )['entry_id'];
-		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['b'], $entry )->get_error_code() );
-		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['c'], $entry )->get_error_code() );
-		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['organizer'], $entry )->get_error_code() );
-		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['outsider'], $entry )->get_error_code() );
-		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['a'], 999999 )->get_error_code(), 'unknown entry looks the same' );
+		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['b'], $entry, $this->g['g1'] )->get_error_code() );
+		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['c'], $entry, $this->g['g1'] )->get_error_code() );
+		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['organizer'], $entry, $this->g['g1'] )->get_error_code() );
+		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['outsider'], $entry, $this->g['g1'] )->get_error_code() );
+		$this->assertSame( 'jlife_denied', jlife_challenges_share( $this->u['a'], 999999, $this->g['g1'] )->get_error_code(), 'unknown entry looks the same' );
 		$this->assertSame( 0, $this->share_rows() );
 
 		$this->save( 'b', $this->soap( 'bs' ) );
@@ -112,7 +126,7 @@ class Test_Share_On_Save extends Jlife_Challenges_TestCase {
 		$teen = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $teen, $this->g['g1'], 'minor' ) );
 
-		$r = jlife_challenges_save_and_share( $teen, $this->campaign, null, $this->soap( 'teen' ), true );
+		$r = jlife_challenges_save_and_share( $teen, $this->campaign, null, $this->soap( 'teen' ), array( $this->g['g1'] ) );
 		$this->assertSame( 1, $r['points'] );
 		$this->assertSame( 'shared', $r['share']['status'] );
 		$this->assertSame( 1, $this->share_rows() );
@@ -127,16 +141,16 @@ class Test_Share_On_Save extends Jlife_Challenges_TestCase {
 		$teen = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $teen, $this->g['g1'], 'minor' ) );
 
-		$r = jlife_challenges_save_and_share( $teen, $this->campaign, null, $this->soap( 'teen' ), true );
+		$r = jlife_challenges_save_and_share( $teen, $this->campaign, null, $this->soap( 'teen' ), array( $this->g['g1'] ) );
 		$this->assertSame( 1, $r['points'], 'private SOAP and points work at once' );
 		$this->assertSame( 'failed', $r['share']['status'] );
-		$this->assertSame( 'jlife_guardian_consent_required', $r['share']['code'] );
-		$this->assertNotSame( '', $r['share']['message'] );
+		$this->assertSame( 'jlife_guardian_consent_required', $r['share']['results'][ $this->g['g1'] ]['code'] );
+		$this->assertNotSame( '', $r['share']['results'][ $this->g['g1'] ]['message'] );
 		$this->assertSame( 0, $this->share_rows() );
 		$this->assertStringContainsString( '(teen)', jlife_challenges_find_entry( $teen, $this->campaign, 'd001' )['body'], 'the save stands' );
 
 		$this->assertTrue( jlife_challenges_record_guardian_consent( $this->u['organizer'], $this->campaign, $teen ) );
-		$again = jlife_challenges_save_and_share( $teen, $this->campaign, null, $this->soap( 'teen' ), true );
+		$again = jlife_challenges_save_and_share( $teen, $this->campaign, null, $this->soap( 'teen' ), array( $this->g['g1'] ) );
 		$this->assertSame( 'shared', $again['share']['status'] );
 		$this->assertSame( 1, $this->share_rows() );
 	}
@@ -147,15 +161,15 @@ class Test_Share_On_Save extends Jlife_Challenges_TestCase {
 	 */
 	public function test_hidden_post_is_not_reposted() {
 		$first = $this->save( 'a', $this->soap( 'v1' ) );
-		$this->assertTrue( jlife_challenges_hide_share( $this->u['organizer'], $first['share']['share_id'], 'Off-topic' ) );
+		$this->assertTrue( jlife_challenges_hide_share( $this->u['organizer'], $first['share']['results'][ $this->g['g1'] ]['share_id'], 'Off-topic' ) );
 		$this->assertSame( array(), $this->feed( 'b' ) );
 
 		$r = $this->save( 'a', $this->soap( 'v2' ) );
 		$this->assertSame( 1, $r['points'] );
 		$this->assertSame( 'failed', $r['share']['status'] );
-		$this->assertSame( 'jlife_share_hidden', $r['share']['code'] );
+		$this->assertSame( 'jlife_share_hidden', $r['share']['results'][ $this->g['g1'] ]['code'] );
 		$this->assertSame( array(), $this->feed( 'b' ), 'still hidden' );
-		$share = jlife_challenges_find_share( $first['share']['share_id'] );
+		$share = jlife_challenges_find_share( $first['share']['results'][ $this->g['g1'] ]['share_id'] );
 		$this->assertSame( 'hidden', $share['status'] );
 		$this->assertStringContainsString( '(v1)', (string) $share['body'], 'the hidden snapshot is not updated' );
 		$this->assertSame( 1, $this->share_rows() );
@@ -166,9 +180,9 @@ class Test_Share_On_Save extends Jlife_Challenges_TestCase {
 	 * post stays with the old group.
 	 */
 	public function test_post_goes_to_current_group_after_a_move() {
-		$this->save( 'a', $this->soap( 'old' ), true );
+		$this->save( 'a', $this->soap( 'old' ), array( $this->g['g1'] ) );
 		$this->assertTrue( jlife_challenges_move_member( $this->u['organizer'], $this->u['a'], $this->g['g2'] ) );
-		$r = $this->save( 'a', $this->soap( 'new' ), true );
+		$r = $this->save( 'a', $this->soap( 'new' ), array( $this->g['g2'] ) );
 		$this->assertSame( 'shared', $r['share']['status'] );
 
 		$this->assertCount( 1, $this->feed( 'b' ), 'old group keeps only the old post' );
@@ -187,8 +201,9 @@ class Test_Share_On_Save extends Jlife_Challenges_TestCase {
 		$retry = $this->save( 'a', $this->soap( 'v1' ) );
 		$edit  = $this->save( 'a', $this->soap( 'v2' ) );
 
-		$this->assertSame( $first['share']['share_id'], $retry['share']['share_id'] );
-		$this->assertSame( $first['share']['share_id'], $edit['share']['share_id'] );
+		$g1 = $this->g['g1'];
+		$this->assertSame( $first['share']['results'][ $g1 ]['share_id'], $retry['share']['results'][ $g1 ]['share_id'] );
+		$this->assertSame( $first['share']['results'][ $g1 ]['share_id'], $edit['share']['results'][ $g1 ]['share_id'] );
 		$this->assertSame( 1, $this->share_rows() );
 		$feed = $this->feed( 'b' );
 		$this->assertCount( 1, $feed );
@@ -208,7 +223,7 @@ class Test_Share_On_Save extends Jlife_Challenges_TestCase {
 		$this->assertCount( 1, $feed );
 		$this->assertStringContainsString( '(v1)', $feed[0]['body'], 'an unchecked save does not touch the post' );
 
-		$this->assertTrue( jlife_challenges_unshare( $this->u['a'], $first['share']['share_id'] ) );
+		$this->assertTrue( jlife_challenges_unshare( $this->u['a'], $first['share']['results'][ $this->g['g1'] ]['share_id'] ) );
 		$this->assertSame( array(), $this->feed( 'b' ) );
 		$this->assertSame( 1, jlife_challenges_progress( $this->u['a'], $this->u['a'], $this->campaign )['points'] );
 	}

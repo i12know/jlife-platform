@@ -1,9 +1,10 @@
 <?php
 /**
- * View models for sharing (M7, #62): the share page and the My Group feed.
- * Pure data, no output. Sharing is always a deliberate choice (the box on the
- * SOAP form, or /share) and never changes points. The whole entry is shared
- * (#98); there are no per-part choices.
+ * View models for sharing (M7, #62): the share page and the group feeds.
+ * Pure data, no output. Sharing is always a deliberate choice, per group (one
+ * box per group on the SOAP form, or a section per group on /share) and never
+ * changes points. The whole entry is shared (#98); there are no per-part
+ * choices. A solo reader (no group) is offered no group to share to (#112).
  *
  * @package jlife-challenges
  */
@@ -11,11 +12,11 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * The author's live share of one entry in their current group, or null.
+ * The author's live share of one entry in one group, or null.
  *
  * @param int $user_id  Author.
  * @param int $entry_id Entry.
- * @param int $group_id Current group.
+ * @param int $group_id Group.
  * @return array|null Share row (any status except removed).
  */
 function jlife_challenges_current_share( $user_id, $entry_id, $group_id ) {
@@ -26,36 +27,66 @@ function jlife_challenges_current_share( $user_id, $entry_id, $group_id ) {
 }
 
 /**
- * Data for /share?day=dNNN: the author's entry (shareable once it has text),
- * the existing group post, and whether group posting is allowed.
+ * The groups a person can share to in a campaign, with whether one entry is
+ * already shared to each. Empty for a solo reader: no box, no share UI.
+ *
+ * @param int $user_id     Author.
+ * @param int $campaign_id Campaign.
+ * @param int $entry_id    Entry (0 = none yet).
+ * @return array[] Rows of { id, name, status } where status is '' | shared | hidden.
+ */
+function jlife_challenges_share_groups( $user_id, $campaign_id, $entry_id = 0 ) {
+	$out = array();
+	foreach ( jlife_challenges_active_memberships( (int) $campaign_id, (int) $user_id ) as $m ) {
+		$share = $entry_id > 0 ? jlife_challenges_current_share( $user_id, (int) $entry_id, (int) $m['group_id'] ) : null;
+		$out[] = array(
+			'id'     => (int) $m['group_id'],
+			'name'   => (string) $m['name'],
+			'status' => $share ? (string) $share['status'] : '',
+		);
+	}
+	return $out;
+}
+
+/**
+ * Data for /share?day=dNNN: the author's entry (shareable once it has text) and,
+ * for each group the author is in, the existing post and whether posting there
+ * is allowed. A solo reader has no destinations (the chat share needs none).
  *
  * @param int         $user_id Author.
  * @param string|null $day_key Day.
- * @return array Day view plus: shareable, share, can_post, post_block.
+ * @return array Day view plus: shareable, destinations [ { group_id, group_name, share, can_post, post_block } ].
  */
 function jlife_challenges_share_view( $user_id, $day_key ) {
 	$view = jlife_challenges_day_view( $user_id, $day_key );
 	if ( 'active' !== $view['state'] ) {
 		return $view;
 	}
-	$entry              = $view['entry'];
-	$view['shareable']  = $entry && '' !== trim( (string) $entry['body'] );
-	$view['share']      = null;
-	$view['can_post']   = false;
-	$view['post_block'] = '';
+	$entry                = $view['entry'];
+	$view['shareable']    = $entry && '' !== trim( (string) $entry['body'] );
+	$view['destinations'] = array();
 	if ( ! $view['shareable'] ) {
 		return $view;
 	}
 	$enrollment = jlife_challenges_active_enrollment( (int) $view['campaign']['id'], $user_id );
-	if ( $enrollment ) {
-		$view['share'] = jlife_challenges_current_share( $user_id, (int) $entry['id'], (int) $enrollment['group_id'] );
+	if ( ! $enrollment ) {
+		return $view;
+	}
+	foreach ( jlife_challenges_active_memberships( (int) $view['campaign']['id'], $user_id ) as $m ) {
+		$share = jlife_challenges_current_share( $user_id, (int) $entry['id'], (int) $m['group_id'] );
+		$block = '';
 		if ( jlife_challenges_needs_guardian_consent( $enrollment ) ) {
-			$view['post_block'] = 'guardian';
-		} elseif ( $view['share'] && 'hidden' === $view['share']['status'] ) {
-			$view['post_block'] = 'hidden';
-		} else {
-			$view['can_post'] = true;
+			$block = 'guardian';
+		} elseif ( $share && 'hidden' === $share['status'] ) {
+			$block = 'hidden';
 		}
+		$view['destinations'][] = array(
+			'group_id'   => (int) $m['group_id'],
+			'group_name' => (string) $m['name'],
+			'share'      => $share,
+			'can_post'   => '' === $block,
+			'post_block' => $block,
+		);
 	}
 	return $view;
 }
@@ -99,22 +130,45 @@ function jlife_challenges_public_reading_url( $view ) {
 }
 
 /**
- * Data for /group: the viewer's current group feed with day numbers.
+ * Data for /group: one group's feed with day numbers, and the person's groups
+ * for the picker. With no group asked for, the first group joined is shown.
  *
- * @param int $user_id Viewer.
- * @return array { state: not_enrolled|denied|ok, group_name?, posts? }
+ * @param int $user_id  Viewer.
+ * @param int $group_id Group asked for (0 = default).
+ * @return array { state: not_enrolled|solo|denied|ok, groups?: [ { id, name, selected } ], group_id?, group_name?, posts? }
  */
-function jlife_challenges_group_view( $user_id ) {
+function jlife_challenges_group_view( $user_id, $group_id = 0 ) {
 	$pc = jlife_challenges_participant_campaign( $user_id );
 	if ( ! $pc ) {
 		return array( 'state' => 'not_enrolled' );
 	}
 	$campaign = $pc['campaign'];
-	$feed     = jlife_challenges_group_feed( $user_id, (int) $campaign['id'] );
-	if ( is_wp_error( $feed ) ) {
-		return array( 'state' => 'denied' );
+	$mine     = jlife_challenges_active_memberships( (int) $campaign['id'], $user_id );
+	if ( ! $mine ) {
+		return array(
+			'state'    => 'solo',
+			'campaign' => $campaign,
+		);
 	}
-	$group  = jlife_challenges_get_group( (int) $pc['enrollment']['group_id'] );
+	$ids      = array_map( 'intval', array_column( $mine, 'group_id' ) );
+	$group_id = (int) $group_id;
+	$chosen   = $group_id > 0 ? $group_id : $ids[0];
+	$groups   = array();
+	foreach ( $mine as $m ) {
+		$groups[] = array(
+			'id'       => (int) $m['group_id'],
+			'name'     => (string) $m['name'],
+			'selected' => (int) $m['group_id'] === $chosen,
+		);
+	}
+	// A group that is not one of the viewer's own is "not allowed", never named.
+	$feed = jlife_challenges_group_feed( $user_id, $chosen );
+	if ( is_wp_error( $feed ) || ! in_array( $chosen, $ids, true ) ) {
+		return array(
+			'state'  => 'denied',
+			'groups' => $groups,
+		);
+	}
 	$titles = array();
 	foreach ( $feed as &$post ) {
 		$post['index'] = jlife_challenges_day_index( $campaign, $post['day_key'] );
@@ -125,9 +179,12 @@ function jlife_challenges_group_view( $user_id ) {
 		$post['refs'] = $titles[ $post['day_key'] ] ?? '';
 	}
 	unset( $post );
+	$group = jlife_challenges_get_group( $chosen );
 	return array(
 		'state'      => 'ok',
 		'campaign'   => $campaign,
+		'groups'     => $groups,
+		'group_id'   => $chosen,
 		'group_name' => $group ? (string) $group['name'] : '',
 		'posts'      => $feed,
 	);

@@ -3,9 +3,12 @@
  * Group shares (docs/challenges-engine-design.md §2, §4; D6, D17, D18, D19).
  *
  * A share is a deliberate, author-chosen SNAPSHOT of the whole entry (one text,
- * #98), posted to the author's current group. Editing the private entry never
- * changes it on its own; sharing again (the "Share this with my group" box on a
- * save, or /share) replaces it. Shares never affect points.
+ * #98), posted to ONE group the author is in (a person may be in up to 3, #112,
+ * and chooses per group; there is no "share with all"). Editing the private
+ * entry never changes it on its own; sharing again to that group (its box on a
+ * save, or /share) replaces it. A share to group A is never visible in group B.
+ * Shares never affect points, and a solo reader (no group) has nothing to share
+ * to.
  *
  * @package jlife-challenges
  */
@@ -27,22 +30,28 @@ function jlife_challenges_find_share( $share_id ) {
 }
 
 /**
- * Share the whole of one's own campaign entry with one's current group.
- * Repeating it updates the one post (idempotent: UNIQUE entry + group). The
- * snapshot is the text as last saved. Needs some text; the entry doesn't have
- * to have earned its point, since sharing never depends on scoring.
+ * Share the whole of one's own campaign entry with ONE of one's groups.
+ * Repeating it updates that group's one post (idempotent: UNIQUE entry + group).
+ * The snapshot is the text as last saved. Needs some text; the entry doesn't
+ * have to have earned its point, since sharing never depends on scoring.
+ *
+ * The group must be one the author is an active member of, in the entry's
+ * campaign: a guessed ID, another campaign's group, a group they left and a solo
+ * reader's attempt are all denied the same way.
  *
  * @param int $user_id  Author.
  * @param int $entry_id Entry.
+ * @param int $group_id Group to post to.
  * @return int|WP_Error Share ID.
  */
-function jlife_challenges_share( $user_id, $entry_id ) {
+function jlife_challenges_share( $user_id, $entry_id, $group_id ) {
 	$entry = jlife_challenges_get_entry( $user_id, $entry_id );
 	if ( is_wp_error( $entry ) || (int) $entry['campaign_id'] < 1 ) {
 		return jlife_challenges_denied();
 	}
 	$enrollment = jlife_challenges_active_enrollment( (int) $entry['campaign_id'], $user_id );
-	if ( ! $enrollment ) {
+	$group      = jlife_challenges_get_group( $group_id );
+	if ( ! $enrollment || ! $group || (int) $group['campaign_id'] !== (int) $entry['campaign_id'] || ! jlife_challenges_is_group_member( $user_id, $group_id ) ) {
 		return jlife_challenges_denied();
 	}
 	if ( jlife_challenges_needs_guardian_consent( $enrollment ) ) {
@@ -51,7 +60,7 @@ function jlife_challenges_share( $user_id, $entry_id ) {
 	if ( '' === trim( (string) $entry['body'] ) ) {
 		return new WP_Error( 'jlife_share_empty', __( 'There is nothing to share yet.', 'jlife-challenges' ) );
 	}
-	$group_id = (int) $enrollment['group_id'];
+	$group_id = (int) $group_id;
 	$existing = jlife_challenges_current_share( $user_id, (int) $entry_id, $group_id );
 	if ( $existing && 'hidden' === $existing['status'] ) {
 		return new WP_Error( 'jlife_share_hidden', __( 'An organizer hid your post for this day, so it was not posted again.', 'jlife-challenges' ) );
@@ -82,43 +91,92 @@ function jlife_challenges_share( $user_id, $entry_id ) {
 }
 
 /**
- * Save an entry and, if the "Share this with my group" box is ticked, post it.
- * The save (and any point) never depends on the share: if sharing fails the
- * result says so and the save stands. Unticked = no post, and a failed save
- * posts nothing.
+ * Share one entry with each of the named groups, independently: one group's
+ * refusal (hidden there, not a member, guardian wait) never stops another.
+ *
+ * @param int   $user_id   Author.
+ * @param int   $entry_id  Entry.
+ * @param int[] $group_ids Groups to post to (duplicates and non-positive IDs are dropped).
+ * @return array<int,int|WP_Error> Share ID or error, by group ID.
+ */
+function jlife_challenges_share_to_groups( $user_id, $entry_id, $group_ids ) {
+	$out = array();
+	foreach ( jlife_challenges_clean_group_ids( $group_ids ) as $group_id ) {
+		$out[ $group_id ] = jlife_challenges_share( $user_id, $entry_id, $group_id );
+	}
+	return $out;
+}
+
+/**
+ * Normalize a list of requested group IDs: positive, unique integers, at most
+ * twice the group limit (anything beyond could only be guesses).
+ *
+ * @param mixed $group_ids Requested IDs (anything but an array means none).
+ * @return int[]
+ */
+function jlife_challenges_clean_group_ids( $group_ids ) {
+	if ( ! is_array( $group_ids ) ) {
+		return array();
+	}
+	$ids = array();
+	foreach ( $group_ids as $id ) {
+		$id = is_scalar( $id ) ? (int) $id : 0;
+		if ( $id > 0 ) {
+			$ids[ $id ] = $id;
+		}
+	}
+	return array_slice( array_values( $ids ), 0, JLIFE_CHALLENGES_MAX_GROUPS * 2 );
+}
+
+/**
+ * Save an entry and post it to each group whose box is ticked. The save (and any
+ * point) never depends on the shares: if one fails the result says so and the
+ * save stands. No ticked group = no post (there is no "share with all": a bare
+ * `true` from the old single box means nothing), and a failed save posts nothing.
  *
  * @param int         $user_id     Author.
  * @param int         $campaign_id Campaign.
  * @param string|null $day_key     Day (null = today).
  * @param string      $text        Entry text.
- * @param bool        $share       Whether the box was ticked.
+ * @param int[]       $group_ids   Groups whose box was ticked.
  * @return array|WP_Error jlife_challenges_submit()'s result plus
- *                        share: { requested: bool, status: none|shared|failed, code: string, message: string, share_id: int }.
+ *                        share: { requested: int[], status: none|shared|partial|failed,
+ *                        results: { group_id: { status: shared|failed, code, message, share_id } } }.
  */
-function jlife_challenges_save_and_share( $user_id, $campaign_id, $day_key, $text, $share ) {
+function jlife_challenges_save_and_share( $user_id, $campaign_id, $day_key, $text, $group_ids = array() ) {
 	$result = jlife_challenges_submit( $user_id, $campaign_id, $day_key, $text );
 	if ( is_wp_error( $result ) ) {
 		return $result;
 	}
+	$requested       = jlife_challenges_clean_group_ids( $group_ids );
 	$result['share'] = array(
-		'requested' => (bool) $share,
+		'requested' => $requested,
 		'status'    => 'none',
-		'code'      => '',
-		'message'   => '',
-		'share_id'  => 0,
+		'results'   => array(),
 	);
-	if ( ! $share ) {
+	if ( ! $requested ) {
 		return $result;
 	}
-	$id = jlife_challenges_share( $user_id, $result['entry_id'] );
-	if ( is_wp_error( $id ) ) {
-		$result['share']['status']  = 'failed';
-		$result['share']['code']    = $id->get_error_code();
-		$result['share']['message'] = $id->get_error_message();
-	} else {
-		$result['share']['status']   = 'shared';
-		$result['share']['share_id'] = $id;
+	$shared = 0;
+	foreach ( jlife_challenges_share_to_groups( $user_id, (int) $result['entry_id'], $requested ) as $group_id => $id ) {
+		if ( is_wp_error( $id ) ) {
+			$result['share']['results'][ $group_id ] = array(
+				'status'   => 'failed',
+				'code'     => $id->get_error_code(),
+				'message'  => $id->get_error_message(),
+				'share_id' => 0,
+			);
+		} else {
+			++$shared;
+			$result['share']['results'][ $group_id ] = array(
+				'status'   => 'shared',
+				'code'     => '',
+				'message'  => '',
+				'share_id' => $id,
+			);
+		}
 	}
+	$result['share']['status'] = count( $requested ) === $shared ? 'shared' : ( $shared > 0 ? 'partial' : 'failed' );
 	return $result;
 }
 
@@ -135,10 +193,12 @@ function jlife_challenges_unshare( $user_id, $share_id ) {
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
+	// An organizer-hidden post stays hidden (D17): the author's text is cleared,
+	// but removing it must not let them post again by sidestepping the hide.
 	$wpdb->update(
 		jlife_challenges_table( 'group_shares' ),
 		array(
-			'status'  => 'removed',
+			'status'  => 'hidden' === $share['status'] ? 'hidden' : 'removed',
 			'body'    => null,
 			'updated' => current_time( 'mysql', true ),
 		),
@@ -204,20 +264,21 @@ function jlife_challenges_feed_name( $user_id ) {
 }
 
 /**
- * The viewer's current group's feed: shared posts only, newest first.
+ * One group's feed: shared posts only, newest first. Only an active member of
+ * THAT group may read it; the posts are the ones made to that group and nothing
+ * made to any of the viewer's other groups.
  *
  * @param int $viewer_user_id Viewer.
- * @param int $campaign_id    Campaign.
+ * @param int $group_id       Group.
  * @param int $limit          Max posts.
  * @return array|WP_Error rows of { id, author, day_key, body, updated, mine }
  */
-function jlife_challenges_group_feed( $viewer_user_id, $campaign_id, $limit = 50 ) {
-	$e = jlife_challenges_active_enrollment( $campaign_id, $viewer_user_id );
-	if ( ! $e || ! jlife_challenges_can_read_feed( $viewer_user_id, (int) $e['group_id'] ) ) {
+function jlife_challenges_group_feed( $viewer_user_id, $group_id, $limit = 50 ) {
+	if ( ! jlife_challenges_can_read_feed( $viewer_user_id, (int) $group_id ) ) {
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
-	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND status = 'shared' ORDER BY day_key DESC, updated DESC LIMIT %d", (int) $e['group_id'], max( 1, (int) $limit ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND status = 'shared' ORDER BY day_key DESC, updated DESC LIMIT %d", (int) $group_id, max( 1, (int) $limit ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	$out  = array();
 	foreach ( $rows as $r ) {
 		$out[] = array(
@@ -234,7 +295,7 @@ function jlife_challenges_group_feed( $viewer_user_id, $campaign_id, $limit = 50
 
 /**
  * The author's own shares in a campaign, in any group (D18: visible and
- * removable after a move), including hidden ones with the reason.
+ * removable after leaving or a move), including hidden ones with the reason.
  *
  * @param int $user_id     Author.
  * @param int $campaign_id Campaign.

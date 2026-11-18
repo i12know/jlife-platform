@@ -30,9 +30,9 @@ class Test_Multi_Group_Sharing extends Jlife_Challenges_TestCase {
 	 */
 	public function set_up() {
 		parent::set_up();
-		$this->g3         = (int) jlife_challenges_create_group( $this->u['organizer'], $this->campaign, 'Group Three' )['id'];
-		$this->u['d']     = self::factory()->user->create( array( 'role' => 'subscriber' ) );
-		$this->u['solo']  = self::factory()->user->create( array( 'role' => 'subscriber' ) );
+		$this->g3        = (int) jlife_challenges_create_group( $this->u['organizer'], $this->campaign, 'Group Three' )['id'];
+		$this->u['d']    = self::factory()->user->create( array( 'role' => 'subscriber' ) );
+		$this->u['solo'] = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $this->u['a'], $this->g['g2'] ) );
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $this->u['d'], $this->g3 ) );
 		$this->assertIsInt( jlife_challenges_enroll_solo( $this->u['solo'], $this->campaign, 'adult' ) );
@@ -79,7 +79,11 @@ class Test_Multi_Group_Sharing extends Jlife_Challenges_TestCase {
 		$this->save( 'd', $this->soap( 'for-three' ), array( $this->g3 ) );
 
 		$this->assertCount( 1, $this->feed( 'a', $this->g['g2'] ), 'a is in Group Two' );
-		foreach ( array( 'b' => $this->g['g2'], 'c' => $this->g['g1'], 'd' => $this->g['g2'] ) as $who => $group ) {
+		foreach ( array(
+			'b' => $this->g['g2'],
+			'c' => $this->g['g1'],
+			'd' => $this->g['g2'],
+		) as $who => $group ) {
 			$this->assertWPError( $this->feed( $who, $group ), "$who cannot read group $group" );
 			$this->assertFalse( jlife_challenges_can_read_feed( $this->u[ $who ], $group ) );
 		}
@@ -221,6 +225,21 @@ class Test_Multi_Group_Sharing extends Jlife_Challenges_TestCase {
 		$this->assertSame( 'shared', $again['share']['results'][ $this->g['g2'] ]['status'] );
 		$this->assertSame( array(), $this->feed( 'b', $this->g['g1'] ), 'still hidden' );
 		$this->assertStringContainsString( '(v2)', $this->feed( 'c', $this->g['g2'] )[0]['body'] );
+	}
+
+	/**
+	 * D17: removing a post an organizer hid does not lift the hide, so the author cannot post again.
+	 */
+	public function test_removing_a_hidden_post_does_not_lift_the_hide() {
+		$first = $this->save( 'a', $this->soap( 'v1' ), array( $this->g['g1'] ) );
+		$id    = $first['share']['results'][ $this->g['g1'] ]['share_id'];
+		$this->assertTrue( jlife_challenges_hide_share( $this->u['organizer'], $id, 'Off-topic' ) );
+		$this->assertTrue( jlife_challenges_unshare( $this->u['a'], $id ) );
+		$this->assertNull( jlife_challenges_find_share( $id )['body'], 'the text is cleared' );
+
+		$again = $this->save( 'a', $this->soap( 'v2' ), array( $this->g['g1'] ) );
+		$this->assertSame( 'jlife_share_hidden', $again['share']['results'][ $this->g['g1'] ]['code'] );
+		$this->assertSame( array(), $this->feed( 'b', $this->g['g1'] ) );
 	}
 
 	/**
@@ -372,7 +391,7 @@ class Test_Multi_Group_Sharing extends Jlife_Challenges_TestCase {
 		$this->assertSame( '', $state['error'] );
 		$this->assertStringContainsString( 'shared=' . $this->g['g2'], $state['redirect'] );
 		$this->assertStringNotContainsString( 'shared=' . $this->g['g2'] . '%2C', $state['redirect'] );
-		$this->assertStringContainsString( 'share_failed=', $state['redirect'], 'Group Three was not a\'s: refused, and the page says so' );
+		$this->assertStringContainsString( 'share_failed', $state['redirect'], 'Group Three was not a\'s: refused, and the page says so' );
 		$this->assertCount( 1, $this->feed( 'c', $this->g['g2'] ) );
 		$this->assertSame( array(), $this->feed( 'b', $this->g['g1'] ), 'unticked: nothing' );
 		$this->assertSame( array(), $this->feed( 'd', $this->g3 ), 'not a\'s group: nothing' );
@@ -518,10 +537,10 @@ class Test_Multi_Group_Sharing extends Jlife_Challenges_TestCase {
 		$this->clear_request();
 		wp_set_current_user( $user_id );
 		$data = array(
-			'jl_text'          => $text,
-			'jl_action'        => $action,
-			'jl_day'           => 'd001',
-			'_jlife_soap'      => wp_create_nonce( 'jlife_soap_d001' ),
+			'jl_text'         => $text,
+			'jl_action'       => $action,
+			'jl_day'          => 'd001',
+			'_jlife_soap'     => wp_create_nonce( 'jlife_soap_d001' ),
 			'jl_share_groups' => array_map( 'strval', $groups ),
 		);
 		foreach ( $data as $key => $value ) {

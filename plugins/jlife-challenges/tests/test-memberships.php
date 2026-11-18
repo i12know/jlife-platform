@@ -8,6 +8,8 @@
  * @package jlife-challenges
  */
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- tests write legacy rows and read the plugin's own tables directly.
+
 /**
  * Membership tests.
  */

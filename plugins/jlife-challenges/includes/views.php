@@ -84,7 +84,7 @@ function jlife_challenges_day_view( $user_id, $day_key = null ) {
 	$key     = jlife_challenges_day_key( $index );
 	$reading = function_exists( 'jlife_studies_get_reading_day' ) ? jlife_studies_get_reading_day( (string) $campaign['plan_id'], $key ) : null;
 	$entry   = jlife_challenges_find_entry( $user_id, (int) $campaign['id'], $key );
-	$share   = $entry ? jlife_challenges_current_share( $user_id, (int) $entry['id'], (int) $pc['enrollment']['group_id'] ) : null;
+	$groups  = jlife_challenges_share_groups( $user_id, (int) $campaign['id'], $entry ? (int) $entry['id'] : 0 );
 	$ledger  = jlife_challenges_progress( $user_id, $user_id, (int) $campaign['id'] )['days'][ $key ] ?? '';
 	return array_merge(
 		$base,
@@ -98,7 +98,7 @@ function jlife_challenges_day_view( $user_id, $day_key = null ) {
 			'reading'      => $reading,
 			'languages'    => $reading ? jlife_challenges_language_order( $user_id, $reading['plan']['links_config'] ?? array() ) : array(),
 			'entry'        => $entry,
-			'share_status' => $share ? (string) $share['status'] : '',
+			'share_groups' => $groups,
 			'status'       => $entry ? ( 'submitted' === $entry['status'] ? ( $ledger ? $ledger : 'submitted' ) : 'draft' ) : 'not_started',
 		)
 	);

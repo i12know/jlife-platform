@@ -11,7 +11,7 @@
 class Test_Lifecycle extends Jlife_Challenges_TestCase {
 
 	/**
-	 * Invite codes: valid joins, stored hashed, reset invalidates, no double enrollment.
+	 * Invite codes: valid joins, stored hashed, reset invalidates, no double membership.
 	 */
 	public function test_invite_codes() {
 		$group = jlife_challenges_create_group( $this->u['organizer'], $this->campaign, 'Group Three' );
@@ -23,9 +23,9 @@ class Test_Lifecycle extends Jlife_Challenges_TestCase {
 		$this->assertNotSame( $code, $stored, 'codes are stored hashed' );
 
 		$this->assertIsInt( jlife_challenges_join_with_code( $this->u['outsider'], strtolower( $code ), 'adult' ), 'case-insensitive' );
-		$this->assertSame( (int) $group['id'], (int) jlife_challenges_get_enrollment( $this->campaign, $this->u['outsider'] )['group_id'] );
+		$this->assertSame( array( (int) $group['id'] ), array_map( 'intval', array_column( jlife_challenges_active_memberships( $this->campaign, $this->u['outsider'] ), 'group_id' ) ) );
 		$again = jlife_challenges_join_with_code( $this->u['outsider'], $code, 'adult' );
-		$this->assertSame( 'jlife_already_enrolled', $again->get_error_code(), 'one group per person (D14)' );
+		$this->assertSame( 'jlife_already_enrolled', $again->get_error_code(), 'the same group twice is refused' );
 
 		$new_code = jlife_challenges_reset_invite( $this->u['organizer'], $group['id'] );
 		$late     = self::factory()->user->create();
@@ -57,18 +57,18 @@ class Test_Lifecycle extends Jlife_Challenges_TestCase {
 	public function test_account_deletion_purges_everything() {
 		require_once ABSPATH . 'wp-admin/includes/user.php';
 		$entry = jlife_challenges_submit( $this->u['a'], $this->campaign, null, $this->soap( 'gone' ) )['entry_id'];
-		jlife_challenges_share( $this->u['a'], $entry );
+		jlife_challenges_share( $this->u['a'], $entry, $this->g['g1'] );
 		$user_id = $this->u['a'];
 		wp_delete_user( $user_id );
 
 		global $wpdb;
-		foreach ( array( 'soap_entries', 'group_shares', 'score_ledger', 'enrollments' ) as $table ) {
+		foreach ( array( 'soap_entries', 'group_shares', 'score_ledger', 'enrollments', 'group_members' ) as $table ) {
 			$n = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( $table ) . ' WHERE user_id = %d', $user_id ) ); // phpcs:ignore WordPress.DB
 			$this->assertSame( 0, $n, "$table purged" );
 		}
 		$revs = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'soap_revisions' ) . ' WHERE entry_id = %d', $entry ) ); // phpcs:ignore WordPress.DB
 		$this->assertSame( 0, $revs, 'revisions purged' );
-		$this->assertSame( array(), jlife_challenges_group_feed( $this->u['b'], $this->campaign ) );
+		$this->assertSame( array(), jlife_challenges_group_feed( $this->u['b'], $this->g['g1'] ) );
 
 		$audit = $wpdb->get_var( $wpdb->prepare( 'SELECT detail FROM ' . jlife_challenges_table( 'audit_log' ) . " WHERE action = 'user_purged' AND object_id = %d", $user_id ) ); // phpcs:ignore WordPress.DB
 		$this->assertNotNull( $audit );
