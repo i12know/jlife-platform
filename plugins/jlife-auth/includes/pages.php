@@ -166,12 +166,69 @@ function jlife_auth_page_signin() {
 		. '<label for="jl-email">' . esc_html__( 'Email', 'jlife-auth' ) . '</label>'
 		. '<input id="jl-email" type="email" name="email" autocomplete="email" required autofocus>'
 		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
-		. '<p><a href="' . esc_url( home_url( '/join/' ) ) . '">' . esc_html__( 'New here? Join with your group invite code.', 'jlife-auth' ) . '</a></p>'
+		. '<p><a href="' . esc_url( home_url( '/join/' ) ) . '">' . esc_html__( 'New here? Join with a group invite code, or read on your own.', 'jlife-auth' ) . '</a></p>'
 	);
 }
 
 /**
- * /join
+ * The join form for one of the two ways in.
+ *
+ * - invite (default, /join/): a group invite code, then name, email, age, language.
+ * - solo (/join/?mode=solo, "Read on my own"): the same without the code; you can
+ *   join a group later.
+ *
+ * @param string $mode  invite|solo.
+ * @param array  $input Values to keep in the fields.
+ * @param string $error Error message.
+ * @return string Escaped HTML.
+ */
+function jlife_auth_join_form( $mode, $input, $error = '' ) {
+	$mode  = jlife_auth_join_mode( $mode );
+	$in    = wp_parse_args(
+		$input,
+		array(
+			'invite_code' => '',
+			'first_name'  => '',
+			'email'       => '',
+			'age_band'    => '',
+			'locale'      => 'en_US',
+		)
+	);
+	$langs = '';
+	foreach ( JLIFE_AUTH_LOCALES as $code => $label ) {
+		$langs .= '<option value="' . esc_attr( $code ) . '"' . selected( $in['locale'], $code, false ) . '>' . esc_html( $label ) . '</option>';
+	}
+	$solo = 'solo' === $mode;
+	$head = $solo
+		? '<h1>' . esc_html__( 'Read the Bible Marathon on my own', 'jlife-auth' ) . '</h1>'
+			. '<p>' . esc_html__( 'No group needed. Your SOAP entries are private. You can join a group later with an invite code.', 'jlife-auth' ) . '</p>'
+		: '<h1>' . esc_html__( 'Join the Bible Marathon', 'jlife-auth' ) . '</h1>';
+	$code = $solo ? '' : '<label for="jl-invite">' . esc_html__( 'Group invite code', 'jlife-auth' ) . '</label>'
+		. '<input id="jl-invite" type="text" name="invite_code" value="' . esc_attr( $in['invite_code'] ) . '" autocapitalize="characters" required>';
+	$swap = $solo
+		? '<p><a href="' . esc_url( home_url( '/join/' ) ) . '">' . esc_html__( 'I have an invite code', 'jlife-auth' ) . '</a></p>'
+		: '<p>' . esc_html__( 'No code?', 'jlife-auth' ) . ' <a href="' . esc_url( add_query_arg( 'mode', 'solo', home_url( '/join/' ) ) ) . '">' . esc_html__( 'Read on my own', 'jlife-auth' ) . '</a></p>';
+	return $head
+		. jlife_auth_box( $error )
+		. '<form method="post">' . wp_nonce_field( 'jlife_auth_join', '_jlife_auth', true, false ) . '<input type="hidden" name="step" value="request">'
+		. '<input type="hidden" name="mode" value="' . esc_attr( $mode ) . '">'
+		. $code
+		. '<label for="jl-first">' . esc_html__( 'First name', 'jlife-auth' ) . '</label>'
+		. '<input id="jl-first" type="text" name="first_name" value="' . esc_attr( $in['first_name'] ) . '" autocomplete="given-name" required>'
+		. '<label for="jl-email">' . esc_html__( 'Email', 'jlife-auth' ) . '</label>'
+		. '<input id="jl-email" type="email" name="email" value="' . esc_attr( $in['email'] ) . '" autocomplete="email" required>'
+		. '<fieldset class="jl-radio"><legend><strong>' . esc_html__( 'Your age', 'jlife-auth' ) . '</strong></legend>'
+		. '<label><input type="radio" name="age_band" value="adult"' . checked( $in['age_band'], 'adult', false ) . ' required> ' . esc_html__( '18 or older', 'jlife-auth' ) . '</label>'
+		. '<label><input type="radio" name="age_band" value="minor"' . checked( $in['age_band'], 'minor', false ) . '> ' . esc_html__( '13 to 17', 'jlife-auth' ) . '</label>'
+		. '<small>' . esc_html__( 'J-Life is for ages 13 and up.', 'jlife-auth' ) . '</small></fieldset>'
+		. '<label for="jl-lang">' . esc_html__( 'Language', 'jlife-auth' ) . '</label><select id="jl-lang" name="locale">' . $langs . '</select>'
+		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
+		. $swap
+		. '<p><a href="' . esc_url( home_url( '/signin/' ) ) . '">' . esc_html__( 'Already joined? Sign in.', 'jlife-auth' ) . '</a></p>';
+}
+
+/**
+ * /join (invite code) and /join?mode=solo (Read on my own).
  */
 function jlife_auth_page_join() {
 	$step = isset( $_POST['step'] ) ? sanitize_key( wp_unslash( $_POST['step'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce checked per step below.
@@ -187,38 +244,23 @@ function jlife_auth_page_join() {
 		'age_band'    => '',
 		'locale'      => 'en_US',
 	);
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a page selector; the POST below re-reads it with its nonce.
+	$mode = jlife_auth_join_mode( isset( $_GET['mode'] ) ? sanitize_key( wp_unslash( $_GET['mode'] ) ) : '' );
 	if ( 'request' === $step && check_admin_referer( 'jlife_auth_join', '_jlife_auth' ) ) {
 		foreach ( array_keys( $in ) as $k ) {
 			$in[ $k ] = isset( $_POST[ $k ] ) ? sanitize_text_field( wp_unslash( $_POST[ $k ] ) ) : '';
 		}
-		$sent = jlife_auth_start_join( $in, jlife_auth_ip() );
+		$mode       = jlife_auth_join_mode( isset( $_POST['mode'] ) ? sanitize_key( wp_unslash( $_POST['mode'] ) ) : '' );
+		$in['mode'] = $mode;
+		$sent       = jlife_auth_start_join( $in, jlife_auth_ip() );
 		if ( ! is_wp_error( $sent ) ) {
 			jlife_auth_send_page( __( 'Join', 'jlife-auth' ), jlife_auth_code_form( jlife_auth_normalize_email( $in['email'] ) ) );
 		}
 		$error = $sent->get_error_message();
 	}
-	$langs = '';
-	foreach ( JLIFE_AUTH_LOCALES as $code => $label ) {
-		$langs .= '<option value="' . esc_attr( $code ) . '"' . selected( $in['locale'], $code, false ) . '>' . esc_html( $label ) . '</option>';
-	}
 	jlife_auth_send_page(
-		__( 'Join the Bible Marathon', 'jlife-auth' ),
-		'<h1>' . esc_html__( 'Join the Bible Marathon', 'jlife-auth' ) . '</h1>'
-		. jlife_auth_box( $error )
-		. '<form method="post">' . wp_nonce_field( 'jlife_auth_join', '_jlife_auth', true, false ) . '<input type="hidden" name="step" value="request">'
-		. '<label for="jl-invite">' . esc_html__( 'Group invite code', 'jlife-auth' ) . '</label>'
-		. '<input id="jl-invite" type="text" name="invite_code" value="' . esc_attr( $in['invite_code'] ) . '" autocapitalize="characters" required>'
-		. '<label for="jl-first">' . esc_html__( 'First name', 'jlife-auth' ) . '</label>'
-		. '<input id="jl-first" type="text" name="first_name" value="' . esc_attr( $in['first_name'] ) . '" autocomplete="given-name" required>'
-		. '<label for="jl-email">' . esc_html__( 'Email', 'jlife-auth' ) . '</label>'
-		. '<input id="jl-email" type="email" name="email" value="' . esc_attr( $in['email'] ) . '" autocomplete="email" required>'
-		. '<fieldset class="jl-radio"><legend><strong>' . esc_html__( 'Your age', 'jlife-auth' ) . '</strong></legend>'
-		. '<label><input type="radio" name="age_band" value="adult"' . checked( $in['age_band'], 'adult', false ) . ' required> ' . esc_html__( '18 or older', 'jlife-auth' ) . '</label>'
-		. '<label><input type="radio" name="age_band" value="minor"' . checked( $in['age_band'], 'minor', false ) . '> ' . esc_html__( '13 to 17', 'jlife-auth' ) . '</label>'
-		. '<small>' . esc_html__( 'J-Life is for ages 13 and up.', 'jlife-auth' ) . '</small></fieldset>'
-		. '<label for="jl-lang">' . esc_html__( 'Language', 'jlife-auth' ) . '</label><select id="jl-lang" name="locale">' . $langs . '</select>'
-		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
-		. '<p><a href="' . esc_url( home_url( '/signin/' ) ) . '">' . esc_html__( 'Already joined? Sign in.', 'jlife-auth' ) . '</a></p>'
+		'solo' === $mode ? __( 'Read on my own', 'jlife-auth' ) : __( 'Join the Bible Marathon', 'jlife-auth' ),
+		jlife_auth_join_form( $mode, $in, $error )
 	);
 }
 

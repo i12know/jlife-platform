@@ -124,7 +124,16 @@ class Test_Join_Modes extends WP_UnitTestCase {
 	 * Consent and the age band work exactly as for a group join.
 	 */
 	public function test_solo_join_keeps_consent_and_age_band() {
-		$this->assertTrue( jlife_auth_start_join( $this->input( array( 'mode' => 'solo', 'age_band' => 'minor' ) ) ) );
+		$this->assertTrue(
+			jlife_auth_start_join(
+				$this->input(
+					array(
+						'mode'     => 'solo',
+						'age_band' => 'minor',
+					)
+				)
+			)
+		);
 		$r = jlife_auth_complete( 'reader@example.test', $this->last_code() );
 		$this->assertSame( 'minor', jlife_challenges_get_enrollment( $this->campaign, $r['user_id'] )['age_band'] );
 		$this->assertTrue( jlife_auth_needs_consent( $r['user_id'] ) );
@@ -137,9 +146,39 @@ class Test_Join_Modes extends WP_UnitTestCase {
 	 * Solo join is validated before any code is sent; under-13s still cannot join.
 	 */
 	public function test_solo_join_validation() {
-		$this->assertSame( 'jlife_auth_age', jlife_auth_start_join( $this->input( array( 'mode' => 'solo', 'age_band' => 'child' ) ) )->get_error_code() );
-		$this->assertSame( 'jlife_auth_age', jlife_auth_start_join( $this->input( array( 'mode' => 'solo', 'age_band' => '' ) ) )->get_error_code() );
-		$this->assertSame( 'jlife_auth_name', jlife_auth_start_join( $this->input( array( 'mode' => 'solo', 'first_name' => '' ) ) )->get_error_code() );
+		$this->assertSame(
+			'jlife_auth_age',
+			jlife_auth_start_join(
+				$this->input(
+					array(
+						'mode'     => 'solo',
+						'age_band' => 'child',
+					)
+				)
+			)->get_error_code()
+		);
+		$this->assertSame(
+			'jlife_auth_age',
+			jlife_auth_start_join(
+				$this->input(
+					array(
+						'mode'     => 'solo',
+						'age_band' => '',
+					)
+				)
+			)->get_error_code()
+		);
+		$this->assertSame(
+			'jlife_auth_name',
+			jlife_auth_start_join(
+				$this->input(
+					array(
+						'mode'       => 'solo',
+						'first_name' => '',
+					)
+				)
+			)->get_error_code()
+		);
 		$this->assertCount( 0, tests_retrieve_phpmailer_instance()->mock_sent );
 	}
 
@@ -158,7 +197,16 @@ class Test_Join_Modes extends WP_UnitTestCase {
 	 * A code typed in solo mode is ignored: solo means no group.
 	 */
 	public function test_solo_mode_ignores_a_typed_code() {
-		$this->assertTrue( jlife_auth_start_join( $this->input( array( 'mode' => 'solo', 'invite_code' => $this->groups['One']['invite_code'] ) ) ) );
+		$this->assertTrue(
+			jlife_auth_start_join(
+				$this->input(
+					array(
+						'mode'        => 'solo',
+						'invite_code' => $this->groups['One']['invite_code'],
+					)
+				)
+			)
+		);
 		$r = jlife_auth_complete( 'reader@example.test', $this->last_code() );
 		$this->assertSame( array(), $this->groups_of( $r['user_id'] ) );
 	}
@@ -168,7 +216,7 @@ class Test_Join_Modes extends WP_UnitTestCase {
 	 */
 	public function test_solo_join_with_no_open_campaign() {
 		global $wpdb;
-		$wpdb->update( jlife_challenges_table( 'campaigns' ), array( 'status' => 'finished' ), array( 'id' => $this->campaign ) );
+		$wpdb->update( jlife_challenges_table( 'campaigns' ), array( 'status' => 'finished' ), array( 'id' => $this->campaign ) ); // phpcs:ignore WordPress.DB
 		$this->assertSame( 'jlife_auth_no_campaign', jlife_auth_start_join( $this->input( array( 'mode' => 'solo' ) ) )->get_error_code() );
 		$this->assertCount( 0, tests_retrieve_phpmailer_instance()->mock_sent );
 	}

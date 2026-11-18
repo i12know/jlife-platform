@@ -580,9 +580,9 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	 * @param string $day_key Day the form belongs to.
 	 * @param string $action  'submit' or 'draft'.
 	 * @param string $text    The text in the textbox.
-	 * @param bool   $share   Whether "Share this with my group" is ticked.
+	 * @param int[]  $share   Group IDs whose box is ticked (true = the first group's box).
 	 */
-	private function post_soap( $user_id, $day_key, $action, $text, $share = false ) {
+	private function post_soap( $user_id, $day_key, $action, $text, $share = array() ) {
 		$this->clear_request();
 		wp_set_current_user( $user_id );
 		$data = array(
@@ -591,8 +591,12 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 			'jl_day'      => $day_key,
 			'_jlife_soap' => wp_create_nonce( 'jlife_soap_' . $day_key ),
 		);
+		if ( true === $share ) {
+			$groups = jlife_challenges_active_memberships( $this->campaign, $user_id );
+			$share  = $groups ? array( (int) $groups[0]['group_id'] ) : array();
+		}
 		if ( $share ) {
-			$data['jl_share'] = '1';
+			$data['jl_share_groups'] = array_map( 'strval', $share );
 		}
 		foreach ( $data as $key => $value ) {
 			$_POST[ $key ]    = $value;
@@ -634,8 +638,8 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 
 	/**
 	 * Today (#96, #98), new day: the reading, then the collapsed reader directly
-	 * above ONE textbox holding the heading template, an unchecked share box
-	 * between the textbox and "Submit SOAP", and "Save draft". No Write /
+	 * above ONE textbox holding the heading template, one unchecked share box per
+	 * group (here one) between the textbox and "Submit SOAP", and "Save draft". No Write /
 	 * View-edit button, no separate Share button.
 	 */
 	public function test_today_new_day_shows_reader_textbox_template_and_submit_button() {
@@ -659,14 +663,14 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'name="jl_day" value="d001"', $form );
 		$this->assertStringContainsString( 'data-insert="Luke 3:1-6"', $form, 'reference chips still work' );
 
-		// The share box: one, unchecked, after the textbox and before the submit button.
+		// The share box: one per group (a is in Group One only), unchecked, after the textbox and before the submit button.
 		$this->assertSame( 1, substr_count( $form, 'type="checkbox"' ) );
-		$this->assertStringContainsString( 'type="checkbox" name="jl_share" value="1">', $form, 'starts unchecked' );
+		$this->assertStringContainsString( 'type="checkbox" name="jl_share_groups[]" value="' . $this->g['g1'] . '"> <span>Group One</span>', $form, 'starts unchecked, labelled with the group' );
 		$this->assertStringNotContainsString( 'checked', $form );
-		$this->assertStringContainsString( 'Share this with my group', $form );
+		$this->assertStringContainsString( 'Share this with', $form );
 		$this->assertStringContainsString( 'the whole entry, including your Prayer', $form );
-		$this->assertLessThan( strpos( $form, 'name="jl_share"' ), strpos( $form, '</textarea>' ) );
-		$this->assertLessThan( strpos( $form, 'Submit SOAP' ), strpos( $form, 'name="jl_share"' ) );
+		$this->assertLessThan( strpos( $form, 'name="jl_share_groups[]"' ), strpos( $form, '</textarea>' ) );
+		$this->assertLessThan( strpos( $form, 'Submit SOAP' ), strpos( $form, 'name="jl_share_groups[]"' ) );
 
 		$this->assertStringContainsString( 'Submit SOAP', $form );
 		$this->assertStringContainsString( 'Save draft', $form );
@@ -708,14 +712,14 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'Save draft', $form );
 		$this->assertStringContainsString( 'data-status="submitted"', $form );
 		$this->assertStringContainsString( '>' . $this->soap() . '</textarea>', $form, 'the saved entry, as one text' );
-		$this->assertStringContainsString( 'type="checkbox" name="jl_share" value="1">', $form, 'still unchecked' );
-		$this->assertStringNotContainsString( 'Your group already has this day', $form );
+		$this->assertStringContainsString( 'type="checkbox" name="jl_share_groups[]" value="' . $this->g['g1'] . '">', $form, 'still unchecked' );
+		$this->assertStringNotContainsString( 'already has this day', $form );
 		$this->assertStringNotContainsString( 'Share with my group or a chat', $body, 'no separate Share button' );
 		$this->assertStringContainsString( 'Done — 1 point earned.', $body );
 		$this->assertStringContainsString( '1 of 104', $body );
 
-		jlife_challenges_share( $this->u['a'], jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' )['id'] );
-		$this->assertStringContainsString( 'Your group already has this day', jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
+		jlife_challenges_share( $this->u['a'], jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' )['id'], $this->g['g1'] );
+		$this->assertStringContainsString( 'Group One already has this day', jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
 	}
 
 	/**
@@ -731,32 +735,35 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'Share with my group or a chat', $done );
 		$this->assertStringNotContainsString( 'class="jl-status"', $done, 'the confirmation says where things stand' );
 		$this->assertStringContainsString( 'Save changes', $done );
-		$this->assertStringNotContainsString( 'Shared with your group', $done );
+		$this->assertStringNotContainsString( 'Shared with', $done );
 
 		$shared = jlife_challenges_today_body(
 			$view,
 			array(
 				'flags' => array(
 					'done'   => true,
-					'shared' => true,
+					'shared' => array( (int) $this->g['g1'] ),
 				),
 			)
 		);
-		$this->assertStringContainsString( 'Shared with your group.', $shared );
+		$this->assertStringContainsString( 'Shared with Group One.', $shared );
 		$this->assertStringContainsString( esc_url( home_url( '/group/' ) ), $shared );
+		$other = jlife_challenges_today_body( $view, array( 'flags' => array( 'shared' => array( (int) $this->g['g2'] ) ) ) );
+		$this->assertStringNotContainsString( 'Shared with', $other, 'a group that is not the viewer\'s is never named, whatever the URL says' );
+		$this->assertStringNotContainsString( 'Group Two', $other );
 
 		$failed = jlife_challenges_today_body(
 			$view,
 			array(
 				'flags' => array(
 					'done'         => true,
-					'share_failed' => 'jlife_guardian_consent_required',
+					'share_failed' => array( (int) $this->g['g1'] => 'jlife_guardian_consent_required' ),
 				),
 			)
 		);
 		$this->assertStringContainsString( 'Done — 1 point earned.', $failed, 'the point stands' );
-		$this->assertStringContainsString( 'It was not shared: sharing with your group starts once a parent or guardian has agreed.', $failed );
-		$this->assertStringContainsString( 'could not be shared with your group this time', jlife_challenges_today_body( $view, array( 'flags' => array( 'share_failed' => 'jlife_db' ) ) ) );
+		$this->assertStringContainsString( 'It was not shared with Group One: sharing with a group starts once a parent or guardian has agreed.', $failed );
+		$this->assertStringContainsString( 'could not be shared with Group One this time', jlife_challenges_today_body( $view, array( 'flags' => array( 'share_failed' => array( (int) $this->g['g1'] => 'jlife_db' ) ) ) ) );
 
 		$not_done = jlife_challenges_today_body( $this->view_with_reading( $this->u['b'] ), array( 'flags' => array( 'done' => true ) ) );
 		$this->assertStringNotContainsString( 'jl-ok', $not_done, 'a hand-typed ?done=1 on an unsubmitted day confirms nothing' );
@@ -809,7 +816,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	 * shares, even with the box ticked.
 	 */
 	public function test_today_save_draft_returns_to_today_and_never_shares() {
-		$this->post_soap( $this->u['a'], 'd001', 'draft', "S — Scripture\nLuke 3:1-6\n\nO — Observation\ndraft only", true );
+		$this->post_soap( $this->u['a'], 'd001', 'draft', "S — Scripture\nLuke 3:1-6\n\nO — Observation\ndraft only", array( $this->g['g1'] ) );
 		$state = jlife_challenges_process_soap_request( $this->u['a'], jlife_challenges_day_view( $this->u['a'] ), 'today' );
 
 		$this->assertSame( '', $state['error'] );
@@ -867,36 +874,36 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * The share box on Today: ticked = one post for the current group, and a
+	 * The share box on Today: ticked = one post for that group, and a
 	 * later ticked edit updates that same post; unticked leaves it alone. The
 	 * point stays at one throughout.
 	 */
 	public function test_share_box_creates_then_updates_one_post() {
-		$this->post_soap( $this->u['a'], 'd001', 'submit', $this->soap( 'v1' ), true );
+		$this->post_soap( $this->u['a'], 'd001', 'submit', $this->soap( 'v1' ), array( $this->g['g1'] ) );
 		$state = jlife_challenges_process_soap_request( $this->u['a'], jlife_challenges_day_view( $this->u['a'] ), 'today' );
 		$this->assertSame(
 			add_query_arg(
 				array(
 					'done'   => 1,
-					'shared' => 1,
+					'shared' => (string) $this->g['g1'],
 				),
 				home_url( '/today/' )
 			),
 			$state['redirect']
 		);
 		$this->assertSame( 1, $this->share_rows() );
-		$this->assertStringContainsString( '(v1)', jlife_challenges_group_feed( $this->u['b'], $this->campaign )[0]['body'], 'a group member reads it' );
-		$this->assertSame( array(), jlife_challenges_group_feed( $this->u['c'], $this->campaign ), 'the other group does not' );
+		$this->assertStringContainsString( '(v1)', jlife_challenges_group_feed( $this->u['b'], $this->g['g1'] )[0]['body'], 'a group member reads it' );
+		$this->assertSame( array(), jlife_challenges_group_feed( $this->u['c'], $this->g['g2'] ), 'the other group does not' );
 
-		$this->post_soap( $this->u['a'], 'd001', 'submit', $this->soap( 'v2' ), true );
+		$this->post_soap( $this->u['a'], 'd001', 'submit', $this->soap( 'v2' ), array( $this->g['g1'] ) );
 		jlife_challenges_process_soap_request( $this->u['a'], jlife_challenges_day_view( $this->u['a'] ), 'today' );
 		$this->assertSame( 1, $this->share_rows(), 'still one post' );
-		$this->assertStringContainsString( '(v2)', jlife_challenges_group_feed( $this->u['b'], $this->campaign )[0]['body'], 'updated' );
+		$this->assertStringContainsString( '(v2)', jlife_challenges_group_feed( $this->u['b'], $this->g['g1'] )[0]['body'], 'updated' );
 
 		$this->post_soap( $this->u['a'], 'd001', 'submit', $this->soap( 'v3' ), false );
 		$state = jlife_challenges_process_soap_request( $this->u['a'], jlife_challenges_day_view( $this->u['a'] ), 'today' );
 		$this->assertSame( add_query_arg( 'done', 1, home_url( '/today/' ) ), $state['redirect'], 'no share flag when the box is not ticked' );
-		$this->assertStringContainsString( '(v2)', jlife_challenges_group_feed( $this->u['b'], $this->campaign )[0]['body'], 'an unticked save leaves the post as it was' );
+		$this->assertStringContainsString( '(v2)', jlife_challenges_group_feed( $this->u['b'], $this->g['g1'] )[0]['body'], 'an unticked save leaves the post as it was' );
 		$this->assertSame( 1, $this->ledger_rows( $this->u['a'] ) );
 		$this->assertSame( 1, jlife_challenges_day_view( $this->u['a'] )['points'] );
 	}
@@ -906,15 +913,17 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	 * incomplete entry ticked to share is saved, shared and flagged incomplete.
 	 */
 	public function test_share_failure_and_incomplete_flags_in_the_redirect() {
+		// A minor only fails to share where a deployment turns the guardian requirement on (D19).
+		update_option( 'jlife_challenges_require_guardian_consent', '1' );
 		$teen = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		jlife_challenges_enroll( $this->u['organizer'], $teen, $this->g['g1'], 'minor' );
-		$this->post_soap( $teen, 'd001', 'submit', $this->soap( 'teen' ), true );
+		$this->post_soap( $teen, 'd001', 'submit', $this->soap( 'teen' ), array( $this->g['g1'] ) );
 		$state = jlife_challenges_process_soap_request( $teen, jlife_challenges_day_view( $teen ), 'today' );
 		$this->assertSame(
 			add_query_arg(
 				array(
 					'done'         => 1,
-					'share_failed' => 'jlife_guardian_consent_required',
+					'share_failed' => array( (int) $this->g['g1'] => 'jlife_guardian_consent_required' ),
 				),
 				home_url( '/today/' )
 			),
@@ -923,13 +932,13 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertSame( 0, $this->share_rows() );
 		$this->assertSame( 1, jlife_challenges_day_view( $teen )['points'] );
 
-		$this->post_soap( $this->u['b'], 'd001', 'submit', $this->soap_without_prayer( 'b' ), true );
+		$this->post_soap( $this->u['b'], 'd001', 'submit', $this->soap_without_prayer( 'b' ), array( $this->g['g1'] ) );
 		$state = jlife_challenges_process_soap_request( $this->u['b'], jlife_challenges_day_view( $this->u['b'] ), 'today' );
 		$this->assertSame(
 			add_query_arg(
 				array(
 					'incomplete' => 1,
-					'shared'     => 1,
+					'shared'     => (string) $this->g['g1'],
 				),
 				home_url( '/today/' )
 			),
@@ -980,7 +989,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'data-day="d003"', $body );
 		$this->assertStringContainsString( 'Submit SOAP', $body );
 		$this->assertStringContainsString( 'name="jl_text"', $body );
-		$this->assertStringContainsString( 'name="jl_share"', $body );
+		$this->assertStringContainsString( 'name="jl_share_groups[]"', $body );
 		$this->assertStringContainsString( 'You can still write this one', jlife_challenges_status_text( $view ) );
 
 		$today = $this->view_with_reading( $this->u['a'], 'd010' );
