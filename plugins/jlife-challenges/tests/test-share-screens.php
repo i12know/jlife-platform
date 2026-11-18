@@ -99,9 +99,23 @@ class Test_Share_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Minors without guardian consent cannot post to the group (D19).
+	 * D19 (owner decision 2026-11-05): by default a minor can post to their group;
+	 * the share screen shows no guardian block.
 	 */
-	public function test_guardian_block() {
+	public function test_minor_can_post_by_default() {
+		$minor = self::factory()->user->create( array( 'role' => 'subscriber' ) );
+		jlife_challenges_enroll( $this->u['organizer'], $minor, $this->g['g1'], 'minor' );
+		jlife_challenges_submit( $minor, $this->campaign, 'd001', $this->soap( 'minor' ) );
+		$v = jlife_challenges_share_view( $minor, 'd001' );
+		$this->assertTrue( $v['can_post'] );
+		$this->assertNotSame( 'guardian', $v['post_block'] );
+	}
+
+	/**
+	 * With the opt-in setting on, minors without guardian consent cannot post.
+	 */
+	public function test_guardian_block_when_required() {
+		update_option( 'jlife_challenges_require_guardian_consent', '1' );
 		$minor = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		jlife_challenges_enroll( $this->u['organizer'], $minor, $this->g['g1'], 'minor' );
 		jlife_challenges_submit( $minor, $this->campaign, 'd001', $this->soap( 'minor' ) );
