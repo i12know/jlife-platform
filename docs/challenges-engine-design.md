@@ -19,9 +19,9 @@ Related: [#49](https://github.com/i12know/jlife-platform/issues/49) (spec); #60 
 | Table | Key columns | Notes |
 |---|---|---|
 | `campaigns` | `id`, `campaign_key` (unique slug), `plan_id` (e.g. `rpl-life-and-teachings-of-jesus-2026`), `title`, `start_date`, `end_date`, `timezone` (`America/Los_Angeles`), `grace_days` (D1: `1`), `status` (`draft`/`active`/`finished`), `scoring_engine` | Day content comes from the reading plan (#59) by `day_id`; nothing copied. `scoring_engine` (default `soap-regex`) names the campaign's scoring engine (#98) |
-| `groups` | `id`, `campaign_id`, `name`, `invite_code_hash`, `invite_expires_at`, `status` (`active`/`archived`) | Invite codes stored **hashed**; a code is shown once to the admin |
+| `groups` | `id`, `campaign_id`, `name` (1–60 chars, plain text), `invite_code_hash`, `invite_expires_at`, `status` (`active`/`disabled`), `started_by` (user ID of the adult who started it; `0` for organizer-made groups; DB version 4) | Invite codes stored **hashed**; a code is shown once to whoever makes it (an organizer, or the group's starter). A `disabled` group's code stops working and its members lose its feed and slot (§4c). The name is shown only to the group's members and to organizers |
 | `enrollments` | `id`, `campaign_id`, `user_id`, `group_id` (**retired**, see below), `status` (`active`/`removed`), `age_band`, `guardian_consent`, `consent_version`, `consented`, `joined`, `left_at`; **UNIQUE (`campaign_id`, `user_id`)** | **One per person per campaign**: consent, age band, progress, entries and points are personal. It says *that* the person takes part, not *which group* (D14 as changed in #112). "Read on my own" is an enrollment with no membership. `group_id` is no longer written (new rows get `0`) or read; see the note under the table |
-| `group_members` | `id`, `campaign_id`, `enrollment_id`, `user_id`, `group_id`, `role` (`member`/`starter`), `status` (`active`/`left`/`removed`), `joined_at`, `left_at`; **UNIQUE (`group_id`, `user_id`)** | **A person is solo (no active row) or in up to 3 groups per campaign** (D14 changed, #112), adults and minors alike. The only source of "who is in this group": the gate, the feed and the `jlife_huddles_group_membership` filter read it. Joining, leaving, moving and removal are audited (D18). `starter` is written by "start a group" (#112 PR2); it gives no extra view of other members |
+| `group_members` | `id`, `campaign_id`, `enrollment_id`, `user_id`, `group_id`, `role` (`member`/`starter`), `status` (`active`/`left`/`removed`), `joined_at`, `left_at`; **UNIQUE (`group_id`, `user_id`)** | **A person is solo (no active row) or in up to 3 groups per campaign** (D14 changed, #112), adults and minors alike. The only source of "who is in this group": the gate, the feed and the `jlife_huddles_group_membership` filter read it. Joining, leaving, moving and removal are audited (D18). `starter` is written by "start a group" (#112 part 2, §4c): the one extra right is resetting that group's invite code; it gives no extra view of other members |
 | `soap_entries` | `id`, `user_id`, `campaign_id` (0 = unscored/personal), `day_id` (`''` if none), `entry_date` (campaign-local date), `body` (**one** text; #98), `status` (`draft`/`submitted`), `submitted_at`, `revision`, timestamps; **UNIQUE (`user_id`, `campaign_id`, `day_id`)** for campaign entries | Drafts autosave server-side (M6). New entries are prefilled with the S/O/A/P heading template (never Bible text). `submitted` means the entry has passed the engine; an entry that has not passed stays `draft` with its text saved |
 | `soap_revisions` | `id`, `entry_id`, `revision`, `body`, `saved_at` | Edit history after submission (D3) |
 | `score_ledger` | `id`, `campaign_id`, `user_id`, `day_id`, `entry_id`, `points` (0/1), `status` (`earned`/`late_no_point`/`removed_by_review`), `reason`, `source` (`platform`/`review`), `engine`, `engine_version` (which scoring engine awarded the row; #98), `created_at`; **UNIQUE (`campaign_id`, `user_id`, `day_id`)** | Written once per person and day, append-only: points are never taken back. Review changes (P1) go through an audited path |
@@ -35,7 +35,9 @@ Related: [#49](https://github.com/i12know/jlife-platform/issues/49) (spec); #60 
 - **Migration.** The upgrade `jlife_challenges_upgrade_memberships()` (run by the installer on every deploy, idempotent) copies each `enrollments.group_id > 0` into a `group_members` row (active enrollment → active membership; removed enrollment → removed membership with its `left_at`; `joined_at` = the enrollment's `joined`; role `member`). A row is copied only if no membership exists for that person and group *in any status*, so a re-run never resurrects someone who left. The old column is **retired, not dropped**: it stays `NOT NULL DEFAULT 0` for one release as the migration's source and a rollback aid, nothing writes it and nothing but the upgrade reads it (a test pins that the gate ignores it). A later release drops it once every deployment has migrated.
 - **Joining later.** A solo reader or a member can enter another code up to the limit (`/group` has the "Have a code? Join a group" box; the emailed-code join does the same for a new sign-in). Entries saved before joining stay private; they reach the new group only if the author ticks that group on a later save or posts from `/share`. Every join and leave is audited (`group_joined`, `group_left`, `member_moved`, `member_removed`); wrong codes are rate limited per person.
 - **Sharing.** One unticked checkbox per active group on the SOAP form, no "share with all", none for a solo reader; `/share` has one section per group; `/group` has a picker when there is more than one group. See §4a.
-- **Organizers** can still enroll, move (naming which group is left when there are several) and remove. They never browse feeds (D17).
+- **Starting a group** (adults only, §4c): an adult names a group and becomes its `starter` member; it uses one of their 3 slots; at most 2 started per person per campaign; the code and link are shown once and the starter can reset the code. The age check reads the *stored* enrollment, never the form.
+- **Leaving.** `/group` has a confirmed **Leave this group**; the person keeps their past shares in that group (D18) until they remove them from **Groups you left** on `/share`; the slot frees at once.
+- **Organizers** can still enroll, move (naming which group is left when there are several) and remove, and (#112 part 2) list, rename, disable and re-enable any group with `wp jlife group ...` (audited; the list shows names, status, the starter's user ID and active member counts, never codes or member names). They never browse feeds (D17).
 
 ## 3. Days and scoring
 
@@ -71,7 +73,7 @@ Since D14 changed (#112) a participant is **solo** (no group) or in **up to 3 gr
 | Member of group A, asking for group B (not a member) | ❌ | ❌ | ❌ | ❌ | ❌ B | ❌ | ❌ | ❌ |
 | Solo reader (enrolled, no active membership) | ✅ own | ✅ own | ✅ | ❌ | ❌ no feed | ❌ no group to share to | ❌ | ❌ |
 | Group leader (P2) | ❌ | ❌ | ❌ | ✅ own group (D5) | ✅ as a member of that group | ❌ | ❌ | ❌ |
-| Group starter (#112 PR2) | same as any member of that group; **no extra view** of others' progress | | | | | | | |
+| Group starter (#112 part 2): the adult who made one group | same as any member of that group; **no extra view** of others' entries or progress. Their one extra right is to reset *that group's* invite code (§4c) | | | | | | | |
 | Former member after leaving or a move (D18) | own S only | own | own | ❌ | ❌ that group | remove own old shares only | ❌ | ❌ |
 | Site admin / organizer | ❌ (P1 review path only, audited) | ❌ | ✅ (D5) | ✅ | ❌ browse (D17) | ❌ | ✅ reported posts, audited, author told (D17) | ✅ |
 | Anonymous | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -115,6 +117,30 @@ Unchecking later never removes a post; removal stays with the per-group "Remove 
 | Enrollment removed by an organizer | All the person's memberships end with it |
 | Feed read or membership list of group G | Only active members of G (through an active enrollment); the gate never answers from `enrollments.group_id` |
 | Account deletion, test-campaign removal | Memberships are deleted with the enrollment (no orphan rows) |
+
+### 4c. Start a group (#112 part 2)
+
+An adult can make a group and hold its invite code. Holding the code is the **only** extra right; the starter reads exactly what any member reads. Audit actions: `group_started`, `group_joined` (role `starter`), `invite_reset` (by `starter` or `organizer`), `group_start_refused` (minor or a limit), `group_left`, `group_renamed`, `group_disabled`, `group_enabled`, `share_removed`.
+
+**Pages.** `/join/?mode=start` (new sign-up, adults only: the age is asked and a minor is refused before any email is sent, and again on the stored enrollment); **Start a group** on `/group` for an adult with a free slot (hidden for minors and at 3 groups); on the page after the emailed code (or after the form on `/group`) the code and link are shown once with copy buttons. A reload of that form never makes a second group (a one-use token). **/join notices:** after the code is checked, "already in this group", "3-group limit" and "minors cannot start a group" are shown on a page with **Continue**; the person is signed in either way.
+
+| Case | Result |
+|---|---|
+| Adult with an active enrollment and a free slot starts a group | One `groups` row (campaign = the open campaign, `started_by` = them) and a `starter` membership that counts toward their 3 groups; the code is shown once; audited (`group_started`, `group_joined`, `invite_reset`) |
+| Minor (13–17) starts a group | **Always refused**, on the stored enrollment's age band (a form field cannot override it): `jlife_minor_cannot_start`; no group, no membership; the form is never shown; `/join/?mode=start` refuses a minor before any email is sent; audited as `group_start_refused` |
+| Person with no enrollment | Denied, nothing created |
+| Third started group in a campaign | Refused (`jlife_start_limit`): at most 2 per person per campaign, counted over every status, so leaving or an organizer disabling the group does not free the count |
+| Start while already in 3 groups | Refused (`jlife_group_limit`); no group row is created (no orphan) |
+| More than 5 creation attempts in an hour (refused ones count) | Refused (`jlife_start_rate`) |
+| Group name | Sanitized (`sanitize_text_field`), 1–60 characters, never a blank; anything else is refused (`jlife_group_name_invalid`) |
+| Reset the invite code: the group's own active starter, or an organizer | New code; the old one stops working at once; audited with who did it |
+| Reset: another member, a non-member, a starter of a different group, a former starter, anonymous, or a starter of a disabled group | Denied (`jlife_denied`); the code is unchanged |
+| Starter reads a member's entry, progress, score counts, or a group they are not in | ❌ denied; the group feed returns only what members shared, the same as for a member |
+| Organizer lists, renames, disables or re-enables any group (starter-made included) | ✅ through `wp jlife group list\|rename\|disable\|enable` (no participant-facing path); audited as `group_renamed`, `group_disabled`, `group_enabled`. Listing shows names, status, starter's user ID and active member counts; never codes, hashes, entries or member names |
+| Disabled group | Its code stops working; members lose its feed and the slot is freed; past shares stay stored (re-enabling restores them) but are readable by nobody meanwhile. Re-enabling is refused if it would put a member over 3 groups |
+| Group name seen by | Its active members and organizers only. Another participant asking for the group by ID gets "Not found or not allowed" with no name; `/join` never prints a group name; the audit log holds IDs |
+| Leave a group | Feed access ends and the slot frees; the person's past shares stay with the group (D18) until they remove them from "Groups you left" on `/share`; audited (`group_left`). A starter who leaves stops holding the code (organizers can still reset or disable) |
+| Author removes an old share in a group they left (or one an organizer closed) | ✅ only their own; others get denied; audited (`share_removed`) |
 
 ## 5. Required tests (written first; CI)
 

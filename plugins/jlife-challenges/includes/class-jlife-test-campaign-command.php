@@ -89,26 +89,6 @@ class Jlife_Test_Campaign_Command {
 	 * @return int
 	 */
 	private function organizer() {
-		$user = get_user_by( 'email', (string) get_option( 'admin_email' ) );
-		if ( $user && jlife_challenges_is_organizer( $user->ID ) ) {
-			return (int) $user->ID;
-		}
-		foreach ( get_users(
-			array(
-				'role'   => 'administrator',
-				'fields' => 'ID',
-				'number' => 1,
-			)
-		) as $id ) {
-			return (int) $id;
-		}
-		foreach ( get_super_admins() as $login ) {
-			$u = get_user_by( 'login', $login );
-			if ( $u ) {
-				return (int) $u->ID;
-			}
-		}
-		WP_CLI::error( 'No administrator account found.' );
-		return 0;
+		return jlife_challenges_cli_organizer();
 	}
 }

@@ -24,6 +24,7 @@ require_once __DIR__ . '/includes/calendar.php';
 require_once __DIR__ . '/includes/audit.php';
 require_once __DIR__ . '/includes/gate.php';
 require_once __DIR__ . '/includes/groups.php';
+require_once __DIR__ . '/includes/group-admin.php';
 require_once __DIR__ . '/includes/soap.php';
 require_once __DIR__ . '/includes/scores.php';
 require_once __DIR__ . '/includes/shares.php';
@@ -36,8 +37,10 @@ require_once __DIR__ . '/includes/rest.php';
 require_once __DIR__ . '/includes/test-campaign.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once __DIR__ . '/includes/class-jlife-group-command.php';
 	require_once __DIR__ . '/includes/class-jlife-test-campaign-command.php';
 	WP_CLI::add_command( 'jlife test-campaign', 'Jlife_Test_Campaign_Command' );
+	WP_CLI::add_command( 'jlife group', 'Jlife_Group_Command' );
 }
 
 register_activation_hook( __FILE__, 'jlife_challenges_activate' );

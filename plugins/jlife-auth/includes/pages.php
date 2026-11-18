@@ -69,6 +69,7 @@ function jlife_auth_send_page( $title, $body ) {
 	$hint = jlife_auth_in_app_browser()
 		? '<p class="jl-hint">' . esc_html__( 'Tip: open this page in Safari or Chrome so you stay signed in. (Tap ••• then "Open in browser".)', 'jlife-auth' ) . '</p>'
 		: '';
+	$lang = jlife_auth_language_links();
 	echo '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
@@ -76,9 +77,35 @@ function jlife_auth_send_page( $title, $body ) {
 		. 'label{display:block;margin:1rem 0 .25rem;font-weight:600}input[type=text],input[type=email],select{width:100%;box-sizing:border-box;padding:.75rem;font-size:1.1rem;border:1px solid #888;border-radius:.5rem}'
 		. 'input[inputmode=numeric]{letter-spacing:.3em;font-size:1.4rem}button{margin-top:1.25rem;width:100%;padding:.9rem;font-size:1.1rem;border:0;border-radius:.5rem;background:#2b5cab;color:#fff}'
 		. '.jl-err{background:#fde8e8;padding:.75rem;border-radius:.5rem}.jl-ok{background:#e7f5ea;padding:.75rem;border-radius:.5rem}.jl-hint{background:#fff6dc;padding:.75rem;border-radius:.5rem}'
-		. 'fieldset{border:0;padding:0;margin:1rem 0 0}.jl-radio label{font-weight:400;margin:.4rem 0}</style></head><body>'
-		. $hint . $body . '</body></html>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- body is built from escaped parts.
+		. 'fieldset{border:0;padding:0;margin:1rem 0 0}.jl-radio label{font-weight:400;margin:.4rem 0}.jl-lang{text-align:right;font-size:.9rem;margin:0}'
+		. 'a.jl-btn{display:block;margin-top:1.25rem;padding:.9rem;text-align:center;border-radius:.5rem;background:#2b5cab;color:#fff;text-decoration:none;font-size:1.1rem}</style></head><body>'
+		. $lang . $hint . $body . '</body></html>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- body is built from escaped parts.
 	exit;
+}
+
+/**
+ * "English | Tiếng Việt" links for a signed-out visitor, so someone who reads
+ * Vietnamese can switch before signing up (`?lang=`). Signed-in people see their
+ * own chosen language (D13), so they get none. Only on a plain page view: a
+ * switch is a link, and a form that was just sent would lose what was typed.
+ *
+ * @return string Escaped HTML.
+ */
+function jlife_auth_language_links() {
+	if ( is_user_logged_in() || ! isset( $_SERVER['REQUEST_METHOD'] ) || 'GET' !== $_SERVER['REQUEST_METHOD'] ) {
+		return '';
+	}
+	return '<p class="jl-lang"><a href="' . esc_url( add_query_arg( 'lang', 'en' ) ) . '" hreflang="en" lang="en">English</a> | '
+		. '<a href="' . esc_url( add_query_arg( 'lang', 'vi' ) ) . '" hreflang="vi" lang="vi">Tiếng Việt</a></p>';
+}
+
+/**
+ * The language to pre-select on the join form: the page's own.
+ *
+ * @return string en_US|vi
+ */
+function jlife_auth_default_form_locale() {
+	return 0 === strpos( determine_locale(), 'vi' ) ? 'vi' : 'en_US';
 }
 
 /**
@@ -123,11 +150,39 @@ function jlife_auth_handle_verify() {
 		jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_code_form( $email, $result->get_error_message() ) );
 	}
 	jlife_auth_log_in( $result['user_id'] );
+	jlife_auth_refresh_translations(); // The page was first built for a visitor; from here it is the person's own language.
 	$target = jlife_auth_needs_consent( $result['user_id'] )
 		? add_query_arg( 'redirect_to', rawurlencode( jlife_auth_redirect_target() ), home_url( '/consent/' ) )
 		: jlife_auth_redirect_target();
+	if ( 'join' === $result['purpose'] && ( '' !== $result['notice'] || ! empty( $result['started'] ) ) ) {
+		jlife_auth_send_page( __( 'Join', 'jlife-auth' ), jlife_auth_join_result_html( $result, $target ) );
+	}
 	wp_safe_redirect( $target );
 	exit;
+}
+
+/**
+ * The page between a successful code and the app, when there is something to
+ * say: the new group's invite code and link (shown once), and/or why a join did
+ * not happen (already in that group, at the 3-group limit, a minor cannot start
+ * a group). The person is signed in either way. A group name appears only for
+ * the group the person just started.
+ *
+ * @param array  $result   jlife_auth_complete() result.
+ * @param string $next     Where "Continue" goes (consent or the app).
+ * @return string Escaped HTML.
+ */
+function jlife_auth_join_result_html( $result, $next ) {
+	$out = '';
+	if ( ! empty( $result['started'] ) ) {
+		$out .= '<h1>' . esc_html__( 'Your group is ready', 'jlife-auth' ) . '</h1>'
+			. '<p>' . esc_html__( 'Share the code or the link with the people you want to invite.', 'jlife-auth' ) . '</p>'
+			. jlife_challenges_invite_reveal_html( (string) $result['started']['name'], (string) $result['started']['invite_code'] );
+	} else {
+		$out .= '<h1>' . esc_html__( 'You are signed in', 'jlife-auth' ) . '</h1>';
+	}
+	$out .= jlife_auth_box( (string) ( $result['notice'] ?? '' ), ! empty( $result['started'] ) ? 'jl-hint' : 'jl-err' );
+	return $out . '<a class="jl-btn" href="' . esc_url( $next ) . '">' . esc_html__( 'Continue', 'jlife-auth' ) . '</a>';
 }
 
 /**
@@ -156,9 +211,17 @@ function jlife_auth_page_signin() {
 		}
 		$error = $sent->get_error_message();
 	}
-	jlife_auth_send_page(
-		__( 'Sign in', 'jlife-auth' ),
-		'<h1>' . esc_html__( 'Sign in', 'jlife-auth' ) . '</h1>'
+	jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_signin_body( $error ) );
+}
+
+/**
+ * The /signin page body.
+ *
+ * @param string $error Error message.
+ * @return string Escaped HTML.
+ */
+function jlife_auth_signin_body( $error = '' ) {
+	return '<h1>' . esc_html__( 'Sign in', 'jlife-auth' ) . '</h1>'
 		. '<p>' . esc_html__( 'Enter your email and we will send you a 6-digit code. No password needed.', 'jlife-auth' ) . '</p>'
 		. jlife_auth_box( $error )
 		. '<form method="post">' . wp_nonce_field( 'jlife_auth_signin', '_jlife_auth', true, false )
@@ -166,18 +229,19 @@ function jlife_auth_page_signin() {
 		. '<label for="jl-email">' . esc_html__( 'Email', 'jlife-auth' ) . '</label>'
 		. '<input id="jl-email" type="email" name="email" autocomplete="email" required autofocus>'
 		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
-		. '<p><a href="' . esc_url( home_url( '/join/' ) ) . '">' . esc_html__( 'New here? Join with a group invite code, or read on your own.', 'jlife-auth' ) . '</a></p>'
-	);
+		. '<p><a href="' . esc_url( home_url( '/join/' ) ) . '">' . esc_html__( 'New here? Join with a group invite code, read on your own, or start a group.', 'jlife-auth' ) . '</a></p>';
 }
 
 /**
- * The join form for one of the two ways in.
+ * The join form for one of the three ways in.
  *
  * - invite (default, /join/): a group invite code, then name, email, age, language.
  * - solo (/join/?mode=solo, "Read on my own"): the same without the code; you can
  *   join a group later.
+ * - start (/join/?mode=start, "Start a group"): adults only; a group name instead
+ *   of a code. The code and link come after the emailed code is checked.
  *
- * @param string $mode  invite|solo.
+ * @param string $mode  invite|solo|start.
  * @param array  $input Values to keep in the fields.
  * @param string $error Error message.
  * @return string Escaped HTML.
@@ -188,26 +252,39 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 		$input,
 		array(
 			'invite_code' => '',
+			'group_name'  => '',
 			'first_name'  => '',
 			'email'       => '',
 			'age_band'    => '',
-			'locale'      => 'en_US',
+			'locale'      => jlife_auth_default_form_locale(),
 		)
 	);
 	$langs = '';
 	foreach ( JLIFE_AUTH_LOCALES as $code => $label ) {
 		$langs .= '<option value="' . esc_attr( $code ) . '"' . selected( $in['locale'], $code, false ) . '>' . esc_html( $label ) . '</option>';
 	}
-	$solo = 'solo' === $mode;
-	$head = $solo
-		? '<h1>' . esc_html__( 'Read the Bible Marathon on my own', 'jlife-auth' ) . '</h1>'
-			. '<p>' . esc_html__( 'No group needed. Your SOAP entries are private. You can join a group later with an invite code.', 'jlife-auth' ) . '</p>'
-		: '<h1>' . esc_html__( 'Join the Bible Marathon', 'jlife-auth' ) . '</h1>';
-	$code = $solo ? '' : '<label for="jl-invite">' . esc_html__( 'Group invite code', 'jlife-auth' ) . '</label>'
-		. '<input id="jl-invite" type="text" name="invite_code" value="' . esc_attr( $in['invite_code'] ) . '" autocapitalize="characters" required>';
-	$swap = $solo
-		? '<p><a href="' . esc_url( home_url( '/join/' ) ) . '">' . esc_html__( 'I have an invite code', 'jlife-auth' ) . '</a></p>'
-		: '<p>' . esc_html__( 'No code?', 'jlife-auth' ) . ' <a href="' . esc_url( add_query_arg( 'mode', 'solo', home_url( '/join/' ) ) ) . '">' . esc_html__( 'Read on my own', 'jlife-auth' ) . '</a></p>';
+	$join = home_url( '/join/' );
+	if ( 'solo' === $mode ) {
+		$head = '<h1>' . esc_html__( 'Read the Bible Marathon on my own', 'jlife-auth' ) . '</h1>'
+			. '<p>' . esc_html__( 'No group needed. Your SOAP entries are private. You can join a group later with an invite code.', 'jlife-auth' ) . '</p>';
+	} elseif ( 'start' === $mode ) {
+		$head = '<h1>' . esc_html__( 'Start a group', 'jlife-auth' ) . '</h1>'
+			. '<p>' . esc_html__( 'For adults (18 or older). Name your group, and you will get an invite code and link to share with friends or the people you mentor. As the starter you can make a new code later; you do not see anyone else\'s SOAP.', 'jlife-auth' ) . '</p>';
+	} else {
+		$head = '<h1>' . esc_html__( 'Join the Bible Marathon', 'jlife-auth' ) . '</h1>';
+	}
+	$code  = 'invite' === $mode ? '<label for="jl-invite">' . esc_html__( 'Group invite code', 'jlife-auth' ) . '</label>'
+		. '<input id="jl-invite" type="text" name="invite_code" value="' . esc_attr( $in['invite_code'] ) . '" autocapitalize="characters" required>' : '';
+	$code .= 'start' === $mode ? '<label for="jl-group">' . esc_html__( 'Group name', 'jlife-auth' ) . '</label>'
+		. '<input id="jl-group" type="text" name="group_name" value="' . esc_attr( $in['group_name'] ) . '" maxlength="' . (int) JLIFE_CHALLENGES_GROUP_NAME_MAX . '" autocomplete="off" required>' : '';
+	// The other two ways in.
+	$links = array(
+		'invite' => '<a href="' . esc_url( $join ) . '">' . esc_html__( 'I have an invite code', 'jlife-auth' ) . '</a>',
+		'solo'   => '<a href="' . esc_url( add_query_arg( 'mode', 'solo', $join ) ) . '">' . esc_html__( 'Read on my own', 'jlife-auth' ) . '</a>',
+		'start'  => '<a href="' . esc_url( add_query_arg( 'mode', 'start', $join ) ) . '">' . esc_html__( 'Start a group', 'jlife-auth' ) . '</a>',
+	);
+	unset( $links[ $mode ] );
+	$swap = '<p>' . implode( ' · ', $links ) . '</p>';
 	return $head
 		. jlife_auth_box( $error )
 		. '<form method="post">' . wp_nonce_field( 'jlife_auth_join', '_jlife_auth', true, false ) . '<input type="hidden" name="step" value="request">'
@@ -239,10 +316,11 @@ function jlife_auth_page_join() {
 	$in    = array(
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- prefill from the invite link only.
 		'invite_code' => isset( $_GET['code'] ) ? sanitize_text_field( wp_unslash( $_GET['code'] ) ) : '',
+		'group_name'  => '',
 		'first_name'  => '',
 		'email'       => '',
 		'age_band'    => '',
-		'locale'      => 'en_US',
+		'locale'      => jlife_auth_default_form_locale(),
 	);
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a page selector; the POST below re-reads it with its nonce.
 	$mode = jlife_auth_join_mode( isset( $_GET['mode'] ) ? sanitize_key( wp_unslash( $_GET['mode'] ) ) : '' );
@@ -258,10 +336,12 @@ function jlife_auth_page_join() {
 		}
 		$error = $sent->get_error_message();
 	}
-	jlife_auth_send_page(
-		'solo' === $mode ? __( 'Read on my own', 'jlife-auth' ) : __( 'Join the Bible Marathon', 'jlife-auth' ),
-		jlife_auth_join_form( $mode, $in, $error )
+	$titles = array(
+		'solo'   => __( 'Read on my own', 'jlife-auth' ),
+		'start'  => __( 'Start a group', 'jlife-auth' ),
+		'invite' => __( 'Join the Bible Marathon', 'jlife-auth' ),
 	);
+	jlife_auth_send_page( $titles[ $mode ], jlife_auth_join_form( $mode, $in, $error ) );
 }
 
 /**
@@ -283,6 +363,16 @@ function jlife_auth_page_consent() {
 		}
 		$error = __( 'Please tick the box to continue.', 'jlife-auth' );
 	}
+	jlife_auth_send_page( __( 'Before you start', 'jlife-auth' ), jlife_auth_consent_body( $error ) );
+}
+
+/**
+ * The /consent page body (the wording is versioned: JLIFE_AUTH_CONSENT_VERSION).
+ *
+ * @param string $error Error message.
+ * @return string Escaped HTML.
+ */
+function jlife_auth_consent_body( $error = '' ) {
 	$points = array(
 		__( 'Your SOAP entries are private. Only you can read them. Group leaders and organizers cannot see what you write.', 'jlife-auth' ),
 		__( 'You choose what to share. When you share with your group, its members see the parts you picked, with your first name. You can remove a share at any time.', 'jlife-auth' ),
@@ -294,15 +384,12 @@ function jlife_auth_page_consent() {
 	foreach ( $points as $p ) {
 		$list .= '<li>' . esc_html( $p ) . '</li>';
 	}
-	jlife_auth_send_page(
-		__( 'Before you start', 'jlife-auth' ),
-		'<h1>' . esc_html__( 'Before you start', 'jlife-auth' ) . '</h1><ul>' . $list . '</ul>'
+	return '<h1>' . esc_html__( 'Before you start', 'jlife-auth' ) . '</h1><ul>' . $list . '</ul>'
 		. jlife_auth_box( $error )
 		. '<form method="post">' . wp_nonce_field( 'jlife_auth_consent', '_jlife_auth', true, false )
 		. '<input type="hidden" name="step" value="agree"><input type="hidden" name="redirect_to" value="' . esc_attr( jlife_auth_redirect_target() ) . '">'
 		. '<label><input type="checkbox" name="agree" value="1" required> ' . esc_html__( 'I am 13 or older, and I agree to take part on these terms.', 'jlife-auth' ) . '</label>'
-		. '<button type="submit">' . esc_html__( 'Start the Marathon', 'jlife-auth' ) . '</button></form>'
-	);
+		. '<button type="submit">' . esc_html__( 'Start the Marathon', 'jlife-auth' ) . '</button></form>';
 }
 
 add_action( 'template_redirect', 'jlife_auth_route' );

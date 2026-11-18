@@ -135,7 +135,7 @@ function jlife_challenges_public_reading_url( $view ) {
  *
  * @param int $user_id  Viewer.
  * @param int $group_id Group asked for (0 = default).
- * @return array { state: not_enrolled|solo|denied|ok, groups?: [ { id, name, selected } ], group_id?, group_name?, posts? }
+ * @return array { state: not_enrolled|solo|denied|ok, groups?: [ { id, name, role, selected } ], group_id?, group_name?, role? (member|starter, the viewer's own), can_start?, posts? }
  */
 function jlife_challenges_group_view( $user_id, $group_id = 0 ) {
 	$pc = jlife_challenges_participant_campaign( $user_id );
@@ -146,8 +146,9 @@ function jlife_challenges_group_view( $user_id, $group_id = 0 ) {
 	$mine     = jlife_challenges_active_memberships( (int) $campaign['id'], $user_id );
 	if ( ! $mine ) {
 		return array(
-			'state'    => 'solo',
-			'campaign' => $campaign,
+			'state'     => 'solo',
+			'campaign'  => $campaign,
+			'can_start' => jlife_challenges_can_start_group( $user_id ),
 		);
 	}
 	$ids      = array_map( 'intval', array_column( $mine, 'group_id' ) );
@@ -158,6 +159,7 @@ function jlife_challenges_group_view( $user_id, $group_id = 0 ) {
 		$groups[] = array(
 			'id'       => (int) $m['group_id'],
 			'name'     => (string) $m['name'],
+			'role'     => (string) $m['role'],
 			'selected' => (int) $m['group_id'] === $chosen,
 		);
 	}
@@ -180,12 +182,18 @@ function jlife_challenges_group_view( $user_id, $group_id = 0 ) {
 	}
 	unset( $post );
 	$group = jlife_challenges_get_group( $chosen );
+	$role  = '';
+	foreach ( $groups as $g ) {
+		$role = $g['selected'] ? $g['role'] : $role;
+	}
 	return array(
 		'state'      => 'ok',
 		'campaign'   => $campaign,
 		'groups'     => $groups,
 		'group_id'   => $chosen,
 		'group_name' => $group ? (string) $group['name'] : '',
+		'role'       => $role,
+		'can_start'  => jlife_challenges_can_start_group( $user_id ),
 		'posts'      => $feed,
 	);
 }
