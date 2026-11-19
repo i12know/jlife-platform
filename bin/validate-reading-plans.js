@@ -13,6 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const { buildAll } = require('./build-reading-plans');
+const { harmonyTargets, HARMONY_SLUG } = require('./content-lib/harmony-sections');
 
 const ROOT = path.join(__dirname, '..');
 const HARMONY = path.join(ROOT, 'content', 'harmony', 'robertson-1922-outline.json');
@@ -54,7 +55,11 @@ try {
   process.exit(1);
 }
 
-const eventIds = new Set(JSON.parse(fs.readFileSync(HARMONY, 'utf8')).events.map((e) => e.gospel_event_id));
+const harmonyEvents = JSON.parse(fs.readFileSync(HARMONY, 'utf8')).events;
+const eventIds = new Set(harmonyEvents.map((e) => e.gospel_event_id));
+const robertsonNumbers = new Set(harmonyEvents.map((e) => e.robertson_section.replace(/[a-z]+$/, '')));
+const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', 'reading-plans', 'plans.json'), 'utf8'));
+const planEntries = new Map((manifest.plans || []).map((p) => [p.plan_id, p]));
 const byId = new Map();
 
 for (const { file, text, doc: fresh } of built) {
@@ -71,6 +76,25 @@ for (const { file, text, doc: fresh } of built) {
   ok = check(rel, 'rights_note present', typeof doc.rights_note === 'string' && /reference-only/i.test(doc.rights_note)) && ok;
   ok = check(rel, `exactly ${doc.day_count} days`, Array.isArray(doc.days) && doc.days.length === doc.day_count, String(doc.days.length)) && ok;
   ok = check(rel, 'end_date = start_date + day_count - 1', addDays(doc.start_date, doc.day_count - 1) === doc.end_date) && ok;
+
+  // Harmony Bible numbering overrides (#109): well-formed, and every one applied.
+  const overrides = (planEntries.get(doc.plan_id) || {}).harmony_sections_overrides;
+  if (overrides !== undefined) {
+    ok = check(rel, 'harmony_sections_overrides sits next to harmony_sections_url', Boolean(planEntries.get(doc.plan_id).harmony_sections_url)) && ok;
+    const applied = new Map();
+    for (const d of doc.days) for (const s of d.harmony_sections || []) applied.set(s.number, (applied.get(s.number) || 0) + 1);
+    for (const [section, pages] of Object.entries(overrides)) {
+      const label = `override for Robertson section ${section}`;
+      ok = check(rel, `${label}: key is a Robertson section number`, robertsonNumbers.has(section)) && ok;
+      const wellFormed = Array.isArray(pages) && pages.length > 0 && new Set(pages).size === pages.length
+        && pages.every((p) => typeof p === 'string' && HARMONY_SLUG.test(p) && Number(p.match(HARMONY_SLUG)[1]) >= 1 && Number(p.match(HARMONY_SLUG)[1]) <= 184);
+      ok = check(rel, `${label}: lists unique Harmony pages numbered 1-184`, wellFormed, JSON.stringify(pages)) && ok;
+      if (wellFormed) {
+        const used = doc.days.some((d) => d.robertson_sections.some((l) => l.replace(/[a-z]+$/, '') === section));
+        ok = check(rel, `${label}: applied in the built plan`, !used || pages.every((p) => applied.has(p)), pages.join(',')) && ok;
+      }
+    }
+  }
 
   const seenIds = new Set();
   let lastSection = 0;
@@ -92,8 +116,9 @@ for (const { file, text, doc: fresh } of built) {
     ok = check(where, 'Harmony event IDs exist', d.gospel_event_ids.every((id) => eventIds.has(id)), d.gospel_event_ids.join(',')) && ok;
     if (doc.role === 'supplemental') {
       const hs = d.harmony_sections;
-      const expected = [...new Set(d.robertson_sections.map((l) => l.replace(/[a-z]+$/, '')))];
-      ok = check(where, 'Harmony Bible sections: once each, in reading order, linked to harmony-bible.com', Array.isArray(hs) &&
+      const overrides = (planEntries.get(doc.plan_id) || {}).harmony_sections_overrides || {};
+      const expected = [...new Set([...new Set(d.robertson_sections.map((l) => l.replace(/[a-z]+$/, '')))].flatMap((n) => harmonyTargets(n, overrides)))];
+      ok = check(where, 'Harmony Bible pages: once each, in reading order, overrides applied, linked to harmony-bible.com', Array.isArray(hs) &&
         hs.map((x) => x.number).join(',') === expected.join(',') &&
         hs.every((x) => x.title && eventIds.has(x.gospel_event_id) && x.url === `https://harmony-bible.com/sections/${x.number}/`),
       hs ? hs.map((x) => x.number).join(',') : 'missing') && ok;
