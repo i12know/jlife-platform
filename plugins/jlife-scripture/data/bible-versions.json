@@ -32,7 +32,9 @@
       },
       "license_evidence": "Public domain: NT since 2019-01-01, OT since 2021-01-01 (eBible.org vie1934 copyright page; docs/content-rights.md). Dataset provenance in plugins/jlife-scripture/data/vie1934/manifest.json.",
       "enabled": true,
-      "default_for": ["vi"]
+      "default_for": [
+        "vi"
+      ]
     },
     {
       "key": "nirv",
@@ -52,7 +54,9 @@
       },
       "license_evidence": null,
       "enabled": false,
-      "default_for": ["en"],
+      "default_for": [
+        "en"
+      ],
       "note": "Owner gates on #139: read the Biblica terms accepted in the YouVersion Platform portal (record them in docs/bible-provider-entitlements.md) and put the app key on the host. Until then English falls back to the ERV link. Replace copyright.text with YouVersion's version.copyright when the client lands; set the cache rule from the license."
     },
     {
@@ -96,6 +100,69 @@
       "enabled": false,
       "default_for": [],
       "note": "A choice for #140 once the Biblica terms are read (same gates as NIrV). Confirm the exact notice from YouVersion's version.copyright."
+    },
+    {
+      "key": "nlt",
+      "language": "en",
+      "name": "New Living Translation",
+      "short_code": "NLT",
+      "source": "apibible",
+      "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+      "display": "link",
+      "copyright": {
+        "text": "New Living Translation (NLT): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
+        "url": "https://scripture.api.bible/"
+      },
+      "cache": {
+        "max_age_seconds": 1209600,
+        "max_consecutive_verses": 499
+      },
+      "license_evidence": null,
+      "enabled": false,
+      "default_for": [],
+      "note": "API.Bible (#141, PR #147): starter-plan slot. Record the bibleId (wp jlife bible apibible-list), wrap the client as a Jlife_Scripture_Source with FUMS display tracking, then enable."
+    },
+    {
+      "key": "nkjv",
+      "language": "en",
+      "name": "New King James Version",
+      "short_code": "NKJV",
+      "source": "apibible",
+      "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+      "display": "link",
+      "copyright": {
+        "text": "New King James Version (NKJV): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
+        "url": "https://scripture.api.bible/"
+      },
+      "cache": {
+        "max_age_seconds": 1209600,
+        "max_consecutive_verses": 499
+      },
+      "license_evidence": null,
+      "enabled": false,
+      "default_for": [],
+      "note": "API.Bible (#141, PR #147): starter-plan slot. Record the bibleId (wp jlife bible apibible-list), wrap the client as a Jlife_Scripture_Source with FUMS display tracking, then enable."
+    },
+    {
+      "key": "csb",
+      "language": "en",
+      "name": "Christian Standard Bible",
+      "short_code": "CSB",
+      "source": "apibible",
+      "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+      "display": "link",
+      "copyright": {
+        "text": "Christian Standard Bible (CSB): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
+        "url": "https://scripture.api.bible/"
+      },
+      "cache": {
+        "max_age_seconds": 1209600,
+        "max_consecutive_verses": 499
+      },
+      "license_evidence": null,
+      "enabled": false,
+      "default_for": [],
+      "note": "API.Bible (#141, PR #147): starter-plan slot. Record the bibleId (wp jlife bible apibible-list), wrap the client as a Jlife_Scripture_Source with FUMS display tracking, then enable."
     },
     {
       "key": "erv",

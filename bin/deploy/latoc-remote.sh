@@ -84,6 +84,14 @@ if [ -f "${STATE_DIR}/mail.php" ]; then
   chmod 600 "${STATE_DIR}/mail.php"
 fi
 
+# API.Bible key (#141): same pattern, a separate private file the owner creates.
+log "Configuring private Bible settings include"
+wp config set JLIFE_BIBLE_CONFIG_FILE "${STATE_DIR}/bible.php" --type=constant >/dev/null
+wp config set JLIFE_BIBLE_CONFIG_LOADED '( is_readable( JLIFE_BIBLE_CONFIG_FILE ) ? (bool) ( require JLIFE_BIBLE_CONFIG_FILE ) : false )' --raw --type=constant >/dev/null
+if [ -f "${STATE_DIR}/bible.php" ]; then
+  chmod 600 "${STATE_DIR}/bible.php"
+fi
+
 if ! wp core is-installed --network >/dev/null 2>&1; then
   if wp core is-installed >/dev/null 2>&1; then
     die "A single-site WordPress already exists here; refusing to convert it automatically."

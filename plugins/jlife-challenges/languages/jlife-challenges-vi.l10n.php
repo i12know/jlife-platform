@@ -267,6 +267,16 @@ return array(
 		'Yes, email %1$d people every morning at 06:00 campaign time (%2$s). If the send window is already open, today\'s emails start within a few minutes.' => 'Đồng ý, gửi email cho %1$d người mỗi sáng lúc 06:00 theo giờ chiến dịch (%2$s). Nếu khung giờ gửi đã mở, email hôm nay sẽ bắt đầu gửi trong vài phút.',
 		'Live is unavailable until the mail settings are ready.' => 'Chưa dùng được chế độ chính thức cho đến khi cấu hình thư sẵn sàng.',
 		'Switch to Live' => 'Chuyển sang Chính thức',
+		// Scripture sources (#141): the API.Bible attribution and J-Life → Scripture.
+		'Scripture text provided by API.Bible' => 'Văn bản Kinh Thánh do API.Bible cung cấp',
+		'Scripture sources' => 'Nguồn Kinh Thánh',
+		'Scripture' => 'Kinh Thánh',
+		'This month\'s API.Bible calls are used up. Readers see the Bible Gateway link until next month.' => 'Đã dùng hết lượt gọi API.Bible của tháng này. Người đọc sẽ thấy liên kết Bible Gateway cho đến tháng sau.',
+		'API.Bible calls this month are close to the plan\'s limit of %d. Check that passages are being cached.' => 'Số lượt gọi API.Bible tháng này gần đến giới hạn %d của gói. Hãy kiểm tra xem các đoạn Kinh Thánh có được lưu đệm không.',
+		'No API.Bible key is set on this server, so API.Bible versions show as links.' => 'Máy chủ này chưa có khóa API.Bible, nên các bản dịch từ API.Bible chỉ hiện dưới dạng liên kết.',
+		'Month (UTC)' => 'Tháng (UTC)',
+		'API.Bible calls this month' => 'Số lượt gọi API.Bible tháng này',
+		'Usage reports sent (FUMS)' => 'Số báo cáo sử dụng đã gửi (FUMS)',
 		// Today page fixes from pilot feedback (#142).
 		'SOAP = Scripture, Observation, Application, Prayer.' => 'SOAP = Kinh Thánh (Scripture), Quan sát (Observation), Áp dụng (Application), Cầu nguyện (Prayer).',
 		'More' => 'Xem thêm',

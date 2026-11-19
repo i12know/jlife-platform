@@ -97,6 +97,12 @@ function validateRegistry() {
     const ready = !!inv && inv.ready_for_production === true;
     check(`registry: YouVersion ${v.short_code} renders text only once the inventory marks it ready`, ready || !(v.enabled && v.display === 'native'));
   }
+  const ab = new Map((((inventory.api_bible || {}).versions) || []).map((v) => [v.key, v]));
+  for (const v of versions.filter((x) => x.source === 'apibible')) {
+    const inv = ab.get(v.key);
+    check(`registry: API.Bible ${v.short_code} matches the provider inventory`, !!inv && inv.code === v.short_code && inv.source_id === v.source_id && inv.language === v.language);
+    check(`registry: API.Bible ${v.short_code} renders text only with a recorded bibleId`, !(v.enabled && v.display === 'native') || !/^REPLACE_/.test(v.source_id));
+  }
   for (const v of versions.filter((x) => x.source === 'local')) {
     const manifest = path.join(PLUGIN, 'data', v.source_id, 'manifest.json');
     const ok = fs.existsSync(manifest);

@@ -17,7 +17,7 @@ class Test_Registry extends Jlife_Scripture_TestCase {
 	 */
 	public function test_shipped_registry_renders_only_kinh_thanh_1925() {
 		$versions = jlife_scripture_registry()['versions'];
-		$this->assertSame( array( 'kt1925', 'nirv', 'niv', 'kthd', 'erv', 'bpt' ), array_keys( $versions ), 'no shipped entry is dropped as invalid' );
+		$this->assertSame( array( 'kt1925', 'nirv', 'niv', 'kthd', 'nlt', 'nkjv', 'csb', 'erv', 'bpt' ), array_keys( $versions ), 'no shipped entry is dropped as invalid' );
 		$renderable = array_keys( array_filter( $versions, 'jlife_scripture_can_render' ) );
 		$this->assertSame( array( 'kt1925' ), $renderable );
 		foreach ( array( 'erv', 'bpt' ) as $key ) {
