@@ -108,19 +108,21 @@ function jlife_challenges_reminders_mode() {
 }
 
 /**
- * Change the sending mode (WP-CLI). Audited without anything personal.
+ * Change the sending mode (WP-CLI or the Reminders admin page). Audited without
+ * anything personal.
  *
- * @param string $mode off|dry_run|test|live.
+ * @param string $mode  off|dry_run|test|live.
+ * @param int    $actor Acting user (0 = WP-CLI / system).
  * @return true|WP_Error
  */
-function jlife_challenges_reminders_set_mode( $mode ) {
+function jlife_challenges_reminders_set_mode( $mode, $actor = 0 ) {
 	if ( ! in_array( $mode, JLIFE_CHALLENGES_REMINDER_MODES, true ) ) {
 		return new WP_Error( 'jlife_reminder_mode', 'Mode must be one of: ' . implode( ', ', JLIFE_CHALLENGES_REMINDER_MODES ) . '.' );
 	}
 	$old = jlife_challenges_reminders_mode();
 	update_option( 'jlife_reminders_mode', $mode, false );
 	jlife_challenges_audit(
-		0,
+		(int) $actor,
 		'reminders_mode',
 		'reminders',
 		0,

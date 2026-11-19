@@ -193,8 +193,19 @@ that an inbox received it.
 /opt/cpanel/ea-php82/root/usr/bin/php ~/.latoc/wp-cli-2.11.0.phar --path="$HOME/latoc.vayhub.org" --url=https://latoc.vayhub.org cron event run --due-now
 ```
 
-**Modes** (`wp jlife reminders mode <mode>`; it starts `off` and a deploy never
-changes it):
+**Use the dashboard page to switch modes.** A site admin opens **J-Life →
+Reminders** (or **Settings** under J-Life Challenges on the Plugins screen) to see
+the mode, the opted-in count, today's queued / accepted / failed / skipped counts,
+the send window and the next scheduled check, plus warnings (cron not running,
+Brevo not on or not configured, test mode with no addresses, more than 300
+recipients). The buttons are Off, Dry run, Test and Live; **Live** needs the
+confirmation box ticked and is refused while the mail settings are not ready or Brevo is not turned on for the site; Off
+is always allowed. Every change is recorded in the audit log under the admin's
+user ID. **WP-CLI is the fallback** (it works the same, and does not ask for the
+Live confirmation), for example if the dashboard is unreachable:
+`wp jlife reminders mode <mode>`.
+
+**Modes** (it starts `off` and a deploy never changes it):
 
 | Mode | What happens |
 |---|---|
@@ -237,7 +248,8 @@ only reminder choices, never sign-in.
 **Staging acceptance order** (PR 3): `dry_run` for a day and read `status`;
 `test` for three days with the owner's inboxes; then `live` only when the owner
 says. Check each morning: one email each, correct language, unsubscribe works.
-To stop at any time: `jlife reminders mode off`.
+To stop at any time: click **Off** on the Reminders page, or run
+`jlife reminders mode off`.
 
 The send log (`reminder_sends`) holds user IDs, status, attempt count, times and
 a fixed error class, never an address, subject, body or provider error text.
