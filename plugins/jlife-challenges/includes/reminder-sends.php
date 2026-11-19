@@ -55,7 +55,7 @@ const JLIFE_CHALLENGES_REMINDER_LOCK_SECONDS = 180;
  */
 const JLIFE_CHALLENGES_REMINDER_MODES = array( 'off', 'dry_run', 'test', 'live' );
 
-add_filter( 'cron_schedules', 'jlife_challenges_reminders_cron_schedules' ); // phpcs:ignore WordPress.WP.CronInterval.ChangeDetected -- exactly five minutes, by design.
+add_filter( 'cron_schedules', 'jlife_challenges_reminders_cron_schedules' ); // phpcs:ignore WordPress.WP.CronInterval -- exactly five minutes, by design.
 add_action( JLIFE_CHALLENGES_REMINDERS_HOOK, 'jlife_challenges_reminders_tick' );
 add_action( 'init', 'jlife_challenges_reminders_schedule' );
 
@@ -129,12 +129,12 @@ function jlife_challenges_reminders_set_mode( $mode ) {
 /**
  * Parse a comma-separated list of email addresses: trimmed, lowercase, valid ones only.
  *
- * @param string|null $list Raw list.
+ * @param string|null $raw Raw list.
  * @return string[]
  */
-function jlife_challenges_parse_address_list( $list ) {
+function jlife_challenges_parse_address_list( $raw ) {
 	$out = array();
-	foreach ( explode( ',', (string) $list ) as $address ) {
+	foreach ( explode( ',', (string) $raw ) as $address ) {
 		$address = strtolower( trim( $address ) );
 		if ( '' !== $address && false !== is_email( $address ) ) {
 			$out[] = $address;
@@ -264,24 +264,24 @@ function jlife_challenges_reminders_claim( $row, DateTimeImmutable $now ) {
 	$table = jlife_challenges_table( 'reminder_sends' );
 	$lease = jlife_challenges_reminders_stamp( $now->modify( '+' . JLIFE_CHALLENGES_REMINDER_LEASE_MINUTES . ' minutes' ) );
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table; name from $wpdb->prefix.
-	$won = $wpdb->query( $wpdb->prepare( "UPDATE {$table} SET attempts = attempts + 1, next_attempt = %s, updated = %s WHERE id = %d AND status = 'queued' AND attempts = %d AND next_attempt <= %s", $lease, jlife_challenges_reminders_stamp( $now ), (int) $row['id'], (int) $row['attempts'], jlife_challenges_reminders_stamp( $now ) ) );
+	$won = $wpdb->query( $wpdb->prepare( "UPDATE {$table} SET attempts = attempts + 1, next_attempt = %s, updated = %s WHERE id = %d AND status = 'queued' AND attempts = %d AND attempts < %d AND next_attempt <= %s", $lease, jlife_challenges_reminders_stamp( $now ), (int) $row['id'], (int) $row['attempts'], JLIFE_CHALLENGES_REMINDER_MAX_ATTEMPTS, jlife_challenges_reminders_stamp( $now ) ) );
 	return 1 === (int) $won;
 }
 
 /**
  * Record a row's outcome.
  *
- * @param int               $id     Row ID.
- * @param string            $status accepted|failed|skipped|queued.
- * @param string            $class  Fixed error/skip class, or ''.
- * @param DateTimeImmutable $now    Now.
- * @param string            $next   For queued: UTC time of the next attempt.
+ * @param int               $id          Row ID.
+ * @param string            $status      accepted|failed|skipped|queued.
+ * @param string            $error_class Fixed error/skip class, or ''.
+ * @param DateTimeImmutable $now         Now.
+ * @param string            $next        For queued: UTC time of the next attempt.
  */
-function jlife_challenges_reminders_mark( $id, $status, $class, DateTimeImmutable $now, $next = '' ) {
+function jlife_challenges_reminders_mark( $id, $status, $error_class, DateTimeImmutable $now, $next = '' ) {
 	global $wpdb;
 	$data = array(
 		'status'           => $status,
-		'last_error_class' => '' === $class ? null : $class,
+		'last_error_class' => '' === $error_class ? null : $error_class,
 		'updated'          => jlife_challenges_reminders_stamp( $now ),
 	);
 	if ( '' !== $next ) {
@@ -294,23 +294,27 @@ function jlife_challenges_reminders_mark( $id, $status, $class, DateTimeImmutabl
  * A failed attempt: retry at +10, +30, +60 minutes, but never at or after noon
  * and never beyond four attempts.
  *
- * @param array             $row      Row, with attempts already counted.
- * @param array             $campaign Campaign row.
- * @param string            $class    Error class.
- * @param DateTimeImmutable $now      Now.
+ * @param array             $row         Row, with attempts already counted.
+ * @param array             $campaign    Campaign row.
+ * @param string            $error_class Error class.
+ * @param DateTimeImmutable $now         Now.
  */
-function jlife_challenges_reminders_after_failure( $row, $campaign, $class, DateTimeImmutable $now ) {
+function jlife_challenges_reminders_after_failure( $row, $campaign, $error_class, DateTimeImmutable $now ) {
+	if ( empty( $campaign['id'] ) ) {
+		jlife_challenges_reminders_mark( (int) $row['id'], 'failed', $error_class, $now );
+		return;
+	}
 	$attempts = (int) $row['attempts'];
 	$index    = jlife_challenges_day_index( $campaign, (string) $row['day_key'] );
-	if ( 'send_failed' === $class && $attempts < JLIFE_CHALLENGES_REMINDER_MAX_ATTEMPTS && $index > 0 ) {
+	if ( 'send_failed' === $error_class && $attempts < JLIFE_CHALLENGES_REMINDER_MAX_ATTEMPTS && $index > 0 ) {
 		$minutes = JLIFE_CHALLENGES_REMINDER_RETRY_MINUTES[ min( $attempts, count( JLIFE_CHALLENGES_REMINDER_RETRY_MINUTES ) ) - 1 ];
 		$next    = $now->modify( '+' . $minutes . ' minutes' );
 		if ( $next < jlife_challenges_reminder_cutoff( $campaign, $index ) ) {
-			jlife_challenges_reminders_mark( (int) $row['id'], 'queued', $class, $now, jlife_challenges_reminders_stamp( $next ) );
+			jlife_challenges_reminders_mark( (int) $row['id'], 'queued', $error_class, $now, jlife_challenges_reminders_stamp( $next ) );
 			return;
 		}
 	}
-	jlife_challenges_reminders_mark( (int) $row['id'], 'failed', $class, $now );
+	jlife_challenges_reminders_mark( (int) $row['id'], 'failed', $error_class, $now );
 }
 
 /**

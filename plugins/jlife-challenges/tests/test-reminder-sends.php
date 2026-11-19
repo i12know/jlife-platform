@@ -98,7 +98,7 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * pre_wp_mail callback: record the message and answer as configured.
+	 * Fake transport (the pre_wp_mail filter): record the message and answer as configured.
 	 *
 	 * @param null|bool $pre  Short-circuit value.
 	 * @param array     $atts wp_mail arguments.
@@ -116,11 +116,11 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 	/**
 	 * Filter callback for the test-mode list.
 	 *
-	 * @param string[] $list Addresses from the constant.
+	 * @param string[] $addresses Addresses from the constant.
 	 * @return string[]
 	 */
-	public function filter_test_list( $list ) {
-		return null === $this->test_list ? $list : $this->test_list;
+	public function filter_test_list( $addresses ) {
+		return null === $this->test_list ? $addresses : $this->test_list;
 	}
 
 	/**
@@ -761,14 +761,11 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 		remove_filter( 'pre_wp_mail', array( $this, 'capture_mail' ), 5 );
 		reset_phpmailer_instance();
 		add_filter( 'wp_mail_from', static fn() => 'reminders@example.test' ); // The suite's default sender host is not a valid domain.
-" ); } );
 		$this->opt_in( array( 'a' ) );
 		$this->set_now( '2026-12-20 14:00:00' );
 		$this->tick();
 		$mailer = tests_retrieve_phpmailer_instance();
 		$sent   = $mailer->get_sent();
-" . 'ROWS ' . wp_json_encode( $this->rows() ) . "
-" );
 		$this->assertNotFalse( $sent, 'the mailer got a message' );
 		$this->assertStringContainsString( 'List-Unsubscribe: <' . jlife_challenges_unsubscribe_url( $this->u['a'], $this->campaign ) . '>', $sent->header );
 		$this->assertStringContainsString( 'List-Unsubscribe-Post: List-Unsubscribe=One-Click', $sent->header );

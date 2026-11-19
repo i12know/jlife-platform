@@ -90,11 +90,8 @@ class Jlife_Reminders_Command {
 
 	/**
 	 * Run one scheduler tick now (the same work the cron event does).
-	 *
-	 * @param array $args       Positional args.
-	 * @param array $assoc_args Options.
 	 */
-	public function run( $args, $assoc_args ) {
+	public function run() {
 		$r = jlife_challenges_reminders_tick();
 		WP_CLI::success( sprintf( 'Tick done in mode %s: %d queued, %d handled.', $r['mode'], $r['queued'], $r['handled'] ) );
 	}
@@ -107,10 +104,9 @@ class Jlife_Reminders_Command {
 	 * <mode>
 	 * : off | dry_run | test | live
 	 *
-	 * @param array $args       Positional args.
-	 * @param array $assoc_args Options.
+	 * @param array $args Positional args.
 	 */
-	public function mode( $args, $assoc_args ) {
+	public function mode( $args ) {
 		$r = jlife_challenges_reminders_set_mode( (string) ( $args[0] ?? '' ) );
 		if ( is_wp_error( $r ) ) {
 			WP_CLI::error( $r->get_error_message() );
