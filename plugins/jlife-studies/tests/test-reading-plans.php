@@ -167,8 +167,14 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 			'title'    => 'Jesus and Nicodemus | Jesus and John the Baptizer',
 			'titles'   => array( 'Jesus and Nicodemus', 'Jesus and John the Baptizer' ),
 			'passages' => array(
-				array( 'display' => 'John 3:1-21', 'refs' => array( array( 'book' => 'John' ) ) ),
-				array( 'display' => 'John 3:22-4:3', 'refs' => array( array( 'book' => 'John' ) ) ),
+				array(
+					'display' => 'John 3:1-21',
+					'refs'    => array( array( 'book' => 'John' ) ),
+				),
+				array(
+					'display' => 'John 3:22-4:3',
+					'refs'    => array( array( 'book' => 'John' ) ),
+				),
 			),
 			'i18n'     => array(
 				'vi' => array(
@@ -177,6 +183,7 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 				),
 			),
 		);
+
 		$vi = jlife_studies_localize_day( $day, 'vi' );
 		$this->assertSame( 'Chúa Giê-xu và Ni-cô-đem | Chúa Giê-xu và Giăng Báp-tít', $vi['title'] );
 		$this->assertSame( array( 'Chúa Giê-xu và Ni-cô-đem', 'Chúa Giê-xu và Giăng Báp-tít' ), $vi['titles'] );
@@ -194,7 +201,7 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 	}
 
 	/**
-	 * jlife_studies_get_reading_day() follows the current locale.
+	 * The day from jlife_studies_get_reading_day() follows the current locale.
 	 */
 	public function test_get_reading_day_follows_the_locale() {
 		$doc = $this->fixture( 'primary' );
