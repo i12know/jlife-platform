@@ -138,6 +138,21 @@ mv "${backup}.part" "${backup}"
 # Keep the 10 most recent backups.
 find "${STATE_DIR}/backups" -name '*.sql.gz' -printf '%T@ %p\n' | sort -rn | tail -n +11 | cut -d' ' -f2- | xargs -r rm -f
 
+# WordPress core follows the version pinned in .wp-env.json (the one CI tests),
+# after the backup above. Upgrade only: a server already on the pin or newer is
+# left alone, never downgraded.
+current_wp="$(wp core version)"
+if [ "${current_wp}" != "${WP_VERSION}" ] \
+  && [ "$(printf '%s\n%s\n' "${current_wp}" "${WP_VERSION}" | sort -V | head -n1)" = "${current_wp}" ]; then
+  log "Updating WordPress ${current_wp} -> ${WP_VERSION} (pinned)"
+  wp core update --version="${WP_VERSION}"
+  wp core update-db --network
+  wp language core update || log "Language pack update failed; WordPress still works in English."
+else
+  log "WordPress ${current_wp} (pin ${WP_VERSION}; no core update)"
+fi
+wp core verify-checksums || die "WordPress core checksum verification failed."
+
 log "Installing J-Life plugins: ${PLUGINS[*]}"
 stage="$(mktemp -d "${STATE_DIR}/stage.XXXXXX")"
 tar -xzf "${BUNDLE}" -C "${stage}"

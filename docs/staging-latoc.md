@@ -26,6 +26,7 @@ Status: development/pilot staging for the 104-Day SOAP Bible Marathon ([#49](htt
    - uploads them with the server script
    - sends the settings over SSH into a 0600 file that the script deletes
    - on the server: installs WordPress if absent, **backs up the database** (stops if the backup fails), swaps in the plugins and activates them
+   - **WordPress core follows the pin in `.wp-env.json`** (the version CI tests). After the backup, a server older than the pin is updated to it (`wp core update`, network database upgrade, core language packs); one already on the pin or newer is left alone, never downgraded. Core checksums are then verified, and a mismatch stops the deploy. To upgrade WordPress, bump the pin in a PR (CI tests it), merge, and deploy. Don't use "Update now" in the dashboard: staging would run a version CI hasn't tested.
    - installs the **pinned Polylang** (checksum-verified, per site), the Vietnamese language packs, re-asserts the language settings, and **seeds the two landing pages once, as drafts** (see below)
    - smoke test: the front page answers HTTP 200, the magic-link route is off, and the landing pages behave as described under [Smoke test](#smoke-test)
 
@@ -293,6 +294,7 @@ The same commands exist on the server: `wp jlife test-campaign create|remove|sta
 
 - **Code:** revert the commit on `main`, then run the workflow again. Plugins are replaced wholesale on each deploy. (Reverting the landing-page change stops the deploy from managing Polylang; it does not remove Polylang or the pages. See the next item.)
 - **Data:** restore the backup taken just before the bad deploy (see above). The run log prints its name ("Latest backup: …").
+- **WordPress core:** the deploy never downgrades. To go back after a core update, restore that deploy's backup, then in cPanel > Terminal run `wp core update --version=<old version> --force`, and revert the pin on `main` so the next deploy doesn't upgrade again.
 - **Polylang and the landing pages** (cPanel > Terminal; `wp` means the WP-CLI call from the restore section, with `--url=https://latoc.vayhub.org`). The pages and their content always survive:
   1. `wp plugin deactivate polylang`. `/` keeps serving the English page, `/vi/` becomes 404, the switcher block renders nothing, and the app routes are unchanged.
   2. Take the Vietnamese page out of public view (it would otherwise answer at its plain slug): in Pages, or `wp post update <VI page id> --post_status=draft`.
