@@ -97,3 +97,8 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-reminder-status{min-height:1.5em;margin:.25rem 0 0;color:var(--ok);font-size:.875rem}
 .jl-reminder-status.jl-reminder-failed{color:var(--err)}
 .jl-reminders{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:.5rem}
+/* My Bible pickers on My Marathon (#140): label above a full-width select, 44px tall */
+.jl-bible-picker{margin:.75rem 0 0;font-size:.9375rem}
+.jl-bible-picker .jl-field{flex-direction:column;align-items:stretch;gap:.25rem;margin:.5rem 0}
+.jl-bible-picker select{width:100%;min-height:2.75rem}
+.jl-hint{margin:.25rem 0 0;color:var(--muted);font-size:.875rem}

@@ -7,6 +7,12 @@
  * (link-only, not yet licensed), or any failure, shows an "Open in Bible
  * Gateway" link instead, so reading and SOAP are never blocked.
  *
+ * Which Bible(s) a participant reads comes from
+ * jlife_scripture_versions_for_user() (#140): their own choice, else the
+ * default for their language. A second Bible, when they chose one, shows under
+ * the first. The chosen version's own language decides the labels and the
+ * `lang` of its text.
+ *
  * Off by default: jlife_scripture_maybe_render_day() returns null until the
  * site option jlife_scripture_native_reader is "1", and the screens keep
  * their current reader.
@@ -42,26 +48,39 @@ function jlife_scripture_maybe_render_day( $day, $user_id = 0, $args = array() )
 }
 
 /**
- * The version a language reads in, and its link fallback.
+ * What the reader needs for one version: whether it can show text, and its
+ * language's link fallback.
  *
- * @param string $lang Language code.
- * @return array{version: array|null, native: bool, fallback: array|null}
+ * @param array|null $version Registry entry, or null when the registry has none.
+ * @param string     $lang    Language to use when there is no version.
+ * @return array{version: array|null, native: bool, fallback: array|null, language: string}
  */
-function jlife_scripture_reader_choice( $lang ) {
-	$version = jlife_scripture_default_version( $lang );
+function jlife_scripture_reader_choice_for( $version, $lang ) {
+	$lang = null !== $version ? (string) $version['language'] : (string) $lang;
 	return array(
 		'version'  => $version,
 		'native'   => null !== $version && jlife_scripture_can_render( $version ),
 		'fallback' => jlife_scripture_fallback_version( $lang ),
+		'language' => $lang,
 	);
+}
+
+/**
+ * The version a language reads in by default, and its link fallback.
+ *
+ * @param string $lang Language code.
+ * @return array{version: array|null, native: bool, fallback: array|null, language: string}
+ */
+function jlife_scripture_reader_choice( $lang ) {
+	return jlife_scripture_reader_choice_for( jlife_scripture_default_version( $lang ), $lang );
 }
 
 /**
  * Render a day's passages.
  *
  * @param mixed $day     Plan day: passages[] { display }, optional i18n.<lang>.passages[] labels.
- * @param int   $user_id Participant whose `locale` picks the language (0 = page language).
- * @param array $args    { language?: "en"|"vi" (overrides the participant's) }.
+ * @param int   $user_id Participant whose Bible(s) to show (0 = not signed in: the page's language default).
+ * @param array $args    { language?: "en"|"vi" shows that language's default Bible and ignores the participant's choice (the public /reading/ pages) }.
  * @return string Markup (empty when the day has no passages).
  */
 function jlife_scripture_render_day( $day, $user_id = 0, $args = array() ) {
@@ -69,33 +88,84 @@ function jlife_scripture_render_day( $day, $user_id = 0, $args = array() ) {
 	if ( array() === $passages ) {
 		return '';
 	}
-	$lang   = in_array( $args['language'] ?? '', array( 'en', 'vi' ), true ) ? $args['language'] : jlife_scripture_language_for_user( (int) $user_id );
-	$choice = jlife_scripture_reader_choice( $lang );
+	$forced  = in_array( $args['language'] ?? '', array( 'en', 'vi' ), true ) ? $args['language'] : '';
+	$user_id = (int) $user_id;
+	$pair    = jlife_scripture_versions_for_user( $user_id, $forced );
+	$lang    = '' !== $forced ? $forced : jlife_scripture_language_for_user( $user_id );
+	$choices = array( jlife_scripture_reader_choice_for( $pair[0], $lang ) );
+	if ( null !== $pair[1] ) {
+		$choices[] = jlife_scripture_reader_choice_for( $pair[1], $lang );
+	}
+	$lang   = $choices[0]['language'];
 	$labels = (array) ( $day['i18n'][ $lang ]['passages'] ?? array() );
 	$out    = '';
 	foreach ( array_values( $passages ) as $i => $passage ) {
 		$display  = (string) ( is_array( $passage ) ? ( $passage['display'] ?? '' ) : $passage );
 		$label    = is_string( $labels[ $i ] ?? null ) && '' !== $labels[ $i ] ? $labels[ $i ] : $display;
 		$segments = jlife_scripture_parse_reference( $display );
-		$body     = '';
-		$shown    = false;
-		if ( ! is_wp_error( $segments ) && $choice['native'] ) {
-			$result = jlife_scripture_get_passage( $choice['version'], $segments );
-			$shown  = ! is_wp_error( $result );
-			$body   = $shown
-				? jlife_scripture_render_verses( $result ) . jlife_scripture_render_attribution( $choice['version'] )
-				: '<p class="jls-note">' . esc_html__( 'The Bible text could not be loaded.', 'jlife-scripture' ) . '</p>';
-		}
-		if ( ! $shown ) {
-			$body .= jlife_scripture_render_link( is_wp_error( $segments ) ? null : $segments, $choice['fallback'], $day, $lang );
-		}
-		$out .= '<details class="jls-passage"' . ( 0 === $i ? ' open' : '' ) . '>'
+		$out     .= '<details class="jls-passage"' . ( 0 === $i ? ' open' : '' ) . '>'
 			. '<summary>' . esc_html( $label ) . '</summary>'
-			. '<div class="jls-body">' . $body . '</div>'
+			. '<div class="jls-body">' . jlife_scripture_render_editions( $choices, $segments, $day ) . '</div>'
 			. '</details>';
 	}
 	jlife_scripture_enqueue_style();
 	return '<section class="jls-reader" lang="' . esc_attr( $lang ) . '" aria-label="' . esc_attr__( 'Scripture reading', 'jlife-scripture' ) . '">' . $out . '</section>';
+}
+
+/**
+ * One passage in each of the person's Bibles, the second under the first.
+ * With a single Bible the markup is just that Bible's. Two Bibles that would
+ * show the same thing (the same Bible Gateway link) show it once.
+ *
+ * @param array[]        $choices  jlife_scripture_reader_choice_for() results, first Bible first.
+ * @param array|WP_Error $segments Parsed reference, or the parse error.
+ * @param array          $day      Plan day.
+ * @return string
+ */
+function jlife_scripture_render_editions( $choices, $segments, $day ) {
+	$editions = array();
+	foreach ( $choices as $choice ) {
+		$html = jlife_scripture_render_edition( $choice, $segments, $day );
+		if ( '' !== $html && ! in_array( $html, array_column( $editions, 'html' ), true ) ) {
+			$editions[] = array(
+				'lang' => $choice['language'],
+				'html' => $html,
+			);
+		}
+	}
+	if ( count( $editions ) < 2 ) {
+		return $editions ? $editions[0]['html'] : '';
+	}
+	$out = '';
+	foreach ( $editions as $edition ) {
+		$out .= '<div class="jls-edition" lang="' . esc_attr( $edition['lang'] ) . '">' . $edition['html'] . '</div>';
+	}
+	return $out;
+}
+
+/**
+ * One passage in one Bible: the text with its copyright line, or the Bible
+ * Gateway link when the version cannot show text or the text is unavailable.
+ *
+ * @param array          $choice   jlife_scripture_reader_choice_for() result.
+ * @param array|WP_Error $segments Parsed reference, or the parse error.
+ * @param array          $day      Plan day.
+ * @return string
+ */
+function jlife_scripture_render_edition( $choice, $segments, $day ) {
+	$body  = '';
+	$shown = false;
+	if ( ! is_wp_error( $segments ) && $choice['native'] ) {
+		$result = jlife_scripture_get_passage( $choice['version'], $segments );
+		$shown  = ! is_wp_error( $result );
+		$body   = $shown
+			? jlife_scripture_render_verses( $result ) . jlife_scripture_render_attribution( $choice['version'] )
+			: '<p class="jls-note">' . esc_html__( 'The Bible text could not be loaded.', 'jlife-scripture' ) . '</p>';
+	}
+	if ( ! $shown ) {
+		$body .= jlife_scripture_render_link( is_wp_error( $segments ) ? null : $segments, $choice['fallback'], $day, $choice['language'] );
+	}
+	return $body;
 }
 
 /**
@@ -178,5 +248,5 @@ function jlife_scripture_render_link( $segments, $fallback, $day, $lang ) {
  * The reader's stylesheet (phone-first, no inner scroll box, dark mode).
  */
 function jlife_scripture_enqueue_style() {
-	wp_enqueue_style( 'jlife-scripture', plugins_url( 'assets/scripture.css', JLIFE_SCRIPTURE_FILE ), array(), '0.1.0' );
+	wp_enqueue_style( 'jlife-scripture', plugins_url( 'assets/scripture.css', JLIFE_SCRIPTURE_FILE ), array(), '0.2.0' );
 }

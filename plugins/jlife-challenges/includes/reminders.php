@@ -326,7 +326,7 @@ function jlife_challenges_screen_unsubscribe() {
 	echo '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', '' !== $req['locale'] ? $req['locale'] : determine_locale() ) ) . '"><head><meta charset="utf-8">' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every part is escaped.
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer">'
 		. '<title>' . esc_html( $page[0] ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=13' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=14' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><main>' . $page[1] . '</main></body></html>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts.
 	exit;
 }
@@ -473,16 +473,18 @@ function jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, $langu
 }
 
 /**
- * My Marathon's "Daily reading email" section: the checkbox and the language.
- * Other personal settings for the marathon can join this section later.
+ * My Marathon's "Daily reading email" section: the checkbox and the language,
+ * then, under the language row, the My Bible picker (#140; bible-choice.php).
  *
  * @param int  $user_id     Participant.
  * @param int  $campaign_id Campaign.
  * @param bool $saved       Show "Saved." (after a no-JavaScript save).
+ * @param bool $bible_saved Show "Saved." under the My Bible picker (after its no-JavaScript save).
  * @return string Escaped HTML.
  */
-function jlife_challenges_render_reminder_settings( $user_id, $campaign_id, $saved = false ) {
+function jlife_challenges_render_reminder_settings( $user_id, $campaign_id, $saved = false, $bible_saved = false ) {
 	return '<section class="jl-reminders"><h2>' . esc_html__( 'Daily reading email', 'jlife-challenges' ) . '</h2>'
 		. jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, true, $saved )
+		. jlife_challenges_render_bible_picker( $user_id, $campaign_id, $bible_saved )
 		. '</section>';
 }

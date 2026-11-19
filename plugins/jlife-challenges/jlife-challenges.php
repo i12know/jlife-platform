@@ -29,6 +29,7 @@ require_once __DIR__ . '/includes/soap.php';
 require_once __DIR__ . '/includes/scores.php';
 require_once __DIR__ . '/includes/shares.php';
 require_once __DIR__ . '/includes/reminders.php';
+require_once __DIR__ . '/includes/bible-choice.php';
 require_once __DIR__ . '/includes/reminder-sends.php';
 require_once __DIR__ . '/includes/reminders-admin.php';
 require_once __DIR__ . '/includes/lifecycle.php';

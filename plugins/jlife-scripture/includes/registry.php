@@ -167,16 +167,26 @@ function jlife_scripture_can_render( $version ) {
 }
 
 /**
- * The reader's language for a participant: their `locale` user meta (the
- * same rule as jlife_challenges_language_order()), or for a visitor who is
- * not signed in, the page's locale. Only "vi" and "en" are offered.
+ * My language for a participant: their `locale` user meta (the same rule as
+ * jlife_challenges_language_order()) unless the `jlife_scripture_user_language`
+ * filter says otherwise (the reminder-email language, #140), or for a visitor
+ * who is not signed in, the page's locale. Only "vi" and "en" are offered.
  *
- * Reads one language preference; no other participant data.
+ * Reads language preferences only; no other participant data.
  *
  * @param int $user_id Participant (0 = not signed in).
  * @return string "vi" or "en".
  */
 function jlife_scripture_language_for_user( $user_id ) {
 	$locale = $user_id > 0 ? (string) get_user_meta( (int) $user_id, 'locale', true ) : determine_locale();
-	return 0 === strpos( $locale, 'vi' ) ? 'vi' : 'en';
+	$lang   = 0 === strpos( $locale, 'vi' ) ? 'vi' : 'en';
+	/**
+	 * "My language" for a participant. jlife-challenges answers with the
+	 * reminder-email language chosen on My Marathon (#140); nothing else uses it.
+	 *
+	 * @param string $lang    "en" or "vi", from the account's `locale`.
+	 * @param int    $user_id Participant (0 = not signed in).
+	 */
+	$lang = apply_filters( 'jlife_scripture_user_language', $lang, (int) $user_id );
+	return in_array( $lang, array( 'en', 'vi' ), true ) ? $lang : 'en';
 }

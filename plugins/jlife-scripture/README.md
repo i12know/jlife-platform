@@ -4,7 +4,7 @@ The day's Scripture **on the page** (#139, part 1): a Bible version allowlist, t
 
 ## Why a separate plugin
 
-- Bible text and its licenses are a different concern from participant data: this plugin stores no personal data and needs no privacy gate (it reads only the participant's `locale` to pick a language; see `docs/challenges-engine-design.md` §4f).
+- Bible text and its licenses are a different concern from participant data: this plugin stores no personal data and needs no privacy gate (it reads the participant's language and, since #140, their own two-key Bible choice; see `docs/challenges-engine-design.md` §4d and §4f).
 - Both `jlife-challenges` (Today, `/soap?day=dNNN`) and `jlife-studies` (public `/reading/` pages, #106) use the same reader; neither owns the other.
 - It ships its own data (registry and the 1925 text), so a deploy needs no network and the tests read the real files.
 
@@ -26,7 +26,19 @@ $native = function_exists( 'jlife_scripture_maybe_render_day' )
 	: null;
 ```
 
-The participant's `locale` user meta picks the language (`vi*` → Vietnamese, else English); a visitor gets the page's locale. Each language shows its `default_for` version when it can render, otherwise the language's fallback link (today: English NIrV → ERV link; Vietnamese → Kinh Thánh 1925 text).
+Which Bible a participant reads comes from `jlife_scripture_versions_for_user( $user_id )` → `[ first, second|null ]` (registry entries; #140). Order: the participant's **own choice** (when the registry still lists it as `enabled`), then the registry's `default_for` Bible for **My language**, then the site default. My language is the account's `locale` user meta (`vi*` → Vietnamese, else English) unless the `jlife_scripture_user_language` filter answers otherwise (`jlife-challenges` answers with the reminder-email language chosen on My Marathon); a visitor gets the page's locale and the language's default. A version that cannot show text yet (NIrV until it is licensed) shows the language's fallback link (today: English NIrV → ERV link; Vietnamese → Kinh Thánh 1925 text). A second Bible, when chosen, renders under the first for every passage; the chosen version's own language decides its labels and `lang`. `render_day( …, array( 'language' => 'vi' ) )` (the public `/reading/` pages) shows that language's default and ignores any stored choice.
+
+### A participant's Bible choice (#140)
+
+| Item | Where |
+|---|---|
+| Storage | Two user-meta values on the person's own account: `jlife_bible_version` (a registry key; absent = follow My language) and `jlife_bible_version_2` (optional second Bible). Registry keys only. Matrix: `docs/challenges-engine-design.md` §4d |
+| Save | `jlife_scripture_set_user_choice( $user_id, array( 'primary' => …, 'secondary' => … ) )` → `true` or `jlife_bible_unknown` (a key the registry does not list as `enabled`). A slot left out keeps its value; `''`/`null` clears. A second Bible equal to the first is dropped |
+| Read | `jlife_scripture_versions_for_user()`, `jlife_scripture_user_choice()`; callers pass the viewer's own ID only |
+| Picker data | `jlife_scripture_selectable_versions()` → language => key => entry, enabled versions only, registry order; `jlife_scripture_can_render()` tells which open Bible Gateway instead of showing text |
+| UI | My Marathon (`jlife-challenges`, `includes/bible-choice.php`) |
+
+Not wired yet: Today, `/soap` and `/reading/` still call the reader as before (it stays off with `jlife_scripture_native_reader`); the follow-up PR switches them to `jlife_scripture_maybe_render_day()`.
 
 ## Settings
 

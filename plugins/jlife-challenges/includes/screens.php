@@ -57,7 +57,7 @@ function jlife_challenges_format_date( $ymd ) {
  * @param string          $title  Page title.
  * @param string          $body   Escaped HTML.
  * @param string          $active Active nav item.
- * @param string|string[] $script Optional script file(s): 'soap', 'share', 'reminder'.
+ * @param string|string[] $script Optional script file(s): 'soap', 'share', 'reminder', 'bible'.
  */
 function jlife_challenges_send_page( $title, $body, $active = '', $script = '' ) {
 	nocache_headers();
@@ -73,7 +73,7 @@ function jlife_challenges_send_page( $title, $body, $active = '', $script = '' )
  * @param string          $title  Page title.
  * @param string          $body   Escaped HTML.
  * @param string          $active Active nav item.
- * @param string|string[] $script Optional script file(s): 'soap', 'share', 'reminder'.
+ * @param string|string[] $script Optional script file(s): 'soap', 'share', 'reminder', 'bible'.
  * @return string
  */
 function jlife_challenges_page_html( $title, $body, $active = '', $script = '' ) {
@@ -108,6 +108,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '' )
 		'soap'     => 4,
 		'share'    => 4,
 		'reminder' => 1,
+		'bible'    => 1,
 	);
 	foreach ( (array) $script as $file ) {
 		if ( isset( $versions[ $file ] ) ) {
@@ -119,7 +120,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '' )
 	$html   = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=13' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=14' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>' . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. $scripts
@@ -923,6 +924,11 @@ function jlife_challenges_screen_marathon() {
 		wp_safe_redirect( add_query_arg( 'reminders', 'saved', jlife_challenges_screen_url( 'marathon' ) ) );
 		exit;
 	}
+	// My Bible without JavaScript (#140): saved, then back to My Marathon.
+	if ( $view && jlife_challenges_handle_bible_post( $user_id ) ) {
+		wp_safe_redirect( add_query_arg( 'bible', 'saved', jlife_challenges_screen_url( 'marathon' ) ) );
+		exit;
+	}
 	if ( ! $view ) {
 		jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), (string) jlife_challenges_render_no_day( array( 'state' => 'not_enrolled' ) ), 'marathon' );
 	}
@@ -953,8 +959,8 @@ function jlife_challenges_screen_marathon() {
 		. '<p class="jl-score">' . esc_html( sprintf( __( '%1$d of %2$d', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>'
 		. '<p>' . esc_html__( 'Every day is a fresh start. Tap any day to read it or write your SOAP.', 'jlife-challenges' ) . '</p>'
 		. '<div class="jl-grid">' . $grid . '</div><ul class="jl-legend">' . $legend . '</ul>'
-		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flag after a redirect.
-	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon', 'reminder' );
+		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ), isset( $_GET['bible'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flags after a redirect.
+	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon', array( 'reminder', 'bible' ) );
 }
 
 add_action( 'template_redirect', 'jlife_challenges_route' );
