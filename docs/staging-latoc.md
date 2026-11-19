@@ -163,8 +163,9 @@ host mail. Participant responses remain generic. Staff see an admin notice on
 failure; `jlife_mail_health` holds only the allowlisted outcome and UTC timestamp,
 and server logging uses only that outcome. No recipient, code, body, credentials,
 or raw provider errors are stored by this integration. Brevo itself can retain
-transactional message content: review its account retention/access settings and
-keep unnecessary tracking off for authentication emails.
+transactional message content: review its account retention/access settings.
+Its open and click tracking cannot be turned off on the Free plan (see **Brevo
+settings** under Daily reading reminders).
 
 **Rotation:** create a replacement staging key privately, atomically replace the
 protected file with its new value (same 0600 permissions), test delivery, then
@@ -258,11 +259,29 @@ have given consent and opted in to reminders.
 - `jlife reminders run`: one tick now, the same work the cron event does.
 - `jlife reminders mode <off|dry_run|test|live>`
 
-**Brevo settings.** For this sender, keep Brevo's own unsubscribe link and click
-tracking **off**: Brevo's unsubscribe blocklists the address for transactional
-mail too, which would stop sign-in codes, and click tracking rewrites the Today
-link. Our unsubscribe is the signed one-click link (`/unsubscribe/`); it changes
-only reminder choices, never sign-in.
+**Brevo settings** (checked on the Free plan, 2026-11-19, [#63](https://github.com/i12know/jlife-platform/issues/63#issuecomment-7013213884)):
+
+- **Tracking cannot be turned off.** Transactional → Settings offers only
+  *Anonymous email tracking?*, which stays **No** (owner decision). With Yes,
+  opens and clicks are still recorded, just not tied to a Brevo contact. Turning
+  tracking off is an Enterprise request, and SMTP has no per-message control. So
+  Brevo may rewrite the links in the HTML email (Today and our unsubscribe link)
+  through its tracking domain and record opens.
+- **There is no Brevo unsubscribe-link setting** for transactional mail, and
+  nothing indicates Brevo adds one to SMTP messages. Our unsubscribe is the
+  signed one-click link (`/unsubscribe/`) plus the `List-Unsubscribe` header; it
+  changes only reminder choices, never sign-in.
+- **Watch *Blocked or unsubscribed contacts*** during the pilot. An address on
+  that list (spam report, repeated bounces, unsubscribe) silently stops getting
+  **all** our mail, sign-in codes included. WordPress cannot see this: Brevo
+  accepts the message and drops it. The only fix is removing the address there
+  by hand.
+- **Verify in PR 3** on one received reminder: whether the Today link is
+  rewritten through Brevo's tracking domain, and that our `/unsubscribe/` link and
+  `List-Unsubscribe` header are the only unsubscribe. If rewriting matters, the
+  options are showing the Today address as plain text too, or sending reminders
+  as plain text only. Text-only mail is likely to carry neither the open-tracking
+  image nor rewritten links; confirm that on a received message.
 
 **Staging acceptance order** (PR 3): `dry_run` for a day and read `status`;
 `test` for three days with the owner's inboxes; then `live` only when the owner
