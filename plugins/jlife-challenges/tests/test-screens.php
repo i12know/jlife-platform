@@ -780,7 +780,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( '1 of 104', $body );
 
 		// My Marathon renders and exits, so check its source still prints the score.
-		$src = (string) file_get_contents( dirname( __DIR__ ) . '/includes/screens.php' );
+		$src = (string) file_get_contents( dirname( __DIR__ ) . '/includes/screens.php' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading the plugin's own source.
 		$fn  = substr( $src, (int) strpos( $src, 'function jlife_challenges_screen_marathon' ) );
 		$fn  = substr( $fn, 0, (int) strpos( $fn, "\n}\n" ) );
 		$this->assertStringContainsString( '<p class="jl-score">', $fn );
