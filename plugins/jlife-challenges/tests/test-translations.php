@@ -73,6 +73,68 @@ class Test_Translations extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * Every translatable string in the plugin's code (single and plural forms)
+	 * has a Vietnamese draft, so a participant who chose Vietnamese never meets
+	 * English on a screen (#119). A new English-only string fails here.
+	 */
+	public function test_every_participant_string_has_a_vietnamese_translation() {
+		$catalog = include dirname( __DIR__ ) . '/languages/jlife-challenges-vi.l10n.php';
+		$this->assertSame( 'jlife-challenges', $catalog['domain'] );
+		$quoted  = '(\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"\\\\]|\\\\.)*")';
+		$unquote = static function ( $q ) {
+			$body = substr( $q, 1, -1 );
+			return "'" === $q[0] ? str_replace( array( "\\'", '\\\\' ), array( "'", '\\' ), $body ) : stripcslashes( $body );
+		};
+		$found   = array();
+		foreach ( glob( dirname( __DIR__ ) . '/includes/*.php' ) as $file ) {
+			$src = (string) file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading the plugin's own source.
+			preg_match_all( '/\b(?:esc_html__|esc_attr__|esc_html_e|esc_attr_e|__|_e)\(\s*' . $quoted . '/s', $src, $m );
+			foreach ( $m[1] as $q ) {
+				$found[] = $unquote( $q );
+			}
+			preg_match_all( '/\b_n\(\s*' . $quoted . '\s*,\s*' . $quoted . '/s', $src, $m, PREG_SET_ORDER );
+			foreach ( $m as $pair ) {
+				$found[] = $unquote( $pair[1] ) . "\0" . $unquote( $pair[2] );
+			}
+			preg_match_all( '/\b_x\(\s*' . $quoted . '\s*,\s*' . $quoted . '/s', $src, $m, PREG_SET_ORDER );
+			foreach ( $m as $pair ) {
+				$found[] = $unquote( $pair[2] ) . "\4" . $unquote( $pair[1] );
+			}
+		}
+		$this->assertGreaterThan( 150, count( array_unique( $found ) ), 'the scan finds the plugin strings' );
+		$missing = array_values( array_diff( array_unique( $found ), array_keys( $catalog['messages'] ) ) );
+		$this->assertSame( array(), $missing, 'untranslated: ' . implode( ' | ', $missing ) );
+	}
+
+	/**
+	 * The navigation and a reading day's date read in Vietnamese (#119): the date
+	 * in Vietnamese word order, 18 tháng 11, 2026, not "Tháng 11 18, 2026".
+	 */
+	public function test_navigation_and_dates_read_in_vietnamese() {
+		$page = jlife_challenges_page_html( 'X', '', 'today' );
+		foreach ( array( 'Hôm nay', 'Nhóm của tôi', 'Marathon của tôi', 'Đăng xuất' ) as $vi ) {
+			$this->assertStringContainsString( $vi, $page );
+		}
+		$this->assertStringNotContainsString( 'My Marathon', $page );
+		$this->assertSame( '18 tháng 11, 2026', jlife_challenges_format_date( '2026-11-18' ) );
+		$this->assertSame( 'Ngày 14 · 18 tháng 11, 2026', sprintf( __( 'Day %1$d · %2$s', 'jlife-challenges' ), 14, jlife_challenges_format_date( '2026-11-18' ) ) ); // phpcs:ignore WordPress.WP.I18n.MissingTranslatorsComment -- test.
+		$this->assertSame( 'Chưa bắt đầu.', __( 'Not started yet.', 'jlife-challenges' ) );
+		$this->assertSame( 'Đọc các đoạn Kinh Thánh hôm nay', __( "Read today's passages", 'jlife-challenges' ) );
+	}
+
+	/**
+	 * English keeps the site's own date format.
+	 */
+	public function test_english_dates_keep_the_site_format() {
+		remove_filter( 'determine_locale', $this->force, 99 );
+		unload_textdomain( 'jlife-challenges', true );
+		update_option( 'date_format', 'F j, Y' );
+		$this->assertSame( 'November 18, 2026', jlife_challenges_format_date( '2026-11-18' ) );
+		update_option( 'date_format', 'Y-m-d' );
+		$this->assertSame( '2026-11-18', jlife_challenges_format_date( '2026-11-18' ) );
+	}
+
+	/**
 	 * The start form, the controls, the confirmation and the old-shares list read in Vietnamese.
 	 */
 	public function test_group_screens_render_in_vietnamese() {

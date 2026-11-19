@@ -35,13 +35,20 @@ function jlife_challenges_query_vars( $vars ) {
 }
 
 /**
- * Format a Y-m-d date for display.
+ * Format a Y-m-d date for display. A language whose catalog translates the
+ * "date format" entry gets its own word order (Vietnamese: 18 tháng 11, 2026,
+ * #119); other languages keep the site's date format.
  *
  * @param string $ymd Date.
  * @return string
  */
 function jlife_challenges_format_date( $ymd ) {
-	return date_i18n( (string) get_option( 'date_format' ), (int) strtotime( $ymd . ' 12:00:00' ) );
+	/* translators: PHP date() format for a reading day's date. Vietnamese: j \t\h\á\n\g n, Y (18 tháng 11, 2026). */
+	$format = _x( 'F j, Y', 'date format', 'jlife-challenges' );
+	if ( 'F j, Y' === $format ) {
+		$format = (string) get_option( 'date_format' );
+	}
+	return date_i18n( $format, (int) strtotime( $ymd . ' 12:00:00' ) );
 }
 
 /**
