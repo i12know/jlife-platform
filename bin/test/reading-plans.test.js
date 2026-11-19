@@ -138,3 +138,55 @@ test('shipped plan: Day 9 lists Harmony sections 20-23, each linked (#90)', () =
   ]);
   for (const d of supp.days) assert.ok(d.harmony_sections.length > 0, `${d.day_id} has Harmony sections`);
 });
+
+test('Harmony Bible overrides: Robertson section -> Harmony pages (#109)', () => {
+  const { buildHarmonySections, harmonyTargets } = require('../content-lib/harmony-sections');
+  const toEvent = (label) => {
+    const n = label.replace(/[a-z]+$/, '');
+    return { gospel_event_id: `r1922-${n.padStart(3, '0')}`, title: `Title ${n}` };
+  };
+  const url = 'https://harmony-bible.com/sections/{number}/';
+  const overrides = { 32: ['32a', '32b'], 44: ['43b'], 93: ['95'], 95: ['94'] };
+  assert.deepEqual(harmonyTargets('31', overrides), ['31'], 'no override: same number');
+  assert.deepEqual(harmonyTargets('32', overrides), ['32a', '32b']);
+  assert.deepEqual(harmonyTargets('toString', overrides), ['toString'], 'inherited keys are not overrides');
+  const split = buildHarmonySections(['31', '32a', '32b'], toEvent, url, overrides);
+  assert.deepEqual(split.map((s) => [s.number, s.title, s.url]), [
+    ['31', 'Title 31', 'https://harmony-bible.com/sections/31/'],
+    ['32a', 'Title 32', 'https://harmony-bible.com/sections/32a/'],
+    ['32b', 'Title 32', 'https://harmony-bible.com/sections/32b/'],
+  ], 'a split section links every page and keeps Robertson\'s title');
+  const offset = buildHarmonySections(['93', '94', '95'], toEvent, url, overrides);
+  assert.deepEqual(offset.map((s) => s.number), ['95', '94'], 'pages are listed once each; 94 has no override and its own page is unrelated to 95');
+});
+
+test('shipped plan: Day 12 Nicodemus section links both Harmony pages (#109)', () => {
+  const { buildAll } = require('../build-reading-plans');
+  const supp = buildAll().find((b) => b.doc.role === 'supplemental').doc;
+  const day12 = supp.days.find((d) => d.day === 12);
+  const nicodemus = day12.harmony_sections.filter((s) => s.gospel_event_id === 'r1922-032');
+  assert.deepEqual(nicodemus.map((s) => s.url), [
+    'https://harmony-bible.com/sections/32a/',
+    'https://harmony-bible.com/sections/32b/',
+  ]);
+  assert.ok(nicodemus.every((s) => s.title === 'The Interview of Nicodemus with Jesus'));
+});
+
+test('reading-plan validator covers the override map (#109)', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const { harmonyTargets, HARMONY_SLUG } = require('../content-lib/harmony-sections');
+  const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'content', 'reading-plans', 'plans.json'), 'utf8'));
+  const supplemental = manifest.plans.find((p) => p.role === 'supplemental');
+  const overrides = supplemental.harmony_sections_overrides;
+  assert.ok(overrides && Object.keys(overrides).length > 0);
+  for (const [section, pages] of Object.entries(overrides)) {
+    assert.deepEqual(harmonyTargets(section, overrides), pages);
+    for (const p of pages) {
+      const n = Number(p.match(HARMONY_SLUG)[1]);
+      assert.ok(n >= 1 && n <= 184, `${section} -> ${p}`);
+    }
+  }
+  for (const bad of ['0', '185', '32ab', 'a', '', '32-b']) assert.equal(HARMONY_SLUG.test(bad) && Number(bad.match(HARMONY_SLUG)[1]) <= 184, false, bad);
+  assert.ok(HARMONY_SLUG.test('32b') && HARMONY_SLUG.test('184'));
+});
