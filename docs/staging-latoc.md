@@ -199,7 +199,7 @@ the mode, the opted-in count, today's queued / accepted / failed / skipped count
 the send window and the next scheduled check, plus warnings (cron not running,
 Brevo not on or not configured, test mode with no addresses, more than 300
 recipients). The buttons are Off, Dry run, Test and Live; **Live** needs the
-confirmation box ticked and is refused while the mail settings are not ready; Off
+confirmation box ticked and is refused while the mail settings are not ready or Brevo is not turned on for the site; Off
 is always allowed. Every change is recorded in the audit log under the admin's
 user ID. **WP-CLI is the fallback** (it works the same, and does not ask for the
 Live confirmation), for example if the dashboard is unreachable:
