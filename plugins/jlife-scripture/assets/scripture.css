@@ -1,0 +1,77 @@
+/*
+ * On-page Scripture reader (#139). Phone-first: readable at 375px, the text
+ * flows with the page (no inner scroll box), colours follow the theme and
+ * dark mode.
+ */
+.jls-reader {
+	/* The J-Life screens' own colours (screens.css) when present. */
+	--jls-rule: var(--line, rgba(127, 127, 127, 0.35));
+	--jls-muted: var(--muted, #6b6b6b);
+	margin: 1rem 0;
+}
+
+.jls-passage {
+	border-top: 1px solid var(--jls-rule);
+	padding: 0.25rem 0;
+}
+
+.jls-passage:last-child {
+	border-bottom: 1px solid var(--jls-rule);
+}
+
+.jls-passage > summary {
+	cursor: pointer;
+	font-weight: 600;
+	min-height: 44px; /* touch target */
+	display: list-item;
+	padding: 0.6rem 0;
+}
+
+.jls-body {
+	padding: 0 0 0.75rem;
+}
+
+.jls-text {
+	font-size: 1.0625rem;
+	line-height: 1.7;
+	overflow-wrap: anywhere;
+	max-height: none;
+	overflow: visible;
+}
+
+.jls-text p {
+	margin: 0 0 0.75rem;
+}
+
+.jls-num {
+	font-size: 0.7em;
+	font-weight: 600;
+	color: var(--jls-muted);
+	margin-right: 0.1em;
+	vertical-align: super;
+	line-height: 0;
+}
+
+.jls-version,
+.jls-note {
+	color: var(--jls-muted);
+	margin: 0.25rem 0;
+}
+
+.jls-version a {
+	color: inherit;
+}
+
+.jls-link a {
+	display: inline-block;
+	min-height: 44px;
+	line-height: 44px;
+	font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+	.jls-reader {
+		--jls-rule: var(--line, #3c3c3c);
+		--jls-muted: var(--muted, #a8a8a8);
+	}
+}

@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "description": "Bible version allowlist (#139): the single source of truth for which Bible versions J-Life offers, where their text comes from, and whether J-Life may show it on the page. Only an enabled version with display \"native\" and recorded license_evidence may render text; everything else is a Bible Gateway link. Each language's default is the version whose default_for lists it; its fallback is the link used when the default cannot render. Switching a default (e.g. to ERV/BPT once Bible League licenses them) is an edit here, not a code change. bin/validate-scripture.js checks the rules; the reading-plan builder takes links_config from the languages block.",
+  "languages": {
+    "en": {
+      "label": "English",
+      "fallback": "erv",
+      "embed": true
+    },
+    "vi": {
+      "label": "Tiếng Việt",
+      "fallback": "bpt",
+      "embed": true
+    }
+  },
+  "versions": [
+    {
+      "key": "kt1925",
+      "language": "vi",
+      "name": "Kinh Thánh 1925 (Bản Truyền Thống)",
+      "short_code": "KT1925",
+      "source": "local",
+      "source_id": "vie1934",
+      "display": "native",
+      "copyright": {
+        "text": "Bản dịch William Cadman (Tân Ước 1923, Cựu Ước 1925), thuộc phạm vi công cộng. Văn bản: eBible.org.",
+        "url": "https://ebible.org/find/details.php?id=vie1934"
+      },
+      "cache": {
+        "max_age_seconds": 0,
+        "max_consecutive_verses": null
+      },
+      "license_evidence": "Public domain: NT since 2019-01-01, OT since 2021-01-01 (eBible.org vie1934 copyright page; docs/content-rights.md). Dataset provenance in plugins/jlife-scripture/data/vie1934/manifest.json.",
+      "enabled": true,
+      "default_for": [
+        "vi"
+      ]
+    },
+    {
+      "key": "nirv",
+      "language": "en",
+      "name": "New International Reader's Version",
+      "short_code": "NIrV",
+      "source": "youversion",
+      "source_id": "110",
+      "display": "link",
+      "copyright": {
+        "text": "Holy Bible, New International Reader's Version®, NIrV® Copyright © 1995, 1996, 1998, 2014 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+        "url": "https://www.biblica.com/"
+      },
+      "cache": {
+        "max_age_seconds": 0,
+        "max_consecutive_verses": null
+      },
+      "license_evidence": null,
+      "enabled": false,
+      "default_for": [
+        "en"
+      ],
+      "note": "Owner gates on #139: read the Biblica terms accepted in the YouVersion Platform portal (record them in docs/bible-provider-entitlements.md) and put the app key on the host. Until then English falls back to the ERV link. Replace copyright.text with YouVersion's version.copyright when the client lands; set the cache rule from the license."
+    },
+    {
+      "key": "niv",
+      "language": "en",
+      "name": "New International Version",
+      "short_code": "NIV",
+      "source": "youversion",
+      "source_id": "111",
+      "display": "link",
+      "copyright": {
+        "text": "Holy Bible, New International Version®, NIV® Copyright © 1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+        "url": "https://www.biblica.com/"
+      },
+      "cache": {
+        "max_age_seconds": 0,
+        "max_consecutive_verses": null
+      },
+      "license_evidence": null,
+      "enabled": false,
+      "default_for": [],
+      "note": "A choice for #140 once the Biblica terms are read (same gates as NIrV)."
+    },
+    {
+      "key": "kthd",
+      "language": "vi",
+      "name": "Kinh Thánh Hiện Đại",
+      "short_code": "KTHD",
+      "source": "youversion",
+      "source_id": "1638",
+      "display": "link",
+      "copyright": {
+        "text": "Kinh Thánh Hiện Đại (Vietnamese Contemporary Bible) Copyright © Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+        "url": "https://www.biblica.com/"
+      },
+      "cache": {
+        "max_age_seconds": 0,
+        "max_consecutive_verses": null
+      },
+      "license_evidence": null,
+      "enabled": false,
+      "default_for": [],
+      "note": "A choice for #140 once the Biblica terms are read (same gates as NIrV). Confirm the exact notice from YouVersion's version.copyright."
+    },
+    {
+      "key": "nlt",
+      "language": "en",
+      "name": "New Living Translation",
+      "short_code": "NLT",
+      "source": "apibible",
+      "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+      "display": "link",
+      "copyright": {
+        "text": "New Living Translation (NLT): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
+        "url": "https://scripture.api.bible/"
+      },
+      "cache": {
+        "max_age_seconds": 1209600,
+        "max_consecutive_verses": 499
+      },
+      "license_evidence": null,
+      "enabled": false,
+      "default_for": [],
+      "note": "API.Bible (#141, PR #147): starter-plan slot. Record the bibleId (wp jlife bible apibible-list), wrap the client as a Jlife_Scripture_Source with FUMS display tracking, then enable."
+    },
+    {
+      "key": "nkjv",
+      "language": "en",
+      "name": "New King James Version",
+      "short_code": "NKJV",
+      "source": "apibible",
+      "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+      "display": "link",
+      "copyright": {
+        "text": "New King James Version (NKJV): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
+        "url": "https://scripture.api.bible/"
+      },
+      "cache": {
+        "max_age_seconds": 1209600,
+        "max_consecutive_verses": 499
+      },
+      "license_evidence": null,
+      "enabled": false,
+      "default_for": [],
+      "note": "API.Bible (#141, PR #147): starter-plan slot. Record the bibleId (wp jlife bible apibible-list), wrap the client as a Jlife_Scripture_Source with FUMS display tracking, then enable."
+    },
+    {
+      "key": "csb",
+      "language": "en",
+      "name": "Christian Standard Bible",
+      "short_code": "CSB",
+      "source": "apibible",
+      "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+      "display": "link",
+      "copyright": {
+        "text": "Christian Standard Bible (CSB): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
+        "url": "https://scripture.api.bible/"
+      },
+      "cache": {
+        "max_age_seconds": 1209600,
+        "max_consecutive_verses": 499
+      },
+      "license_evidence": null,
+      "enabled": false,
+      "default_for": [],
+      "note": "API.Bible (#141, PR #147): starter-plan slot. Record the bibleId (wp jlife bible apibible-list), wrap the client as a Jlife_Scripture_Source with FUMS display tracking, then enable."
+    },
+    {
+      "key": "erv",
+      "language": "en",
+      "name": "Easy-to-Read Version",
+      "short_code": "ERV",
+      "source": "link",
+      "source_id": "ERV",
+      "display": "link",
+      "copyright": {
+        "text": "Easy-to-Read Version (ERV) Copyright © 2006 by Bible League International",
+        "url": "https://www.bibleleague.org/"
+      },
+      "cache": {
+        "max_age_seconds": 0,
+        "max_consecutive_verses": null
+      },
+      "license_evidence": null,
+      "enabled": true,
+      "default_for": [],
+      "note": "Bible Gateway links only. Hosted text needs Bible League's written permission (requested 2026-11-18)."
+    },
+    {
+      "key": "bpt",
+      "language": "vi",
+      "name": "Vietnamese Bible: Easy-to-Read Version",
+      "short_code": "BPT",
+      "source": "link",
+      "source_id": "BPT",
+      "display": "link",
+      "copyright": {
+        "text": "Vietnamese Bible: Easy-to-Read Version (BPT) © 2010 Bible League International",
+        "url": "https://www.bibleleague.org/"
+      },
+      "cache": {
+        "max_age_seconds": 0,
+        "max_consecutive_verses": null
+      },
+      "license_evidence": null,
+      "enabled": true,
+      "default_for": [],
+      "note": "Bible Gateway links only. Hosted text needs Bible League's written permission (requested 2026-11-18)."
+    }
+  ]
+}

@@ -14,6 +14,7 @@
     "wp-content/plugins/jlife-huddles": "./plugins/jlife-huddles",
     "wp-content/plugins/jlife-challenges": "./plugins/jlife-challenges",
     "wp-content/plugins/jlife-auth": "./plugins/jlife-auth",
-    "wp-content/plugins/jlife-bridge": "./plugins/jlife-bridge"
+    "wp-content/plugins/jlife-bridge": "./plugins/jlife-bridge",
+    "wp-content/plugins/jlife-scripture": "./plugins/jlife-scripture"
   }
 }

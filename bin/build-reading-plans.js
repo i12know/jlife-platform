@@ -5,6 +5,9 @@
  * one <csv-name>.json per plan listed in content/reading-plans/plans.json,
  * with parsed Scripture references and pre-built Bible links (links only,
  * never Bible text). Deterministic: the same inputs always give the same bytes.
+ * The link site and translation per language come from the Bible version
+ * registry (plugins/jlife-scripture/data/bible-versions.json, #139): each
+ * language's "fallback" link version.
  *
  * Usage:
  *   node bin/build-reading-plans.js          # write the JSON files
@@ -23,9 +26,36 @@ const { localizeDisplay } = require('./content-lib/book-names');
 const ROOT = path.join(__dirname, '..');
 const PLAN_DIR = path.join(ROOT, 'content', 'reading-plans');
 const HARMONY = path.join(ROOT, 'content', 'harmony', 'robertson-1922-outline.json');
+const VERSIONS = path.join(ROOT, 'plugins', 'jlife-scripture', 'data', 'bible-versions.json');
 
 function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
+}
+
+/**
+ * Per-language link configuration for the plans (stored in each plan JSON as
+ * links_config): the language's fallback link version from the registry.
+ *
+ * @param {object} registry Parsed bible-versions.json.
+ * @returns {Object<string, object>}
+ */
+function linksConfigFromRegistry(registry) {
+  const out = {};
+  for (const [lang, l] of Object.entries(registry.languages || {})) {
+    const v = (registry.versions || []).find((x) => x.key === l.fallback);
+    if (!v || v.source !== 'link' || v.language !== lang) {
+      throw new Error(`bible-versions.json: ${lang} fallback "${l.fallback}" must be a link version in that language`);
+    }
+    out[lang] = {
+      label: l.label,
+      provider: 'bible_gateway',
+      version: v.source_id,
+      version_name: v.name,
+      notice: v.copyright.text,
+      embed: l.embed === true,
+    };
+  }
+  return out;
 }
 
 /** Robertson section label ("54a", "128a", "2") -> r1922 event. */
@@ -44,7 +74,7 @@ function list(cell) {
  * Build one plan document.
  *
  * @param {object} plan Entry from plans.json.
- * @param {object} linkConfig Parsed bible-links.json.
+ * @param {object} linkConfig Per-language link configuration (linksConfigFromRegistry).
  * @param {(label: string) => ?object} toEvent Robertson label resolver.
  * @returns {object}
  */
@@ -142,7 +172,7 @@ function buildPlan(plan, linkConfig, toEvent) {
 /** @returns {{file: string, text: string, doc: object}[]} */
 function buildAll() {
   const manifest = readJson(path.join(PLAN_DIR, 'plans.json'));
-  const linkConfig = readJson(path.join(PLAN_DIR, 'bible-links.json'));
+  const linkConfig = linksConfigFromRegistry(readJson(VERSIONS));
   const toEvent = robertsonIndex();
   return manifest.plans.map((plan) => {
     const doc = buildPlan(plan, linkConfig, toEvent);
@@ -176,4 +206,4 @@ if (require.main === module) {
   process.exit(stale ? 1 : 0);
 }
 
-module.exports = { buildAll, buildPlan };
+module.exports = { buildAll, buildPlan, linksConfigFromRegistry };

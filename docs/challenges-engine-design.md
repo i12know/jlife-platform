@@ -163,6 +163,16 @@ Recipients require **recorded consent** (`enrollments.consented`): the join form
 
 Consent wording: the consent page says reminders are **optional** ("If you choose daily reminders..."); only a ticked box (at joining, or the checkbox on Today or My Marathon) records an opt-in, with the consent wording version in force.
 
+### 4f. On-page Scripture reader (#139, plugin `jlife-scripture`)
+
+No participant data is stored. The reader reads exactly one preference, the participant's `locale` user meta (the same rule as `jlife_challenges_language_order()`), to choose the language; a visitor who is not signed in gets the page's locale.
+
+| Object | Who reads | Who writes | Notes |
+|---|---|---|---|
+| Bible text (`jlife_scripture_verses`, network-wide) | Anyone the screen is shown to | Only `wp jlife scripture import` (public-domain datasets, checksum-verified) | Not personal data |
+| Passage cache (`jlife_scripture_cache`, network-wide) | The reader, server-side | The reader, one shared row per source + version + passage | Holds licensed text only within each version's cache rule; no user ID, no request data |
+| Logs | Host | The cache layer on a failed fetch | Source, version, passage key and a known error code only; never Bible text, API keys or a source's own error message |
+
 ### 4e. Daily reminder sends (#63 Phase B, part 2)
 
 The scheduler turns the recipients from §4d into one `reminder_sends` row per person per campaign day and sends from that queue. It runs **only from a WP-Cron event** (every 5 minutes; the host's real cron fires it), never on a page request, and a failure there never touches reading, SOAP entry or scoring.

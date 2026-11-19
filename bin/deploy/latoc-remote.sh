@@ -31,7 +31,7 @@ DB_HOST="${DB_HOST:-localhost}"
 PHP_BIN="${PHP_BIN:-/opt/cpanel/ea-php82/root/usr/bin/php}"
 WP_CLI_VERSION="2.11.0"
 WP_CLI="${STATE_DIR}/wp-cli-${WP_CLI_VERSION}.phar"
-PLUGINS=(jlife-studies jlife-huddles jlife-challenges jlife-auth) # jlife-bridge stays off at launch (#49 M2)
+PLUGINS=(jlife-studies jlife-huddles jlife-challenges jlife-auth jlife-scripture) # jlife-bridge stays off at launch (#49 M2)
 # Public bilingual landing page (#110). Pinned: bumping it is a reviewed PR that
 # re-runs the route checks in docs/spikes/2026-11-18-polylang-latoc-landing.md.
 POLYLANG_VERSION="${POLYLANG_VERSION:-3.9.2}"
@@ -252,6 +252,11 @@ if ls "${STATE_DIR}"/reading-plans/*.json >/dev/null 2>&1; then
   log "Importing reading plans"
   wp jlife reading-plan import "${STATE_DIR}"/reading-plans/*.json
 fi
+# Public-domain Kinh Thánh 1925 text for the on-page reader (#139), shipped in
+# the plugin and checksum-verified; a no-op when unchanged. The reader itself
+# stays off until the jlife_scripture_native_reader option is turned on.
+log "Kinh Thánh 1925 dataset"
+wp jlife scripture import vie1934
 wp rewrite flush >/dev/null
 
 # Staging test drive (never printed: the invite goes by email and to an

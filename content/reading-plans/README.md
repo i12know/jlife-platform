@@ -40,16 +40,16 @@ The CSVs above stay the source. `npm run plans:build` turns each plan in [`plans
 - **Harmony:** Robertson labels and their `r1922-NNN` events; lettered sub-sections such as `#54a` link to the parent event.
 - **References:** each reference exactly as written in the CSV, plus parsed segments (half-verse letters kept).
 - **Harmony Bible sections (#90, supplemental plan):** `harmony_sections` per day — section number, Robertson title and a `harmony-bible.com/sections/<number>/` link, once per section in reading order (`8a`/`8b` → 8). Harmony Bible numbering is assumed to match Robertson's; the URL pattern is `harmony_sections_url` in [`plans.json`](plans.json). Titles are Robertson's, never harmony-bible.com's headings.
-- **Links:** pre-built Bible links per language from [`bible-links.json`](bible-links.json). English ERV and Vietnamese BPT (*Vietnamese Bible: Easy-to-Read Version*, owner's choice on #91) are each one Bible Gateway link with all passages, plus one per passage. Bible.com links (one per passage, e.g. VIE2010) remain supported by the builder. Chapter-crossing ranges are split; half-verse letters are dropped only in links. **No Bible text.** The rules come from the owner's link tests on #59.
+- **Links:** pre-built Bible links per language from the `languages` block of the Bible version registry, [`plugins/jlife-scripture/data/bible-versions.json`](../../plugins/jlife-scripture/data/bible-versions.json) (each language's `fallback` link version; it replaced `bible-links.json` in #139). English ERV and Vietnamese BPT (*Vietnamese Bible: Easy-to-Read Version*, owner's choice on #91) are each one Bible Gateway link with all passages, plus one per passage. Bible.com links (one per passage, e.g. VIE2010) remain supported by the builder. Chapter-crossing ranges are split; half-verse letters are dropped only in links. **No Bible text.** The rules come from the owner's link tests on #59.
 
 | Command | What it does |
 |---|---|
-| `npm run plans:build` | Regenerate the JSON after a CSV, `plans.json` or `bible-links.json` change |
+| `npm run plans:build` | Regenerate the JSON after a CSV, `plans.json` or `bible-versions.json` change |
 | `npm run content:validate` | Includes `bin/validate-reading-plans.js`. Checks the JSON is in sync with its CSV, 104 days from Dec 20 to Apr 2, unique `day_id`s, primary section IDs in order (catches a `4.40` → `4.4` regression), every reference parsed, Harmony events present, links for every language, Bible.com links never crossing a chapter, and the supplemental plan aligned day-for-day |
 | `npm run test:js` | Unit tests for the reference parser and link builder, including the owner-tested Day 1 and Day 38 links |
 | `wp jlife reading-plan import content/reading-plans/*.json` | Upserts one public page per day at `/reading/<plan>-d###/`. The primary plan is imported first; the supplemental plan attaches to the same day as a collapsed "optional parallel readings" section and never creates pages of its own. The latoc deploy runs this automatically |
 
-Changing the Bible site or translation for a language is an edit to `bible-links.json` followed by `npm run plans:build`; no code change.
+Changing the Bible Gateway translation for a language is an edit to its `fallback` in `bible-versions.json` followed by `npm run plans:build`; no code change. Which version shows **on the page** (#139) is the same file's `default_for`; see `plugins/jlife-scripture/README.md`.
 
 ## Translated titles and references (#119)
 
