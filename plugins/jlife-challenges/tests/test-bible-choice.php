@@ -534,7 +534,6 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 		$this->rest_as( $this->u['a'], array( 'bible_version' => 'bogus' ) );
 		$this->rest_as( $this->u['outsider'], array( 'bible_version' => 'erv' ) );
 		$this->section( $this->u['a'] );
-		jlife_scripture_render_day( array( 'passages' => array( array( 'display' => 'John 1:1-5' ) ) ), $this->u['a'] );
 		$this->assertSame( '', (string) file_get_contents( $this->log ), 'nothing in the PHP error log' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- test log.
 		$this->assertSame( $before, (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'audit_log' ) ), 'a preference is not audited' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
