@@ -166,4 +166,27 @@ class Test_Translations extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( '(3)', jlife_challenges_group_limit_error()->get_error_message() );
 		$this->assertStringContainsString( 'số nhóm tối đa', jlife_challenges_group_limit_error()->get_error_message() );
 	}
+
+	/**
+	 * The My Bible picker on My Marathon (#140) reads in Vietnamese, including the
+	 * "(opens Bible Gateway)" label.
+	 */
+	public function test_my_bible_picker_reads_in_vietnamese() {
+		if ( ! function_exists( 'jlife_scripture_versions_for_user' ) ) {
+			$this->markTestSkipped( 'jlife-scripture is not loaded.' );
+		}
+		$html = jlife_challenges_render_reminder_settings( $this->u['a'], $this->campaign );
+		foreach ( array(
+			'Bản Kinh Thánh của tôi',
+			'Hiển thị thêm…',
+			'Mặc định theo ngôn ngữ của tôi',
+			'>Không</option>',
+			'ERV — Easy-to-Read Version (mở trên Bible Gateway)',
+			'Bản Kinh Thánh của bạn theo ngôn ngữ ở trên cho đến khi bạn tự chọn.',
+		) as $vi ) {
+			$this->assertStringContainsString( $vi, $html );
+		}
+		$this->assertStringNotContainsString( 'My Bible', $html );
+		$this->assertStringNotContainsString( 'opens Bible Gateway', $html );
+	}
 }

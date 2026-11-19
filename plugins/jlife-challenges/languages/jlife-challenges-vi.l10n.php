@@ -282,6 +282,13 @@ return array(
 		'More' => 'Xem thêm',
 		'Tap a reference to add it under S:' => 'Bấm vào một câu Kinh Thánh để thêm dưới phần S:',
 		'Add %s to my SOAP' => 'Thêm %s vào SOAP của tôi',
+		// My Bible on My Marathon (#140). DRAFT, like the rest.
+		'My Bible' => 'Bản Kinh Thánh của tôi',
+		'Also show…' => 'Hiển thị thêm…',
+		'None' => 'Không',
+		'Default for my language' => 'Mặc định theo ngôn ngữ của tôi',
+		'%s (opens Bible Gateway)' => '%s (mở trên Bible Gateway)',
+		'Your Bible follows the language above until you choose one.' => 'Bản Kinh Thánh của bạn theo ngôn ngữ ở trên cho đến khi bạn tự chọn.',
 		"date format\4F j, Y" => 'j \\t\\h\\á\\n\\g n, Y', // Reading-day date: 18 tháng 11, 2026.
 	),
 );

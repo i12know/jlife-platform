@@ -31,6 +31,12 @@
 	padding: 0 0 0.75rem;
 }
 
+.jls-edition + .jls-edition {
+	border-top: 1px dashed var(--jls-rule);
+	margin-top: 0.75rem;
+	padding-top: 0.75rem;
+}
+
 .jls-text {
 	font-size: 1.0625rem;
 	line-height: 1.7;

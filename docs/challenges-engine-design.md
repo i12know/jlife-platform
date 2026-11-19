@@ -161,11 +161,27 @@ A reminder is a message the person asked for. The table holds the choice and the
 
 Recipients require **recorded consent** (`enrollments.consented`): the join form's box is saved before the `/consent` step, so a ticked box alone never makes someone a recipient.
 
+**My Bible choice (#140).** Which Bible a participant reads in is a low-sensitivity preference, kept as two user-meta values on the participant's own account, not in `reminder_prefs`: `jlife_bible_version` (a registry key, or absent = follow My language) and `jlife_bible_version_2` (an optional second Bible, or absent = none). It holds only registry keys such as `kt1925` or `nirv`: no email address, no reading content, no Bible text. Stored as ordinary user meta like `locale` (network-wide on multisite: the same person reads in the same Bible on every site they belong to). The owner is `plugins/jlife-scripture` (`jlife_scripture_set_user_choice()` writes, `jlife_scripture_versions_for_user()` resolves); `jlife-challenges` only draws the My Marathon picker and the `POST /jlife/v1/bible` route.
+
+| Actor / case | Read the choice | Change the choice | Notes |
+|---|---|---|---|
+| The participant (active enrollment) | ✅ own, on My Marathon (the picker) and by the reader when it shows their own readings | ✅ own, from the **My Bible** and **Also show…** selects on My Marathon | Always for the signed-in user: a user ID in a form post or REST body is ignored. Saves through `POST /jlife/v1/bible` (signed in, `wp_rest` nonce via cookie auth; `bible_version` and/or `bible_version_2`, leaving one out keeps it, an empty value or `null` clears it) or, without JavaScript, the `jlife_bible` nonce form. No `GET` route exists |
+| A key the registry does not list, or lists as not `enabled` | n/a | ❌ refused (`jlife_bible_unknown`, HTTP 400); nothing changes | Validated against the registry (`bible-versions.json`), never against the posted label. A version disabled *after* it was chosen is not an error for the reader: it falls back to the language default, quietly |
+| Another participant, group member, starter or leader | ❌ | ❌ `jlife_denied` / not reachable | No screen, share, group feed or REST route shows anyone else's Bible. `jlife_scripture_versions_for_user()` is a server-side helper: callers pass only the viewer's own ID |
+| Organizer | ❌ no screen | ❌ no screen or REST path acts for another person | The choice is a preference, not a record: organizers do not need it |
+| Site admin | ✅ at host level only (user meta: `wp user meta get`) | ✅ at host level only | No admin screen shows it; the audit log is not used (a preference change is not an event to keep) |
+| Person with no active enrollment (never joined, left, removed) | ❌ | ❌ `jlife_denied` (HTTP 403) | The picker is only on My Marathon, which needs an enrollment |
+| Signed out, or a cookie request without the `wp_rest` nonce | ❌ | ❌ HTTP 401, nothing changes | Public `/reading/` pages never read a stored choice: they follow the page language (`?lang=`) |
+| Logs | | | A save writes no log line and no audit row; an error never names the posted value or a user |
+| Account deletion | | | WordPress deletes the user's meta with the account |
+
+*Default until a person picks:* the Bible follows **My language**: the reminder-email language on My Marathon, else the account's `locale`; English → the registry's `default_for: en`, Vietnamese → `default_for: vi`. Once a person picks, the choice stays even if they change the email language.
+
 Consent wording: the consent page says reminders are **optional** ("If you choose daily reminders..."); only a ticked box (at joining, or the checkbox on Today or My Marathon) records an opt-in, with the consent wording version in force.
 
 ### 4f. On-page Scripture reader (#139, plugin `jlife-scripture`)
 
-No participant data is stored. The reader reads exactly one preference, the participant's `locale` user meta (the same rule as `jlife_challenges_language_order()`), to choose the language; a visitor who is not signed in gets the page's locale.
+No participant data is stored by the reader. It reads the participant's language (My language: the reminder-email language, else the `locale` user meta, the same rule as `jlife_challenges_language_order()`) and, since #140, their own Bible choice (§4d, "My Bible choice": two registry keys in user meta); a visitor who is not signed in gets the page's locale and the language's default Bible.
 
 | Object | Who reads | Who writes | Notes |
 |---|---|---|---|

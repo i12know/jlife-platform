@@ -1,7 +1,7 @@
 <?php
 /**
- * REST endpoints for SOAP draft autosave (M6, #61) and the daily reading email
- * checkbox (#135). Signed-in users only; nonce-checked by WordPress's REST
+ * REST endpoints for SOAP draft autosave (M6, #61), the daily reading email
+ * checkbox (#135) and the My Bible choice (#140). Signed-in users only; nonce-checked by WordPress's REST
  * cookie authentication (without the nonce the request is treated as signed
  * out). Submitting stays a plain form POST so it works without JavaScript. A
  * draft is one text (#98); it is never shared and never scored.
@@ -61,6 +61,25 @@ function jlife_challenges_register_rest() {
 				),
 			),
 			'callback'            => 'jlife_challenges_rest_save_reminder',
+		)
+	);
+	register_rest_route(
+		'jlife/v1',
+		'/bible',
+		array(
+			'methods'             => 'POST',
+			'permission_callback' => static fn() => is_user_logged_in(),
+			'args'                => array(
+				'bible_version'   => array(
+					'type'     => array( 'string', 'null' ),
+					'required' => false,
+				),
+				'bible_version_2' => array(
+					'type'     => array( 'string', 'null' ),
+					'required' => false,
+				),
+			),
+			'callback'            => 'jlife_challenges_rest_save_bible',
 		)
 	);
 }

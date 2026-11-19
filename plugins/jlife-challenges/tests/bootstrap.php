@@ -27,6 +27,12 @@ tests_add_filter(
 	'muplugins_loaded',
 	function () {
 		require dirname( __DIR__ ) . '/jlife-challenges.php';
+		// The My Bible picker (#140) works with jlife-scripture beside it (wp-env maps both
+		// into wp-content/plugins; production activates both). Without it the picker is absent.
+		$scripture = dirname( __DIR__, 2 ) . '/jlife-scripture/jlife-scripture.php';
+		if ( file_exists( $scripture ) ) {
+			require $scripture;
+		}
 	}
 );
 

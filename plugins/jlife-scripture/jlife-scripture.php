@@ -29,6 +29,7 @@ require_once __DIR__ . '/includes/class-jlife-scripture-youversion-source.php';
 require_once __DIR__ . '/includes/sources.php';
 require_once __DIR__ . '/includes/local-import.php';
 require_once __DIR__ . '/includes/cache.php';
+require_once __DIR__ . '/includes/preferences.php';
 require_once __DIR__ . '/includes/render.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
