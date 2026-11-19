@@ -679,7 +679,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 			$this->assertStringNotContainsString( $gone, $body );
 		}
 		$this->assertStringContainsString( 'Not started yet.', $body );
-		$this->assertStringContainsString( '0 of 104', $body );
+		$this->assertStringNotContainsString( '0 of 104', $body, 'the running score is on My Marathon only (#137)' );
 	}
 
 	/**
@@ -716,7 +716,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'Already shared with', $form );
 		$this->assertStringNotContainsString( 'Share with my group or a chat', $body, 'no separate Share button' );
 		$this->assertStringContainsString( 'Done — 1 point earned.', $body );
-		$this->assertStringContainsString( '1 of 104', $body );
+		$this->assertStringNotContainsString( '1 of 104', $body, 'the running score is on My Marathon only (#137)' );
 
 		jlife_challenges_share( $this->u['a'], jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' )['id'], $this->g['g1'] );
 		$this->assertStringContainsString( 'Already shared with Group One — tick and save to update', jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
