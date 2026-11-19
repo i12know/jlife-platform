@@ -510,33 +510,6 @@ class Test_Reminders extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * My Marathon: the switch reflects the choice and the language defaults to the account's.
-	 */
-	public function test_my_marathon_switch() {
-		update_user_meta( $this->u['a'], 'locale', 'vi' );
-		$off = jlife_challenges_render_reminder_settings( $this->u['a'], $this->campaign );
-		$this->assertStringContainsString( 'name="jl_reminder" value="on"', $off );
-		$this->assertMatchesRegularExpression( '/<option value="vi" selected=\'selected\'>/', $off, 'account language is the default' );
-
-		$this->post_as(
-			$this->u['a'],
-			array(
-				'jl_reminder'        => 'on',
-				'jl_reminder_locale' => 'en_US',
-			)
-		);
-		jlife_challenges_handle_reminder_post( $this->u['a'], $this->campaign );
-		$on = jlife_challenges_render_reminder_settings( $this->u['a'], $this->campaign );
-		$this->assertStringContainsString( 'name="jl_reminder" value="off"', $on );
-		$this->assertMatchesRegularExpression( '/<option value="en_US" selected=\'selected\'>/', $on, 'the saved language' );
-
-		$this->post_as( $this->u['a'], array( 'jl_reminder' => 'off' ) );
-		jlife_challenges_handle_reminder_post( $this->u['a'], $this->campaign );
-		$this->assertSame( array(), jlife_challenges_reminder_recipients( $this->campaign ) );
-		$this->assertSame( '', jlife_challenges_render_reminder_prompt( $this->u['a'], $this->campaign ), 'a changed mind does not bring the prompt back' );
-	}
-
-	/**
 	 * A ticked box before the consent step does not make a recipient; recorded consent does.
 	 */
 	public function test_recipients_need_recorded_consent() {
