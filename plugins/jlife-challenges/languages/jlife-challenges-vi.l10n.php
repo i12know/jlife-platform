@@ -218,6 +218,14 @@ return array(
 		'This entry is already submitted. Use Save changes instead.' => 'Bài này đã được gửi. Hãy dùng Lưu thay đổi.',
 		'Not found or not allowed.' => 'Không tìm thấy hoặc không được phép.',
 		'That invite code is not valid. Please ask your group for a new one.' => 'Mã mời này không hợp lệ. Vui lòng xin nhóm của bạn một mã mới.',
+		// Daily reading email (#63 Phase B, part 2).
+		'Good morning! Here is today\'s reading.' => 'Chào buổi sáng! Đây là bài đọc hôm nay.',
+		'Day %d' => 'Ngày %d',
+		'Open today\'s reading' => 'Mở bài đọc hôm nay',
+		'Open today\'s reading: %s' => 'Mở bài đọc hôm nay: %s',
+		'You get this email because you chose daily reading emails.' => 'Bạn nhận email này vì bạn đã chọn nhận email bài đọc mỗi ngày.',
+		'Stop these emails' => 'Ngừng nhận các email này',
+		'Stop these emails: %s' => 'Ngừng nhận các email này: %s',
 		"date format\4F j, Y" => 'j \\t\\h\\á\\n\\g n, Y', // Reading-day date: 18 tháng 11, 2026.
 	),
 );

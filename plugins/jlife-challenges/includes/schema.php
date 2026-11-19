@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const JLIFE_CHALLENGES_DB_VERSION = '5';
+const JLIFE_CHALLENGES_DB_VERSION = '6';
 
 /**
  * Table name helper.
@@ -198,6 +198,29 @@ function jlife_challenges_install_tables() {
 		) {$c};"
 	);
 
+	// Daily reminder send log and queue (#63 Phase B, part 2). One row per person
+	// per campaign day: the UNIQUE key is the duplicate guard. Only IDs, a status,
+	// counters, times and a fixed error class: no email address, subject, body or
+	// raw error text.
+	dbDelta(
+		'CREATE TABLE ' . $t( 'reminder_sends' ) . " (
+			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			campaign_id BIGINT(20) UNSIGNED NOT NULL,
+			day_key VARCHAR(20) NOT NULL,
+			user_id BIGINT(20) UNSIGNED NOT NULL,
+			status VARCHAR(20) NOT NULL DEFAULT 'queued',
+			attempts TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
+			next_attempt DATETIME NOT NULL,
+			last_error_class VARCHAR(40) NULL,
+			created DATETIME NOT NULL,
+			updated DATETIME NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY campaign_day_user (campaign_id, day_key, user_id),
+			KEY status_due (status, next_attempt),
+			KEY user (user_id)
+		) {$c};"
+	);
+
 	dbDelta(
 		'CREATE TABLE ' . $t( 'audit_log' ) . " (
 			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -243,5 +266,7 @@ function jlife_challenges_maybe_upgrade() {
 	jlife_challenges_install_tables();
 	// A deploy may add a route (v5: /unsubscribe/); regenerate the rewrite rules on the next request.
 	delete_option( 'rewrite_rules' );
+	// v6: the reminder cron event (the activation hook does not run on a deploy).
+	jlife_challenges_reminders_schedule();
 	delete_option( 'jlife_challenges_upgrading' );
 }
