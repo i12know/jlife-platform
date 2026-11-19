@@ -29,7 +29,7 @@ DB_PASS="password" # dev only, matches wp-env's defaults
 WP_CLI_VERSION="2.11.0"
 DOCKER_MIRROR="${JLIFE_DOCKER_MIRROR:-https://mirror.gcr.io}"
 
-# WordPress version pinned in .wp-env.json ("WordPress/WordPress#7.0").
+# WordPress version pinned in .wp-env.json ("WordPress/WordPress#7.1.5").
 WP_VERSION="$(node -e 'const c=require(process.argv[1]);const m=String(c.core||"").match(/#([^/#]+)$/);process.stdout.write(m?m[1]:"")' "${REPO_ROOT}/.wp-env.json")"
 
 log() { printf '\n==> %s\n' "$*"; }
