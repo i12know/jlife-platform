@@ -106,6 +106,14 @@ for (const { file, text, doc: fresh } of built) {
     seenIds.add(d.day_id);
     ok = check(where, 'date is the campaign date for this day', DATE.test(d.date) && d.date === addDays(doc.start_date, i), d.date) && ok;
     ok = check(where, 'title present', typeof d.title === 'string' && d.title.length > 0) && ok;
+    // Translations (#119): a title with as many ' | ' parts as the English one, and one display per passage.
+    for (const lang of Object.keys((planEntries.get(doc.plan_id) || {}).i18n || {})) {
+      const tr = d.i18n && d.i18n[lang];
+      const parts = (t) => String(t).split('|').map((x) => x.trim()).filter(Boolean).length;
+      ok = check(where, `${lang} title present with the same number of parts`, Boolean(tr) && typeof tr.title === 'string' && parts(tr.title) === parts(d.title), tr && tr.title) && ok;
+      ok = check(where, `${lang} reference for every passage`, Boolean(tr) && Array.isArray(tr.passages) && tr.passages.length === d.passages.length
+        && tr.passages.every((x, k) => typeof x === 'string' && x.endsWith(d.passages[k].display.slice(d.passages[k].refs[0].book.length)))) && ok;
+    }
     ok = check(where, 'section IDs are strings like 4.40', Array.isArray(d.plusnothing_sections) && d.plusnothing_sections.every((s) => typeof s === 'string' && SECTION_ID.test(s))) && ok;
     if (doc.role === 'primary') {
       for (const s of d.plusnothing_sections) {

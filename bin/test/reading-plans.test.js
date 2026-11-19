@@ -190,3 +190,20 @@ test('reading-plan validator covers the override map (#109)', () => {
   for (const bad of ['0', '185', '32ab', 'a', '', '32-b']) assert.equal(HARMONY_SLUG.test(bad) && Number(bad.match(HARMONY_SLUG)[1]) <= 184, false, bad);
   assert.ok(HARMONY_SLUG.test('32b') && HARMONY_SLUG.test('184'));
 });
+
+test('Vietnamese titles and Protestant book names are built for every day (#119)', () => {
+  const { localizeDisplay } = require('../content-lib/book-names');
+  assert.equal(localizeDisplay('John 4:4-26', 'John', 'vi'), 'Giăng 4:4-26');
+  assert.equal(localizeDisplay('John 11:55-12:1, 9-11', 'John', 'vi'), 'Giăng 11:55-12:1, 9-11');
+  assert.equal(localizeDisplay('Acts 1:4b-8', 'Acts', 'vi'), 'Công-vụ 1:4b-8');
+  assert.throws(() => localizeDisplay('Romans 1:1', 'Romans', 'vi'), /no vi name/);
+  const { buildAll } = require('../build-reading-plans');
+  const primary = buildAll().find((b) => b.doc.role === 'primary').doc;
+  for (const d of primary.days) {
+    assert.ok(d.i18n && d.i18n.vi && d.i18n.vi.title, d.day_id);
+    assert.equal(d.i18n.vi.passages.length, d.passages.length, d.day_id);
+  }
+  const d14 = primary.days.find((d) => d.day === 14);
+  assert.deepEqual(d14.i18n.vi, { title: 'Chúa Giê-xu nói chuyện với người đàn bà Sa-ma-ri', passages: ['Giăng 4:4-26'] });
+  assert.equal(d14.title, 'Jesus Talks to a Samaritan Woman', 'English stays the default');
+});

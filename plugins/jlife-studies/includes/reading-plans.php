@@ -194,7 +194,42 @@ function jlife_studies_import_reading_plan( $doc ) {
 }
 
 /**
- * Get a reading day as data (for the Today page and other surfaces).
+ * A reading day in the reader's language (#119). The plan build stores each
+ * language's day title and passage references under `i18n.<lang>` (for
+ * Vietnamese: draft titles and Protestant book names, "Giăng 4:4-26"). For a
+ * language with an entry, the day's `title`, `titles` and each passage's
+ * `display` are swapped; the parsed references and Bible links never change.
+ * A missing or incomplete entry leaves the day in English.
+ *
+ * @param array|null $day    Day data.
+ * @param string     $locale WordPress locale (vi, en_US, ...).
+ * @return array|null
+ */
+function jlife_studies_localize_day( $day, $locale ) {
+	$lang = strtolower( substr( (string) $locale, 0, 2 ) );
+	if ( ! is_array( $day ) || 'en' === $lang || empty( $day['i18n'][ $lang ] ) || ! is_array( $day['i18n'][ $lang ] ) ) {
+		return $day;
+	}
+	$tr = $day['i18n'][ $lang ];
+	if ( isset( $tr['title'] ) && is_string( $tr['title'] ) && '' !== trim( $tr['title'] ) ) {
+		$day['title']  = $tr['title'];
+		$day['titles'] = array_values( array_filter( array_map( 'trim', explode( '|', $tr['title'] ) ), 'strlen' ) );
+	}
+	$displays = isset( $tr['passages'] ) && is_array( $tr['passages'] ) ? array_values( $tr['passages'] ) : array();
+	$passages = isset( $day['passages'] ) && is_array( $day['passages'] ) ? $day['passages'] : array();
+	if ( count( $displays ) === count( $passages ) ) {
+		foreach ( array_keys( $passages ) as $i => $key ) {
+			if ( is_string( $displays[ $i ] ) && '' !== trim( $displays[ $i ] ) && is_array( $passages[ $key ] ) ) {
+				$day['passages'][ $key ]['display'] = $displays[ $i ];
+			}
+		}
+	}
+	return $day;
+}
+
+/**
+ * Get a reading day as data (for the Today page and other surfaces), in the
+ * current reader's language where the plan has it.
  *
  * @param string $plan_id Plan ID.
  * @param string $day_id  Day ID (d###).
@@ -208,7 +243,7 @@ function jlife_studies_get_reading_day( $plan_id, $day_id ) {
 	return array(
 		'post_id'      => $post->ID,
 		'url'          => get_permalink( $post ),
-		'day'          => jlife_studies_get_json_meta( $post->ID, '_jlife_reading_day' ),
+		'day'          => jlife_studies_localize_day( jlife_studies_get_json_meta( $post->ID, '_jlife_reading_day' ), determine_locale() ),
 		'plan'         => jlife_studies_get_json_meta( $post->ID, '_jlife_plan' ),
 		'supplemental' => jlife_studies_get_json_meta( $post->ID, '_jlife_supplemental' ),
 	);

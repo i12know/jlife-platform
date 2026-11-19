@@ -50,3 +50,10 @@ The CSVs above stay the source. `npm run plans:build` turns each plan in [`plans
 | `wp jlife reading-plan import content/reading-plans/*.json` | Upserts one public page per day at `/reading/<plan>-d###/`. The primary plan is imported first; the supplemental plan attaches to the same day as a collapsed "optional parallel readings" section and never creates pages of its own. The latoc deploy runs this automatically |
 
 Changing the Bible site or translation for a language is an edit to `bible-links.json` followed by `npm run plans:build`; no code change.
+
+## Translated titles and references (#119)
+
+- `i18n/<plan_id>.<lang>.json` holds one title per `day_id` for a language, listed in `plans.json` under the plan's `"i18n": { "<lang>": "<file>" }`. Keep the ` | ` separators in step with the English titles; the validator checks the counts.
+- Book names for references come from `bin/content-lib/book-names.js` (Vietnamese: Protestant names, "Giăng 4:4-26").
+- `npm run plans:build` writes them into each day as `i18n.<lang>: { title, passages[] }`. The parsed `refs` and Bible links are language-independent and never translated.
+- The Vietnamese titles are a **DRAFT** for translator review before launch.
