@@ -683,6 +683,47 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * Today (#136): the SOAP block reads My SOAP, the instruction, the heading
+	 * help (id jlife-soap-help), the reference chips, then the textbox, in
+	 * English and in Vietnamese.
+	 */
+	public function test_today_soap_help_sits_between_the_instruction_and_the_reference_chips() {
+		$force = static fn() => 'vi';
+		$dir   = static fn( $path, $domain ) => 'jlife-challenges' === $domain ? dirname( __DIR__ ) . '/languages/' : $path;
+		$form  = '';
+		foreach ( array( 'en', 'vi' ) as $lang ) {
+			if ( 'vi' === $lang ) {
+				add_filter( 'determine_locale', $force, 99 );
+				add_filter( 'lang_dir_for_domain', $dir, 10, 2 );
+				unload_textdomain( 'jlife-challenges', true );
+			}
+			try {
+				$form  = $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
+				$order = array(
+					'<label for="jl-text">' . esc_html__( 'My SOAP', 'jlife-challenges' ),
+					esc_html__( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ),
+					'<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary>',
+					'data-insert="',
+					'<textarea id="jl-text"',
+				);
+				$last  = -1;
+				foreach ( $order as $needle ) {
+					$at = strpos( $form, $needle );
+					$this->assertNotFalse( $at, $lang . ': missing ' . $needle );
+					$this->assertGreaterThan( $last, $at, $lang . ': out of order at ' . $needle );
+					$last = $at;
+				}
+				$this->assertSame( 1, substr_count( $form, 'id="jlife-soap-help"' ), $lang . ': one help box' );
+			} finally {
+				remove_filter( 'determine_locale', $force, 99 );
+				remove_filter( 'lang_dir_for_domain', $dir, 10 );
+				unload_textdomain( 'jlife-challenges', true );
+			}
+		}
+		$this->assertStringContainsString( 'Viết gì dưới mỗi tiêu đề?', $form, 'the Vietnamese render is translated' );
+	}
+
+	/**
 	 * Today shows a saved draft as saved (not the template), still with Submit and Save draft.
 	 */
 	public function test_today_prefills_a_draft() {
