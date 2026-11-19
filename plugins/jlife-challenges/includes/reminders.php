@@ -8,6 +8,7 @@
  * - A person is a recipient only after choosing it (unticked checkbox at
  *   enrollment, the one-time prompt on Today, or My Marathon). No row means no
  *   reminders.
+ * - Recipients require recorded consent (enrollments.consented), not just a ticked box.
  * - The row holds no email address; sending looks it up from the account.
  * - Unsubscribing changes only this table. It never touches sign-in codes or any
  *   jlife-auth state (the codes are a different kind of message).
@@ -140,8 +141,9 @@ function jlife_challenges_set_reminder( $actor, $user_id, $campaign_id, $on, $lo
 }
 
 /**
- * Users who should get the daily reminder: opted in, not opted out, and with an
- * active enrollment. The sending queue (next PR) starts from this list.
+ * Users who should get the daily reminder: opted in, not opted out, with an
+ * active enrollment, and with the consent wording accepted (the join form's box
+ * is written before the /consent step, so a ticked box alone is not enough). The sending queue (next PR) starts from this list.
  *
  * @param int $campaign_id Campaign.
  * @return int[] User IDs.
@@ -154,7 +156,7 @@ function jlife_challenges_reminder_recipients( $campaign_id ) {
 	$ids = $wpdb->get_col(
 		$wpdb->prepare(
 			"SELECT p.user_id FROM {$prefs} p JOIN {$enrol} e ON e.campaign_id = p.campaign_id AND e.user_id = p.user_id
-			WHERE p.campaign_id = %d AND p.opted_in IS NOT NULL AND p.opted_out IS NULL AND e.status = 'active' ORDER BY p.user_id",
+			WHERE p.campaign_id = %d AND p.opted_in IS NOT NULL AND p.opted_out IS NULL AND e.status = 'active' AND e.consented IS NOT NULL ORDER BY p.user_id",
 			(int) $campaign_id
 		)
 	);

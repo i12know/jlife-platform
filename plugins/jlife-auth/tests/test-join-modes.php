@@ -256,6 +256,8 @@ class Test_Join_Modes extends WP_UnitTestCase {
 		$pref   = jlife_challenges_reminder_pref( $ticked, $this->campaign );
 		$this->assertNotEmpty( $pref['opted_in'] );
 		$this->assertSame( 'vi', $pref['locale'] );
+		$this->assertSame( array(), jlife_challenges_reminder_recipients( $this->campaign ), 'not before the consent step' );
+		jlife_auth_record_consent( $ticked );
 		$this->assertSame( array( $ticked ), jlife_challenges_reminder_recipients( $this->campaign ) );
 	}
 

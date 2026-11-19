@@ -158,6 +158,8 @@ A reminder is a message the person asked for. The table holds the choice and the
 | Unsubscribe's reach | | | Only `reminder_prefs`. Sign-in codes, the account, enrollment, consent and scoring are untouched (Brevo's own unsubscribe stays off for the same reason) |
 | Account deletion, test-campaign removal | | | The person's rows are deleted with the account / campaign |
 
+Recipients require **recorded consent** (`enrollments.consented`): the join form's box is saved before the `/consent` step, so a ticked box alone never makes someone a recipient.
+
 Consent wording: the consent page says reminders are **optional** ("If you choose daily reminders..."); only a ticked box or an explicit Yes records an opt-in, with the consent wording version in force.
 
 ## 5. Required tests (written first; CI)

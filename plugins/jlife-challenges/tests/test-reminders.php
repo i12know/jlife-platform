@@ -16,6 +16,16 @@
 class Test_Reminders extends Jlife_Challenges_TestCase {
 
 	/**
+	 * Participants a, b and c have accepted the consent wording (a recipient needs it).
+	 */
+	public function set_up() {
+		parent::set_up();
+		foreach ( array( 'a', 'b', 'c' ) as $n ) {
+			jlife_challenges_record_consent( $this->u[ $n ], $this->campaign, 'test-version' );
+		}
+	}
+
+	/**
 	 * Clean request state.
 	 */
 	public function tear_down() {
@@ -333,5 +343,17 @@ class Test_Reminders extends Jlife_Challenges_TestCase {
 		jlife_challenges_handle_reminder_post( $this->u['a'], $this->campaign );
 		$this->assertSame( array(), jlife_challenges_reminder_recipients( $this->campaign ) );
 		$this->assertSame( '', jlife_challenges_render_reminder_prompt( $this->u['a'], $this->campaign ), 'a changed mind does not bring the prompt back' );
+	}
+
+	/**
+	 * A ticked box before the consent step does not make a recipient; recorded consent does.
+	 */
+	public function test_recipients_need_recorded_consent() {
+		$id = self::factory()->user->create( array( 'role' => 'subscriber' ) );
+		jlife_challenges_enroll_solo( $id, $this->campaign, 'adult' );
+		$this->assertTrue( jlife_challenges_set_reminder( $id, $id, $this->campaign, true, 'en_US' ) );
+		$this->assertNotContains( $id, jlife_challenges_reminder_recipients( $this->campaign ), 'no consent yet' );
+		jlife_challenges_record_consent( $id, $this->campaign, 'test-version' );
+		$this->assertContains( $id, jlife_challenges_reminder_recipients( $this->campaign ) );
 	}
 }
