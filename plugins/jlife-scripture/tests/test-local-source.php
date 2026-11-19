@@ -65,8 +65,10 @@ class Test_Local_Source extends Jlife_Scripture_TestCase {
 		global $wpdb;
 		$table = jlife_scripture_table( 'verses' );
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- test query on the plugin's table.
-		$left = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE dataset = 'vie1934' AND ( text LIKE BINARY '%Aáy%' OR text LIKE BINARY '%Oâng%' )" );
-		$this->assertSame( 0, $left, 'no VNI leftovers' );
+		$left = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE dataset = 'vie1934' AND ( text LIKE BINARY '%Aáy%' OR text LIKE BINARY '%Oâng%' OR text LIKE BINARY '%k”%' OR text LIKE BINARY '%K”%' OR text LIKE BINARY '%ð%' OR text LIKE BINARY '%Þ%' OR text LIKE BINARY '%Ì%' OR text LIKE BINARY '%Ò%' )" );
+		$this->assertSame( 0, $left, 'no legacy-encoding leftovers' );
+		$this->assertSame( 'Nước Cha được đến; Ý Cha được nên, ở đất như trời!', $this->read( 'Matthew 6:10' )[0][0]['text'], 'Windows-1258 words and the erratum' );
+		$this->assertStringStartsWith( 'mà rằng: Kỳ đã trọn', $this->read( 'Mark 1:15' )[0][0]['text'] );
 	}
 
 	/**

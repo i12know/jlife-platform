@@ -43,6 +43,46 @@ function repairVniCapitals(text) {
 }
 
 /**
+ * Repair "ỳ" that the source stores as a closing quote after "k"/"K" and in
+ * "huỳnh" ("k” cuối cùng" for "kỳ cuối cùng"). No Vietnamese word ends in k
+ * or "hu", so a quote there is never punctuation.
+ *
+ * @param {string} text
+ * @returns {{text: string, count: number}}
+ */
+function repairYGrave(text) {
+  let count = 0;
+  const out = text.replace(/(?<![\p{L}\p{M}])([Kk]|[Hh]u)\u201D(?=nh(?![\p{L}])|[^\p{L}]|$)/gu, (m, p) => {
+    count++;
+    return `${p}ỳ`;
+  });
+  return { text: out, count };
+}
+
+/**
+ * Repair words stored as Windows-1258 bytes read as Windows-1252 ("ðýõòc"
+ * for "được", "laÌ" for "là"). Only in a verse that has one of the
+ * unambiguous signs (ð, Þ, Ì, Ò: never in correct Vietnamese text), and only
+ * for words made of Latin-1 letters that contain a Windows-1258 mark byte.
+ *
+ * @param {string} text
+ * @returns {{text: string, count: number}}
+ */
+function repairCp1258Words(text) {
+  if (!/[ðÞÌÒ]/u.test(text)) return { text, count: 0 };
+  const decoder = new TextDecoder('windows-1258');
+  let count = 0;
+  const out = text.replace(/[A-Za-z\u00C0-\u00FF]+/g, (w) => {
+    if (!/[ðÞÌÒìòýõãÝ]/.test(w)) return w;
+    const fixed = decoder.decode(Uint8Array.from([...w].map((c) => c.charCodeAt(0)))).normalize('NFC');
+    if (fixed === w) return w;
+    count++;
+    return fixed;
+  });
+  return { text: out, count };
+}
+
+/**
  * Parse one USFM book.
  *
  * @param {string} source USFM text.
@@ -97,4 +137,4 @@ function parseUsfm(source) {
   return { book, verses };
 }
 
-module.exports = { parseUsfm, repairVniCapitals, VNI_CAPITALS };
+module.exports = { parseUsfm, repairVniCapitals, repairYGrave, repairCp1258Words, VNI_CAPITALS };

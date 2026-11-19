@@ -10,7 +10,10 @@
   "source_sha256": "c4f34e28d0612776a53272f0ef735b9b0d3b7d47f584cfd2fbcb9cdd8386908b",
   "normalization": [
     "Unicode NFC; whitespace collapsed; verse text only (no headings or book titles)",
-    "Repaired 2112 capital letters left by a legacy VNI conversion at the start of a word (e.g. \"Aáy\" -> \"Ấy\", \"Oâng\" -> \"Ông\"); see bin/content-lib/usfm.js"
+    "Repaired 2112 capital letters left by a legacy VNI conversion at the start of a word (e.g. \"Aáy\" -> \"Ấy\", \"Oâng\" -> \"Ông\"); see bin/content-lib/usfm.js",
+    "Repaired 187 \"ỳ\" stored as a closing quote (\"k”\" -> \"kỳ\", \"hu”nh\" -> \"huỳnh\")",
+    "Re-decoded words stored as Windows-1258 bytes in 4 verses (GEN 40:12, GEN 40:18, ISA 55:8, MAT 6:10); check these against print",
+    "Erratum MAT 6:10: \"Nước Cha được đến; Cha được nên, ở đất như trời!\" -> \"Nước Cha được đến; Ý Cha được nên, ở đất như trời!\" (source lost \"Ý\" in the Windows-1258 damage (Lord's Prayer; plan day 24))"
   ],
   "verse_count": 31102,
   "books": [
@@ -18,31 +21,31 @@
       "code": "GEN",
       "file": "GEN.tsv",
       "verses": 1533,
-      "sha256": "98d67ef4db81346dc1c6967b2b3a4224f729b4d62a29a193566cb12aeaa24113"
+      "sha256": "00ff666be85953a3766aea2a9748634c8452ac8bcf970971ec666141de9dbb45"
     },
     {
       "code": "EXO",
       "file": "EXO.tsv",
       "verses": 1213,
-      "sha256": "848f83e3a9dfafa34150195361018ee5f3252330e32b35e69c6bc3c31e25fecb"
+      "sha256": "286135ee8177f5fc755c8201ffd8ce7305e164442c2b79b4c4f100b294a6acfe"
     },
     {
       "code": "LEV",
       "file": "LEV.tsv",
       "verses": 859,
-      "sha256": "ad451c5d988718b7d0317643262bdac9d096439e4168c0ddb9dc18a47832d807"
+      "sha256": "a05ff4c8a1890086ac033aa2498d096f8dc9cbe0d193986dc0e238e62efc2432"
     },
     {
       "code": "NUM",
       "file": "NUM.tsv",
       "verses": 1288,
-      "sha256": "728b817ab332e2014b5f4dfb205cf582297a7804fca02522cc96dde00ff95a88"
+      "sha256": "7a74b56db175377046412f0d82afdfc032ec59e8c979be00f5aeed4212d4249c"
     },
     {
       "code": "DEU",
       "file": "DEU.tsv",
       "verses": 959,
-      "sha256": "285cc525cbd39ad16c5353f6e5e627d5f5afc7738b9c7b9a6596aeec29fd0671"
+      "sha256": "01f23c66556fe7819b713eea542cda1d3ddb3489bd9925910ed78844db1b9659"
     },
     {
       "code": "JOS",
@@ -54,7 +57,7 @@
       "code": "JDG",
       "file": "JDG.tsv",
       "verses": 618,
-      "sha256": "ab2400e70ed588200804c63f1c809032f6831ff5764fef5d92ee35f7c3d1b255"
+      "sha256": "56c52723afc84b0caf34d078fcba22af871cf971184f1779e95c133eb59997d7"
     },
     {
       "code": "RUT",
@@ -66,7 +69,7 @@
       "code": "1SA",
       "file": "1SA.tsv",
       "verses": 810,
-      "sha256": "8c34055c70fc16b8a21af7caa3341fac247bc550237794a056ec934bcbbfc212"
+      "sha256": "b53a7f7049750bd5cf484503bf25dcb0e751f67f438b1c899f12f714da818e81"
     },
     {
       "code": "2SA",
@@ -78,13 +81,13 @@
       "code": "1KI",
       "file": "1KI.tsv",
       "verses": 816,
-      "sha256": "02e848ef5954dd8731000c9d20bd900a5a172c94a010b48d27d385576c6fb92a"
+      "sha256": "0fabc411ce99de9b1ce0e2e148a02b92d8bc44ed878cd8b7066488be0171e015"
     },
     {
       "code": "2KI",
       "file": "2KI.tsv",
       "verses": 719,
-      "sha256": "15b2cf7c8f6650faa406a458e058cc02aaa39273aa09aacf799b119dcd085e71"
+      "sha256": "276ab5262515860165029268b89597bee309eff2056b870fa3c897569cc4397f"
     },
     {
       "code": "1CH",
@@ -96,13 +99,13 @@
       "code": "2CH",
       "file": "2CH.tsv",
       "verses": 822,
-      "sha256": "8de9bd7c84fb722bbbafa7814f58fd786b93702ad24ee319887f468f3b16865e"
+      "sha256": "a3deaee307d260c97200c808c208e22140684810fc4dcd4077bcd77b26b4cec9"
     },
     {
       "code": "EZR",
       "file": "EZR.tsv",
       "verses": 280,
-      "sha256": "1b7e197fb52856f57b6bda39633fd546f438c04729e31a46d4b0e5d1bb8e49d1"
+      "sha256": "02a921ed2b9b1e35bee340b543b8a44b3a0e287949fa3d22264a1bec1f6dad9c"
     },
     {
       "code": "NEH",
@@ -114,7 +117,7 @@
       "code": "EST",
       "file": "EST.tsv",
       "verses": 167,
-      "sha256": "152596502eb5df2d3db8ef2f3e59d4a39be36cb97df2e0156972f4e7978c9c24"
+      "sha256": "8054e9f58eb1b5a7c38edc2253753dea6ae0ea817fa52126170521d5753009f1"
     },
     {
       "code": "JOB",
@@ -126,7 +129,7 @@
       "code": "PSA",
       "file": "PSA.tsv",
       "verses": 2461,
-      "sha256": "c0cb744ef4426223c589b27e72c4a30d078505456f6537a399f17139d419f24b"
+      "sha256": "6fd1cb88bfa072901bdb343328c4e122535dde7aa74698c8671d1eda87fb287e"
     },
     {
       "code": "PRO",
@@ -138,19 +141,19 @@
       "code": "ECC",
       "file": "ECC.tsv",
       "verses": 222,
-      "sha256": "fd1004ca05acb1854ff181825b28f24a7cb691037df90446171f503c51c44c99"
+      "sha256": "75d9510fba1e8c34df7c8d2405c28a9280863322a4f6caac90eec26af589bfd6"
     },
     {
       "code": "SNG",
       "file": "SNG.tsv",
       "verses": 117,
-      "sha256": "01c754d2da8fed92673d522addda64eab7213664e5b82ea17deb511d4fa8e1cb"
+      "sha256": "b33b332213bc47178ad7ebcb041338d7e2b4697a2272bbdf03712f030bc2eb52"
     },
     {
       "code": "ISA",
       "file": "ISA.tsv",
       "verses": 1292,
-      "sha256": "d938d91221ebe694ae5cb7f258a6ba5aac49f9912ccb1b810e966cb710c31e6d"
+      "sha256": "486d9edb9c84da1211ac83997e1017650414c907ca588fe04f8c456255f5b23b"
     },
     {
       "code": "JER",
@@ -162,13 +165,13 @@
       "code": "LAM",
       "file": "LAM.tsv",
       "verses": 154,
-      "sha256": "15cf089c54f84e24436595cd9ea8d6cebecdcf7ee4be981a9cf606dac54e4d44"
+      "sha256": "23309e08169b579bc2a92fa00b60611bfb93ebd6d4c27a19328301ce63fb15e3"
     },
     {
       "code": "EZK",
       "file": "EZK.tsv",
       "verses": 1273,
-      "sha256": "406b426e49218f20a367b7f1223bed12af67a3adcf0194d9cb15a5b193aeb822"
+      "sha256": "10ae3d864a8015d90ef2cc8fe803132bd280e520d0941c851f4f466b68a39607"
     },
     {
       "code": "DAN",
@@ -180,19 +183,19 @@
       "code": "HOS",
       "file": "HOS.tsv",
       "verses": 197,
-      "sha256": "095149388d04cb74d65841fca297fe555f7f64d0044609102c02aa06c1ae559f"
+      "sha256": "e034503a1bfa691ea6e6b62942b963f97be504f7db42d35751b9ea09861a8d9c"
     },
     {
       "code": "JOL",
       "file": "JOL.tsv",
       "verses": 73,
-      "sha256": "3f79b705c5305d156dd3da7a06b1757e86a31914ccdfbbc5d2102bc8ee681010"
+      "sha256": "539c075481af5e4342aed7484aed0aea5d8e2f083a63eeb30a9382273e084161"
     },
     {
       "code": "AMO",
       "file": "AMO.tsv",
       "verses": 146,
-      "sha256": "05e76b0779ec28a91ffa56b34ed73189c652570347d2f7095f38912970b1a74b"
+      "sha256": "f4811016275131ec060407554e1f63424182caab06b64ae209de0a6062bca9d3"
     },
     {
       "code": "OBA",
@@ -210,13 +213,13 @@
       "code": "MIC",
       "file": "MIC.tsv",
       "verses": 105,
-      "sha256": "1cf950a922aeac9e8919e828acfb2217f1ba1a6e87edabbda932a43ac5ba1b72"
+      "sha256": "059525b29516233bb1b93505d7f8c9ee92b17fd389a85c3d9d2f6b3f557cb53b"
     },
     {
       "code": "NAM",
       "file": "NAM.tsv",
       "verses": 47,
-      "sha256": "4957bd6503873bd3265caceea74a8d83ca161584b3dff3678b2a990a3ce1327f"
+      "sha256": "a412e565ead2498fd4e01aff0d314f342df6870a4d2d8e2602c308abf4e70c58"
     },
     {
       "code": "HAB",
@@ -252,25 +255,25 @@
       "code": "MAT",
       "file": "MAT.tsv",
       "verses": 1071,
-      "sha256": "b47ada6342f0f3c480fadff97b93bc65b133e361e3503a13e0f6c13def221bca"
+      "sha256": "633c0f7658af0c44249de647bac0b7d02a96910099a587e777ec8bada2b49b01"
     },
     {
       "code": "MRK",
       "file": "MRK.tsv",
       "verses": 678,
-      "sha256": "12ce7f6e1e37468613984a6763bea5c95bfacd2497aef856d563e39de17cc793"
+      "sha256": "a63bc6ce427c91dd92b68557c13dc0439dedc89d4b5993a7aa919792b18a696f"
     },
     {
       "code": "LUK",
       "file": "LUK.tsv",
       "verses": 1151,
-      "sha256": "d393346c2d4e22b98d3d74c703d9efc0c3a626edda9c7df72ccab4ce30ade8b3"
+      "sha256": "6220bf49343135e62ef342e1dd483250e946902e0f9955c22903413cdece511b"
     },
     {
       "code": "JHN",
       "file": "JHN.tsv",
       "verses": 879,
-      "sha256": "ddd8f1d128af8fbe68712db2fd28a80cf366a25f84a54d69ce4fce3a4466f692"
+      "sha256": "8cb9c08aaeae3066357151f1e79cd100656612cd152eeae76dc33c4a919dadf3"
     },
     {
       "code": "ACT",
@@ -282,13 +285,13 @@
       "code": "ROM",
       "file": "ROM.tsv",
       "verses": 433,
-      "sha256": "5f0ce7d2c754a76326d20fcb4f4a8dfbac207e7fb088633646ab30097d229535"
+      "sha256": "4ebb735ad3aa8e3ed0473b20b190a6c6722b53ae1fac3e95ca99a64b8c7a522b"
     },
     {
       "code": "1CO",
       "file": "1CO.tsv",
       "verses": 437,
-      "sha256": "5742d2848df6445159c8629f666bf8f866c8f3709133c1988897d1fe8d169940"
+      "sha256": "903bc00631a18808dfd7942a162d84eef6c87ddff514b10332d3d394203877f3"
     },
     {
       "code": "2CO",
@@ -300,13 +303,13 @@
       "code": "GAL",
       "file": "GAL.tsv",
       "verses": 149,
-      "sha256": "319518ed31524ed83d42d3a4edf2355f562900be3cca91066b3bfa322a203c02"
+      "sha256": "c5a203be9d4bf7ed50264e7df32a8bb951356d0ce53848d5202d2864aa888537"
     },
     {
       "code": "EPH",
       "file": "EPH.tsv",
       "verses": 155,
-      "sha256": "e01fef2fbb33ebfedfa16cd1a9135d29fd2fe0cf383866b61e2df37a084c44be"
+      "sha256": "6ee0457611f63c881adb8c872fbeaa44f5925b4cfcb0e81f3358e1f09d34ec0e"
     },
     {
       "code": "PHP",
@@ -324,25 +327,25 @@
       "code": "1TH",
       "file": "1TH.tsv",
       "verses": 89,
-      "sha256": "0e5119ca7f6b2d1c2f5d2d8aa43091fa3a6776ba0f2e23200218111781cdb722"
+      "sha256": "d9c58bc5c037c763204e7138dd83c1e857fbf1f9b598ff55c476b2ee453131ae"
     },
     {
       "code": "2TH",
       "file": "2TH.tsv",
       "verses": 47,
-      "sha256": "4b286127a23448bd339f7987c8526c3c4c73898d0d4d29d50e873a64510fca39"
+      "sha256": "bc69fc9c415d773b88e37138d969e11dfe9d07f75a444c818f9c2f2ead58a43f"
     },
     {
       "code": "1TI",
       "file": "1TI.tsv",
       "verses": 113,
-      "sha256": "fa2c2b6bb138f85d620ac96d83901c4ee53abd40d91f08db046bf5029ef95a5b"
+      "sha256": "8f9ad9da3056a296d0fa38e6b76245cdd883b1fcc4e5924b900dbe8cb857a2f1"
     },
     {
       "code": "2TI",
       "file": "2TI.tsv",
       "verses": 83,
-      "sha256": "f15875ab7c4e5ebfc05c8e8e68598b805c3c4ca52a0d65118597df060d5406db"
+      "sha256": "2f7a505cf66a056cc67ee4b7eca60cb4dc895bfde2563d392c383a18413168da"
     },
     {
       "code": "TIT",
@@ -366,7 +369,7 @@
       "code": "JAS",
       "file": "JAS.tsv",
       "verses": 108,
-      "sha256": "ba3f41c215dc382b121540cb7a00fd1f57a8bb6928f5bc7290242f9906cd0d49"
+      "sha256": "cafb26fdb6795c1ae9c627be9ff4ce968034feaaae675ec11f112aa898632f89"
     },
     {
       "code": "1PE",
@@ -384,7 +387,7 @@
       "code": "1JN",
       "file": "1JN.tsv",
       "verses": 105,
-      "sha256": "52b0c022d32db298448096ece04a0f66676da1d2c003bb9f4b41cd86d849af12"
+      "sha256": "91aaef41138c3d5a56331606d1f020650debb3483b9f51705fdd6b5aa024629a"
     },
     {
       "code": "2JN",
@@ -402,14 +405,14 @@
       "code": "JUD",
       "file": "JUD.tsv",
       "verses": 25,
-      "sha256": "ffd435e2f1fdfd758405ab95179cfa96b137831187f5560c10f66b5f4519f641"
+      "sha256": "b23f29931f494a6af3a265965534c1d05bef5895380bc59845101f741c9eae07"
     },
     {
       "code": "REV",
       "file": "REV.tsv",
       "verses": 404,
-      "sha256": "b25139fbf70f7bd15db5026cf6a9103324d93bf2faf6e7383b167791558ecef0"
+      "sha256": "3b035ede98d674f4508ed289e1b6851fe00d1cb3fd42a11a8e8c708e481df66e"
     }
   ],
-  "data_sha256": "44d88f21bd2301dc5c90e7e404d056e4656208bcdaa74545db4b70592926a69e"
+  "data_sha256": "a00088d91e05a4b1dd9ec307ac51730778dcfb30f4e2280b5d84379d1498e480"
 }

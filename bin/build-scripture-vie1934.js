@@ -20,12 +20,26 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { parseUsfm, repairVniCapitals } = require('./content-lib/usfm');
+const { parseUsfm, repairVniCapitals, repairYGrave, repairCp1258Words } = require('./content-lib/usfm');
 
 const ROOT = path.join(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'plugins', 'jlife-scripture', 'data', 'vie1934');
 const SOURCE_URL = 'https://ebible.org/Scriptures/vie1934_usfm.zip';
 const DETAILS_URL = 'https://ebible.org/find/details.php?id=vie1934';
+
+/**
+ * Verses whose eBible.org source lost a word that no mechanical repair can
+ * restore. Each entry replaces one exact source text (after the repairs) and
+ * is listed in the manifest; the owner checks each against a printed 1925
+ * Bible. Only verses the reading plans use are corrected here.
+ */
+const ERRATA = {
+  'MAT 6:10': {
+    from: 'Nước Cha được đến; Cha được nên, ở đất như trời!',
+    to: 'Nước Cha được đến; Ý Cha được nên, ở đất như trời!',
+    why: 'source lost "Ý" in the Windows-1258 damage (Lord\'s Prayer; plan day 24)',
+  },
+};
 
 const sha256 = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
 
@@ -59,6 +73,9 @@ function build(zip, dir) {
 
   const books = [];
   let repairs = 0;
+  let yGrave = 0;
+  const cp1258 = [];
+  const errata = [];
   let total = 0;
   for (const f of files) {
     const { book, verses } = parseUsfm(fs.readFileSync(path.join(dir, f), 'utf8'));
@@ -67,8 +84,19 @@ function build(zip, dir) {
       const key = `${v.chapter}:${v.verse}`;
       if (seen.has(key)) throw new Error(`${book} ${key} appears twice`);
       seen.add(key);
-      const r = repairVniCapitals(v.text.normalize('NFC'));
+      const c = repairCp1258Words(v.text.normalize('NFC'));
+      if (c.count) cp1258.push(`${book} ${key}`);
+      const y = repairYGrave(c.text);
+      yGrave += y.count;
+      const r = repairVniCapitals(y.text);
       repairs += r.count;
+      const e = ERRATA[`${book} ${key}`];
+      if (e) {
+        if (r.text !== e.from) throw new Error(`${book} ${key}: erratum no longer matches the source; review it`);
+        r.text = e.to;
+        errata.push(`${book} ${key}`);
+      }
+      if (/[ðÞÌÒ]/u.test(r.text)) throw new Error(`${book} ${key}: legacy encoding left after repair`);
       if (/[\t\n\\]/.test(r.text)) throw new Error(`${book} ${key}: unexpected tab, newline or marker`);
       return `${v.chapter}\t${v.verse}\t${r.text}\n`;
     });
@@ -90,13 +118,17 @@ function build(zip, dir) {
     normalization: [
       'Unicode NFC; whitespace collapsed; verse text only (no headings or book titles)',
       `Repaired ${repairs} capital letters left by a legacy VNI conversion at the start of a word (e.g. "Aáy" -> "Ấy", "Oâng" -> "Ông"); see bin/content-lib/usfm.js`,
+      `Repaired ${yGrave} "ỳ" stored as a closing quote ("k”" -> "kỳ", "hu”nh" -> "huỳnh")`,
+      `Re-decoded words stored as Windows-1258 bytes in ${cp1258.length} verses (${cp1258.join(', ')}); check these against print`,
+      ...Object.entries(ERRATA).map(([ref, e]) => `Erratum ${ref}: "${e.from}" -> "${e.to}" (${e.why})`),
     ],
     verse_count: total,
     books,
   };
+  if (errata.length !== Object.keys(ERRATA).length) throw new Error('an erratum did not apply');
   manifest.data_sha256 = dataChecksum(books);
   fs.writeFileSync(path.join(OUT_DIR, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
-  console.log(`WROTE ${books.length} books, ${total} verses, ${repairs} VNI repairs -> ${path.relative(ROOT, OUT_DIR)}`);
+  console.log(`WROTE ${books.length} books, ${total} verses, ${repairs} VNI capitals, ${yGrave} ỳ, ${cp1258.length} Windows-1258 verses -> ${path.relative(ROOT, OUT_DIR)}`);
 }
 
 /** @returns {string[]} problems with the committed dataset (empty when valid). */
