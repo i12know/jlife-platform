@@ -233,7 +233,13 @@ class Test_Vietnamese extends WP_UnitTestCase {
 	 * pages (Codex QA 2026-11-19: "Already joined? Sign in." opened English).
 	 */
 	public function test_the_picked_language_follows_the_links_between_sign_in_pages() {
-		$this->visit( '/join/', array( 'mode' => 'solo', 'lang' => 'vi' ) );
+		$this->visit(
+			'/join/',
+			array(
+				'mode' => 'solo',
+				'lang' => 'vi',
+			)
+		);
 		$join = jlife_auth_join_form( 'solo', array(), '' );
 		$this->assertStringContainsString( 'Đã tham gia rồi? Đăng nhập.', $join );
 		$this->assertMatchesRegularExpression( '#href="[^"]*/signin/\?lang=vi"#', $join, 'sign-in link keeps Vietnamese' );
