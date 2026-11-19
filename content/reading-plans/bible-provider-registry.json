@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "record_type": "scripture_provider_entitlement_research",
-  "last_updated": "2026-11-18",
+  "last_updated": "2026-11-19",
   "warning": "Research and entitlement inventory, NOT an authorization for production rendering. Runtime bible-links.json remains authoritative for current external link behavior.",
   "active_latoc_links": {
     "config_path": "content/reading-plans/bible-links.json",
@@ -232,30 +232,68 @@
   },
   "api_bible": {
     "account_and_licensed_translations_verified": false,
-    "starter_plan": "up to 3 eligible copyrighted Bibles plus open-access translations; current individual entitlements unknown",
-    "candidate_versions": [
+    "account": "App \"Jlife\", Starter plan ($0): 5,000 API calls/month, 3 premium slots selected as NLT, NKJV, CSB (owner, 2026-11-19, #141). Exact bibleIds not yet recorded.",
+    "starter_plan": "open-access translations plus up to 3 copyrighted Bibles; non-commercial use (owner decision: the free church app is non-commercial)",
+    "client": "plugins/jlife-challenges/includes/bible-apibible.php (#141); look up IDs with `wp jlife bible apibible-list --language=eng`",
+    "versions": [
       {
+        "key": "nlt",
+        "language": "en",
         "code": "NLT",
-        "status": "candidate_not_licensed_to_jlife",
-        "bible_id": null
+        "name": "New Living Translation",
+        "source": "apibible",
+        "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+        "display": "native",
+        "copyright": "returned by the API with each passage (data.copyright); shown under the text",
+        "cache_rule": {
+          "max_age_days": 14,
+          "max_consecutive_verses": 499
+        },
+        "enabled": false,
+        "default_for": null,
+        "status": "slot_selected_bible_id_not_recorded"
       },
       {
-        "code": "CSB",
-        "status": "candidate_not_licensed_to_jlife",
-        "bible_id": null
-      },
-      {
+        "key": "nkjv",
+        "language": "en",
         "code": "NKJV",
-        "status": "candidate_not_licensed_to_jlife",
-        "bible_id": null
+        "name": "New King James Version",
+        "source": "apibible",
+        "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+        "display": "native",
+        "copyright": "returned by the API with each passage (data.copyright); shown under the text",
+        "cache_rule": {
+          "max_age_days": 14,
+          "max_consecutive_verses": 499
+        },
+        "enabled": false,
+        "default_for": null,
+        "status": "slot_selected_bible_id_not_recorded"
+      },
+      {
+        "key": "csb",
+        "language": "en",
+        "code": "CSB",
+        "name": "Christian Standard Bible",
+        "source": "apibible",
+        "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+        "display": "native",
+        "copyright": "returned by the API with each passage (data.copyright); shown under the text",
+        "cache_rule": {
+          "max_age_days": 14,
+          "max_consecutive_verses": 499
+        },
+        "enabled": false,
+        "default_for": null,
+        "status": "slot_selected_bible_id_not_recorded"
       }
     ],
     "requirements_before_use": [
-      "Register application and select eligible editions",
-      "Record exact API.Bible Bible IDs and active license",
-      "Review use with church-sponsored cash prize",
-      "Implement FUMS tracking and publisher attribution",
-      "Enforce provider-specific caching rules and quotas"
+      "Put JLIFE_APIBIBLE_KEY on the host in ~/.latoc/bible.php (0600)",
+      "Run apibible-list and record each exact bible_id (source_id) and edition",
+      "Smoke-test one passage per version and confirm the copyright line",
+      "Owner confirms cache and FUMS rules against the account's terms (docs/bible-provider-entitlements.md)",
+      "Wire into #139's registry and shared passage cache, then set enabled: true"
     ]
   },
   "bible_league": {
