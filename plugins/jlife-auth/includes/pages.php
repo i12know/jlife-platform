@@ -84,6 +84,22 @@ function jlife_auth_send_page( $title, $body ) {
 }
 
 /**
+ * Carry a signed-out visitor's picked language (`?lang=`) onto a link to another
+ * sign-in page, so "Already joined? Sign in." from the Vietnamese form stays
+ * Vietnamese. Signed-in people see their own chosen language, so nothing is added.
+ *
+ * @param string $url Link.
+ * @return string
+ */
+function jlife_auth_keep_lang( $url ) {
+	if ( is_user_logged_in() || ! isset( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
+		return $url;
+	}
+	$lang = sanitize_key( wp_unslash( $_GET['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
+	return in_array( $lang, array( 'vi', 'en' ), true ) ? add_query_arg( 'lang', $lang, $url ) : $url;
+}
+
+/**
  * "English | Tiếng Việt" links for a signed-out visitor, so someone who reads
  * Vietnamese can switch before signing up (`?lang=`). Signed-in people see their
  * own chosen language (D13), so they get none. Only on a plain page view: a
@@ -229,7 +245,7 @@ function jlife_auth_signin_body( $error = '' ) {
 		. '<label for="jl-email">' . esc_html__( 'Email', 'jlife-auth' ) . '</label>'
 		. '<input id="jl-email" type="email" name="email" autocomplete="email" required autofocus>'
 		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
-		. '<p><a href="' . esc_url( home_url( '/join/' ) ) . '">' . esc_html__( 'New here? Join with a group invite code, read on your own, or start a group.', 'jlife-auth' ) . '</a></p>';
+		. '<p><a href="' . esc_url( jlife_auth_keep_lang( home_url( '/join/' ) ) ) . '">' . esc_html__( 'New here? Join with a group invite code, read on your own, or start a group.', 'jlife-auth' ) . '</a></p>';
 }
 
 /**
@@ -264,7 +280,7 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 	foreach ( JLIFE_AUTH_LOCALES as $code => $label ) {
 		$langs .= '<option value="' . esc_attr( $code ) . '"' . selected( $in['locale'], $code, false ) . '>' . esc_html( $label ) . '</option>';
 	}
-	$join = home_url( '/join/' );
+	$join = jlife_auth_keep_lang( home_url( '/join/' ) );
 	if ( 'solo' === $mode ) {
 		$head = '<h1>' . esc_html__( 'Read the Bible Marathon on my own', 'jlife-auth' ) . '</h1>'
 			. '<p>' . esc_html__( 'No group needed. Your SOAP entries are private. You can join a group later with an invite code.', 'jlife-auth' ) . '</p>';
@@ -304,7 +320,7 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 		. '<small>' . esc_html__( 'Optional. We write in the language you chose above. You can turn it off at any time.', 'jlife-auth' ) . '</small>'
 		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
 		. $swap
-		. '<p><a href="' . esc_url( home_url( '/signin/' ) ) . '">' . esc_html__( 'Already joined? Sign in.', 'jlife-auth' ) . '</a></p>';
+		. '<p><a href="' . esc_url( jlife_auth_keep_lang( home_url( '/signin/' ) ) ) . '">' . esc_html__( 'Already joined? Sign in.', 'jlife-auth' ) . '</a></p>';
 }
 
 /**
