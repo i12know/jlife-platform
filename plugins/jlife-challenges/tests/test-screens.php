@@ -770,6 +770,24 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * The running score ("N of 104") is shown on My Marathon, not on Today (#137).
+	 */
+	public function test_today_has_no_running_score_and_my_marathon_keeps_it() {
+		jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $this->soap() );
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) );
+		$this->assertStringContainsString( 'class="jl-status"', $body, 'the daily status message stays' );
+		$this->assertStringNotContainsString( 'jl-score', $body );
+		$this->assertStringNotContainsString( '1 of 104', $body );
+
+		// My Marathon renders and exits, so check its source still prints the score.
+		$src = (string) file_get_contents( dirname( __DIR__ ) . '/includes/screens.php' );
+		$fn  = substr( $src, (int) strpos( $src, 'function jlife_challenges_screen_marathon' ) );
+		$fn  = substr( $fn, 0, (int) strpos( $fn, "\n}\n" ) );
+		$this->assertStringContainsString( '<p class="jl-score">', $fn );
+		$this->assertStringContainsString( "__( '%1\$d of %2\$d', 'jlife-challenges' ), \$view['points'], \$view['day_count']", $fn );
+	}
+
+	/**
 	 * An incomplete submit from Today saves everything typed, earns nothing, and
 	 * the page then says kindly what to add; the form still offers Submit SOAP.
 	 */
