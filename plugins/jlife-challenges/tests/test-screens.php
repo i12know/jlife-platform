@@ -1167,9 +1167,9 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'jl-reminder-toggle', jlife_challenges_soap_body( $view ) );
 
 		$html = jlife_challenges_page_html( 'Today', $body, 'today', array( 'soap', 'reminder' ) );
-		$this->assertStringContainsString( 'assets/soap.js?v=3', $html );
+		$this->assertStringContainsString( 'assets/soap.js?v=4', $html );
 		$this->assertStringContainsString( 'assets/reminder.js?v=1', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=11', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=12', $html );
 		$this->assertStringNotContainsString( 'reminder.js', jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' ) );
 	}
 }
