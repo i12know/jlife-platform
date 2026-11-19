@@ -274,6 +274,9 @@ The same commands exist on the server: `wp jlife test-campaign create|remove|sta
   gunzip -c backups/<timestamp>.sql.gz | /opt/cpanel/ea-php82/root/usr/bin/php ~/.latoc/wp-cli-2.11.0.phar --path=<document root> db import -
   ```
 
+- **Restore test** ([#56](https://github.com/i12know/jlife-platform/issues/56)): [`bin/deploy/latoc-restore-test.sh`](../bin/deploy/latoc-restore-test.sh) loads the newest backup into a scratch database (`<cpanel user>_rtest`, created and deleted with cPanel's `uapi`), compares table and row counts with the live site, and always deletes the scratch database. It only reads the live database and prints no passwords (the database password goes to a `mktemp` file, mode 600, removed on exit). Paste the script into cPanel → Terminal as `~/.latoc/restore-test.sh`, run it, then delete it. Re-run it before the Dec 5 shadow pilot and after any change to the backup step.
+- **Last restore test: 2026-11-19, passed.** Backup `20261119T030929Z.sql.gz` (256 KB) passed `gzip -t`; scratch database created and granted (`status: 1`); import succeeded in under a second; **31 of 31 tables** restored; row counts matched live exactly for `options` (177), `users` (11), `posts` (120), `blogs` (1) and every J-Life table checked (campaigns, enrollments, group members, SOAP entries, score ledger, audit log); restored `siteurl` was `https://latoc.vayhub.org`; scratch database deleted.
+
 ## Rollback
 
 - **Code:** revert the commit on `main`, then run the workflow again. Plugins are replaced wholesale on each deploy. (Reverting the landing-page change stops the deploy from managing Polylang; it does not remove Polylang or the pages. See the next item.)
