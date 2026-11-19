@@ -222,6 +222,36 @@ class Test_Join_Modes extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Consent is versioned: someone who agreed to older wording is asked again,
+	 * and agreeing records the new version on the user and the enrollment.
+	 * Reminders depend on having consented at all, not on the version.
+	 */
+	public function test_older_consent_version_is_asked_again() {
+		jlife_auth_start_join( $this->input( array( 'mode' => 'solo' ) ) );
+		$r = jlife_auth_complete( 'reader@example.test', $this->last_code() );
+		jlife_auth_record_consent( $r['user_id'] );
+		$this->assertFalse( jlife_auth_needs_consent( $r['user_id'] ) );
+
+		update_user_meta( $r['user_id'], 'jlife_consent_version', 'draft-2026-11-05' );
+		$this->assertTrue( jlife_auth_needs_consent( $r['user_id'] ), 'older wording: asked again' );
+
+		jlife_auth_record_consent( $r['user_id'] );
+		$this->assertFalse( jlife_auth_needs_consent( $r['user_id'] ) );
+		$this->assertSame( JLIFE_AUTH_CONSENT_VERSION, get_user_meta( $r['user_id'], 'jlife_consent_version', true ) );
+		$this->assertSame( JLIFE_AUTH_CONSENT_VERSION, jlife_challenges_get_enrollment( $this->campaign, $r['user_id'] )['consent_version'] );
+	}
+
+	/**
+	 * The consent text says sharing posts the whole entry, Prayer included.
+	 */
+	public function test_consent_text_says_whole_entry_including_prayer() {
+		$html = jlife_auth_consent_body();
+		$this->assertStringContainsString( 'including your Prayer', $html );
+		$this->assertStringContainsString( '/share', $html );
+		$this->assertStringNotContainsString( 'parts you picked', $html );
+	}
+
+	/**
 	 * The reminder box is on the join form for every way in, and it is unticked.
 	 */
 	public function test_join_form_has_an_unticked_reminder_box() {

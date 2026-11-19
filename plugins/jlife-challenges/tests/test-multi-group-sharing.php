@@ -361,6 +361,17 @@ class Test_Multi_Group_Sharing extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * When every group already has the day, the "unticked groups" sentence is gone.
+	 */
+	public function test_unticked_sentence_absent_when_every_group_has_the_day() {
+		$this->save( 'a', $this->soap( 'v1' ), array( $this->g['g1'], $this->g['g2'] ) );
+		$form = $this->form_for( 'a' );
+		$this->assertSame( 2, substr_count( $form, 'Already shared with' ) );
+		$this->assertStringNotContainsString( 'leave unticked', $form );
+		$this->assertStringContainsString( 'including your Prayer', $form );
+	}
+
+	/**
 	 * Per-group "already shared, tick and save to update"; the ticks survive a failed save.
 	 */
 	public function test_form_notes_which_groups_already_have_the_day() {
@@ -374,8 +385,12 @@ class Test_Multi_Group_Sharing extends Jlife_Challenges_TestCase {
 			array_column( $view['share_groups'], 'status', 'id' )
 		);
 		$form = $this->form_for( 'a' );
-		$this->assertSame( 1, substr_count( $form, 'already has this day' ), 'only Group Two is noted' );
-		$this->assertMatchesRegularExpression( '/Group Two[^<]*<\/span>.*already has this day/s', $form );
+		$this->assertSame( 1, substr_count( $form, 'Already shared with' ), 'only Group Two is noted' );
+		$this->assertStringContainsString( 'Already shared with Group Two — tick and save to update', $form );
+		$this->assertSame( 1, substr_count( $form, 'Change or remove on the share page' ) );
+		$this->assertStringContainsString( 'href="' . home_url( '/share/' ) . '"', $form );
+		$this->assertStringContainsString( 'Groups you leave unticked', $form, 'Group One has no share yet' );
+		$this->assertStringNotContainsString( 'keep it private', $form );
 
 		$ticked = jlife_challenges_today_body( $view, array( 'share_groups' => array( $this->g['g1'] ) ) );
 		$this->assertSame( 1, substr_count( $ticked, "checked='checked'" ), 'a re-rendered form keeps the ticks the person made' );

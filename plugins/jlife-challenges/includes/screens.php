@@ -744,17 +744,28 @@ function jlife_challenges_render_share_boxes( $groups, $ticked ) {
 	if ( ! $groups ) {
 		return '';
 	}
-	$ticked = array_map( 'intval', $ticked );
-	$out    = '<fieldset class="jl-share-groups"><legend>' . esc_html__( 'Share this with', 'jlife-challenges' ) . '</legend>';
+	$ticked    = array_map( 'intval', $ticked );
+	$any_fresh = false;
+	$out       = '<fieldset class="jl-share-groups"><legend>' . esc_html__( 'Share this with', 'jlife-challenges' ) . '</legend>';
 	foreach ( $groups as $g ) {
-		$out .= '<label class="jl-share-opt"><input type="checkbox" name="jl_share_groups[]" value="' . esc_attr( (string) (int) $g['id'] ) . '"' . checked( in_array( (int) $g['id'], $ticked, true ), true, false ) . '> <span>' . esc_html( (string) $g['name'] ) . '</span></label>';
-		if ( 'shared' === $g['status'] ) {
+		$shared    = 'shared' === $g['status'];
+		$any_fresh = $any_fresh || ! $shared;
+		if ( $shared ) {
 			/* translators: %s: group name. */
-			$out .= '<small class="jl-share-note">' . esc_html( sprintf( __( '%s already has this day. Tick its box and save to update it.', 'jlife-challenges' ), (string) $g['name'] ) ) . '</small>';
+			$label = sprintf( __( 'Already shared with %s — tick and save to update', 'jlife-challenges' ), (string) $g['name'] );
+		} else {
+			$label = (string) $g['name'];
+		}
+		$out .= '<label class="jl-share-opt"><input type="checkbox" name="jl_share_groups[]" value="' . esc_attr( (string) (int) $g['id'] ) . '"' . checked( in_array( (int) $g['id'], $ticked, true ), true, false ) . '> <span>' . esc_html( $label ) . '</span></label>';
+		if ( $shared ) {
+			$out .= '<small class="jl-share-note"><a href="' . esc_url( home_url( '/share/' ) ) . '">' . esc_html__( 'Change or remove on the share page', 'jlife-challenges' ) . '</a></small>';
 		}
 	}
-	return $out . '</fieldset>'
-		. '<small class="jl-share-note">' . esc_html__( 'This shares the whole entry, including your Prayer, with each group you tick. Leave every box unticked to keep it private.', 'jlife-challenges' ) . '</small>';
+	$note = __( 'This shares the whole entry, including your Prayer, with each group you tick.', 'jlife-challenges' );
+	if ( $any_fresh ) {
+		$note .= ' ' . __( "Groups you leave unticked don't see this entry.", 'jlife-challenges' );
+	}
+	return $out . '</fieldset><small class="jl-share-note">' . esc_html( $note ) . '</small>';
 }
 
 /**
