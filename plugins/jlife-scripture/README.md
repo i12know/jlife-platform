@@ -38,11 +38,11 @@ Which Bible a participant reads comes from `jlife_scripture_versions_for_user( $
 | Picker data | `jlife_scripture_selectable_versions()` → language => key => entry, enabled versions only, registry order; `jlife_scripture_can_render()` tells which open Bible Gateway instead of showing text |
 | UI | My Marathon (`jlife-challenges`, `includes/bible-choice.php`) |
 
-Not wired yet: Today, `/soap` and `/reading/` still call the reader as before (it stays off with `jlife_scripture_native_reader`); the follow-up PR switches them to `jlife_scripture_maybe_render_day()`.
+Wired in: **Today and `/soap`** (`jlife_challenges_render_reader()` in `jlife-challenges` calls `jlife_scripture_maybe_render_day( $day, get_current_user_id() )` when the option below is on; the framed Bible Gateway reader is the flag-off path, and the standalone page prints this plugin's stylesheet). Not wired yet: the public `/reading/` pages (`jlife-studies`) still show their own links.
 
 ## Settings
 
-- `jlife_scripture_native_reader` (per-site option, `'0'` default / `'1'`): turns the reader on for the screens that call `jlife_scripture_maybe_render_day()`.
+- `jlife_scripture_native_reader` (per-site option, `'0'` default / `'1'`): turns the reader on for the screens that call `jlife_scripture_maybe_render_day()` (Today and `/soap`). Turn it on per site with `wp option update jlife_scripture_native_reader 1`; back to `0` restores the framed reader at once. It is never switched on by code or by a deploy.
 - Defaults and fallbacks: edit `data/bible-versions.json` (`default_for`, `languages.<lang>.fallback`), then `npm run plans:build`. No code change.
 
 ## WP-CLI
