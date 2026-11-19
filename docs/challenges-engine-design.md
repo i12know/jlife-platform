@@ -150,7 +150,7 @@ A reminder is a message the person asked for. The table holds the choice and the
 
 | Actor / case | Read the choice | Change the choice | Notes |
 |---|---|---|---|
-| The participant (active enrollment) | ✅ own | ✅ own, from the join form's unticked box, Today's one-time prompt, or My Marathon | Always for the signed-in user: a user ID in a form post is ignored |
+| The participant (active enrollment) | ✅ own | ✅ own, from the join form's unticked box or the "Email me each morning's reading." checkbox on Today (under Save draft) and My Marathon (#135) | Always for the signed-in user: a user ID in a form post or REST body is ignored. The checkbox saves through `POST /jlife/v1/reminder` (signed in, `wp_rest` nonce via cookie auth; `on` and/or `locale`, leaving out either keeps it) or, without JavaScript, the `jlife_reminder` nonce form; both call `jlife_challenges_set_reminder()` |
 | Another participant, group member, starter or leader | ❌ | ❌ `jlife_denied` | Nothing about who gets reminders is shown to groups |
 | Organizer | ✅ (recipient list, for PR 2's queue and status) | ✅ (audited, e.g. `wp` tooling later) | Never reads what anyone wrote |
 | Person with no active enrollment (never joined, left, removed) | ❌ | ❌ `jlife_denied` | An organizer cannot set one for them either; a left or removed person is not a recipient even if a row remains |
@@ -161,7 +161,7 @@ A reminder is a message the person asked for. The table holds the choice and the
 
 Recipients require **recorded consent** (`enrollments.consented`): the join form's box is saved before the `/consent` step, so a ticked box alone never makes someone a recipient.
 
-Consent wording: the consent page says reminders are **optional** ("If you choose daily reminders..."); only a ticked box or an explicit Yes records an opt-in, with the consent wording version in force.
+Consent wording: the consent page says reminders are **optional** ("If you choose daily reminders..."); only a ticked box (at joining, or the checkbox on Today or My Marathon) records an opt-in, with the consent wording version in force.
 
 ### 4e. Daily reminder sends (#63 Phase B, part 2)
 

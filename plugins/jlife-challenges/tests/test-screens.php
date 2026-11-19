@@ -1085,4 +1085,31 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$html = jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' );
 		$this->assertStringContainsString( 'back=soap', $html );
 	}
+
+	/**
+	 * Today (#135): no reminder card above the reading; the daily reading email
+	 * checkbox comes right after Save draft, outside the SOAP form, and saves on
+	 * its own script. The /soap page has no checkbox.
+	 */
+	public function test_today_has_the_reminder_checkbox_after_save_draft() {
+		$view = $this->view_with_reading( $this->u['a'] );
+		$body = jlife_challenges_today_page_body( $view, array(), $this->u['a'] );
+		$this->assertStringNotContainsString( 'Get each morning', $body );
+		$this->assertStringNotContainsString( 'jl-reminder-prompt', $body );
+		$draft = strpos( $body, '>Save draft</button>' );
+		$soap  = strpos( $body, '</form>', (int) $draft );
+		$box   = strpos( $body, '<form method="post" class="jl-reminder-toggle"' );
+		$this->assertNotFalse( $draft );
+		$this->assertNotFalse( $box );
+		$this->assertSame( $soap + strlen( '</form>' ), $box, 'directly after the SOAP form, not inside it' );
+		$this->assertStringContainsString( 'Email me each morning&#039;s reading.', substr( $body, $box ) );
+		$this->assertSame( 1, substr_count( $body, 'name="jl_reminder" value="on"' ), 'one checkbox' );
+		$this->assertStringNotContainsString( 'jl-reminder-toggle', jlife_challenges_soap_body( $view ) );
+
+		$html = jlife_challenges_page_html( 'Today', $body, 'today', array( 'soap', 'reminder' ) );
+		$this->assertStringContainsString( 'assets/soap.js?v=3', $html );
+		$this->assertStringContainsString( 'assets/reminder.js?v=1', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=11', $html );
+		$this->assertStringNotContainsString( 'reminder.js', jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' ) );
+	}
 }
