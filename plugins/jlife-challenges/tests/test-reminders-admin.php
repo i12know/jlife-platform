@@ -7,7 +7,7 @@
  * @package jlife-challenges
  */
 
-// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared -- tests read the custom tables directly.
+// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tests read the custom tables directly.
 
 /**
  * Reminders admin page tests.

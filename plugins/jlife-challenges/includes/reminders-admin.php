@@ -74,15 +74,7 @@ function jlife_challenges_reminders_action_links( $links ) {
  * Problems an admin should know about before (or while) sending. Pure: every
  * input is passed in.
  *
- * @param array $in {
- *     @type string $mode           Current mode.
- *     @type int    $next_run       Next scheduled tick (0 = not scheduled).
- *     @type int    $now            Now (Unix time).
- *     @type string $mail_state     jlife_challenges_reminder_mail_state().
- *     @type bool   $brevo_enabled  Whether Brevo is turned on for this site.
- *     @type int    $test_addresses Number of test-mode addresses defined.
- *     @type int    $recipients     Opted-in recipients across active campaigns.
- * }
+ * @param array $in Inputs: mode, next_run (0 = not scheduled), now (Unix time), mail_state, brevo_enabled (bool), test_addresses (count), recipients (opted in, all active campaigns).
  * @return string[] Codes: cron_unscheduled, cron_stale, mail_unconfigured, brevo_disabled, test_no_addresses, over_daily_limit.
  */
 function jlife_challenges_reminders_health( array $in ) {
@@ -128,8 +120,7 @@ function jlife_challenges_reminders_admin_overview() {
 		'test_addresses' => count( jlife_challenges_reminder_test_recipients() ),
 		'next_run'       => (int) wp_next_scheduled( JLIFE_CHALLENGES_REMINDERS_HOOK ),
 	);
-	$overview['warnings'] = jlife_challenges_reminders_health( $overview + array( 'now' => time() ) );
-	return $overview;
+	return $overview + array( 'warnings' => jlife_challenges_reminders_health( $overview + array( 'now' => time() ) ) );
 }
 
 /**
@@ -166,7 +157,7 @@ function jlife_challenges_reminders_admin_apply( $method, array $fields ) {
 }
 
 /**
- * admin-post.php handler: read the form, apply it, redirect back to the page.
+ * The admin-post.php handler: read the form, apply it, redirect back to the page.
  */
 function jlife_challenges_reminders_admin_post() {
 	$method = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) : 'GET';
