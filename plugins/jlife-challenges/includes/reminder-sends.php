@@ -56,7 +56,7 @@ const JLIFE_CHALLENGES_REMINDER_LOCK_SECONDS = 180;
 const JLIFE_CHALLENGES_REMINDER_MODES = array( 'off', 'dry_run', 'test', 'live' );
 
 add_filter( 'cron_schedules', 'jlife_challenges_reminders_cron_schedules' ); // phpcs:ignore WordPress.WP.CronInterval -- exactly five minutes, by design.
-add_action( JLIFE_CHALLENGES_REMINDERS_HOOK, 'jlife_challenges_reminders_tick' );
+add_action( JLIFE_CHALLENGES_REMINDERS_HOOK, 'jlife_challenges_reminders_cron' );
 add_action( 'init', 'jlife_challenges_reminders_schedule' );
 
 /**
@@ -81,6 +81,13 @@ function jlife_challenges_reminders_schedule() {
 	if ( ! wp_next_scheduled( JLIFE_CHALLENGES_REMINDERS_HOOK ) ) {
 		wp_schedule_event( time() + MINUTE_IN_SECONDS, 'jlife_five_minutes', JLIFE_CHALLENGES_REMINDERS_HOOK );
 	}
+}
+
+/**
+ * The cron event's callback: one tick, result discarded (WP-CLI reads it).
+ */
+function jlife_challenges_reminders_cron() {
+	jlife_challenges_reminders_tick();
 }
 
 /**

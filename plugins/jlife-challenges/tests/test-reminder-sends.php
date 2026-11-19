@@ -756,11 +756,17 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 
 	/**
 	 * Through the real mailer: a multipart message with the plain-text part and the one-click headers.
+	 * Sent as SMTP, as Brevo sends it: PHPMailer's mail() transport limits header lines to 63
+	 * characters and would Q-encode the long List-Unsubscribe URL, which mail clients cannot read.
 	 */
 	public function test_real_mailer_message_has_plain_text_and_one_click_headers() {
 		remove_filter( 'pre_wp_mail', array( $this, 'capture_mail' ), 5 );
 		reset_phpmailer_instance();
 		add_filter( 'wp_mail_from', static fn() => 'reminders@example.test' ); // The suite's default sender host is not a valid domain.
+		$smtp = static function ( $mailer ) {
+			$mailer->Mailer = 'smtp'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- PHPMailer's property; the test mailer never connects.
+		};
+		add_action( 'phpmailer_init', $smtp );
 		$this->opt_in( array( 'a' ) );
 		$this->set_now( '2026-12-20 14:00:00' );
 		$this->tick();
@@ -774,6 +780,7 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'Content-Type: text/plain', $sent->body );
 		$this->assertStringContainsString( 'Content-Type: text/html', $sent->body );
 		$this->assertSame( 'accepted', $this->row_of( 'a' )['status'] );
+		remove_action( 'phpmailer_init', $smtp );
 		reset_phpmailer_instance();
 	}
 
@@ -821,7 +828,7 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 		jlife_challenges_reminders_unschedule();
 		$this->assertFalse( wp_next_scheduled( JLIFE_CHALLENGES_REMINDERS_HOOK ) );
 		$this->assertSame( '6', JLIFE_CHALLENGES_DB_VERSION );
-		$this->assertTrue( has_action( JLIFE_CHALLENGES_REMINDERS_HOOK, 'jlife_challenges_reminders_tick' ) !== false );
+		$this->assertTrue( has_action( JLIFE_CHALLENGES_REMINDERS_HOOK, 'jlife_challenges_reminders_cron' ) !== false );
 	}
 
 	/**
@@ -833,7 +840,7 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 		foreach ( $m[1] as $hook ) {
 			$this->assertNotContains( $hook, array( 'wp_footer', 'wp_head', 'template_redirect', 'shutdown' ), 'no page-request trigger' );
 		}
-		$this->assertStringContainsString( "add_action( JLIFE_CHALLENGES_REMINDERS_HOOK, 'jlife_challenges_reminders_tick' )", $src );
+		$this->assertStringContainsString( "add_action( JLIFE_CHALLENGES_REMINDERS_HOOK, 'jlife_challenges_reminders_cron' )", $src );
 	}
 
 	/**
