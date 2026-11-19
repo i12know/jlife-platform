@@ -737,6 +737,66 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * A new day says nothing about a saved draft (#142), and neither does a draft
+	 * row that holds only the headings (an empty save of the template).
+	 */
+	public function test_no_draft_saved_until_something_is_written() {
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) );
+		$this->assertStringNotContainsString( 'Draft saved.', $body, 'nothing typed yet' );
+		$this->assertStringContainsString( '<p class="jl-saved" aria-live="polite"></p>', $body, 'the live status starts empty' );
+
+		jlife_challenges_save_draft( $this->u['a'], $this->campaign, 'd001', jlife_challenges_soap_template() );
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) );
+		$this->assertStringNotContainsString( 'Draft saved.', $body, 'the untouched template is not a draft' );
+		$this->assertStringContainsString( 'Not started yet.', $body );
+
+		jlife_challenges_save_draft( $this->u['a'], $this->campaign, 'd001', "S — Scripture\nLuke 3:4" );
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) );
+		$this->assertStringContainsString( 'Draft saved.', $body, 'real writing is a saved draft' );
+	}
+
+	/**
+	 * What counts as writing: anything beyond bare headings, in either language.
+	 */
+	public function test_has_writing() {
+		$this->assertFalse( jlife_challenges_has_writing( '' ) );
+		$this->assertFalse( jlife_challenges_has_writing( " \n\n " ) );
+		$this->assertFalse( jlife_challenges_has_writing( jlife_challenges_soap_template() ) );
+		$this->assertFalse( jlife_challenges_has_writing( "S — Kinh Thánh\n\nO — Quan sát\n\nA — Áp dụng\n\nP — Cầu nguyện" ) );
+		$this->assertFalse( jlife_challenges_has_writing( "S:\nO:\nA:\nP:" ) );
+		$this->assertTrue( jlife_challenges_has_writing( "S — Scripture\nLuke 3:4" ) );
+		$this->assertTrue( jlife_challenges_has_writing( 'S: Luke 3:4' ) );
+		$this->assertTrue( jlife_challenges_has_writing( 'A-rôn' ), 'a hyphenated name is text, not a heading' );
+	}
+
+	/**
+	 * The SOAP block explains itself (#142): a one-liner with a "More" link to the
+	 * heading help, a visible label over the reference chips, and an accessible
+	 * name on each chip. Insertion still uses data-insert.
+	 */
+	public function test_soap_one_liner_and_labelled_reference_chips() {
+		$form = $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
+
+		$this->assertStringContainsString( '<p class="jl-soap-def">SOAP = Scripture, Observation, Application, Prayer. <a href="#jlife-soap-help" class="jl-soap-more">More</a></p>', $form );
+		$this->assertMatchesRegularExpression( '#<details[^>]*\bid="jlife-soap-help"[^>]*>#', $form, 'the link targets the heading help box' );
+		$this->assertSame( 1, substr_count( $form, 'id="jlife-soap-help"' ) );
+
+		$this->assertStringContainsString( '<p class="jl-chips-label" id="jl-chips-label">Tap a reference to add it under S:</p>', $form );
+		$this->assertStringContainsString( '<div class="jl-chips" role="group" aria-labelledby="jl-chips-label">', $form );
+		$this->assertStringContainsString( '<button type="button" class="jl-chip" data-insert="Luke 3:1-6" aria-label="Add Luke 3:1-6 to my SOAP">Luke 3:1-6</button>', $form );
+
+		// Order: heading, one-liner, chip label, chips, textbox.
+		$order = array( '>My SOAP</label>', 'class="jl-soap-def"', 'class="jl-chips-label"', 'class="jl-chip"', '<textarea' );
+		$last  = -1;
+		foreach ( $order as $needle ) {
+			$at = strpos( $form, $needle );
+			$this->assertIsInt( $at, $needle );
+			$this->assertGreaterThan( $last, $at, $needle . ' in order' );
+			$last = $at;
+		}
+	}
+
+	/**
 	 * Today (#96, #98), completed day: the saved entry fills the one textbox, the
 	 * button is "Save changes" (no draft button, no autosave over a submitted
 	 * entry), and the share box is there, unchecked, with a note if the day is
@@ -1107,9 +1167,9 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'jl-reminder-toggle', jlife_challenges_soap_body( $view ) );
 
 		$html = jlife_challenges_page_html( 'Today', $body, 'today', array( 'soap', 'reminder' ) );
-		$this->assertStringContainsString( 'assets/soap.js?v=3', $html );
+		$this->assertStringContainsString( 'assets/soap.js?v=4', $html );
 		$this->assertStringContainsString( 'assets/reminder.js?v=1', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=11', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=12', $html );
 		$this->assertStringNotContainsString( 'reminder.js', jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' ) );
 	}
 }

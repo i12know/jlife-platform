@@ -179,7 +179,6 @@ return array(
 		'Draft saved' => 'Đã lưu bản nháp',
 		'Saved on this device (offline)' => 'Đã lưu trên thiết bị này (ngoại tuyến)',
 		'Restored your unsaved draft' => 'Đã khôi phục bản nháp chưa lưu của bạn',
-		'Insert today\'s references' => 'Chèn các câu Kinh Thánh hôm nay',
 		'%1$d of %2$d' => '%1$d trên %2$d',
 		'SOAP' => 'SOAP',
 		'done — 1 point' => 'xong — 1 điểm',
@@ -268,6 +267,11 @@ return array(
 		'Yes, email %1$d people every morning at 06:00 campaign time (%2$s). If the send window is already open, today\'s emails start within a few minutes.' => 'Đồng ý, gửi email cho %1$d người mỗi sáng lúc 06:00 theo giờ chiến dịch (%2$s). Nếu khung giờ gửi đã mở, email hôm nay sẽ bắt đầu gửi trong vài phút.',
 		'Live is unavailable until the mail settings are ready.' => 'Chưa dùng được chế độ chính thức cho đến khi cấu hình thư sẵn sàng.',
 		'Switch to Live' => 'Chuyển sang Chính thức',
+		// Today page fixes from pilot feedback (#142).
+		'SOAP = Scripture, Observation, Application, Prayer.' => 'SOAP = Kinh Thánh (Scripture), Quan sát (Observation), Áp dụng (Application), Cầu nguyện (Prayer).',
+		'More' => 'Xem thêm',
+		'Tap a reference to add it under S:' => 'Bấm vào một câu Kinh Thánh để thêm dưới phần S:',
+		'Add %s to my SOAP' => 'Thêm %s vào SOAP của tôi',
 		"date format\4F j, Y" => 'j \\t\\h\\á\\n\\g n, Y', // Reading-day date: 18 tháng 11, 2026.
 	),
 );
