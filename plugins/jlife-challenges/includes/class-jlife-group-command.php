@@ -31,6 +31,8 @@ class Jlife_Group_Command {
 	 *
 	 *     wp jlife group list --campaign=1
 	 *
+	 * @subcommand list
+	 *
 	 * @param array $args       Positional args.
 	 * @param array $assoc_args Options.
 	 */

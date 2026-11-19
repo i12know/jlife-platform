@@ -11,6 +11,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 ### Fixed
 
 - **Links are readable in dark mode** (#108). The participant screens set no link color, so links such as the Harmony Bible sections fell back to the browser's default dark blue on the dark background. Links now use the theme accent (light blue in dark mode); buttons, nav and chips keep their own colors. Stylesheet version bumped to 9 so phones fetch it.
+- **`wp jlife group list` works** (#112). The organizer list command was registered as `list_` (the PHP method name, since `list` is reserved), so `wp jlife group list` failed with "not a registered subcommand"; it now carries `@subcommand list`. Found during the #112 staging check.
 
 ### Changed
 
