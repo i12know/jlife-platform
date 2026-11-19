@@ -679,7 +679,48 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 			$this->assertStringNotContainsString( $gone, $body );
 		}
 		$this->assertStringContainsString( 'Not started yet.', $body );
-		$this->assertStringContainsString( '0 of 104', $body );
+		$this->assertStringNotContainsString( '0 of 104', $body, 'the running score is on My Marathon only (#137)' );
+	}
+
+	/**
+	 * Today (#136): the SOAP block reads My SOAP, the instruction, the heading
+	 * help (id jlife-soap-help), the reference chips, then the textbox, in
+	 * English and in Vietnamese.
+	 */
+	public function test_today_soap_help_sits_between_the_instruction_and_the_reference_chips() {
+		$force = static fn() => 'vi';
+		$dir   = static fn( $path, $domain ) => 'jlife-challenges' === $domain ? dirname( __DIR__ ) . '/languages/' : $path;
+		$form  = '';
+		foreach ( array( 'en', 'vi' ) as $lang ) {
+			if ( 'vi' === $lang ) {
+				add_filter( 'determine_locale', $force, 99 );
+				add_filter( 'lang_dir_for_domain', $dir, 10, 2 );
+				unload_textdomain( 'jlife-challenges', true );
+			}
+			try {
+				$form  = $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
+				$order = array(
+					'<label for="jl-text">' . esc_html__( 'My SOAP', 'jlife-challenges' ),
+					esc_html__( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ),
+					'<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary>',
+					'data-insert="',
+					'<textarea id="jl-text"',
+				);
+				$last  = -1;
+				foreach ( $order as $needle ) {
+					$at = strpos( $form, $needle );
+					$this->assertNotFalse( $at, $lang . ': missing ' . $needle );
+					$this->assertGreaterThan( $last, $at, $lang . ': out of order at ' . $needle );
+					$last = $at;
+				}
+				$this->assertSame( 1, substr_count( $form, 'id="jlife-soap-help"' ), $lang . ': one help box' );
+			} finally {
+				remove_filter( 'determine_locale', $force, 99 );
+				remove_filter( 'lang_dir_for_domain', $dir, 10 );
+				unload_textdomain( 'jlife-challenges', true );
+			}
+		}
+		$this->assertStringContainsString( 'Viết gì dưới mỗi tiêu đề?', $form, 'the Vietnamese render is translated' );
 	}
 
 	/**
@@ -776,7 +817,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'Already shared with', $form );
 		$this->assertStringNotContainsString( 'Share with my group or a chat', $body, 'no separate Share button' );
 		$this->assertStringContainsString( 'Done — 1 point earned.', $body );
-		$this->assertStringContainsString( '1 of 104', $body );
+		$this->assertStringNotContainsString( '1 of 104', $body, 'the running score is on My Marathon only (#137)' );
 
 		jlife_challenges_share( $this->u['a'], jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' )['id'], $this->g['g1'] );
 		$this->assertStringContainsString( 'Already shared with Group One — tick and save to update', jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
@@ -827,6 +868,24 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 
 		$not_done = jlife_challenges_today_body( $this->view_with_reading( $this->u['b'] ), array( 'flags' => array( 'done' => true ) ) );
 		$this->assertStringNotContainsString( 'jl-ok', $not_done, 'a hand-typed ?done=1 on an unsubmitted day confirms nothing' );
+	}
+
+	/**
+	 * The running score ("N of 104") is shown on My Marathon, not on Today (#137).
+	 */
+	public function test_today_has_no_running_score_and_my_marathon_keeps_it() {
+		jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $this->soap() );
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) );
+		$this->assertStringContainsString( 'class="jl-status"', $body, 'the daily status message stays' );
+		$this->assertStringNotContainsString( 'jl-score', $body );
+		$this->assertStringNotContainsString( '1 of 104', $body );
+
+		// My Marathon renders and exits, so check its source still prints the score.
+		$src = (string) file_get_contents( dirname( __DIR__ ) . '/includes/screens.php' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading the plugin's own source.
+		$fn  = substr( $src, (int) strpos( $src, 'function jlife_challenges_screen_marathon' ) );
+		$fn  = substr( $fn, 0, (int) strpos( $fn, "\n}\n" ) );
+		$this->assertStringContainsString( '<p class="jl-score">', $fn );
+		$this->assertStringContainsString( "__( '%1\$d of %2\$d', 'jlife-challenges' ), \$view['points'], \$view['day_count']", $fn );
 	}
 
 	/**
@@ -1085,5 +1144,32 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		set_query_var( 'jlife_screen', 'soap' );
 		$html = jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' );
 		$this->assertStringContainsString( 'back=soap', $html );
+	}
+
+	/**
+	 * Today (#135): no reminder card above the reading; the daily reading email
+	 * checkbox comes right after Save draft, outside the SOAP form, and saves on
+	 * its own script. The /soap page has no checkbox.
+	 */
+	public function test_today_has_the_reminder_checkbox_after_save_draft() {
+		$view = $this->view_with_reading( $this->u['a'] );
+		$body = jlife_challenges_today_page_body( $view, array(), $this->u['a'] );
+		$this->assertStringNotContainsString( 'Get each morning', $body );
+		$this->assertStringNotContainsString( 'jl-reminder-prompt', $body );
+		$draft = strpos( $body, '>Save draft</button>' );
+		$soap  = strpos( $body, '</form>', (int) $draft );
+		$box   = strpos( $body, '<form method="post" class="jl-reminder-toggle"' );
+		$this->assertNotFalse( $draft );
+		$this->assertNotFalse( $box );
+		$this->assertSame( $soap + strlen( '</form>' ), $box, 'directly after the SOAP form, not inside it' );
+		$this->assertStringContainsString( 'Email me each morning&#039;s reading.', substr( $body, $box ) );
+		$this->assertSame( 1, substr_count( $body, 'name="jl_reminder" value="on"' ), 'one checkbox' );
+		$this->assertStringNotContainsString( 'jl-reminder-toggle', jlife_challenges_soap_body( $view ) );
+
+		$html = jlife_challenges_page_html( 'Today', $body, 'today', array( 'soap', 'reminder' ) );
+		$this->assertStringContainsString( 'assets/soap.js?v=3', $html );
+		$this->assertStringContainsString( 'assets/reminder.js?v=1', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=11', $html );
+		$this->assertStringNotContainsString( 'reminder.js', jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' ) );
 	}
 }
