@@ -21,6 +21,8 @@ jobs:
         run: node bin/validate-content.js
       - name: Validate reading plans (CSV sync, calendar, section IDs, references, links)
         run: node bin/validate-reading-plans.js
+      - name: Validate Scripture data (version registry, Kinh Thánh 1925 checksums, parser fixture)
+        run: node bin/validate-scripture.js
       - name: Unit tests for reading-plan parsing and Bible links
         run: node --test bin/test/*.test.js
       # Syntax check for Node tooling and the small, dependency-free plugin
@@ -75,6 +77,9 @@ jobs:
       - name: Install jlife-auth test dependencies
         run: composer install --no-interaction --no-progress
         working-directory: plugins/jlife-auth
+      - name: Install jlife-scripture test dependencies
+        run: composer install --no-interaction --no-progress
+        working-directory: plugins/jlife-scripture
       - name: Start wp-env
         run: npx wp-env start
       # wp-env only downloads the WP PHPUnit suite during its configure
@@ -90,6 +95,8 @@ jobs:
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-challenges vendor/bin/phpunit
       - name: Run jlife-auth test suite
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-auth vendor/bin/phpunit
+      - name: Run jlife-scripture test suite
+        run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-scripture vendor/bin/phpunit
       - name: Verify mail transport across actual multisite switches
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-auth env WP_MULTISITE=1 vendor/bin/phpunit --filter Test_Mail
 
@@ -115,7 +122,7 @@ jobs:
         run: composer audit --locked || echo "::warning::composer audit reported vulnerabilities"
       - name: composer audit (plugin test dependencies)
         run: |
-          for p in plugins/jlife-huddles plugins/jlife-studies plugins/jlife-challenges plugins/jlife-auth; do
+          for p in plugins/jlife-huddles plugins/jlife-studies plugins/jlife-challenges plugins/jlife-auth plugins/jlife-scripture; do
             (cd "$p" && composer install --no-interaction --no-progress --quiet && composer audit) \
               || echo "::warning::composer audit reported vulnerabilities in $p"
           done

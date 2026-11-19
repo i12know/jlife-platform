@@ -99,7 +99,8 @@ test('CSV parser keeps section IDs as strings and handles quoted commas', () => 
 });
 
 test('shipped config: Vietnamese uses one Bible Gateway BPT link, like English ERV (#91)', () => {
-  const shipped = require('../../content/reading-plans/bible-links.json');
+  const { linksConfigFromRegistry } = require('../build-reading-plans');
+  const shipped = linksConfigFromRegistry(require('../../plugins/jlife-scripture/data/bible-versions.json'));
   const l = buildDayLinks(parseReferenceList('Luke 3:1-6; Matthew 3:4-10; Luke 3:10-18').passages, shipped);
   assert.equal(l.vi.provider, 'bible_gateway');
   assert.equal(l.vi.version, 'BPT');

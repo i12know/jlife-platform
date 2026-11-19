@@ -24,6 +24,7 @@
 				<element value="jlife-bridge"/>
 				<element value="jlife-challenges"/>
 				<element value="jlife-auth"/>
+				<element value="jlife-scripture"/>
 			</property>
 		</properties>
 	</rule>

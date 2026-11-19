@@ -1,0 +1,415 @@
+{
+  "dataset": "vie1934",
+  "name": "Kinh Thánh 1925 (Bản Truyền Thống)",
+  "language": "vi",
+  "license": "Public Domain",
+  "license_evidence": "eBible.org copr.htm: NT first published 1923, OT 1925; NT public domain since 2019-01-01, OT since 2021-01-01 (translator William Cadman, 1883-1948)",
+  "source_url": "https://ebible.org/Scriptures/vie1934_usfm.zip",
+  "details_url": "https://ebible.org/find/details.php?id=vie1934",
+  "edition": "eBible.org vie1934 USFM, generated 2026-10-30 from source files dated 2025-12-12",
+  "source_sha256": "c4f34e28d0612776a53272f0ef735b9b0d3b7d47f584cfd2fbcb9cdd8386908b",
+  "normalization": [
+    "Unicode NFC; whitespace collapsed; verse text only (no headings or book titles)",
+    "Repaired 2112 capital letters left by a legacy VNI conversion at the start of a word (e.g. \"Aáy\" -> \"Ấy\", \"Oâng\" -> \"Ông\"); see bin/content-lib/usfm.js"
+  ],
+  "verse_count": 31102,
+  "books": [
+    {
+      "code": "GEN",
+      "file": "GEN.tsv",
+      "verses": 1533,
+      "sha256": "98d67ef4db81346dc1c6967b2b3a4224f729b4d62a29a193566cb12aeaa24113"
+    },
+    {
+      "code": "EXO",
+      "file": "EXO.tsv",
+      "verses": 1213,
+      "sha256": "848f83e3a9dfafa34150195361018ee5f3252330e32b35e69c6bc3c31e25fecb"
+    },
+    {
+      "code": "LEV",
+      "file": "LEV.tsv",
+      "verses": 859,
+      "sha256": "ad451c5d988718b7d0317643262bdac9d096439e4168c0ddb9dc18a47832d807"
+    },
+    {
+      "code": "NUM",
+      "file": "NUM.tsv",
+      "verses": 1288,
+      "sha256": "728b817ab332e2014b5f4dfb205cf582297a7804fca02522cc96dde00ff95a88"
+    },
+    {
+      "code": "DEU",
+      "file": "DEU.tsv",
+      "verses": 959,
+      "sha256": "285cc525cbd39ad16c5353f6e5e627d5f5afc7738b9c7b9a6596aeec29fd0671"
+    },
+    {
+      "code": "JOS",
+      "file": "JOS.tsv",
+      "verses": 658,
+      "sha256": "713d26655f1dadae21a6a375a11a8fe9bf6754aa7ae62ae01df894d97ad67362"
+    },
+    {
+      "code": "JDG",
+      "file": "JDG.tsv",
+      "verses": 618,
+      "sha256": "ab2400e70ed588200804c63f1c809032f6831ff5764fef5d92ee35f7c3d1b255"
+    },
+    {
+      "code": "RUT",
+      "file": "RUT.tsv",
+      "verses": 85,
+      "sha256": "a039f8d3e2aa382fabe146c03269c00e5aa4be5687fc0b385384b6b094b922c9"
+    },
+    {
+      "code": "1SA",
+      "file": "1SA.tsv",
+      "verses": 810,
+      "sha256": "8c34055c70fc16b8a21af7caa3341fac247bc550237794a056ec934bcbbfc212"
+    },
+    {
+      "code": "2SA",
+      "file": "2SA.tsv",
+      "verses": 695,
+      "sha256": "91ab6d3048715b9aea8f9e237aa9c3edd1d5757f5953359a6fa1501b3e581760"
+    },
+    {
+      "code": "1KI",
+      "file": "1KI.tsv",
+      "verses": 816,
+      "sha256": "02e848ef5954dd8731000c9d20bd900a5a172c94a010b48d27d385576c6fb92a"
+    },
+    {
+      "code": "2KI",
+      "file": "2KI.tsv",
+      "verses": 719,
+      "sha256": "15b2cf7c8f6650faa406a458e058cc02aaa39273aa09aacf799b119dcd085e71"
+    },
+    {
+      "code": "1CH",
+      "file": "1CH.tsv",
+      "verses": 942,
+      "sha256": "7c2722ee639a5fc99596831cdf6fcba3b8001b717fa3524d5ec2677aafaa5f90"
+    },
+    {
+      "code": "2CH",
+      "file": "2CH.tsv",
+      "verses": 822,
+      "sha256": "8de9bd7c84fb722bbbafa7814f58fd786b93702ad24ee319887f468f3b16865e"
+    },
+    {
+      "code": "EZR",
+      "file": "EZR.tsv",
+      "verses": 280,
+      "sha256": "1b7e197fb52856f57b6bda39633fd546f438c04729e31a46d4b0e5d1bb8e49d1"
+    },
+    {
+      "code": "NEH",
+      "file": "NEH.tsv",
+      "verses": 406,
+      "sha256": "0e11054f314881dc848ee8f64a2026bb23b0aeb82012f6bec9d35d13974fc345"
+    },
+    {
+      "code": "EST",
+      "file": "EST.tsv",
+      "verses": 167,
+      "sha256": "152596502eb5df2d3db8ef2f3e59d4a39be36cb97df2e0156972f4e7978c9c24"
+    },
+    {
+      "code": "JOB",
+      "file": "JOB.tsv",
+      "verses": 1070,
+      "sha256": "e0be2d669cd0860ac23d06357f253cb329d89b99926b37e799e4e237c9dd7165"
+    },
+    {
+      "code": "PSA",
+      "file": "PSA.tsv",
+      "verses": 2461,
+      "sha256": "c0cb744ef4426223c589b27e72c4a30d078505456f6537a399f17139d419f24b"
+    },
+    {
+      "code": "PRO",
+      "file": "PRO.tsv",
+      "verses": 915,
+      "sha256": "58561e7647fab56b5d835fb0ed59b369579b79b644e2e8285ad67beadfbffabe"
+    },
+    {
+      "code": "ECC",
+      "file": "ECC.tsv",
+      "verses": 222,
+      "sha256": "fd1004ca05acb1854ff181825b28f24a7cb691037df90446171f503c51c44c99"
+    },
+    {
+      "code": "SNG",
+      "file": "SNG.tsv",
+      "verses": 117,
+      "sha256": "01c754d2da8fed92673d522addda64eab7213664e5b82ea17deb511d4fa8e1cb"
+    },
+    {
+      "code": "ISA",
+      "file": "ISA.tsv",
+      "verses": 1292,
+      "sha256": "d938d91221ebe694ae5cb7f258a6ba5aac49f9912ccb1b810e966cb710c31e6d"
+    },
+    {
+      "code": "JER",
+      "file": "JER.tsv",
+      "verses": 1364,
+      "sha256": "f3d2975ca6fe0d81dee557f7497b2e2566172117d6e3b2d04640ed93b94c86de"
+    },
+    {
+      "code": "LAM",
+      "file": "LAM.tsv",
+      "verses": 154,
+      "sha256": "15cf089c54f84e24436595cd9ea8d6cebecdcf7ee4be981a9cf606dac54e4d44"
+    },
+    {
+      "code": "EZK",
+      "file": "EZK.tsv",
+      "verses": 1273,
+      "sha256": "406b426e49218f20a367b7f1223bed12af67a3adcf0194d9cb15a5b193aeb822"
+    },
+    {
+      "code": "DAN",
+      "file": "DAN.tsv",
+      "verses": 357,
+      "sha256": "b750268960648e0701ccfa66dfb506c37156c944973fe7f85cfe981ff6f7380b"
+    },
+    {
+      "code": "HOS",
+      "file": "HOS.tsv",
+      "verses": 197,
+      "sha256": "095149388d04cb74d65841fca297fe555f7f64d0044609102c02aa06c1ae559f"
+    },
+    {
+      "code": "JOL",
+      "file": "JOL.tsv",
+      "verses": 73,
+      "sha256": "3f79b705c5305d156dd3da7a06b1757e86a31914ccdfbbc5d2102bc8ee681010"
+    },
+    {
+      "code": "AMO",
+      "file": "AMO.tsv",
+      "verses": 146,
+      "sha256": "05e76b0779ec28a91ffa56b34ed73189c652570347d2f7095f38912970b1a74b"
+    },
+    {
+      "code": "OBA",
+      "file": "OBA.tsv",
+      "verses": 21,
+      "sha256": "cf3763854ad1825e51b80d491be5c4fdce3437445b5c870d04afdaaa1da8aa43"
+    },
+    {
+      "code": "JON",
+      "file": "JON.tsv",
+      "verses": 48,
+      "sha256": "ef494e05da6cc166dd20492f9d2c48e0e8152a0f89c96f485f38a88c6c698606"
+    },
+    {
+      "code": "MIC",
+      "file": "MIC.tsv",
+      "verses": 105,
+      "sha256": "1cf950a922aeac9e8919e828acfb2217f1ba1a6e87edabbda932a43ac5ba1b72"
+    },
+    {
+      "code": "NAM",
+      "file": "NAM.tsv",
+      "verses": 47,
+      "sha256": "4957bd6503873bd3265caceea74a8d83ca161584b3dff3678b2a990a3ce1327f"
+    },
+    {
+      "code": "HAB",
+      "file": "HAB.tsv",
+      "verses": 56,
+      "sha256": "9864ad2e7654c9f505077cded24d1a07f113f313b094e48c0333e4ebb8589250"
+    },
+    {
+      "code": "ZEP",
+      "file": "ZEP.tsv",
+      "verses": 53,
+      "sha256": "cd4a0c4a3da34c1ef19a96a945edd22baa38d3384c82230242c40867fc9eb839"
+    },
+    {
+      "code": "HAG",
+      "file": "HAG.tsv",
+      "verses": 38,
+      "sha256": "c921dd14d8bcfb6055e7c9442ede7413b349fc33d1d8d4e0e7bc65e0c5c6172a"
+    },
+    {
+      "code": "ZEC",
+      "file": "ZEC.tsv",
+      "verses": 211,
+      "sha256": "e66c7b796525c6bddf8649c4dafba650b85d76f4ae4abacfbded6f3c3ca99cf2"
+    },
+    {
+      "code": "MAL",
+      "file": "MAL.tsv",
+      "verses": 55,
+      "sha256": "abfdb134a49e0ac7c2ad47147ba47ad927ded6b9040e99bd0bd2bd00a3956907"
+    },
+    {
+      "code": "MAT",
+      "file": "MAT.tsv",
+      "verses": 1071,
+      "sha256": "b47ada6342f0f3c480fadff97b93bc65b133e361e3503a13e0f6c13def221bca"
+    },
+    {
+      "code": "MRK",
+      "file": "MRK.tsv",
+      "verses": 678,
+      "sha256": "12ce7f6e1e37468613984a6763bea5c95bfacd2497aef856d563e39de17cc793"
+    },
+    {
+      "code": "LUK",
+      "file": "LUK.tsv",
+      "verses": 1151,
+      "sha256": "d393346c2d4e22b98d3d74c703d9efc0c3a626edda9c7df72ccab4ce30ade8b3"
+    },
+    {
+      "code": "JHN",
+      "file": "JHN.tsv",
+      "verses": 879,
+      "sha256": "ddd8f1d128af8fbe68712db2fd28a80cf366a25f84a54d69ce4fce3a4466f692"
+    },
+    {
+      "code": "ACT",
+      "file": "ACT.tsv",
+      "verses": 1007,
+      "sha256": "9a4cabef657e754148ddf1837d82c91363eb9759954f16d48dfaf06d195b3dac"
+    },
+    {
+      "code": "ROM",
+      "file": "ROM.tsv",
+      "verses": 433,
+      "sha256": "5f0ce7d2c754a76326d20fcb4f4a8dfbac207e7fb088633646ab30097d229535"
+    },
+    {
+      "code": "1CO",
+      "file": "1CO.tsv",
+      "verses": 437,
+      "sha256": "5742d2848df6445159c8629f666bf8f866c8f3709133c1988897d1fe8d169940"
+    },
+    {
+      "code": "2CO",
+      "file": "2CO.tsv",
+      "verses": 257,
+      "sha256": "8406072ce80871f6c32ba7a6fae0fc4f4709bf252bfe12b910e9b781dbc68c21"
+    },
+    {
+      "code": "GAL",
+      "file": "GAL.tsv",
+      "verses": 149,
+      "sha256": "319518ed31524ed83d42d3a4edf2355f562900be3cca91066b3bfa322a203c02"
+    },
+    {
+      "code": "EPH",
+      "file": "EPH.tsv",
+      "verses": 155,
+      "sha256": "e01fef2fbb33ebfedfa16cd1a9135d29fd2fe0cf383866b61e2df37a084c44be"
+    },
+    {
+      "code": "PHP",
+      "file": "PHP.tsv",
+      "verses": 104,
+      "sha256": "b1753070c3f1e9003c549708a9d05f212af379a80cf2086bf92ea2366a620567"
+    },
+    {
+      "code": "COL",
+      "file": "COL.tsv",
+      "verses": 95,
+      "sha256": "e56757edd8a16c04cc7a238400d001f8137b15a777c1d210cbe64d64c6043ade"
+    },
+    {
+      "code": "1TH",
+      "file": "1TH.tsv",
+      "verses": 89,
+      "sha256": "0e5119ca7f6b2d1c2f5d2d8aa43091fa3a6776ba0f2e23200218111781cdb722"
+    },
+    {
+      "code": "2TH",
+      "file": "2TH.tsv",
+      "verses": 47,
+      "sha256": "4b286127a23448bd339f7987c8526c3c4c73898d0d4d29d50e873a64510fca39"
+    },
+    {
+      "code": "1TI",
+      "file": "1TI.tsv",
+      "verses": 113,
+      "sha256": "fa2c2b6bb138f85d620ac96d83901c4ee53abd40d91f08db046bf5029ef95a5b"
+    },
+    {
+      "code": "2TI",
+      "file": "2TI.tsv",
+      "verses": 83,
+      "sha256": "f15875ab7c4e5ebfc05c8e8e68598b805c3c4ca52a0d65118597df060d5406db"
+    },
+    {
+      "code": "TIT",
+      "file": "TIT.tsv",
+      "verses": 46,
+      "sha256": "a3271e752294db6714b146e8ac734df1532ed69f7e0f9d1dd2699aed0ecf387c"
+    },
+    {
+      "code": "PHM",
+      "file": "PHM.tsv",
+      "verses": 25,
+      "sha256": "79ef4fa7e0a2d709d06f4962041bcf5a948aa4451c6bf3b100edbd6a62e183e3"
+    },
+    {
+      "code": "HEB",
+      "file": "HEB.tsv",
+      "verses": 303,
+      "sha256": "eb17dba3a3cffd217ec0b6f5baba9cf9b2ae3c84c6b9166795b76dfee6a50714"
+    },
+    {
+      "code": "JAS",
+      "file": "JAS.tsv",
+      "verses": 108,
+      "sha256": "ba3f41c215dc382b121540cb7a00fd1f57a8bb6928f5bc7290242f9906cd0d49"
+    },
+    {
+      "code": "1PE",
+      "file": "1PE.tsv",
+      "verses": 105,
+      "sha256": "5e4dc43b3d9fc7750d043da581769ca15b24335f23c1b5c54d20c6fd6d491291"
+    },
+    {
+      "code": "2PE",
+      "file": "2PE.tsv",
+      "verses": 61,
+      "sha256": "36dd2814a71ebb60469365396538c50da9211b1d0f02e312630c3f1245c26a59"
+    },
+    {
+      "code": "1JN",
+      "file": "1JN.tsv",
+      "verses": 105,
+      "sha256": "52b0c022d32db298448096ece04a0f66676da1d2c003bb9f4b41cd86d849af12"
+    },
+    {
+      "code": "2JN",
+      "file": "2JN.tsv",
+      "verses": 13,
+      "sha256": "26cb6e9a77d077989479abd0ea7eee0be08904dc25ad13b47671a95636ca5925"
+    },
+    {
+      "code": "3JN",
+      "file": "3JN.tsv",
+      "verses": 14,
+      "sha256": "93c077dbee9e1788b5749836f0d41561cbfeac0fed04bf5c0859068081119888"
+    },
+    {
+      "code": "JUD",
+      "file": "JUD.tsv",
+      "verses": 25,
+      "sha256": "ffd435e2f1fdfd758405ab95179cfa96b137831187f5560c10f66b5f4519f641"
+    },
+    {
+      "code": "REV",
+      "file": "REV.tsv",
+      "verses": 404,
+      "sha256": "b25139fbf70f7bd15db5026cf6a9103324d93bf2faf6e7383b167791558ecef0"
+    }
+  ],
+  "data_sha256": "44d88f21bd2301dc5c90e7e404d056e4656208bcdaa74545db4b70592926a69e"
+}

@@ -10,7 +10,8 @@
  *     ("Matthew 14:23a; Matthew 14:23b-33" -> "Matthew 14:23-33").
  *   - Bible Gateway: one link with every passage, in order, plus one per passage.
  *   - Bible.com: one link per passage, in order.
- * Provider and translation per language come from bible-links.json.
+ * Provider and translation per language come from the registry's languages
+ * block (plugins/jlife-scripture/data/bible-versions.json, #139).
  */
 'use strict';
 
@@ -91,7 +92,7 @@ function bibleComUrl(r, versionId, versionCode) {
  * Links for one day in every configured language.
  *
  * @param {{refs: object[]}[]} passages Parsed passages.
- * @param {Object<string, object>} config Parsed bible-links.json.
+ * @param {Object<string, object>} config Per-language link configuration.
  * @returns {Object<string, {provider: string, version: string, combined: ?{label: string, url: string}, passages: {label: string, url: string}[]}>}
  */
 function buildDayLinks(passages, config) {

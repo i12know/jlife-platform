@@ -3,7 +3,7 @@
 **Updated:** November 18, 2026. This document records what J-Life's YouVersion app **can see in its entitled catalog**, what has passed passage smoke tests, and what remains an unapproved candidate. **It does not authorize native Bible-text rendering or change live translation defaults.**
 
 - Machine-readable record: [`bible-provider-registry.json`](../content/reading-plans/bible-provider-registry.json).
-- Current active external-link configuration: [`bible-links.json`](../content/reading-plans/bible-links.json). It still targets English **ERV** and Vietnamese **BPT** at Bible Gateway; do not silently change it.
+- Runtime allowlist (#139): [`bible-versions.json`](../plugins/jlife-scripture/data/bible-versions.json), which replaced `bible-links.json`. Each language's **fallback** link still targets English **ERV** and Vietnamese **BPT** at Bible Gateway; do not silently change it. Its YouVersion entries (NIrV 110, NIV 111, KTHD 1638) stay `enabled: false` / `display: link` until the owner gates on #139 clear, and `bin/validate-scripture.js` refuses native rendering of a YouVersion version this inventory has not marked `ready_for_production`.
 - Owner's conditional native-reading selection from [Issue #78](https://github.com/i12know/jlife-platform/issues/78#issuecomment-6879689851): **NIrV** (en, 110) and **KTHD** (vi, 1638). A later discussion suggested NIV as a default, but **no new owner decision to replace this selection** has been recorded.
 
 ## Meaning of the statuses
@@ -61,7 +61,7 @@ The owner sent Bible League International a request on November 18, 2026 for hos
 ## Implementation gates and change procedure
 
 - Keep **secrets** only in the actual runtime's protected secret store; do not commit API keys or licensed Bible text.
-- Keep `bible-links.json` unchanged until the owner explicitly approves a new live reader/translation selection.
+- Keep the `languages` fallbacks and `default_for` values in `plugins/jlife-scripture/data/bible-versions.json` unchanged until the owner explicitly approves a new live reader/translation selection (the 2026-11-19 decision on #139 set the defaults to NIrV / Kinh Thánh 1925).
 - Implement a provider adapter that exposes a verified version registry and native renderer; ensure that only reviewed, authorized versions can be enabled.
 - For each provider/version: review written terms; verify a real passage request; display full attribution; handle unavailable/unlicensed/429 outcomes; enforce privacy and proper view tracking (FUMS for API.Bible); prevent unlicensed persistent caching; retain external links as a fallback.
 - For **LATOC**: preserve daily reading order, partial verses, optional Harmony readings, and publicly accessible reading-page distinctions.
