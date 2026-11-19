@@ -186,12 +186,30 @@ sends through the Brevo transport above; "accepted" means Brevo took it, not
 that an inbox received it.
 
 **Real cron is required.** The reminder is a WP-Cron event every 5 minutes. With
-`DISABLE_WP_CRON` true and no server cron it never runs (see #56). The cPanel cron
-(every 5 minutes) runs, with the PHP 8.2 and WP-CLI prefix used above:
+`DISABLE_WP_CRON` true and no server cron it never runs (see #56). Installed by
+hand on 2026-11-19 (not by the deploy):
 
-```bash
-/opt/cpanel/ea-php82/root/usr/bin/php ~/.latoc/wp-cli-2.11.0.phar --path="$HOME/latoc.vayhub.org" --url=https://latoc.vayhub.org cron event run --due-now
-```
+- `~/.latoc/cron.sh` (mode 0700) lists the network's sites and, for each, runs
+  `cron event run --due-now` with the PHP 8.2 and WP-CLI prefix used above. A
+  lock directory (`~/.latoc/cron.lock`, no `flock` on this host) stops runs
+  overlapping; a lock older than 20 minutes is treated as stale.
+- It writes one line per site per run to `~/.latoc/cron.log`
+  (`<UTC time> <site> rc=<exit> Success: Executed a total of N cron events.`),
+  rotated to `cron.log.1` at 1 MB.
+- The account crontab (cPanel → Cron Jobs shows the same entry):
+
+  ```text
+  MAILTO=""
+  */5 * * * * /home2/vayhubus/.latoc/cron.sh >/dev/null 2>&1
+  ```
+
+- `wp-config.php` has `DISABLE_WP_CRON` true (set with `wp config set`; the
+  deploy leaves an existing `wp-config.php` alone, so it survives redeploys).
+
+Health check: `tail ~/.latoc/cron.log` should show a line from the last 5
+minutes, and `wp cron event list` should show no event overdue by more than
+that. To go back to visit-triggered WP-Cron: `wp config delete DISABLE_WP_CRON`,
+then remove the line with `crontab -e` (or cPanel → Cron Jobs).
 
 **Modes** (`wp jlife reminders mode <mode>`; it starts `off` and a deploy never
 changes it):
@@ -300,6 +318,7 @@ The same commands exist on the server: `wp jlife test-campaign create|remove|sta
 ## Safety notes
 
 - The deploy key in `LATOC_SSH_KEY` can log in to the **whole hosting account**, not only latoc. It lives only in the `main`-restricted environment. To revoke it, remove the `github-actions-latoc` line from `~/.ssh/authorized_keys`.
+- The owner's workstation also has an account-wide SSH key (added 2026-11-19 in Bluehost → Hosting → SSH Keys; passphrase-protected, held in the owner's ssh-agent) so maintenance such as the cron above can be done over SSH instead of the cPanel Terminal. To revoke it, delete that key on the same Bluehost page.
 - The script refuses to convert an existing single-site WordPress, and never touches other sites or their `.htaccess`. In latoc's `.htaccess` it adds the multisite rules once, above cPanel's PHP-handler block.
 - Bluehost's bot protection may challenge automated requests to some URLs (e.g. `wp-login.php`). The smoke test only checks the front page.
 
