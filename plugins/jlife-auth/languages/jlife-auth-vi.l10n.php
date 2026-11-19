@@ -63,7 +63,7 @@ return array(
 		'There is no Marathon open to join right now. Please try again later.' => 'Hiện chưa có Marathon nào đang mở để tham gia. Vui lòng thử lại sau.',
 		'Tip: open this page in Safari or Chrome so you stay signed in. (Tap ••• then "Open in browser".)' => 'Mẹo: hãy mở trang này bằng Safari hoặc Chrome để bạn vẫn đăng nhập được. (Chạm vào ••• rồi chọn "Mở trong trình duyệt".)',
 		'Too many code requests. Please wait a few minutes and try again.' => 'Bạn đã xin mã quá nhiều lần. Vui lòng đợi vài phút rồi thử lại.',
-		'If you choose daily reminders, we email you each morning\'s reading. You can turn them off at any time from My Marathon or the link in any reminder.' => 'Nếu bạn chọn nhận nhắc nhở hằng ngày, chúng tôi sẽ gửi email bài đọc mỗi sáng cho bạn. Bạn có thể tắt bất cứ lúc nào trong mục My Marathon hoặc qua liên kết trong mỗi email nhắc.',
+		'If you choose daily reminders, we email you each morning\'s reading. You can turn them off at any time from My Marathon or the link in any reminder.' => 'Nếu bạn chọn nhận nhắc nhở hằng ngày, chúng tôi sẽ gửi email bài đọc mỗi sáng cho bạn. Bạn có thể tắt bất cứ lúc nào trong mục Marathon của tôi hoặc qua liên kết trong mỗi email nhắc.',
 		'Email me each morning\'s reading' => 'Gửi email bài đọc cho tôi mỗi sáng',
 		'Optional. We write in the language you chose above. You can turn it off at any time.' => 'Không bắt buộc. Chúng tôi viết bằng ngôn ngữ bạn đã chọn ở trên. Bạn có thể tắt bất cứ lúc nào.',
 		'You are signed in' => 'Bạn đã đăng nhập',
