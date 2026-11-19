@@ -119,7 +119,8 @@ The first run creates the network admin `latoc-admin` with a random password, sa
 The J-Life Sign-in plugin includes an explicitly enabled, site-scoped Brevo
 transport for WordPress mail on the configured network/site IDs. It also handles
 the test-campaign invitation sent from WP-CLI. Other sites retain their own mail
-behavior. Daily reminders are not implemented by this change.
+behavior. Daily reading reminders (#63 Phase B) use this transport; see
+[Daily reading reminders](#daily-reading-reminders-63-phase-b).
 
 1. Deploy the reviewed code with `test_campaign = none`. No real email is sent by
    deployment. The deploy installs a private settings include in `wp-config.php`;
@@ -176,6 +177,71 @@ code leaves the protected file intact but unused. Preserve it for recovery and
 revoke the dedicated key in Brevo if it is no longer needed. No credentials are
 stored in WordPress options, so a normal database export does not contain them.
 The host's full-account backups may include the protected file.
+
+## Daily reading reminders (#63 Phase B)
+
+One email a day at **06:00 Pacific** (the campaign's timezone, DST-correct) to
+people who opted in, in the language they chose. Retries stop at **12:00**. It
+sends through the Brevo transport above; "accepted" means Brevo took it, not
+that an inbox received it.
+
+**Real cron is required.** The reminder is a WP-Cron event every 5 minutes. With
+`DISABLE_WP_CRON` true and no server cron it never runs (see #56). The cPanel cron
+(every 5 minutes) runs, with the PHP 8.2 and WP-CLI prefix used above:
+
+```bash
+/opt/cpanel/ea-php82/root/usr/bin/php ~/.latoc/wp-cli-2.11.0.phar --path="$HOME/latoc.vayhub.org" --url=https://latoc.vayhub.org cron event run --due-now
+```
+
+**Modes** (`wp jlife reminders mode <mode>`; it starts `off` and a deploy never
+changes it):
+
+| Mode | What happens |
+|---|---|
+| `off` | Nothing is queued or sent |
+| `dry_run` | Builds the queue and every message, marks each row `skipped`, sends nothing. A day with no reading shows as `failed` (`no_reading`) |
+| `test` | Sends only to the account emails listed in `JLIFE_REMINDER_TEST_RECIPIENTS`; everyone else is `skipped` |
+| `live` | Sends to every current recipient |
+
+Switching from `dry_run` to `live` on the same day sends nothing more that day:
+the dry run already logged each person's row for that day.
+
+**Test recipients.** Define the constant in the private config on the host
+(`~/.latoc/mail.php`, mode 0600), never in the repository or in chat. Use the
+addresses of the owner's own test accounts, comma-separated:
+
+```php
+define( 'JLIFE_REMINDER_TEST_RECIPIENTS', 'owner-test@example.invalid,second-test@example.invalid' );
+```
+
+Test mode also needs those people to have staging accounts that are enrolled,
+have given consent and opted in to reminders.
+
+**Commands** (same prefix as above, followed by):
+
+- `jlife reminders status [--campaign=<id>]`: mode, today's counts by status, the
+  next scheduled tick (flagged overdue if the server cron is not running). No
+  addresses.
+- `jlife reminders preview --day=<n> [--locale=vi] [--html]`: prints the subject
+  and text for a made-up recipient. Sends and logs nothing. Use it to read the
+  Vietnamese wording before a pilot.
+- `jlife reminders run`: one tick now, the same work the cron event does.
+- `jlife reminders mode <off|dry_run|test|live>`
+
+**Brevo settings.** For this sender, keep Brevo's own unsubscribe link and click
+tracking **off**: Brevo's unsubscribe blocklists the address for transactional
+mail too, which would stop sign-in codes, and click tracking rewrites the Today
+link. Our unsubscribe is the signed one-click link (`/unsubscribe/`); it changes
+only reminder choices, never sign-in.
+
+**Staging acceptance order** (PR 3): `dry_run` for a day and read `status`;
+`test` for three days with the owner's inboxes; then `live` only when the owner
+says. Check each morning: one email each, correct language, unsubscribe works.
+To stop at any time: `jlife reminders mode off`.
+
+The send log (`reminder_sends`) holds user IDs, status, attempt count, times and
+a fixed error class, never an address, subject, body or provider error text.
+Provider errors, bounces and delivery events are in the Brevo dashboard.
 
 ## Test drive campaign
 

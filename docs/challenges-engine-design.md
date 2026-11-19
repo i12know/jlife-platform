@@ -27,6 +27,7 @@ Related: [#49](https://github.com/i12know/jlife-platform/issues/49) (spec); #60 
 | `score_ledger` | `id`, `campaign_id`, `user_id`, `day_id`, `entry_id`, `points` (0/1), `status` (`earned`/`late_no_point`/`removed_by_review`), `reason`, `source` (`platform`/`review`), `engine`, `engine_version` (which scoring engine awarded the row; #98), `created_at`; **UNIQUE (`campaign_id`, `user_id`, `day_id`)** | Written once per person and day, append-only: points are never taken back. Review changes (P1) go through an audited path |
 | `group_shares` | `id`, `entry_id`, `user_id`, `group_id`, `campaign_id`, `day_id`, `body` (snapshot of the **whole** entry; #98), `status` (`shared`/`removed`/`hidden`), `hidden_reason`, timestamps; **UNIQUE (`entry_id`, `group_id`)** | A **snapshot**: editing the private SOAP never changes it; sharing again replaces it. One row per entry **per group**: a share to group A is a different row from a share to group B and is read only through group A's feed |
 | `reminder_prefs` | `id`, `campaign_id`, `user_id`, `opted_in`, `opted_out` (both nullable), `consent_version`, `locale` (`en_US`/`vi`), `updated`; **UNIQUE (`campaign_id`, `user_id`)** | Daily reading reminder choices (#63 Phase B, §4d). No email address in the table; absence of a row means no reminders |
+| `reminder_sends` | `id`, `campaign_id`, `day_key`, `user_id`, `status` (`queued`/`accepted`/`failed`/`skipped`), `attempts`, `next_attempt`, `last_error_class` (nullable), `created`, `updated`; **UNIQUE (`campaign_id`, `day_key`, `user_id`)** | Daily reminder queue and log (#63 Phase B, §4e). Only IDs, a status, counters, times and a fixed class: **no email address, subject, body or raw error**. The UNIQUE key is the duplicate guard. Purged with the account |
 | `audit_log` | `id`, `actor_user_id`, `action`, `object_type`, `object_id`, `campaign_id`, `detail` (JSON, **never SOAP text**), `created_at` | Enrollment changes, moves, review actions, hides, exports |
 
 **Group membership (D14 changed, #112).** On 2026-11-18 the owner replaced "one primary group per person" with: a participant is **solo or in up to 3 groups per campaign**, minors too. The `enrollments` row stays one per person per campaign because consent, progress, entries and points are personal; groups only decide *who can read what a person chose to share*. Consequences:
@@ -145,7 +146,7 @@ An adult can make a group and hold its invite code. Holding the code is the **on
 
 ### 4d. Daily reading reminder preferences (#63 Phase B, part 1)
 
-A reminder is a message the person asked for. The table holds the choice and the language only: no email address (sending looks it up from the account), no reading content. This part has no sending, queue or scheduler; the next PR's queue starts from `jlife_challenges_reminder_recipients()`. Audit actions: `reminder_opt_in`, `reminder_opt_out` (detail: language, or `via: link`); never any message text.
+A reminder is a message the person asked for. The table holds the choice and the language only: no email address (sending looks it up from the account), no reading content. Sending is §4e; its queue starts from `jlife_challenges_reminder_recipients()`. Audit actions: `reminder_opt_in`, `reminder_opt_out` (detail: language, or `via: link`); never any message text.
 
 | Actor / case | Read the choice | Change the choice | Notes |
 |---|---|---|---|
@@ -161,6 +162,24 @@ A reminder is a message the person asked for. The table holds the choice and the
 Recipients require **recorded consent** (`enrollments.consented`): the join form's box is saved before the `/consent` step, so a ticked box alone never makes someone a recipient.
 
 Consent wording: the consent page says reminders are **optional** ("If you choose daily reminders..."); only a ticked box or an explicit Yes records an opt-in, with the consent wording version in force.
+
+### 4e. Daily reminder sends (#63 Phase B, part 2)
+
+The scheduler turns the recipients from §4d into one `reminder_sends` row per person per campaign day and sends from that queue. It runs **only from a WP-Cron event** (every 5 minutes; the host's real cron fires it), never on a page request, and a failure there never touches reading, SOAP entry or scoring.
+
+| Case | Rule |
+|---|---|
+| Who gets a row | Exactly `jlife_challenges_reminder_recipients()`: opted in, not opted out, active enrollment, consent recorded. Rechecked before every send and retry; anyone who stopped is marked `skipped` (`not_recipient`) |
+| When | From 06:00 until before 12:00 **campaign time** (`campaigns.timezone`, DST-correct), on a campaign day 1..N. After noon, or on a later day, a still-queued row becomes `skipped` (`expired`) |
+| Language | The recipient's `reminder_prefs.locale` (`vi` or `en_US`); the day's title and references are localized the same way as on Today |
+| Content | Day number, the day's title, the passage references, a link to Today, the signed unsubscribe link (also `List-Unsubscribe` + `List-Unsubscribe-Post` headers). **No Bible text, no SOAP content, no sign-in token, no per-user login link, no name** |
+| Duplicates | UNIQUE (`campaign_id`, `day_key`, `user_id`) with INSERT IGNORE; each send first claims its row with a compare-and-swap UPDATE (attempt counted, 15-minute lease); a short lock stops overlapping ticks. A tick that dies mid-send is retried later, so a duplicate is possible only in that crash window |
+| Retries | `wp_mail` false: retry at +10, +30, +60 minutes, at most 4 attempts, never at or after 12:00; then `failed` (`send_failed`) |
+| Error classes | `send_failed`, `configuration_missing` (Brevo enabled but not configured: no fallback to host mail), `no_email`, `no_reading`; skips: `not_recipient`, `expired`, `campaign_inactive`, `dry_run`, `not_test_recipient`. The WP_Error message, which can hold an address or body, is never read or stored |
+| Modes (`jlife_reminders_mode`) | `off` (default, does nothing), `dry_run` (queues, builds each message, marks rows `skipped`/`dry_run`, sends nothing), `test` (sends only to account emails listed in the private `JLIFE_REMINDER_TEST_RECIPIENTS` constant; others `skipped`/`not_test_recipient`), `live`. Changed only through `wp jlife reminders mode` (audited as `reminders_mode`, no personal data) |
+| Who can read the log | Nobody through the product: no screen reads `reminder_sends`. Organizers use `wp jlife reminders status` (counts by status for today, no addresses); the database is host-level access |
+| Delivery status | `accepted` means `wp_mail` returned true, not delivery. Delivered/bounced need Brevo webhooks (a later phase) |
+| Account deletion | The person's rows are deleted with the account |
 
 ## 5. Required tests (written first; CI)
 

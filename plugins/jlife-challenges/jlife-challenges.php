@@ -29,6 +29,7 @@ require_once __DIR__ . '/includes/soap.php';
 require_once __DIR__ . '/includes/scores.php';
 require_once __DIR__ . '/includes/shares.php';
 require_once __DIR__ . '/includes/reminders.php';
+require_once __DIR__ . '/includes/reminder-sends.php';
 require_once __DIR__ . '/includes/lifecycle.php';
 require_once __DIR__ . '/includes/views.php';
 require_once __DIR__ . '/includes/screens.php';
@@ -40,17 +41,21 @@ require_once __DIR__ . '/includes/test-campaign.php';
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once __DIR__ . '/includes/class-jlife-group-command.php';
 	require_once __DIR__ . '/includes/class-jlife-test-campaign-command.php';
+	require_once __DIR__ . '/includes/class-jlife-reminders-command.php';
 	WP_CLI::add_command( 'jlife test-campaign', 'Jlife_Test_Campaign_Command' );
 	WP_CLI::add_command( 'jlife group', 'Jlife_Group_Command' );
+	WP_CLI::add_command( 'jlife reminders', 'Jlife_Reminders_Command' );
 }
 
 register_activation_hook( __FILE__, 'jlife_challenges_activate' );
+register_deactivation_hook( __FILE__, 'jlife_challenges_reminders_unschedule' );
 
 /**
  * Create the tables, register the screen routes and flush rewrite rules once.
  */
 function jlife_challenges_activate() {
 	jlife_challenges_install_tables();
+	jlife_challenges_reminders_schedule();
 	jlife_challenges_add_rewrites();
 	flush_rewrite_rules();
 }
