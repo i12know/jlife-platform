@@ -124,12 +124,11 @@ function jlife_scripture_resolve_choice( $choice, $language ) {
  * @return array{0: array|null, 1: array|null}
  */
 function jlife_scripture_versions_for_user( $user_id, $language = '' ) {
-	$user_id  = (int) $user_id;
-	$choice   = array(
+	$user_id = (int) $user_id;
+	$choice  = array(
 		'primary'   => '',
 		'secondary' => '',
 	);
-	$language = is_string( $language ) ? $language : '';
 	if ( '' === $language ) {
 		$language = jlife_scripture_language_for_user( $user_id );
 		$choice   = jlife_scripture_user_choice( $user_id );
@@ -152,7 +151,7 @@ function jlife_scripture_set_user_choice( $user_id, $changes ) {
 	}
 	$choice = jlife_scripture_user_choice( $user_id );
 	foreach ( array( 'primary', 'secondary' ) as $slot ) {
-		if ( ! is_array( $changes ) || ! array_key_exists( $slot, $changes ) ) {
+		if ( ! array_key_exists( $slot, $changes ) ) {
 			continue;
 		}
 		$value = $changes[ $slot ];
