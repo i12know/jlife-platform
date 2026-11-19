@@ -156,7 +156,7 @@ A reminder is a message the person asked for. The table holds the choice and the
 | Person with no active enrollment (never joined, left, removed) | ❌ | ❌ `jlife_denied` | An organizer cannot set one for them either; a left or removed person is not a recipient even if a row remains |
 | Anonymous with a valid unsubscribe link | ❌ | ✅ **opt out only**, for the person and campaign in the signed link | `/unsubscribe/?c=&u=&t=`, `t` = keyed hash of `unsub\|campaign\|user`, compared with `hash_equals`. GET shows a confirm button and changes nothing (link scanners); the confirm POST and an RFC 8058 `List-Unsubscribe=One-Click` POST opt out |
 | Anonymous with a forged, other-user, other-campaign or missing token | ❌ | ❌ | The same neutral page for every failure; nothing changes, nothing is logged (no token in any log) |
-| Unsubscribe's reach | | | Only `reminder_prefs`. Sign-in codes, the account, enrollment, consent and scoring are untouched (Brevo's own unsubscribe stays off for the same reason) |
+| Unsubscribe's reach | | | Only `reminder_prefs`. Sign-in codes, the account, enrollment, consent and scoring are untouched (Brevo has no unsubscribe-link setting for transactional mail; an address on its blocked-contacts list stops getting sign-in codes too, see `docs/staging-latoc.md` → Brevo settings) |
 | Account deletion, test-campaign removal | | | The person's rows are deleted with the account / campaign |
 
 Recipients require **recorded consent** (`enrollments.consented`): the join form's box is saved before the `/consent` step, so a ticked box alone never makes someone a recipient.
