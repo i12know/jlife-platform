@@ -107,10 +107,10 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '' )
 	$html   = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=10' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=11' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>' . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
-		. ( in_array( $script, array( 'soap', 'share' ), true ) ? '<script src="' . esc_url( $base . $script . '.js?v=3' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
+		. ( in_array( $script, array( 'soap', 'share' ), true ) ? '<script src="' . esc_url( $base . $script . '.js?v=4' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. '</body></html>';
 	return $html;
 }
@@ -336,12 +336,35 @@ function jlife_challenges_status_text( $view ) {
 		case 'submitted':
 			return __( 'Saved.', 'jlife-challenges' );
 		case 'draft':
-			return __( 'Draft saved. Write all four parts (S, O, A, P), then tap Submit SOAP.', 'jlife-challenges' );
-		default:
-			return $view['on_time']
-				? __( 'Not started yet.', 'jlife-challenges' )
-				: __( 'You can still write this one for your own growth (no point after the deadline).', 'jlife-challenges' );
+			// A draft row holding nothing but the headings is not a saved draft yet (#142).
+			if ( jlife_challenges_has_writing( (string) ( $view['entry']['body'] ?? '' ) ) ) {
+				return __( 'Draft saved. Write all four parts (S, O, A, P), then tap Submit SOAP.', 'jlife-challenges' );
+			}
+			break;
 	}
+	return $view['on_time']
+		? __( 'Not started yet.', 'jlife-challenges' )
+		: __( 'You can still write this one for your own growth (no point after the deadline).', 'jlife-challenges' );
+}
+
+/**
+ * Whether a SOAP text holds anything beyond its headings: blank, the untouched
+ * template, or bare "S:" lines are not writing (#142).
+ *
+ * @param string $text Entry text.
+ * @return bool
+ */
+function jlife_challenges_has_writing( $text ) {
+	foreach ( explode( "\n", str_replace( array( "\r\n", "\r" ), "\n", $text ) ) as $line ) {
+		if ( '' === trim( $line ) ) {
+			continue;
+		}
+		$heading = jlife_challenges_parse_heading( $line );
+		if ( null === $heading || '' !== $heading['rest'] ) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /**
@@ -693,7 +716,8 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$groups    = (array) ( $view['share_groups'] ?? array() );
 	$chips     = '';
 	foreach ( (array) ( $view['reading']['day']['passages'] ?? array() ) as $p ) {
-		$chips .= '<button type="button" class="jl-chip" data-insert="' . esc_attr( (string) $p['display'] ) . '">' . esc_html( (string) $p['display'] ) . '</button>';
+		/* translators: %s: a Bible reference, e.g. "John 1:29-34". */
+		$chips .= '<button type="button" class="jl-chip" data-insert="' . esc_attr( (string) $p['display'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Add %s to my SOAP', 'jlife-challenges' ), (string) $p['display'] ) ) . '">' . esc_html( (string) $p['display'] ) . '</button>';
 	}
 	$out = jlife_challenges_render_reader( $view )
 		. '<form method="post" class="jl-soap" data-status="' . esc_attr( $submitted ? 'submitted' : 'draft' ) . '"'
@@ -713,12 +737,14 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		. wp_nonce_field( 'jlife_soap_' . $view['day_key'], '_jlife_soap', true, false )
 		. '<input type="hidden" name="jl_day" value="' . esc_attr( $view['day_key'] ) . '">'
 		. '<label for="jl-text">' . esc_html__( 'My SOAP', 'jlife-challenges' ) . '</label>'
+		. '<p class="jl-soap-def">' . esc_html__( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) . ' <a href="#jlife-soap-help" class="jl-soap-more">' . esc_html__( 'More', 'jlife-challenges' ) . '</a></p>'
 		. '<small>' . esc_html__( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ) . '</small>';
 	if ( '' !== $chips ) {
-		$out .= '<div class="jl-chips" aria-label="' . esc_attr__( "Insert today's references", 'jlife-challenges' ) . '">' . $chips . '</div>';
+		$out .= '<p class="jl-chips-label" id="jl-chips-label">' . esc_html__( 'Tap a reference to add it under S:', 'jlife-challenges' ) . '</p>'
+			. '<div class="jl-chips" role="group" aria-labelledby="jl-chips-label">' . $chips . '</div>';
 	}
 	$out .= '<textarea id="jl-text" name="jl_text" rows="16" maxlength="' . esc_attr( (string) JLIFE_CHALLENGES_BODY_MAX ) . '">' . esc_textarea( $text ) . '</textarea>'
-		. '<details class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary><ul>';
+		. '<details class="jl-optional jl-guidance" id="jlife-soap-help"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary><ul>';
 	foreach ( jlife_challenges_soap_guidance() as $letter => $guidance ) {
 		$out .= '<li><strong>' . esc_html( $headings[ $letter ] ) . '</strong> ' . esc_html( $guidance ) . '</li>';
 	}
