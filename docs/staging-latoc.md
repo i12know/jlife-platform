@@ -200,7 +200,7 @@ hand on 2026-11-19 (not by the deploy):
 
   ```text
   MAILTO=""
-  */5 * * * * /home2/vayhubus/.latoc/cron.sh >/dev/null 2>&1
+  */5 * * * * <home directory>/.latoc/cron.sh >/dev/null 2>&1
   ```
 
 - `wp-config.php` has `DISABLE_WP_CRON` true (set with `wp config set`; the
