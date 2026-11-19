@@ -29,6 +29,13 @@ class Test_Reminders_Admin extends Jlife_Challenges_TestCase {
 	private $test_list = array();
 
 	/**
+	 * Whether Brevo counts as turned on.
+	 *
+	 * @var bool
+	 */
+	private $brevo = true;
+
+	/**
 	 * Mode off, mail ready, consent for a, b and c.
 	 */
 	public function set_up() {
@@ -38,7 +45,9 @@ class Test_Reminders_Admin extends Jlife_Challenges_TestCase {
 		}
 		$this->mail_state = 'ok';
 		$this->test_list  = array();
+		$this->brevo      = true;
 		add_filter( 'jlife_challenges_reminder_mail_state', array( $this, 'filter_mail_state' ) );
+		add_filter( 'jlife_challenges_reminder_brevo_enabled', array( $this, 'filter_brevo' ) );
 		add_filter( 'jlife_challenges_reminder_test_recipients', array( $this, 'filter_test_list' ) );
 		delete_option( 'jlife_reminders_mode' );
 	}
@@ -48,6 +57,7 @@ class Test_Reminders_Admin extends Jlife_Challenges_TestCase {
 	 */
 	public function tear_down() {
 		remove_filter( 'jlife_challenges_reminder_mail_state', array( $this, 'filter_mail_state' ) );
+		remove_filter( 'jlife_challenges_reminder_brevo_enabled', array( $this, 'filter_brevo' ) );
 		remove_filter( 'jlife_challenges_reminder_test_recipients', array( $this, 'filter_test_list' ) );
 		delete_option( 'jlife_reminders_mode' );
 		$_GET = array();
@@ -62,6 +72,15 @@ class Test_Reminders_Admin extends Jlife_Challenges_TestCase {
 	 */
 	public function filter_mail_state() {
 		return $this->mail_state;
+	}
+
+	/**
+	 * Brevo filter callback.
+	 *
+	 * @return bool
+	 */
+	public function filter_brevo() {
+		return $this->brevo;
 	}
 
 	/**
@@ -246,6 +265,21 @@ class Test_Reminders_Admin extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * Live is refused while Brevo is off (host mail garbles the List-Unsubscribe
+	 * header), and the page disables it; Off still works.
+	 */
+	public function test_live_is_refused_while_brevo_is_off() {
+		$this->brevo = false;
+		$this->assertSame( 'brevo_off', $this->apply_as( $this->u['organizer'], 'live', array( 'confirm_live' => true ) ) );
+		$this->assertSame( 'off', jlife_challenges_reminders_mode() );
+		$this->assertSame( array(), $this->mode_audits() );
+		$this->assertStringContainsString( 'notice-error', jlife_challenges_reminders_admin_notice( 'brevo_off' ) );
+		$html = jlife_challenges_reminders_admin_html( jlife_challenges_reminders_admin_overview() );
+		$this->assertMatchesRegularExpression( '/name="jl_mode" value="live" class="button" disabled/', $html );
+		$this->assertSame( 'saved', $this->apply_as( $this->u['organizer'], 'test' ) );
+	}
+
+	/**
 	 * Off is always allowed: from live, with broken mail, with no confirmation.
 	 */
 	public function test_off_always_works() {
@@ -399,6 +433,7 @@ class Test_Reminders_Admin extends Jlife_Challenges_TestCase {
 	 */
 	public function test_the_page_shows_the_warnings() {
 		$this->mail_state = 'configuration_missing';
+		$this->brevo      = false;
 		update_option( 'jlife_reminders_mode', 'test' );
 		$html = jlife_challenges_reminders_admin_html( jlife_challenges_reminders_admin_overview() );
 		$this->assertStringContainsString( 'private settings are incomplete', $html );

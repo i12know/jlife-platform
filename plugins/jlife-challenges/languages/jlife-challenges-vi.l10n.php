@@ -247,6 +247,7 @@ return array(
 		'Saved. Reminder mode is now: %s.' => 'Đã lưu. Chế độ nhắc nhở hiện là: %s.',
 		'That mode is not available.' => 'Chế độ đó không có.',
 		'Live was not turned on: the mail settings are not ready. Fix the warning on this page first.' => 'Chưa bật chế độ chính thức: cấu hình thư chưa sẵn sàng. Hãy xử lý cảnh báo trên trang này trước.',
+		'Live was not turned on: Brevo is not turned on for this site.' => 'Chưa bật chế độ chính thức: Brevo chưa được bật cho trang này.',
 		'Live was not turned on: tick the box to confirm first.' => 'Chưa bật chế độ chính thức: hãy đánh dấu ô xác nhận trước.',
 		'No problems found with the reminder check, the mail settings or the recipient count.' => 'Không thấy vấn đề nào với việc kiểm tra nhắc nhở, cấu hình thư hoặc số người nhận.',
 		'Status' => 'Tình trạng',

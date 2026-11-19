@@ -48,6 +48,17 @@ function jlife_challenges_reminders_admin_url() {
 }
 
 /**
+ * Whether this site's mail goes through Brevo. Live needs it: only the Brevo
+ * (SMTP) path keeps the one-click List-Unsubscribe header intact (#129).
+ *
+ * @return bool
+ */
+function jlife_challenges_reminders_brevo_enabled() {
+	$on = function_exists( 'jlife_mail_is_enabled' ) && jlife_mail_is_enabled();
+	return (bool) apply_filters( 'jlife_challenges_reminder_brevo_enabled', $on );
+}
+
+/**
  * Add J-Life → Reminders (site admins only).
  */
 function jlife_challenges_reminders_admin_menu() {
@@ -116,7 +127,7 @@ function jlife_challenges_reminders_admin_overview() {
 		'statuses'       => $statuses,
 		'recipients'     => $recipients,
 		'mail_state'     => jlife_challenges_reminder_mail_state(),
-		'brevo_enabled'  => function_exists( 'jlife_mail_is_enabled' ) && jlife_mail_is_enabled(),
+		'brevo_enabled'  => jlife_challenges_reminders_brevo_enabled(),
 		'test_addresses' => count( jlife_challenges_reminder_test_recipients() ),
 		'next_run'       => (int) wp_next_scheduled( JLIFE_CHALLENGES_REMINDERS_HOOK ),
 	);
@@ -129,7 +140,7 @@ function jlife_challenges_reminders_admin_overview() {
  *
  * @param string $method 'GET' or 'POST' (only POST changes anything).
  * @param array  $fields { nonce: string, mode: string, confirm_live: bool }.
- * @return string forbidden|bad_method|bad_nonce|bad_mode|mail_not_ok|confirm_needed|saved
+ * @return string forbidden|bad_method|bad_nonce|bad_mode|mail_not_ok|brevo_off|confirm_needed|saved
  */
 function jlife_challenges_reminders_admin_apply( $method, array $fields ) {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -148,6 +159,9 @@ function jlife_challenges_reminders_admin_apply( $method, array $fields ) {
 	if ( 'live' === $mode ) {
 		if ( 'ok' !== jlife_challenges_reminder_mail_state() ) {
 			return 'mail_not_ok';
+		}
+		if ( ! jlife_challenges_reminders_brevo_enabled() ) {
+			return 'brevo_off';
 		}
 		if ( empty( $fields['confirm_live'] ) ) {
 			return 'confirm_needed';
@@ -248,6 +262,7 @@ function jlife_challenges_reminders_admin_notice( $code ) {
 	$errors = array(
 		'bad_mode'       => __( 'That mode is not available.', 'jlife-challenges' ),
 		'mail_not_ok'    => __( 'Live was not turned on: the mail settings are not ready. Fix the warning on this page first.', 'jlife-challenges' ),
+		'brevo_off'      => __( 'Live was not turned on: Brevo is not turned on for this site.', 'jlife-challenges' ),
 		'confirm_needed' => __( 'Live was not turned on: tick the box to confirm first.', 'jlife-challenges' ),
 	);
 	return isset( $errors[ $code ] ) ? '<div class="notice notice-error"><p>' . esc_html( $errors[ $code ] ) . '</p></div>' : '';
@@ -318,7 +333,7 @@ function jlife_challenges_reminders_admin_html( array $o, $result = '' ) {
 	}
 	/* translators: 1: number of people, 2: time zone name(s). */
 	$confirm = sprintf( __( 'Yes, email %1$d people every morning at 06:00 campaign time (%2$s). If the send window is already open, today\'s emails start within a few minutes.', 'jlife-challenges' ), (int) $o['recipients'], implode( ', ', array_keys( $zones ) ) );
-	$ready   = 'ok' === $o['mail_state'];
+	$ready   = 'ok' === $o['mail_state'] && ! empty( $o['brevo_enabled'] );
 	$html   .= '<fieldset style="border:1px solid #c3c4c7;padding:8px 16px;max-width:640px"><legend><strong>' . esc_html__( 'Go live', 'jlife-challenges' ) . '</strong></legend>'
 		. '<p><label><input type="checkbox" name="jl_confirm_live" value="1"' . ( $ready ? '' : ' disabled' ) . '> ' . esc_html( $confirm ) . '</label></p>'
 		. ( $ready ? '' : '<p>' . esc_html__( 'Live is unavailable until the mail settings are ready.', 'jlife-challenges' ) . '</p>' )
