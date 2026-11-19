@@ -12,6 +12,8 @@ Participant sign-in for J-Life (M3, #58): **a 6-digit code by email, no password
 | `/signin/` | Email → emailed code → signed in on this phone for 180 days |
 | `/consent/` | The consent points (D15 draft wording, version `draft-2026-11-05`); asked again whenever the version changes |
 
+The join form also has an **unticked** "Email me each morning's reading" box (#63 Phase B): ticked, the person is opted in to daily reminders in the language chosen on the form (stored by `jlife-challenges`; the consent page says reminders are optional). Unticked means no reminders; people already enrolled are asked once on Today.
+
 ## Rules
 
 - Codes: 6 digits, single use, 10 minutes, stored only as a keyed hash; 5 wrong guesses void the code.

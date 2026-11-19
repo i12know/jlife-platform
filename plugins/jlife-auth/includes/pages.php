@@ -257,6 +257,7 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 			'email'       => '',
 			'age_band'    => '',
 			'locale'      => jlife_auth_default_form_locale(),
+			'reminders'   => '',
 		)
 	);
 	$langs = '';
@@ -299,6 +300,8 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 		. '<label><input type="radio" name="age_band" value="minor"' . checked( $in['age_band'], 'minor', false ) . '> ' . esc_html__( '13 to 17', 'jlife-auth' ) . '</label>'
 		. '<small>' . esc_html__( 'J-Life is for ages 13 and up.', 'jlife-auth' ) . '</small></fieldset>'
 		. '<label for="jl-lang">' . esc_html__( 'Language', 'jlife-auth' ) . '</label><select id="jl-lang" name="locale">' . $langs . '</select>'
+		. '<label><input type="checkbox" name="reminders" value="1"' . checked( '' !== (string) $in['reminders'], true, false ) . '> ' . esc_html__( 'Email me each morning\'s reading', 'jlife-auth' ) . '</label>'
+		. '<small>' . esc_html__( 'Optional. We write in the language you chose above. You can turn it off at any time.', 'jlife-auth' ) . '</small>'
 		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
 		. $swap
 		. '<p><a href="' . esc_url( home_url( '/signin/' ) ) . '">' . esc_html__( 'Already joined? Sign in.', 'jlife-auth' ) . '</a></p>';
@@ -321,6 +324,7 @@ function jlife_auth_page_join() {
 		'email'       => '',
 		'age_band'    => '',
 		'locale'      => jlife_auth_default_form_locale(),
+		'reminders'   => '',
 	);
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a page selector; the POST below re-reads it with its nonce.
 	$mode = jlife_auth_join_mode( isset( $_GET['mode'] ) ? sanitize_key( wp_unslash( $_GET['mode'] ) ) : '' );
@@ -377,7 +381,7 @@ function jlife_auth_consent_body( $error = '' ) {
 		__( 'Your SOAP entries are private. Only you can read them. Group leaders and organizers cannot see what you write.', 'jlife-auth' ),
 		__( 'You choose what to share. When you share with your group, its members see the parts you picked, with your first name. You can remove a share at any time.', 'jlife-auth' ),
 		__( 'Points come from participation: one point for each day you complete all four parts of SOAP on time. Points never depend on what you write. Organizers see points and counts, not your words.', 'jlife-auth' ),
-		__( 'We will email you each day\'s reading. You can turn reminders off at any time.', 'jlife-auth' ),
+		__( 'If you choose daily reminders, we email you each morning\'s reading. You can turn them off at any time from My Marathon or the link in any reminder.', 'jlife-auth' ),
 		__( 'You can delete your account and everything you have written at any time.', 'jlife-auth' ),
 	);
 	$list   = '';

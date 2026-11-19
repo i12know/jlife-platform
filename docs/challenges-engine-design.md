@@ -26,6 +26,7 @@ Related: [#49](https://github.com/i12know/jlife-platform/issues/49) (spec); #60 
 | `soap_revisions` | `id`, `entry_id`, `revision`, `body`, `saved_at` | Edit history after submission (D3) |
 | `score_ledger` | `id`, `campaign_id`, `user_id`, `day_id`, `entry_id`, `points` (0/1), `status` (`earned`/`late_no_point`/`removed_by_review`), `reason`, `source` (`platform`/`review`), `engine`, `engine_version` (which scoring engine awarded the row; #98), `created_at`; **UNIQUE (`campaign_id`, `user_id`, `day_id`)** | Written once per person and day, append-only: points are never taken back. Review changes (P1) go through an audited path |
 | `group_shares` | `id`, `entry_id`, `user_id`, `group_id`, `campaign_id`, `day_id`, `body` (snapshot of the **whole** entry; #98), `status` (`shared`/`removed`/`hidden`), `hidden_reason`, timestamps; **UNIQUE (`entry_id`, `group_id`)** | A **snapshot**: editing the private SOAP never changes it; sharing again replaces it. One row per entry **per group**: a share to group A is a different row from a share to group B and is read only through group A's feed |
+| `reminder_prefs` | `id`, `campaign_id`, `user_id`, `opted_in`, `opted_out` (both nullable), `consent_version`, `locale` (`en_US`/`vi`), `updated`; **UNIQUE (`campaign_id`, `user_id`)** | Daily reading reminder choices (#63 Phase B, §4d). No email address in the table; absence of a row means no reminders |
 | `audit_log` | `id`, `actor_user_id`, `action`, `object_type`, `object_id`, `campaign_id`, `detail` (JSON, **never SOAP text**), `created_at` | Enrollment changes, moves, review actions, hides, exports |
 
 **Group membership (D14 changed, #112).** On 2026-11-18 the owner replaced "one primary group per person" with: a participant is **solo or in up to 3 groups per campaign**, minors too. The `enrollments` row stays one per person per campaign because consent, progress, entries and points are personal; groups only decide *who can read what a person chose to share*. Consequences:
@@ -141,6 +142,23 @@ An adult can make a group and hold its invite code. Holding the code is the **on
 | Group name seen by | Its active members and organizers only. Another participant asking for the group by ID gets "Not found or not allowed" with no name; `/join` never prints a group name; the audit log holds IDs |
 | Leave a group | Feed access ends and the slot frees; the person's past shares stay with the group (D18) until they remove them from "Groups you left" on `/share`; audited (`group_left`). A starter who leaves stops holding the code (organizers can still reset or disable) |
 | Author removes an old share in a group they left (or one an organizer closed) | ✅ only their own; others get denied; audited (`share_removed`) |
+
+### 4d. Daily reading reminder preferences (#63 Phase B, part 1)
+
+A reminder is a message the person asked for. The table holds the choice and the language only: no email address (sending looks it up from the account), no reading content. This part has no sending, queue or scheduler; the next PR's queue starts from `jlife_challenges_reminder_recipients()`. Audit actions: `reminder_opt_in`, `reminder_opt_out` (detail: language, or `via: link`); never any message text.
+
+| Actor / case | Read the choice | Change the choice | Notes |
+|---|---|---|---|
+| The participant (active enrollment) | ✅ own | ✅ own, from the join form's unticked box, Today's one-time prompt, or My Marathon | Always for the signed-in user: a user ID in a form post is ignored |
+| Another participant, group member, starter or leader | ❌ | ❌ `jlife_denied` | Nothing about who gets reminders is shown to groups |
+| Organizer | ✅ (recipient list, for PR 2's queue and status) | ✅ (audited, e.g. `wp` tooling later) | Never reads what anyone wrote |
+| Person with no active enrollment (never joined, left, removed) | ❌ | ❌ `jlife_denied` | An organizer cannot set one for them either; a left or removed person is not a recipient even if a row remains |
+| Anonymous with a valid unsubscribe link | ❌ | ✅ **opt out only**, for the person and campaign in the signed link | `/unsubscribe/?c=&u=&t=`, `t` = keyed hash of `unsub\|campaign\|user`, compared with `hash_equals`. GET shows a confirm button and changes nothing (link scanners); the confirm POST and an RFC 8058 `List-Unsubscribe=One-Click` POST opt out |
+| Anonymous with a forged, other-user, other-campaign or missing token | ❌ | ❌ | The same neutral page for every failure; nothing changes, nothing is logged (no token in any log) |
+| Unsubscribe's reach | | | Only `reminder_prefs`. Sign-in codes, the account, enrollment, consent and scoring are untouched (Brevo's own unsubscribe stays off for the same reason) |
+| Account deletion, test-campaign removal | | | The person's rows are deleted with the account / campaign |
+
+Consent wording: the consent page says reminders are **optional** ("If you choose daily reminders..."); only a ticked box or an explicit Yes records an opt-in, with the consent wording version in force.
 
 ## 5. Required tests (written first; CI)
 

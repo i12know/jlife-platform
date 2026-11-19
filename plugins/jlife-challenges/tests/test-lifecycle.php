@@ -59,10 +59,11 @@ class Test_Lifecycle extends Jlife_Challenges_TestCase {
 		$entry = jlife_challenges_submit( $this->u['a'], $this->campaign, null, $this->soap( 'gone' ) )['entry_id'];
 		jlife_challenges_share( $this->u['a'], $entry, $this->g['g1'] );
 		$user_id = $this->u['a'];
+		jlife_challenges_set_reminder( $user_id, $user_id, $this->campaign, true, 'vi' );
 		wp_delete_user( $user_id );
 
 		global $wpdb;
-		foreach ( array( 'soap_entries', 'group_shares', 'score_ledger', 'enrollments', 'group_members' ) as $table ) {
+		foreach ( array( 'soap_entries', 'group_shares', 'score_ledger', 'enrollments', 'group_members', 'reminder_prefs' ) as $table ) {
 			$n = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( $table ) . ' WHERE user_id = %d', $user_id ) ); // phpcs:ignore WordPress.DB
 			$this->assertSame( 0, $n, "$table purged" );
 		}

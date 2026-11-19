@@ -1,7 +1,7 @@
 <?php
 /**
  * Account deletion (D15): a deleted user's entries, revisions, shares,
- * points, memberships and enrollments are removed. The audit entry records the purge
+ * points, memberships, reminder choices and enrollments are removed. The audit entry records the purge
  * without any SOAP text.
  *
  * @package jlife-challenges
@@ -27,6 +27,7 @@ function jlife_challenges_purge_user_data( $user_id ) {
 	$wpdb->delete( jlife_challenges_table( 'group_shares' ), array( 'user_id' => $user_id ), array( '%d' ) );
 	$wpdb->delete( jlife_challenges_table( 'score_ledger' ), array( 'user_id' => $user_id ), array( '%d' ) );
 	$wpdb->delete( jlife_challenges_table( 'group_members' ), array( 'user_id' => $user_id ), array( '%d' ) );
+	$wpdb->delete( jlife_challenges_table( 'reminder_prefs' ), array( 'user_id' => $user_id ), array( '%d' ) );
 	$wpdb->delete( jlife_challenges_table( 'enrollments' ), array( 'user_id' => $user_id ), array( '%d' ) );
 	// phpcs:enable
 	jlife_challenges_audit( 0, 'user_purged', 'user', $user_id );

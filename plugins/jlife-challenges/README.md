@@ -9,6 +9,7 @@ The Bible Marathon engine (M5, #60): campaigns, groups and enrollment, private S
 - SOAP entries (one free text, #98) with drafts and revision history; database-enforced scoring (`includes/soap.php`)
 - Scoring engines (#98): a pluggable engine decides whether an entry earns the day's point; the default `soap-regex` checks the S, O, A, P parts (`includes/scoring-engine.php`). Chosen per campaign (`campaigns.scoring_engine`); each awarded point records the engine and version
 - Progress, organizer counts and the score export without SOAP text (`includes/scores.php`)
+- Daily reading reminder choices (opt-in, language, `reminder_prefs`), the Today prompt, the My Marathon switch and the public one-click `/unsubscribe/` (#63 Phase B part 1; **no sending yet**) (`includes/reminders.php`)
 - Start a group (adults only; the starter holds the invite code and nothing more), leave a group, "Groups you left" on `/share`, and organizer oversight (`wp jlife group list|rename|disable|enable`) (`includes/groups.php`, `includes/group-admin.php`, `includes/share-screens.php`)
 - Group shares as snapshots of the whole entry, one per group: one unticked box per group on a save, or a section per group on `/share`; a solo reader has none; hide for reported posts (`includes/shares.php`)
 - The privacy gate (`includes/gate.php`), audit log (`includes/audit.php`), account-deletion purge (`includes/lifecycle.php`)

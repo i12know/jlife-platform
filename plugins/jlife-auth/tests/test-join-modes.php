@@ -222,6 +222,73 @@ class Test_Join_Modes extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The reminder box is on the join form for every way in, and it is unticked.
+	 */
+	public function test_join_form_has_an_unticked_reminder_box() {
+		foreach ( array( 'invite', 'solo', 'start' ) as $mode ) {
+			$html = jlife_auth_join_form( $mode, array() );
+			$this->assertMatchesRegularExpression( '/<input type="checkbox" name="reminders" value="1"\s*>/', $html, "$mode: unticked" );
+			$this->assertStringContainsString( 'each morning', $html );
+		}
+		$this->assertMatchesRegularExpression( '/name="reminders" value="1" checked/', jlife_auth_join_form( 'solo', array( 'reminders' => '1' ) ), 'kept ticked after an error' );
+	}
+
+	/**
+	 * Unticked: no reminders. Ticked: opted in, in the language chosen on the form.
+	 */
+	public function test_join_reminder_box_opts_in_only_when_ticked() {
+		jlife_auth_start_join( $this->input( array( 'mode' => 'solo' ) ) );
+		$plain = jlife_auth_complete( 'reader@example.test', $this->last_code() )['user_id'];
+		$this->assertNull( jlife_challenges_reminder_pref( $plain, $this->campaign ), 'unticked: no row' );
+		$this->assertSame( array(), jlife_challenges_reminder_recipients( $this->campaign ) );
+
+		jlife_auth_start_join(
+			$this->input(
+				array(
+					'email'     => 'ticked@example.test',
+					'mode'      => 'solo',
+					'locale'    => 'vi',
+					'reminders' => '1',
+				)
+			)
+		);
+		$ticked = jlife_auth_complete( 'ticked@example.test', $this->last_code() )['user_id'];
+		$pref   = jlife_challenges_reminder_pref( $ticked, $this->campaign );
+		$this->assertNotEmpty( $pref['opted_in'] );
+		$this->assertSame( 'vi', $pref['locale'] );
+		$this->assertSame( array( $ticked ), jlife_challenges_reminder_recipients( $this->campaign ) );
+	}
+
+	/**
+	 * The choice rides on a group join and a start-a-group too, and an English form gives English.
+	 */
+	public function test_reminder_box_works_for_invite_and_start_joins() {
+		jlife_auth_start_join(
+			$this->input(
+				array(
+					'invite_code' => $this->groups['One']['invite_code'],
+					'reminders'   => '1',
+				)
+			)
+		);
+		$a = jlife_auth_complete( 'reader@example.test', $this->last_code() )['user_id'];
+		$this->assertSame( 'en_US', jlife_challenges_reminder_pref( $a, $this->campaign )['locale'] );
+
+		jlife_auth_start_join(
+			$this->input(
+				array(
+					'email'      => 'starter@example.test',
+					'mode'       => 'start',
+					'group_name' => 'Starters',
+					'reminders'  => '1',
+				)
+			)
+		);
+		$b = jlife_auth_complete( 'starter@example.test', $this->last_code() )['user_id'];
+		$this->assertTrue( jlife_challenges_reminder_is_on( jlife_challenges_reminder_pref( $b, $this->campaign ) ) );
+	}
+
+	/**
 	 * A solo reader who later enters a code joins that group; the enrollment is kept.
 	 */
 	public function test_solo_reader_joins_a_group_later_with_a_code() {
