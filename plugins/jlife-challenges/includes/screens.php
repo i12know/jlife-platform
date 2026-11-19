@@ -713,16 +713,16 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		. wp_nonce_field( 'jlife_soap_' . $view['day_key'], '_jlife_soap', true, false )
 		. '<input type="hidden" name="jl_day" value="' . esc_attr( $view['day_key'] ) . '">'
 		. '<label for="jl-text">' . esc_html__( 'My SOAP', 'jlife-challenges' ) . '</label>'
-		. '<small>' . esc_html__( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ) . '</small>';
+		. '<small>' . esc_html__( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ) . '</small>'
+		. '<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary><ul>';
+	foreach ( jlife_challenges_soap_guidance() as $letter => $guidance ) {
+		$out .= '<li><strong>' . esc_html( $headings[ $letter ] ) . '</strong> ' . esc_html( $guidance ) . '</li>';
+	}
+	$out .= '</ul></details>';
 	if ( '' !== $chips ) {
 		$out .= '<div class="jl-chips" aria-label="' . esc_attr__( "Insert today's references", 'jlife-challenges' ) . '">' . $chips . '</div>';
 	}
 	$out .= '<textarea id="jl-text" name="jl_text" rows="16" maxlength="' . esc_attr( (string) JLIFE_CHALLENGES_BODY_MAX ) . '">' . esc_textarea( $text ) . '</textarea>'
-		. '<details class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary><ul>';
-	foreach ( jlife_challenges_soap_guidance() as $letter => $guidance ) {
-		$out .= '<li><strong>' . esc_html( $headings[ $letter ] ) . '</strong> ' . esc_html( $guidance ) . '</li>';
-	}
-	$out .= '</ul></details>'
 		. '<p class="jl-saved" aria-live="polite"></p>'
 		. jlife_challenges_render_share_boxes( $groups, (array) $state['share_groups'] );
 	return $out
