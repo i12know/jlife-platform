@@ -213,7 +213,7 @@ function jlife_studies_localize_day( $day, $locale ) {
 	$tr = $day['i18n'][ $lang ];
 	if ( isset( $tr['title'] ) && is_string( $tr['title'] ) && '' !== trim( $tr['title'] ) ) {
 		$day['title']  = $tr['title'];
-		$day['titles'] = array_values( array_filter( array_map( 'trim', explode( '|', $tr['title'] ) ), 'strlen' ) );
+		$day['titles'] = array_values( array_filter( array_map( 'trim', explode( '|', $tr['title'] ) ), static fn( $part ) => '' !== $part ) );
 	}
 	$displays = isset( $tr['passages'] ) && is_array( $tr['passages'] ) ? array_values( $tr['passages'] ) : array();
 	$passages = isset( $day['passages'] ) && is_array( $day['passages'] ) ? $day['passages'] : array();
