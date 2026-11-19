@@ -162,6 +162,8 @@ class Test_Vietnamese extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'riêng tư', $consent );
 		$this->assertStringContainsString( 'Bắt đầu Marathon', $consent );
 		$this->assertStringNotContainsString( 'Before you start', $consent );
+		$this->assertStringContainsString( 'cầu nguyện', $consent, 'sharing includes the Prayer part' );
+		$this->assertStringNotContainsString( 'những phần bạn đã chọn', $consent );
 		$this->assertStringContainsString( 'Nếu bạn chọn nhận nhắc nhở hằng ngày', $consent, 'reminders are opt-in wording' );
 		$this->assertStringNotContainsString( 'Chúng tôi sẽ gửi email bài đọc mỗi ngày', $consent );
 	}

@@ -713,13 +713,13 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'data-status="submitted"', $form );
 		$this->assertStringContainsString( '>' . $this->soap() . '</textarea>', $form, 'the saved entry, as one text' );
 		$this->assertStringContainsString( 'type="checkbox" name="jl_share_groups[]" value="' . $this->g['g1'] . '">', $form, 'still unchecked' );
-		$this->assertStringNotContainsString( 'already has this day', $form );
+		$this->assertStringNotContainsString( 'Already shared with', $form );
 		$this->assertStringNotContainsString( 'Share with my group or a chat', $body, 'no separate Share button' );
 		$this->assertStringContainsString( 'Done — 1 point earned.', $body );
 		$this->assertStringContainsString( '1 of 104', $body );
 
 		jlife_challenges_share( $this->u['a'], jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' )['id'], $this->g['g1'] );
-		$this->assertStringContainsString( 'Group One already has this day', jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
+		$this->assertStringContainsString( 'Already shared with Group One — tick and save to update', jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
 	}
 
 	/**

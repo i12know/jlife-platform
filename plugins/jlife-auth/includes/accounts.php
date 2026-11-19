@@ -29,7 +29,7 @@ const JLIFE_AUTH_LOCALES = array(
  * Current consent wording version. Bump it when the owner changes the
  * wording (#65) so everyone is asked again.
  */
-const JLIFE_AUTH_CONSENT_VERSION = 'draft-2026-11-05';
+const JLIFE_AUTH_CONSENT_VERSION = 'draft-2026-11-18';
 
 /**
  * Which way in the join page is on: 'solo' ("Read on my own", no code),
