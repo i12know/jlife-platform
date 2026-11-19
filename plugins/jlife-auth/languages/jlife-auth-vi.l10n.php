@@ -68,7 +68,7 @@ return array(
 		'Optional. We write in the language you chose above. You can turn it off at any time.' => 'Không bắt buộc. Chúng tôi viết bằng ngôn ngữ bạn đã chọn ở trên. Bạn có thể tắt bất cứ lúc nào.',
 		'You are signed in' => 'Bạn đã đăng nhập',
 		'You can delete your account and everything you have written at any time.' => 'Bạn có thể xóa tài khoản và mọi điều bạn đã viết bất cứ lúc nào.',
-		'Entries are private by default. You choose what to share: when you tick a group\'s box as you save, that group\'s members see the whole entry, including your Prayer, with your name.' => 'Bài viết mặc định là riêng tư. Bạn tự chọn điều muốn chia sẻ: khi bạn đánh dấu ô của một nhóm lúc lưu, các thành viên của nhóm đó sẽ thấy toàn bộ bài viết, kể cả phần cầu nguyện, kèm tên của bạn.',
+		'Entries are private by default. You choose what to share: when you tick a group\'s box as you save, that group\'s members see the whole entry, including your Prayer, with your first name.' => 'Bài viết mặc định là riêng tư. Bạn tự chọn điều muốn chia sẻ: khi bạn đánh dấu ô của một nhóm lúc lưu, các thành viên của nhóm đó sẽ thấy toàn bộ bài viết, kể cả phần cầu nguyện, kèm tên của bạn.',
 		'You can update or remove a share at any time on the share page (/share).' => 'Bạn có thể cập nhật hoặc gỡ phần đã chia sẻ bất cứ lúc nào ở trang chia sẻ (/share).',
 		'Your %s sign-in code' => 'Mã đăng nhập %s của bạn',
 		'Your SOAP entries are private. Only you can read them. Group leaders and organizers cannot see what you write.' => 'Các bài SOAP của bạn là riêng tư. Chỉ mình bạn đọc được. Người hướng dẫn nhóm và ban tổ chức không thấy bạn viết gì.',
