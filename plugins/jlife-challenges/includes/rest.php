@@ -1,9 +1,10 @@
 <?php
 /**
- * REST endpoint for SOAP draft autosave (M6, #61). Signed-in authors only;
- * nonce-checked by WordPress's REST cookie authentication. Submitting stays a
- * plain form POST so it works without JavaScript. A draft is one text (#98);
- * it is never shared and never scored.
+ * REST endpoints for SOAP draft autosave (M6, #61) and the daily reading email
+ * checkbox (#135). Signed-in users only; nonce-checked by WordPress's REST
+ * cookie authentication (without the nonce the request is treated as signed
+ * out). Submitting stays a plain form POST so it works without JavaScript. A
+ * draft is one text (#98); it is never shared and never scored.
  *
  * @package jlife-challenges
  */
@@ -41,6 +42,25 @@ function jlife_challenges_register_rest() {
 				),
 			),
 			'callback'            => 'jlife_challenges_rest_save_draft',
+		)
+	);
+	register_rest_route(
+		'jlife/v1',
+		'/reminder',
+		array(
+			'methods'             => 'POST',
+			'permission_callback' => static fn() => is_user_logged_in(),
+			'args'                => array(
+				'on'     => array(
+					'type'     => 'boolean',
+					'required' => false,
+				),
+				'locale' => array(
+					'type'     => 'string',
+					'required' => false,
+				),
+			),
+			'callback'            => 'jlife_challenges_rest_save_reminder',
 		)
 	);
 }

@@ -21,6 +21,14 @@
 		if (Array.isArray(h) && h.length === 4) { headings = h; }
 	} catch (e) { /* keep English headings */ }
 
+	// Anything beyond the headings? A blank box or the untouched template isn't a draft yet (#142).
+	var headingOnly = /^[ \t]*[SOAP][ \t]*(?::|[\u2014\u2013]+|-+)[ \t]*(?:Scripture|Observation|Application|Prayer|Kinh Th\u00e1nh|Quan s\u00e1t|\u00c1p d\u1ee5ng|C\u1ea7u nguy\u1ec7n)?[\s:.\u2014\u2013-]*$/i;
+	function hasWriting(text) {
+		return text.split(/\r?\n/).some(function (line) {
+			return line.trim() !== '' && !headingOnly.test(line);
+		});
+	}
+
 	function backup() {
 		try { localStorage.setItem(key, JSON.stringify({ v: 2, text: box.value })); } catch (e) { /* storage unavailable */ }
 	}
@@ -56,7 +64,8 @@
 	function save() {
 		backup();
 		if (form.dataset.status === 'submitted') { return; } // Edits to a submitted entry are saved with the button.
-		status.textContent = msg.saving;
+		var written = hasWriting(box.value);
+		status.textContent = written ? msg.saving : '';
 		fetch(form.dataset.rest, {
 			method: 'POST',
 			credentials: 'same-origin',
@@ -64,9 +73,9 @@
 			body: JSON.stringify({ campaign_id: Number(form.dataset.campaign), day_key: form.dataset.day, text: box.value })
 		}).then(function (r) {
 			if (!r.ok) { throw new Error(String(r.status)); }
-			status.textContent = msg.saved;
+			status.textContent = written ? msg.saved : '';
 			clearBackup();
-		}).catch(function () { status.textContent = msg.local; });
+		}).catch(function () { status.textContent = written ? msg.local : ''; });
 	}
 
 	box.addEventListener('input', function () {
@@ -93,6 +102,14 @@
 			box.focus();
 			box.setSelectionRange(pos, pos);
 			box.dispatchEvent(new Event('input', { bubbles: true }));
+		});
+	});
+
+	// "More" beside the SOAP one-liner opens the "What goes under each heading?" box it jumps to.
+	form.querySelectorAll('a[href="#jlife-soap-help"]').forEach(function (link) {
+		link.addEventListener('click', function () {
+			var help = document.getElementById('jlife-soap-help');
+			if (help && help.tagName === 'DETAILS') { help.open = true; }
 		});
 	});
 

@@ -120,18 +120,15 @@ return array(
 		'Your groups' => 'Các nhóm của bạn',
 		'hidden by an organizer' => 'đã bị ban tổ chức ẩn',
 		// Daily reading email choice and one-click unsubscribe (#63 Phase B, part 1). DRAFT, like the rest.
-		'Get each morning\'s reading by email?' => 'Nhận bài đọc mỗi sáng qua email?',
-		'One short email a day with the reading. You can turn it off at any time.' => 'Mỗi ngày một email ngắn có bài đọc. Bạn có thể tắt bất cứ lúc nào.',
 		'Yes' => 'Có',
-		'No thanks' => 'Không, cảm ơn',
 		'Daily reading email' => 'Email bài đọc hằng ngày',
 		'Saved.' => 'Đã lưu.',
-		'You get each morning\'s reading by email.' => 'Bạn đang nhận bài đọc mỗi sáng qua email.',
-		'You are not getting the reading by email.' => 'Bạn không nhận bài đọc qua email.',
 		'Language of the email' => 'Ngôn ngữ của email',
-		'Turn on' => 'Bật',
 		'Turn off' => 'Tắt',
-		'Save language' => 'Lưu ngôn ngữ',
+		// The daily reading email checkbox on Today and My Marathon (#135). DRAFT, like the rest.
+		'Email me each morning\'s reading.' => 'Gửi bài đọc mỗi sáng cho tôi qua email.',
+		'Not saved. Please try again.' => 'Chưa lưu được. Vui lòng thử lại.',
+		'Save' => 'Lưu',
 		'Daily reading emails' => 'Email bài đọc hằng ngày',
 		'Stop the daily reading emails?' => 'Dừng email bài đọc hằng ngày?',
 		'You will no longer get the morning reading by email. This does not affect your sign-in codes or your account.' => 'Bạn sẽ không nhận bài đọc buổi sáng qua email nữa. Việc này không ảnh hưởng đến mã đăng nhập hay tài khoản của bạn.',
@@ -182,7 +179,6 @@ return array(
 		'Draft saved' => 'Đã lưu bản nháp',
 		'Saved on this device (offline)' => 'Đã lưu trên thiết bị này (ngoại tuyến)',
 		'Restored your unsaved draft' => 'Đã khôi phục bản nháp chưa lưu của bạn',
-		'Insert today\'s references' => 'Chèn các câu Kinh Thánh hôm nay',
 		'%1$d of %2$d' => '%1$d trên %2$d',
 		'SOAP' => 'SOAP',
 		'done — 1 point' => 'xong — 1 điểm',
@@ -281,6 +277,11 @@ return array(
 		'Month (UTC)' => 'Tháng (UTC)',
 		'API.Bible calls this month' => 'Số lượt gọi API.Bible tháng này',
 		'Usage reports sent (FUMS)' => 'Số báo cáo sử dụng đã gửi (FUMS)',
+		// Today page fixes from pilot feedback (#142).
+		'SOAP = Scripture, Observation, Application, Prayer.' => 'SOAP = Kinh Thánh (Scripture), Quan sát (Observation), Áp dụng (Application), Cầu nguyện (Prayer).',
+		'More' => 'Xem thêm',
+		'Tap a reference to add it under S:' => 'Bấm vào một câu Kinh Thánh để thêm dưới phần S:',
+		'Add %s to my SOAP' => 'Thêm %s vào SOAP của tôi',
 		"date format\4F j, Y" => 'j \\t\\h\\á\\n\\g n, Y', // Reading-day date: 18 tháng 11, 2026.
 	),
 );
