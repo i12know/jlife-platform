@@ -8,6 +8,10 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ## Unreleased
 
+### Fixed
+
+- **`wp jlife group list` works** (#112). The organizer list command was registered as `list_` (the PHP method name, since `list` is reserved), so `wp jlife group list` failed with "not a registered subcommand"; it now carries `@subcommand list`. Found during the #112 staging check.
+
 ### Changed
 
 - **Landing page: sign-up buttons use the real #112 routes** (#112 part 3, #110). The seeded pages (hero and final call) now link "Read on my own" to `/join/?mode=solo`, "Start a group" to `/join/?mode=start`, "I have an invite code" to `/join/` and "Sign in" to `/signin/`; the Vietnamese page adds `lang=vi` to each so the app screens open in Vietnamese. The `TODO(#112)` code comments and the two hidden HTML-comment blocks are gone, and a guard test pins the exact hrefs per language. **The live pages are unchanged**: the seed runs once and never overwrites an edit, so the owner updates the buttons in wp-admin (hrefs in `docs/staging-latoc.md`, "Owner step"). Seed-once behavior is untouched.
