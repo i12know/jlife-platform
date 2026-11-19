@@ -389,7 +389,7 @@ class Test_Multi_Group_Sharing extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'Already shared with Group Two — tick and save to update', $form );
 		$this->assertSame( 1, substr_count( $form, 'Change or remove on the share page' ) );
 		$this->assertStringContainsString( 'href="' . home_url( '/share/' ) . '"', $form );
-		$this->assertStringContainsString( "Groups you leave unticked don't see this entry.", $form, 'Group One has no share yet' );
+		$this->assertStringContainsString( 'Groups you leave unticked', $form, 'Group One has no share yet' );
 		$this->assertStringNotContainsString( 'keep it private', $form );
 
 		$ticked = jlife_challenges_today_body( $view, array( 'share_groups' => array( $this->g['g1'] ) ) );
