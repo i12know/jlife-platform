@@ -229,6 +229,27 @@ class Test_Vietnamese extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A language picked with ?lang= carries over to the links between the sign-in
+	 * pages (Codex QA 2026-11-19: "Already joined? Sign in." opened English).
+	 */
+	public function test_the_picked_language_follows_the_links_between_sign_in_pages() {
+		$this->visit( '/join/', array( 'mode' => 'solo', 'lang' => 'vi' ) );
+		$join = jlife_auth_join_form( 'solo', array(), '' );
+		$this->assertStringContainsString( 'Đã tham gia rồi? Đăng nhập.', $join );
+		$this->assertMatchesRegularExpression( '#href="[^"]*/signin/\?lang=vi"#', $join, 'sign-in link keeps Vietnamese' );
+		$this->assertMatchesRegularExpression( '#href="[^"]*/join/\?lang=vi&\#038;mode=start"#', $join, 'mode links keep Vietnamese' );
+
+		$this->visit( '/signin/', array( 'lang' => 'vi' ) );
+		$this->assertMatchesRegularExpression( '#href="[^"]*/join/\?lang=vi"#', jlife_auth_signin_body() );
+
+		$this->visit( '/signin/', array( 'lang' => 'xx' ) );
+		$this->assertStringNotContainsString( 'lang=', jlife_auth_keep_lang( home_url( '/join/' ) ), 'only a known language' );
+
+		$this->visit( '/signin/' );
+		$this->assertSame( home_url( '/join/' ), jlife_auth_keep_lang( home_url( '/join/' ) ), 'nothing picked, nothing added' );
+	}
+
+	/**
 	 * The emailed code is written in the language chosen on the form.
 	 */
 	public function test_the_code_email_uses_the_language_chosen_on_the_form() {
