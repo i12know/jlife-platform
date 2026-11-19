@@ -19,7 +19,10 @@
         "notes": "Notes"
       },
       "source_attribution": "Owner-created 104-day schedule (2026-09-06) following the PlusNothing Life and Teachings of Jesus arrangement; Robertson (1922) harmony sections as cross-references.",
-      "rights_note": "Reference-only schedule: dates, Scripture citations, section IDs and short titles; no Bible or study text. Cleared for import per docs/content-rights.md §1a (PR #50)."
+      "rights_note": "Reference-only schedule: dates, Scripture citations, section IDs and short titles; no Bible or study text. Cleared for import per docs/content-rights.md §1a (PR #50).",
+      "i18n": {
+        "vi": "i18n/rpl-life-and-teachings-of-jesus-2026.vi.json"
+      }
     },
     {
       "plan_id": "rpl-harmony-parallel-2026",

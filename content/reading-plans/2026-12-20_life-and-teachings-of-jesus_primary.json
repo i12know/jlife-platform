@@ -93,6 +93,14 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Ban đầu",
+          "passages": [
+            "Giăng 1:1-18"
+          ]
+        }
       }
     },
     {
@@ -158,6 +166,14 @@
               "label": "Luke 1:5-25",
               "url": "https://www.biblegateway.com/passage/?search=Luke+1:5-25&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Thiên sứ báo tin Giăng Báp-tít ra đời",
+          "passages": [
+            "Lu-ca 1:5-25"
           ]
         }
       }
@@ -254,6 +270,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Thiên sứ báo tin Chúa Giê-xu ra đời | Ma-ri thăm Ê-li-sa-bét",
+          "passages": [
+            "Lu-ca 1:26-38",
+            "Lu-ca 1:39-45"
+          ]
+        }
       }
     },
     {
@@ -346,6 +371,15 @@
               "label": "Luke 1:57-66",
               "url": "https://www.biblegateway.com/passage/?search=Luke+1:57-66&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Ma-ri ca ngợi Thượng Đế | Giăng Báp-tít ra đời",
+          "passages": [
+            "Lu-ca 1:46-55",
+            "Lu-ca 1:57-66"
           ]
         }
       }
@@ -442,6 +476,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Xa-cha-ri ca ngợi Thượng Đế | Chúa Giê-xu ra đời",
+          "passages": [
+            "Lu-ca 1:67-80",
+            "Lu-ca 2:1-7"
+          ]
+        }
       }
     },
     {
@@ -536,6 +579,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Các trẻ chăn chiên nghe tin về Chúa Giê-xu | Chúa Giê-xu được dâng trong đền thờ",
+          "passages": [
+            "Lu-ca 2:8-21",
+            "Lu-ca 2:22-38"
+          ]
+        }
       }
     },
     {
@@ -628,6 +680,15 @@
               "label": "Matthew 2:13-15",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+2:13-15&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Các nhà thông thái đến thăm Chúa Giê-xu | Gia đình Chúa Giê-xu trốn sang Ai-cập",
+          "passages": [
+            "Ma-thi-ơ 2:1-12",
+            "Ma-thi-ơ 2:13-15"
           ]
         }
       }
@@ -776,6 +837,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Các bé trai ở Bết-lê-hem bị giết | Gia đình Chúa Giê-xu từ Ai-cập trở về | Cậu bé Giê-xu trong đền thờ",
+          "passages": [
+            "Ma-thi-ơ 2:16-18",
+            "Ma-thi-ơ 2:19-23",
+            "Lu-ca 2:40",
+            "Lu-ca 2:41-52"
+          ]
+        }
       }
     },
     {
@@ -889,6 +961,16 @@
               "label": "Luke 3:10-18",
               "url": "https://www.biblegateway.com/passage/?search=Luke+3:10-18&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Giăng Báp-tít dọn đường",
+          "passages": [
+            "Lu-ca 3:1-6",
+            "Ma-thi-ơ 3:4-10",
+            "Lu-ca 3:10-18"
           ]
         }
       }
@@ -1037,6 +1119,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu chịu báp-têm | Chúa Giê-xu bị cám dỗ | Giăng Báp-tít nói về Đấng Mê-si",
+          "passages": [
+            "Ma-thi-ơ 3:13-17",
+            "Lu-ca 3:23a",
+            "Ma-thi-ơ 4:1-11",
+            "Giăng 1:19-28"
+          ]
+        }
       }
     },
     {
@@ -1156,6 +1249,16 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu, Chiên Con của Thượng Đế | Giăng giới thiệu các môn đệ mình với Chúa Giê-xu | Chúa Giê-xu gọi Phi-líp và Na-tha-na-ên",
+          "passages": [
+            "Giăng 1:29-34",
+            "Giăng 1:35-42",
+            "Giăng 1:43-51"
+          ]
+        }
       }
     },
     {
@@ -1248,6 +1351,15 @@
               "label": "John 2:13-25",
               "url": "https://www.biblegateway.com/passage/?search=John+2:13-25&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Phép lạ đầu tiên của Chúa Giê-xu | Chúa Giê-xu tại đền thờ",
+          "passages": [
+            "Giăng 2:1-12",
+            "Giăng 2:13-25"
           ]
         }
       }
@@ -1352,6 +1464,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu và Ni-cô-đem | Chúa Giê-xu và Giăng Báp-tít",
+          "passages": [
+            "Giăng 3:1-21",
+            "Giăng 3:22-4:3"
+          ]
+        }
       }
     },
     {
@@ -1417,6 +1538,14 @@
               "label": "John 4:4-26",
               "url": "https://www.biblegateway.com/passage/?search=John+4:4-26&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu nói chuyện với người đàn bà Sa-ma-ri",
+          "passages": [
+            "Giăng 4:4-26"
           ]
         }
       }
@@ -1566,6 +1695,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Các môn đệ trở lại | Nhiều người Sa-ma-ri tin | Chúa Giê-xu trở về Ga-li-lê | Chúa Giê-xu chữa lành con trai một viên chức",
+          "passages": [
+            "Giăng 4:27-38",
+            "Giăng 4:39-42",
+            "Giăng 4:43-45",
+            "Giăng 4:46-54"
+          ]
+        }
       }
     },
     {
@@ -1706,6 +1846,17 @@
               "label": "Luke 4:16-30",
               "url": "https://www.biblegateway.com/passage/?search=Luke+4:16-30&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu bắt đầu rao giảng Tin Mừng | Chúa Giê-xu bị khước từ tại quê nhà",
+          "passages": [
+            "Ma-thi-ơ 4:13b-17a",
+            "Mác 1:15",
+            "Lu-ca 4:14b-15",
+            "Lu-ca 4:16-30"
           ]
         }
       }
@@ -1854,6 +2005,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu chọn một số môn đệ | Chúa Giê-xu giải thoát một người khỏi tà linh | Chúa Giê-xu chữa lành nhiều người",
+          "passages": [
+            "Ma-thi-ơ 4:18-22",
+            "Lu-ca 5:1-11",
+            "Mác 1:21-28",
+            "Mác 1:29-34"
+          ]
+        }
       }
     },
     {
@@ -2000,6 +2162,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu cầu nguyện một mình | Chúa Giê-xu dạy dỗ và chữa lành | Chúa Giê-xu chữa lành một người bệnh | Chúa Giê-xu chữa lành một người bại",
+          "passages": [
+            "Mác 1:35-38",
+            "Ma-thi-ơ 4:23-25",
+            "Mác 1:40-45",
+            "Mác 2:1-12"
+          ]
+        }
       }
     },
     {
@@ -2121,6 +2294,16 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Lê-vi đi theo Chúa Giê-xu | Chúa Giê-xu trả lời câu hỏi về việc kiêng ăn | Chúa Giê-xu chữa lành một người bên ao",
+          "passages": [
+            "Mác 2:13-17",
+            "Lu-ca 5:33-39",
+            "Giăng 5:1-18"
+          ]
+        }
       }
     },
     {
@@ -2211,6 +2394,15 @@
               "label": "John 5:31-47",
               "url": "https://www.biblegateway.com/passage/?search=John+5:31-47&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Con ban sự sống | Chúa Giê-xu đưa ra bằng chứng về thẩm quyền của Ngài",
+          "passages": [
+            "Giăng 5:19-30",
+            "Giăng 5:31-47"
           ]
         }
       }
@@ -2401,6 +2593,19 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu là Chúa của ngày Sa-bát | Đoàn dân đông đi theo Chúa Giê-xu",
+          "passages": [
+            "Mác 2:23-26",
+            "Ma-thi-ơ 12:5-7",
+            "Mác 2:27-28",
+            "Ma-thi-ơ 12:9-14",
+            "Mác 3:7-12",
+            "Ma-thi-ơ 12:17-21"
+          ]
+        }
       }
     },
     {
@@ -2570,6 +2775,18 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu chọn mười hai sứ đồ | Những người nhận phước của Thượng Đế | Chúa Giê-xu gọi môn đệ là muối và ánh sáng | Chúa Giê-xu và luật pháp Môi-se",
+          "passages": [
+            "Lu-ca 6:12-13",
+            "Mác 3:14b-19",
+            "Ma-thi-ơ 5:1-12",
+            "Ma-thi-ơ 5:13-16",
+            "Ma-thi-ơ 5:17-20"
+          ]
+        }
       }
     },
     {
@@ -2737,6 +2954,18 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu dạy về sự giận dữ | Chúa Giê-xu dạy về tội ngoại tình | Chúa Giê-xu dạy về ly dị | Chúa Giê-xu dạy về lời hứa | Chúa Giê-xu dạy về việc trả đũa",
+          "passages": [
+            "Ma-thi-ơ 5:21-26",
+            "Ma-thi-ơ 5:27-30",
+            "Ma-thi-ơ 5:31-32",
+            "Ma-thi-ơ 5:33-37",
+            "Ma-thi-ơ 5:38-42"
+          ]
+        }
       }
     },
     {
@@ -2880,6 +3109,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu dạy về việc yêu kẻ thù | Chúa Giê-xu dạy về việc dâng hiến | Chúa Giê-xu dạy về sự cầu nguyện | Chúa Giê-xu dạy về việc kiêng ăn",
+          "passages": [
+            "Ma-thi-ơ 5:43-48",
+            "Ma-thi-ơ 6:1-4",
+            "Ma-thi-ơ 6:5-15",
+            "Ma-thi-ơ 6:16-18"
+          ]
+        }
       }
     },
     {
@@ -3021,6 +3261,17 @@
               "label": "Matthew 7:7-12",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+7:7-12&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu dạy về điều quan trọng | Chúa Giê-xu dạy về sự lo lắng | Chúa Giê-xu dạy về việc xét đoán người khác | Hãy xin Thượng Đế điều bạn cần",
+          "passages": [
+            "Ma-thi-ơ 6:19-24",
+            "Ma-thi-ơ 6:25-34",
+            "Ma-thi-ơ 7:1-6",
+            "Ma-thi-ơ 7:7-12"
           ]
         }
       }
@@ -3167,6 +3418,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Cửa hẹp và cửa rộng | Việc làm cho thấy con người | Hai loại người | Chúa Giê-xu chữa lành đầy tớ của một sĩ quan",
+          "passages": [
+            "Ma-thi-ơ 7:13-14",
+            "Ma-thi-ơ 7:15-23",
+            "Ma-thi-ơ 7:24-27",
+            "Lu-ca 7:1-10"
+          ]
+        }
       }
     },
     {
@@ -3259,6 +3521,15 @@
               "label": "Luke 7:18-35",
               "url": "https://www.biblegateway.com/passage/?search=Luke+7:18-35&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu khiến con trai một bà góa sống lại | Chúa Giê-xu và Giăng Báp-tít",
+          "passages": [
+            "Lu-ca 7:11-17",
+            "Lu-ca 7:18-35"
           ]
         }
       }
@@ -3382,6 +3653,16 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu ban sự yên nghỉ cho dân Ngài | Chúa Giê-xu và một người đàn bà tội lỗi | Chúa Giê-xu tại Ga-li-lê",
+          "passages": [
+            "Ma-thi-ơ 11:25-30",
+            "Lu-ca 7:36-50",
+            "Lu-ca 8:1-3"
+          ]
+        }
       }
     },
     {
@@ -3474,6 +3755,15 @@
               "label": "Matthew 12:38-45",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+12:38-45&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Quyền năng của Chúa Giê-xu đến từ Thượng Đế | Có người nghi ngờ thẩm quyền của Chúa Giê-xu",
+          "passages": [
+            "Ma-thi-ơ 12:22-37",
+            "Ma-thi-ơ 12:38-45"
           ]
         }
       }
@@ -3593,6 +3883,16 @@
               "label": "Matthew 13:1-23",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+13:1-23&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Môn đệ là gia đình thật của Chúa Giê-xu | Chuyện người nông dân gieo giống",
+          "passages": [
+            "Ma-thi-ơ 12:46-50",
+            "Lu-ca 11:27-28",
+            "Ma-thi-ơ 13:1-23"
           ]
         }
       }
@@ -3738,6 +4038,17 @@
               "label": "Matthew 13:31-35",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+13:31-35&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Hãy dùng sự hiểu biết bạn có | Chuyện hạt giống mọc lên | Chuyện lúa mì và cỏ lùng | Chuyện hạt cải và men",
+          "passages": [
+            "Mác 4:21-25",
+            "Mác 4:26-29",
+            "Ma-thi-ơ 13:24-30",
+            "Ma-thi-ơ 13:31-35"
           ]
         }
       }
@@ -3886,6 +4197,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu giải thích chuyện cỏ lùng | Chuyện kho báu và hạt ngọc | Chuyện tấm lưới đánh cá | Chúa Giê-xu làm yên cơn bão",
+          "passages": [
+            "Ma-thi-ơ 13:36-43",
+            "Ma-thi-ơ 13:44-46",
+            "Ma-thi-ơ 13:47-53",
+            "Mác 4:35-41"
+          ]
+        }
       }
     },
     {
@@ -3976,6 +4298,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu giải thoát một người khỏi tà linh",
+          "passages": [
+            "Lu-ca 8:26-27",
+            "Mác 5:3b-20"
+          ]
+        }
       }
     },
     {
@@ -4041,6 +4372,14 @@
               "label": "Mark 5:21-43",
               "url": "https://www.biblegateway.com/passage/?search=Mark+5:21-43&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu khiến một bé gái sống lại và chữa lành một người đàn bà bệnh",
+          "passages": [
+            "Mác 5:21-43"
           ]
         }
       }
@@ -4162,6 +4501,16 @@
               "label": "Matthew 9:35-38",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+9:35-38&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu chữa lành ba người | Chúa Giê-xu bị khước từ tại quê nhà | Hãy xin Thượng Đế sai thêm thợ gặt",
+          "passages": [
+            "Ma-thi-ơ 9:27-34",
+            "Mác 6:1-6",
+            "Ma-thi-ơ 9:35-38"
           ]
         }
       }
@@ -4324,6 +4673,18 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu sai mười hai sứ đồ đi",
+          "passages": [
+            "Ma-thi-ơ 10:1",
+            "Ma-thi-ơ 10:5-42",
+            "Ma-thi-ơ 11:1",
+            "Lu-ca 9:6",
+            "Mác 6:12b-13"
+          ]
+        }
       }
     },
     {
@@ -4389,6 +4750,14 @@
               "label": "Mark 6:14-29",
               "url": "https://www.biblegateway.com/passage/?search=Mark+6:14-29&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Giăng Báp-tít bị giết như thế nào",
+          "passages": [
+            "Mác 6:14-29"
           ]
         }
       }
@@ -4576,6 +4945,19 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu cho hơn năm ngàn người ăn | Chúa Giê-xu đi trên mặt nước | Chúa Giê-xu chữa lành nhiều người bệnh",
+          "passages": [
+            "Mác 6:30-37",
+            "Giăng 6:8-15a",
+            "Mác 6:45",
+            "Ma-thi-ơ 14:23a",
+            "Ma-thi-ơ 14:23b-33",
+            "Mác 6:53-56"
+          ]
+        }
       }
     },
     {
@@ -4641,6 +5023,14 @@
               "label": "John 6:22-59",
               "url": "https://www.biblegateway.com/passage/?search=John+6:22-59&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu, Bánh của sự sống",
+          "passages": [
+            "Giăng 6:22b-59"
           ]
         }
       }
@@ -4781,6 +5171,17 @@
               "label": "Mark 7:17-23",
               "url": "https://www.biblegateway.com/passage/?search=Mark+7:17-23&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Nhiều người bỏ Chúa Giê-xu | Luật pháp của Thượng Đế và truyền thống loài người",
+          "passages": [
+            "Giăng 6:60-71",
+            "Mác 7:1-15",
+            "Ma-thi-ơ 15:12-14",
+            "Mác 7:17-23"
           ]
         }
       }
@@ -4995,6 +5396,20 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu giúp một người đàn bà Ca-na-an | Chúa Giê-xu chữa lành một người điếc | Chúa Giê-xu cho hơn bốn ngàn người ăn",
+          "passages": [
+            "Ma-thi-ơ 15:21-28",
+            "Mác 7:31",
+            "Ma-thi-ơ 15:30",
+            "Mác 7:32-36",
+            "Ma-thi-ơ 15:31a",
+            "Mác 7:37b",
+            "Ma-thi-ơ 15:32-39"
+          ]
+        }
       }
     },
     {
@@ -5142,6 +5557,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Có người nghi ngờ thẩm quyền của Chúa Giê-xu | Các môn đệ hiểu lầm Chúa Giê-xu | Chúa Giê-xu chữa lành một người mù ở Bết-sai-đa | Phi-e-rơ nói Chúa Giê-xu là Đấng Mê-si",
+          "passages": [
+            "Ma-thi-ơ 16:1-4",
+            "Ma-thi-ơ 16:5-12",
+            "Mác 8:22-26",
+            "Ma-thi-ơ 16:13-20"
+          ]
+        }
       }
     },
     {
@@ -5259,6 +5685,16 @@
               "label": "Matthew 17:5-13",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+17:5-13&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu nói Ngài phải chết | Chúa Giê-xu hiện ra với Môi-se và Ê-li",
+          "passages": [
+            "Ma-thi-ơ 16:21-28",
+            "Lu-ca 9:28-33",
+            "Ma-thi-ơ 17:5-13"
           ]
         }
       }
@@ -5380,6 +5816,16 @@
               "label": "Matthew 17:24-27",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+17:24-27&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu giải thoát một cậu bé khỏi tà linh | Chúa Giê-xu nói về sự chết và sống lại của Ngài | Chúa Giê-xu dạy về việc nộp thuế",
+          "passages": [
+            "Mác 9:14-29",
+            "Mác 9:30-32",
+            "Ma-thi-ơ 17:24-27"
           ]
         }
       }
@@ -5526,6 +5972,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Ai lớn nhất trong Nước Trời? | Cha chăm sóc tất cả dân Ngài | Sửa sai người làm điều quấy",
+          "passages": [
+            "Ma-thi-ơ 18:1-5",
+            "Mác 9:38-41",
+            "Ma-thi-ơ 18:6-14",
+            "Ma-thi-ơ 18:15-20"
+          ]
+        }
       }
     },
     {
@@ -5620,6 +6077,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chuyện về sự tha thứ | Chúa Giê-xu lên Giê-ru-sa-lem",
+          "passages": [
+            "Ma-thi-ơ 18:21-35",
+            "Giăng 7:2-13"
+          ]
+        }
       }
     },
     {
@@ -5711,6 +6177,15 @@
               "label": "John 7:25-44",
               "url": "https://www.biblegateway.com/passage/?search=John+7:25-44&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu dạy dỗ trong Lễ Lều Tạm | Dân chúng tự hỏi Chúa Giê-xu có phải là Đấng Mê-si không",
+          "passages": [
+            "Giăng 7:14-24",
+            "Giăng 7:25-44"
           ]
         }
       }
@@ -5815,6 +6290,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Một số lãnh đạo Do-thái không chịu tin | Người đàn bà phạm tội ngoại tình",
+          "passages": [
+            "Giăng 7:45-52",
+            "Giăng 7:53-8:11"
+          ]
+        }
       }
     },
     {
@@ -5906,6 +6390,15 @@
               "label": "John 8:31-41",
               "url": "https://www.biblegateway.com/passage/?search=John+8:31-41&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu là ánh sáng của thế gian | Con cái Áp-ra-ham",
+          "passages": [
+            "Giăng 8:12-30",
+            "Giăng 8:31-41"
           ]
         }
       }
@@ -6027,6 +6520,16 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Con cái của ma quỷ | Chúa Giê-xu nói về chính Ngài và Áp-ra-ham | Chúa Giê-xu chữa lành một người mù từ lúc mới sinh",
+          "passages": [
+            "Giăng 8:42-47",
+            "Giăng 8:48-59",
+            "Giăng 9:1-12"
+          ]
+        }
       }
     },
     {
@@ -6118,6 +6621,15 @@
               "label": "John 9:35-41",
               "url": "https://www.biblegateway.com/passage/?search=John+9:35-41&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Một số lãnh đạo tôn giáo chất vấn | Sự mù lòa thuộc linh",
+          "passages": [
+            "Giăng 9:13-34",
+            "Giăng 9:35-41"
           ]
         }
       }
@@ -6214,6 +6726,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Người chăn và bầy chiên | Trên đường theo Chúa Giê-xu",
+          "passages": [
+            "Giăng 10:1-21",
+            "Lu-ca 9:51-62"
+          ]
+        }
       }
     },
     {
@@ -6279,6 +6800,14 @@
               "label": "Luke 10:1-24",
               "url": "https://www.biblegateway.com/passage/?search=Luke+10:1-24&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu sai bảy mươi hai môn đệ đi",
+          "passages": [
+            "Lu-ca 10:1-24"
           ]
         }
       }
@@ -6402,6 +6931,16 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Điều răn quan trọng nhất, chuyện người Sa-ma-ri nhân lành | Ma-thê và Ma-ri | Chúa Giê-xu dạy về sự cầu nguyện",
+          "passages": [
+            "Lu-ca 10:25-37",
+            "Lu-ca 10:38-42",
+            "Lu-ca 11:1-13"
+          ]
+        }
       }
     },
     {
@@ -6467,6 +7006,14 @@
               "label": "Luke 11:37-54",
               "url": "https://www.biblegateway.com/passage/?search=Luke+11:37-54&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu phê phán các lãnh đạo tôn giáo",
+          "passages": [
+            "Lu-ca 11:37-54"
           ]
         }
       }
@@ -6560,6 +7107,15 @@
               "label": "Luke 12:13-21",
               "url": "https://www.biblegateway.com/passage/?search=Luke+12:13-21&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Lời cảnh báo và lời khích lệ | Chuyện người giàu dại dột",
+          "passages": [
+            "Lu-ca 12:1-12",
+            "Lu-ca 12:13-21"
           ]
         }
       }
@@ -6683,6 +7239,16 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Theo Chúa Giê-xu có thể gặp khó khăn | Hãy thay đổi tấm lòng | Chúa Giê-xu chữa lành một người đàn bà trong ngày Sa-bát",
+          "passages": [
+            "Lu-ca 12:49-53",
+            "Lu-ca 13:1-9",
+            "Lu-ca 13:10-17"
+          ]
+        }
       }
     },
     {
@@ -6777,6 +7343,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Các lãnh đạo Do-thái chống lại Chúa Giê-xu | Cửa hẹp",
+          "passages": [
+            "Giăng 10:22-42",
+            "Lu-ca 13:22-30"
+          ]
+        }
       }
     },
     {
@@ -6869,6 +7444,15 @@
               "label": "Luke 14:1-14",
               "url": "https://www.biblegateway.com/passage/?search=Luke+14:1-14&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu sẽ chết tại Giê-ru-sa-lem | Chúa Giê-xu tại nhà một người Pha-ri-xi",
+          "passages": [
+            "Lu-ca 13:31-35",
+            "Lu-ca 14:1-14"
           ]
         }
       }
@@ -6992,6 +7576,16 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chuyện những người được mời dự tiệc | Hãy quyết định xem bạn có thể theo Ta không | Chuyện con chiên lạc",
+          "passages": [
+            "Lu-ca 14:15-24",
+            "Lu-ca 14:25-35",
+            "Lu-ca 15:1-7"
+          ]
+        }
       }
     },
     {
@@ -7084,6 +7678,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chuyện đồng bạc bị mất | Chuyện người con hoang đàng",
+          "passages": [
+            "Lu-ca 15:8-10",
+            "Lu-ca 15:11-32"
+          ]
+        }
       }
     },
     {
@@ -7149,6 +7752,14 @@
               "label": "Luke 16:1-15",
               "url": "https://www.biblegateway.com/passage/?search=Luke+16:1-15&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chuyện người quản gia bất chính",
+          "passages": [
+            "Lu-ca 16:1-15"
           ]
         }
       }
@@ -7244,6 +7855,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Người giàu và người nghèo | Sự tha thứ, đức tin và bổn phận",
+          "passages": [
+            "Lu-ca 16:19-31",
+            "Lu-ca 17:1-10"
+          ]
+        }
       }
     },
     {
@@ -7335,6 +7955,15 @@
               "label": "John 11:17-37",
               "url": "https://www.biblegateway.com/passage/?search=John+11:17-37&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "La-xa-rơ qua đời | Chúa Giê-xu an ủi hai chị em của La-xa-rơ",
+          "passages": [
+            "Giăng 11:1-16",
+            "Giăng 11:17-37"
           ]
         }
       }
@@ -7458,6 +8087,16 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu khiến La-xa-rơ sống lại | Các lãnh đạo tôn giáo âm mưu giết Chúa Giê-xu | Chúa Giê-xu chữa lành mười người phung",
+          "passages": [
+            "Giăng 11:38-44",
+            "Giăng 11:45-54",
+            "Lu-ca 17:11-19"
+          ]
+        }
       }
     },
     {
@@ -7550,6 +8189,15 @@
               "label": "Luke 18:1-8",
               "url": "https://www.biblegateway.com/passage/?search=Luke+18:1-8&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Sự đến của Nước Trời | Chuyện bà góa không bỏ cuộc",
+          "passages": [
+            "Lu-ca 17:20-37",
+            "Lu-ca 18:1-8"
           ]
         }
       }
@@ -7719,6 +8367,18 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chuyện người Pha-ri-xi và người thu thuế | Chúa Giê-xu dạy về ly dị | Chúa Giê-xu tiếp đón trẻ em",
+          "passages": [
+            "Lu-ca 18:9-14",
+            "Ma-thi-ơ 19:3-8",
+            "Mác 10:10-12",
+            "Ma-thi-ơ 19:10-12",
+            "Mác 10:13-16"
+          ]
+        }
       }
     },
     {
@@ -7810,6 +8470,15 @@
               "label": "Matthew 20:1-16",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+20:1-16&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Một người giàu không chịu theo Chúa Giê-xu | Chuyện những người làm vườn nho",
+          "passages": [
+            "Mác 10:17-31",
+            "Ma-thi-ơ 20:1-16"
           ]
         }
       }
@@ -7932,6 +8601,16 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu lại nói về sự chết và sống lại của Ngài | Một người mẹ xin một ân huệ đặc biệt | Chúa Giê-xu chữa lành người mù tên Ba-ti-mê",
+          "passages": [
+            "Lu-ca 18:31-34",
+            "Ma-thi-ơ 20:20-28",
+            "Mác 10:46-52"
+          ]
+        }
       }
     },
     {
@@ -8023,6 +8702,15 @@
               "label": "Luke 19:11-28",
               "url": "https://www.biblegateway.com/passage/?search=Luke+19:11-28&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Xa-chê, người thu thuế | Chuyện mười người đầy tớ",
+          "passages": [
+            "Lu-ca 19:1-10",
+            "Lu-ca 19:11-28"
           ]
         }
       }
@@ -8283,6 +8971,21 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Các trưởng tế âm mưu giết cả La-xa-rơ | Chúa Giê-xu vào thành Giê-ru-sa-lem",
+          "passages": [
+            "Giăng 11:55-12:1, 9-11",
+            "Giăng 12:12-13a",
+            "Lu-ca 19:29-36a",
+            "Mác 11:8-10",
+            "Ma-thi-ơ 21:4-5",
+            "Giăng 12:16",
+            "Lu-ca 19:39-44",
+            "Mác 11:11"
+          ]
+        }
       }
     },
     {
@@ -8501,6 +9204,20 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu nói cây vả sẽ chết | Chúa Giê-xu đuổi những người buôn bán ra khỏi đền thờ | Cây vả khô, đức tin và sự cầu nguyện | Các lãnh đạo tôn giáo khước từ thẩm quyền của Chúa Giê-xu",
+          "passages": [
+            "Mác 11:12-14",
+            "Mác 11:15-17",
+            "Ma-thi-ơ 21:14-16",
+            "Lu-ca 19:47-48",
+            "Mác 11:19",
+            "Mác 11:20-25",
+            "Mác 11:27-33"
+          ]
+        }
       }
     },
     {
@@ -8591,6 +9308,15 @@
               "label": "Matthew 21:33-46",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+21:33-46&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chuyện hai người con trai | Chuyện những tá điền gian ác",
+          "passages": [
+            "Ma-thi-ơ 21:28-32",
+            "Ma-thi-ơ 21:33-46"
           ]
         }
       }
@@ -8685,6 +9411,15 @@
               "label": "Matthew 22:15-22",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+22:15-22&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chuyện tiệc cưới | Có nên nộp thuế cho Xê-xa không?",
+          "passages": [
+            "Ma-thi-ơ 22:1-14",
+            "Ma-thi-ơ 22:15-22"
           ]
         }
       }
@@ -8877,6 +9612,19 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Hôn nhân và bảy anh em | Điều răn quan trọng nhất | Đấng Mê-si là con hay là Chúa của Đa-vít?",
+          "passages": [
+            "Ma-thi-ơ 22:23-33",
+            "Ma-thi-ơ 22:34-36",
+            "Mác 12:29-31",
+            "Ma-thi-ơ 22:40",
+            "Mác 12:32-34a",
+            "Ma-thi-ơ 22:41-46"
+          ]
+        }
       }
     },
     {
@@ -8942,6 +9690,14 @@
               "label": "Matthew 23:1-39",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+23:1-39&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu phê phán các lãnh đạo tôn giáo",
+          "passages": [
+            "Ma-thi-ơ 23:1-39"
           ]
         }
       }
@@ -9085,6 +9841,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Bà góa nghèo dâng tất cả những gì mình có | Chúa Giê-xu cảnh báo về tương lai",
+          "passages": [
+            "Mác 12:41-44",
+            "Mác 13:1-13",
+            "Ma-thi-ơ 24:14",
+            "Mác 13:14-31"
+          ]
+        }
       }
     },
     {
@@ -9222,6 +9989,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chỉ Thượng Đế biết thời điểm",
+          "passages": [
+            "Ma-thi-ơ 24:36-41",
+            "Lu-ca 21:34-36",
+            "Mác 13:34-37",
+            "Ma-thi-ơ 24:42b-51"
+          ]
+        }
       }
     },
     {
@@ -9314,6 +10092,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chuyện mười cô gái | Chuyện ba người đầy tớ",
+          "passages": [
+            "Ma-thi-ơ 25:1-13",
+            "Ma-thi-ơ 25:14-30"
+          ]
+        }
       }
     },
     {
@@ -9381,6 +10168,14 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Con Người sẽ xét xử mọi người",
+          "passages": [
+            "Ma-thi-ơ 25:31-46"
+          ]
+        }
       }
     },
     {
@@ -9446,6 +10241,14 @@
               "label": "John 12:20-50",
               "url": "https://www.biblegateway.com/passage/?search=John+12:20-50&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu lại nói về sự chết của Ngài",
+          "passages": [
+            "Giăng 12:20-50"
           ]
         }
       }
@@ -9640,6 +10443,19 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Ma-ri xức dầu cho Chúa Giê-xu tại Bê-tha-ni | Giu-đa đồng ý giúp kẻ thù của Chúa Giê-xu | Chuẩn bị bữa ăn Lễ Vượt Qua",
+          "passages": [
+            "Mác 14:1-3a",
+            "Giăng 12:2-8",
+            "Mác 14:8-9",
+            "Lu-ca 22:3-4",
+            "Ma-thi-ơ 26:15-16",
+            "Lu-ca 22:7-14"
+          ]
+        }
       }
     },
     {
@@ -9732,6 +10548,15 @@
               "label": "John 13:2-17",
               "url": "https://www.biblegateway.com/passage/?search=John+13:2-17&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu và các môn đệ trong bữa ăn | Chúa Giê-xu rửa chân cho các môn đệ",
+          "passages": [
+            "Lu-ca 22:15-18",
+            "Giăng 13:2b-17"
           ]
         }
       }
@@ -9966,6 +10791,21 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu cho biết ai sẽ phản Ngài | Giao ước mới với Thượng Đế",
+          "passages": [
+            "Giăng 13:18-26a",
+            "Ma-thi-ơ 26:24-25",
+            "Giăng 13:26b-30",
+            "Ma-thi-ơ 26:26",
+            "Lu-ca 22:19b-20a",
+            "Ma-thi-ơ 26:27b",
+            "Lu-ca 22:20b",
+            "Ma-thi-ơ 26:28b-29"
+          ]
+        }
       }
     },
     {
@@ -10181,6 +11021,20 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Ai là người quan trọng nhất? | Chúa Giê-xu ban một điều răn mới | Chúa Giê-xu nói Phi-e-rơ sẽ chối Ngài | Chúa Giê-xu an ủi các môn đệ",
+          "passages": [
+            "Lu-ca 22:24-30",
+            "Giăng 13:31-35",
+            "Ma-thi-ơ 26:31-32",
+            "Lu-ca 22:31-32",
+            "Mác 14:29-31",
+            "Lu-ca 22:35-38",
+            "Giăng 14:1-4"
+          ]
+        }
       }
     },
     {
@@ -10273,6 +11127,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu là con đường duy nhất đến với Cha | Chúa Giê-xu hứa ban Thánh Linh",
+          "passages": [
+            "Giăng 14:5-14",
+            "Giăng 14:15-31"
+          ]
+        }
       }
     },
     {
@@ -10338,6 +11201,14 @@
               "label": "John 15:1-17",
               "url": "https://www.biblegateway.com/passage/?search=John+15:1-17&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu giống như cây nho",
+          "passages": [
+            "Giăng 15:1-17"
           ]
         }
       }
@@ -10433,6 +11304,15 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu cảnh báo các môn đệ | Công việc của Thánh Linh",
+          "passages": [
+            "Giăng 15:18-16:4b",
+            "Giăng 16:4c-15"
+          ]
+        }
       }
     },
     {
@@ -10498,6 +11378,14 @@
               "label": "John 16:16-33",
               "url": "https://www.biblegateway.com/passage/?search=John+16:16-33&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Buồn rầu sẽ biến thành vui mừng",
+          "passages": [
+            "Giăng 16:16-33"
           ]
         }
       }
@@ -10590,6 +11478,15 @@
               "label": "John 17:6-19",
               "url": "https://www.biblegateway.com/passage/?search=John+17:6-19&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu thưa chuyện với Cha | Chúa Giê-xu cầu nguyện cho các môn đệ",
+          "passages": [
+            "Giăng 17:1-5",
+            "Giăng 17:6-19"
           ]
         }
       }
@@ -10753,6 +11650,18 @@
               "label": "Matthew 26:40-46",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+26:40-46&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu cầu nguyện cho tất cả những ai sẽ tin Ngài | Chúa Giê-xu cầu nguyện một mình",
+          "passages": [
+            "Giăng 17:20-26",
+            "Ma-thi-ơ 26:30",
+            "Ma-thi-ơ 26:36b-39",
+            "Lu-ca 22:43-44",
+            "Ma-thi-ơ 26:40-46"
           ]
         }
       }
@@ -11075,6 +11984,25 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu bị bắt",
+          "passages": [
+            "Giăng 18:2-3",
+            "Ma-thi-ơ 26:48-49",
+            "Lu-ca 22:48",
+            "Giăng 18:4-9",
+            "Mác 14:46",
+            "Giăng 18:10",
+            "Lu-ca 22:51",
+            "Giăng 18:11a",
+            "Ma-thi-ơ 26:52b",
+            "Giăng 18:11b",
+            "Ma-thi-ơ 26:53-56",
+            "Mác 14:51-52"
+          ]
+        }
       }
     },
     {
@@ -11357,6 +12285,23 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu bị giải đến An-ne | Phi-e-rơ chối Chúa lần thứ nhất | An-ne tra hỏi Chúa Giê-xu | Phi-e-rơ chối Chúa lần thứ hai và thứ ba",
+          "passages": [
+            "Giăng 18:12-14",
+            "Giăng 18:15-16",
+            "Giăng 18:18",
+            "Mác 14:66-68",
+            "Giăng 18:19-24",
+            "Giăng 18:25a",
+            "Mác 14:69-70",
+            "Giăng 18:26",
+            "Mác 14:71",
+            "Lu-ca 22:60b-62"
+          ]
+        }
       }
     },
     {
@@ -11472,6 +12417,16 @@
               "label": "Matthew 27:1-10",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+27:1-10&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu trước Hội đồng Tối cao | Giu-đa tự tử",
+          "passages": [
+            "Ma-thi-ơ 26:57",
+            "Mác 14:55-65",
+            "Ma-thi-ơ 27:1-10"
           ]
         }
       }
@@ -11708,6 +12663,21 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu bị giải đến Phi-lát | Phi-lát giao Chúa Giê-xu cho vua Hê-rốt",
+          "passages": [
+            "Mác 15:1",
+            "Giăng 18:28-32",
+            "Lu-ca 23:2",
+            "Giăng 18:33-38a",
+            "Ma-thi-ơ 27:13-14",
+            "Giăng 18:38b",
+            "Lu-ca 23:5-7",
+            "Lu-ca 23:8-12"
+          ]
+        }
       }
     },
     {
@@ -11894,6 +12864,19 @@
               "label": "Matthew 27:27-31",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+27:27-31&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Phi-lát tìm cách tha Chúa Giê-xu | Chúa Giê-xu bị giao để đóng đinh | Lính của Phi-lát chế giễu Chúa Giê-xu",
+          "passages": [
+            "Lu-ca 23:13-15",
+            "Ma-thi-ơ 27:15-21",
+            "Giăng 19:1-15",
+            "Ma-thi-ơ 27:24-25",
+            "Lu-ca 23:24-25",
+            "Ma-thi-ơ 27:27-31"
           ]
         }
       }
@@ -12116,6 +13099,21 @@
               "label": "John 19:25-27",
               "url": "https://www.biblegateway.com/passage/?search=John+19:25-27&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu bị đóng đinh trên cây thập tự",
+          "passages": [
+            "Lu-ca 23:26-32",
+            "Ma-thi-ơ 27:33-34",
+            "Lu-ca 23:33b-34a",
+            "Giăng 19:23-24",
+            "Giăng 19:19-22",
+            "Ma-thi-ơ 27:39-43",
+            "Lu-ca 23:39-43",
+            "Giăng 19:25-27"
           ]
         }
       }
@@ -12376,6 +13374,22 @@
               "label": "Luke 23:56",
               "url": "https://www.biblegateway.com/passage/?search=Luke+23:56&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu chết | Chúa Giê-xu được chôn cất",
+          "passages": [
+            "Ma-thi-ơ 27:45-47",
+            "Giăng 19:28-30a",
+            "Lu-ca 23:46",
+            "Ma-thi-ơ 27:51-54",
+            "Giăng 19:31-37",
+            "Giăng 19:38-40",
+            "Ma-thi-ơ 27:60",
+            "Mác 15:47",
+            "Lu-ca 23:56"
           ]
         }
       }
@@ -12695,6 +13709,24 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Mộ Chúa Giê-xu được canh giữ | Chúa Giê-xu sống lại",
+          "passages": [
+            "Ma-thi-ơ 27:62-66",
+            "Mác 16:1a",
+            "Lu-ca 24:10b, d",
+            "Mác 16:1b-2",
+            "Ma-thi-ơ 28:2-6",
+            "Lu-ca 24:2-7",
+            "Mác 16:7",
+            "Lu-ca 24:8",
+            "Ma-thi-ơ 28:8",
+            "Lu-ca 24:10b-11",
+            "Giăng 20:3-10"
+          ]
+        }
       }
     },
     {
@@ -12814,6 +13846,16 @@
               "label": "Matthew 28:11-15",
               "url": "https://www.biblegateway.com/passage/?search=Matthew+28:11-15&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu hiện ra với Ma-ri Ma-đơ-len | Chúa Giê-xu hiện ra với các người đàn bà | Lính canh báo cáo với các lãnh đạo tôn giáo",
+          "passages": [
+            "Giăng 20:11-18",
+            "Ma-thi-ơ 28:9-10",
+            "Ma-thi-ơ 28:11-15"
           ]
         }
       }
@@ -12956,6 +13998,17 @@
             }
           ]
         }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Trên đường đến Em-mau | Chúa Giê-xu hiện ra với các môn đệ",
+          "passages": [
+            "Lu-ca 24:13-35",
+            "Giăng 20:19",
+            "Lu-ca 24:36-43",
+            "Giăng 20:21-23"
+          ]
+        }
       }
     },
     {
@@ -13048,6 +14101,15 @@
               "label": "John 21:1-14",
               "url": "https://www.biblegateway.com/passage/?search=John+21:1-14&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu hiện ra với Thô-ma | Chúa Giê-xu hiện ra với bảy môn đệ",
+          "passages": [
+            "Giăng 20:24-29",
+            "Giăng 21:1-14"
           ]
         }
       }
@@ -13215,6 +14277,18 @@
               "label": "Acts 1:4-8",
               "url": "https://www.biblegateway.com/passage/?search=Acts+1:4-8&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu nói chuyện với Phi-e-rơ | Chúa Giê-xu giao sứ mạng cho các môn đệ | Lời dặn dò cuối cùng của Chúa Giê-xu",
+          "passages": [
+            "Giăng 21:15-23",
+            "Ma-thi-ơ 28:16-20",
+            "Công-vụ 1:3-4a",
+            "Lu-ca 24:44-49",
+            "Công-vụ 1:4b-8"
           ]
         }
       }
@@ -13405,6 +14479,19 @@
               "label": "John 20:31",
               "url": "https://www.biblegateway.com/passage/?search=John+20:31&version=BPT"
             }
+          ]
+        }
+      },
+      "i18n": {
+        "vi": {
+          "title": "Chúa Giê-xu được cất lên trời | Thánh Linh đến | Lời kết",
+          "passages": [
+            "Lu-ca 24:50-51",
+            "Công-vụ 1:9b-11",
+            "Lu-ca 24:52-53",
+            "Công-vụ 2:1-11",
+            "Giăng 21:25",
+            "Giăng 20:31"
           ]
         }
       }

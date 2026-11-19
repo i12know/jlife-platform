@@ -158,4 +158,69 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		$this->assertStringNotContainsString( '<script>', $html );
 		$this->assertStringContainsString( '&lt;script&gt;', $html );
 	}
+	/**
+	 * A Vietnamese reader gets the plan's Vietnamese title and Protestant book
+	 * names; English and other languages keep the English day (#119).
+	 */
+	public function test_reading_day_is_localized_for_vietnamese() {
+		$day = array(
+			'title'    => 'Jesus and Nicodemus | Jesus and John the Baptizer',
+			'titles'   => array( 'Jesus and Nicodemus', 'Jesus and John the Baptizer' ),
+			'passages' => array(
+				array(
+					'display' => 'John 3:1-21',
+					'refs'    => array( array( 'book' => 'John' ) ),
+				),
+				array(
+					'display' => 'John 3:22-4:3',
+					'refs'    => array( array( 'book' => 'John' ) ),
+				),
+			),
+			'i18n'     => array(
+				'vi' => array(
+					'title'    => 'Chúa Giê-xu và Ni-cô-đem | Chúa Giê-xu và Giăng Báp-tít',
+					'passages' => array( 'Giăng 3:1-21', 'Giăng 3:22-4:3' ),
+				),
+			),
+		);
+
+		$vi = jlife_studies_localize_day( $day, 'vi' );
+		$this->assertSame( 'Chúa Giê-xu và Ni-cô-đem | Chúa Giê-xu và Giăng Báp-tít', $vi['title'] );
+		$this->assertSame( array( 'Chúa Giê-xu và Ni-cô-đem', 'Chúa Giê-xu và Giăng Báp-tít' ), $vi['titles'] );
+		$this->assertSame( array( 'Giăng 3:1-21', 'Giăng 3:22-4:3' ), array_column( $vi['passages'], 'display' ) );
+		$this->assertSame( 'John', $vi['passages'][0]['refs'][0]['book'], 'parsed references are untouched' );
+
+		$this->assertSame( $day, jlife_studies_localize_day( $day, 'en_US' ) );
+		$this->assertSame( $day, jlife_studies_localize_day( $day, 'fr_FR' ), 'no entry: English' );
+
+		$short = $day;
+
+		$short['i18n']['vi']['passages'] = array( 'Giăng 3:1-21' );
+		$this->assertSame( array( 'John 3:1-21', 'John 3:22-4:3' ), array_column( jlife_studies_localize_day( $short, 'vi' )['passages'], 'display' ), 'a mismatched list is ignored' );
+		$this->assertNull( jlife_studies_localize_day( null, 'vi' ) );
+	}
+
+	/**
+	 * The day from jlife_studies_get_reading_day() follows the current locale.
+	 */
+	public function test_get_reading_day_follows_the_locale() {
+		$doc = $this->fixture( 'primary' );
+		foreach ( $doc['days'] as &$d ) {
+			$d['i18n'] = array(
+				'vi' => array(
+					'title'    => 'Tiêu đề ' . $d['day_id'],
+					'passages' => array_fill( 0, count( $d['passages'] ), 'Giăng 1:1' ),
+				),
+			);
+		}
+		unset( $d );
+		jlife_studies_import_reading_plan( $doc );
+		$day_id = $doc['days'][0]['day_id'];
+
+		$this->assertSame( $doc['days'][0]['title'], jlife_studies_get_reading_day( $doc['plan_id'], $day_id )['day']['title'] );
+		$vi = static fn() => 'vi';
+		add_filter( 'determine_locale', $vi );
+		$this->assertSame( 'Tiêu đề ' . $day_id, jlife_studies_get_reading_day( $doc['plan_id'], $day_id )['day']['title'] );
+		remove_filter( 'determine_locale', $vi );
+	}
 }

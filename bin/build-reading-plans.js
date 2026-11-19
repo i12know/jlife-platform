@@ -18,6 +18,7 @@ const { parseCsvRecords } = require('./content-lib/csv');
 const { parseReferenceList } = require('./content-lib/scripture');
 const { buildDayLinks } = require('./content-lib/bible-links');
 const { buildHarmonySections } = require('./content-lib/harmony-sections');
+const { localizeDisplay } = require('./content-lib/book-names');
 
 const ROOT = path.join(__dirname, '..');
 const PLAN_DIR = path.join(ROOT, 'content', 'reading-plans');
@@ -52,6 +53,12 @@ function buildPlan(plan, linkConfig, toEvent) {
   const { records } = parseCsvRecords(fs.readFileSync(csvFile, 'utf8'));
   const col = plan.columns;
   const errors = [];
+  // Translated day titles (#119): plans.json "i18n": { "<lang>": "i18n/<file>.json" }.
+  const translations = Object.entries(plan.i18n || {}).map(([lang, rel]) => {
+    const t = readJson(path.join(PLAN_DIR, rel));
+    if (t.plan_id !== plan.plan_id || t.language !== lang) errors.push(`${rel}: plan_id/language do not match ${plan.plan_id}/${lang}`);
+    return { lang, rel, titles: t.titles || {} };
+  });
 
   const days = records.map((r) => {
     const day = Number(r[col.day]);
@@ -78,8 +85,22 @@ function buildPlan(plan, linkConfig, toEvent) {
     const harmonySections = plan.harmony_sections_url
       ? { harmony_sections: buildHarmonySections(robertson, toEvent, plan.harmony_sections_url, plan.harmony_sections_overrides) }
       : {};
+    const dayId = `d${String(day).padStart(3, '0')}`;
+    const i18n = {};
+    for (const t of translations) {
+      const title = String(t.titles[dayId] || '').trim();
+      if (!title) {
+        errors.push(`${t.rel}: no ${t.lang} title for ${dayId}`);
+        continue;
+      }
+      try {
+        i18n[t.lang] = { title, passages: parsed.passages.map((p) => localizeDisplay(p.display, p.refs[0].book, t.lang)) };
+      } catch (e) {
+        errors.push(`${where}: ${e.message}`);
+      }
+    }
     return {
-      day_id: `d${String(day).padStart(3, '0')}`,
+      day_id: dayId,
       day,
       date: String(r[col.date]).trim().slice(0, 10),
       title: String(r[col.titles]).trim(),
@@ -92,6 +113,7 @@ function buildPlan(plan, linkConfig, toEvent) {
       word_count: Number(String(r[col.words]).trim()),
       notes: notes === '' ? null : notes,
       links,
+      ...(Object.keys(i18n).length ? { i18n } : {}),
     };
   });
 
