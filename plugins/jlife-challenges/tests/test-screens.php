@@ -679,7 +679,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 			$this->assertStringNotContainsString( $gone, $body );
 		}
 		$this->assertStringContainsString( 'Not started yet.', $body );
-		$this->assertStringContainsString( '0 of 104', $body );
+		$this->assertStringNotContainsString( '0 of 104', $body, 'the running score is on My Marathon only (#137)' );
 	}
 
 	/**
@@ -757,7 +757,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'Already shared with', $form );
 		$this->assertStringNotContainsString( 'Share with my group or a chat', $body, 'no separate Share button' );
 		$this->assertStringContainsString( 'Done — 1 point earned.', $body );
-		$this->assertStringContainsString( '1 of 104', $body );
+		$this->assertStringNotContainsString( '1 of 104', $body, 'the running score is on My Marathon only (#137)' );
 
 		jlife_challenges_share( $this->u['a'], jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' )['id'], $this->g['g1'] );
 		$this->assertStringContainsString( 'Already shared with Group One — tick and save to update', jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
@@ -808,6 +808,24 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 
 		$not_done = jlife_challenges_today_body( $this->view_with_reading( $this->u['b'] ), array( 'flags' => array( 'done' => true ) ) );
 		$this->assertStringNotContainsString( 'jl-ok', $not_done, 'a hand-typed ?done=1 on an unsubmitted day confirms nothing' );
+	}
+
+	/**
+	 * The running score ("N of 104") is shown on My Marathon, not on Today (#137).
+	 */
+	public function test_today_has_no_running_score_and_my_marathon_keeps_it() {
+		jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $this->soap() );
+		$body = jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) );
+		$this->assertStringContainsString( 'class="jl-status"', $body, 'the daily status message stays' );
+		$this->assertStringNotContainsString( 'jl-score', $body );
+		$this->assertStringNotContainsString( '1 of 104', $body );
+
+		// My Marathon renders and exits, so check its source still prints the score.
+		$src = (string) file_get_contents( dirname( __DIR__ ) . '/includes/screens.php' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading the plugin's own source.
+		$fn  = substr( $src, (int) strpos( $src, 'function jlife_challenges_screen_marathon' ) );
+		$fn  = substr( $fn, 0, (int) strpos( $fn, "\n}\n" ) );
+		$this->assertStringContainsString( '<p class="jl-score">', $fn );
+		$this->assertStringContainsString( "__( '%1\$d of %2\$d', 'jlife-challenges' ), \$view['points'], \$view['day_count']", $fn );
 	}
 
 	/**

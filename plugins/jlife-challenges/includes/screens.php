@@ -782,9 +782,8 @@ function jlife_challenges_today_body( $view, $state = array() ) {
 		. jlife_challenges_render_reading( $view );
 	// After a save, the message above already says where things stand.
 	if ( '' !== $state['error'] || ! ( $state['flags']['done'] || $state['flags']['incomplete'] ) ) {
-		$body .= '<section class="jl-status"><p>' . esc_html( jlife_challenges_status_text( $view ) ) . '</p>'
-			/* translators: 1: points, 2: number of days. */
-			. '<p class="jl-score">' . esc_html( sprintf( __( '%1$d of %2$d', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p></section>';
+		// The running score lives on My Marathon only (#137).
+		$body .= '<section class="jl-status"><p>' . esc_html( jlife_challenges_status_text( $view ) ) . '</p></section>';
 	}
 	return $body . jlife_challenges_render_soap_panel( $view, $state );
 }
