@@ -60,7 +60,7 @@ const JLIFE_AUTH_SOFT_JOIN_ERRORS = array(
 /**
  * Validate join details and send a join code.
  *
- * @param array  $input { email, first_name, invite_code, group_name, age_band (adult|minor), locale, mode (invite|solo|start) }.
+ * @param array  $input { email, first_name, invite_code, group_name, age_band (adult|minor), locale, mode (invite|solo|start), reminders (truthy = the unticked-by-default box was ticked) }.
  * @param string $ip    Requester IP.
  * @return true|WP_Error
  */
@@ -113,6 +113,7 @@ function jlife_auth_start_join( $input, $ip = '' ) {
 			'campaign_id' => $campaign_id,
 			'age_band'    => $band,
 			'locale'      => $loc,
+			'reminders'   => ! empty( $input['reminders'] ) ? 1 : 0,
 		),
 		$ip
 	);
@@ -243,6 +244,13 @@ function jlife_auth_do_join( $user_id, $payload ) {
 		}
 		$out['notice']      = $joined->get_error_message();
 		$out['notice_code'] = $joined->get_error_code();
+	}
+	// The unticked "email me each morning's reading" box: only a ticked box opts in, in the language chosen on the form.
+	if ( ! empty( $payload['reminders'] ) && function_exists( 'jlife_challenges_reminder_campaign_id' ) ) {
+		$campaign_id = jlife_challenges_reminder_campaign_id( $user_id );
+		if ( $campaign_id > 0 ) {
+			jlife_challenges_set_reminder( $user_id, $user_id, $campaign_id, true, (string) ( $payload['locale'] ?? '' ) );
+		}
 	}
 	return $out;
 }

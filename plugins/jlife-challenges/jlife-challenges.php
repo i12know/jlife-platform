@@ -28,6 +28,7 @@ require_once __DIR__ . '/includes/group-admin.php';
 require_once __DIR__ . '/includes/soap.php';
 require_once __DIR__ . '/includes/scores.php';
 require_once __DIR__ . '/includes/shares.php';
+require_once __DIR__ . '/includes/reminders.php';
 require_once __DIR__ . '/includes/lifecycle.php';
 require_once __DIR__ . '/includes/views.php';
 require_once __DIR__ . '/includes/screens.php';

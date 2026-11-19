@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const JLIFE_CHALLENGES_DB_VERSION = '4';
+const JLIFE_CHALLENGES_DB_VERSION = '5';
 
 /**
  * Table name helper.
@@ -180,6 +180,24 @@ function jlife_challenges_install_tables() {
 		) {$c};"
 	);
 
+	// Daily reading reminder choices (#63 Phase B). One row per person per
+	// campaign, written only by the person (or an organizer for them). No email
+	// address here: sending looks it up from the account at send time.
+	dbDelta(
+		'CREATE TABLE ' . $t( 'reminder_prefs' ) . " (
+			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			campaign_id BIGINT(20) UNSIGNED NOT NULL,
+			user_id BIGINT(20) UNSIGNED NOT NULL,
+			opted_in DATETIME NULL,
+			opted_out DATETIME NULL,
+			consent_version VARCHAR(20) NOT NULL DEFAULT '',
+			locale VARCHAR(10) NOT NULL DEFAULT 'en_US',
+			updated DATETIME NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY campaign_user (campaign_id, user_id)
+		) {$c};"
+	);
+
 	dbDelta(
 		'CREATE TABLE ' . $t( 'audit_log' ) . " (
 			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -223,5 +241,7 @@ function jlife_challenges_maybe_upgrade() {
 	}
 	update_option( 'jlife_challenges_upgrading', time(), false );
 	jlife_challenges_install_tables();
+	// A deploy may add a route (v5: /unsubscribe/); regenerate the rewrite rules on the next request.
+	delete_option( 'rewrite_rules' );
 	delete_option( 'jlife_challenges_upgrading' );
 }

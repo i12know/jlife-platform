@@ -18,7 +18,7 @@ add_action( 'init', 'jlife_challenges_add_rewrites' );
  * Routes.
  */
 function jlife_challenges_add_rewrites() {
-	add_rewrite_rule( '^(today|soap|marathon|share|group|signout)/?$', 'index.php?jlife_screen=$matches[1]', 'top' );
+	add_rewrite_rule( '^(today|soap|marathon|share|group|signout|unsubscribe)/?$', 'index.php?jlife_screen=$matches[1]', 'top' );
 }
 
 add_filter( 'query_vars', 'jlife_challenges_query_vars' );
@@ -793,15 +793,16 @@ function jlife_challenges_soap_body( $view, $state = array() ) {
  * @param string $title   Page title.
  * @param array  $view    Day view (active).
  * @param int    $user_id Participant.
+ * @param string $above   Escaped HTML shown above the page body (Today's reminder prompt).
  */
-function jlife_challenges_run_soap_screen( $screen, $title, $view, $user_id ) {
+function jlife_challenges_run_soap_screen( $screen, $title, $view, $user_id, $above = '' ) {
 	$state = jlife_challenges_process_soap_request( $user_id, $view, $screen );
 	if ( '' !== $state['redirect'] ) {
 		wp_safe_redirect( $state['redirect'] );
 		exit;
 	}
 	$state['flags'] = jlife_challenges_return_flags();
-	$body           = 'today' === $screen ? jlife_challenges_today_body( $view, $state ) : jlife_challenges_soap_body( $view, $state );
+	$body           = $above . ( 'today' === $screen ? jlife_challenges_today_body( $view, $state ) : jlife_challenges_soap_body( $view, $state ) );
 	jlife_challenges_send_page( $title, $body, 'today', 'soap' );
 }
 
@@ -810,12 +811,19 @@ function jlife_challenges_run_soap_screen( $screen, $title, $view, $user_id ) {
  */
 function jlife_challenges_screen_today() {
 	$user_id = jlife_challenges_require_participant();
-	$view    = jlife_challenges_day_view( $user_id, jlife_challenges_posted_day_key() );
-	$none    = jlife_challenges_render_no_day( $view );
-	if ( null !== $none ) {
-		jlife_challenges_send_page( __( 'Today', 'jlife-challenges' ), $none, 'today' );
+	// The one-time "email me each morning's reading?" prompt: either answer is saved, then back to Today.
+	$campaign_id = jlife_challenges_reminder_campaign_id( $user_id );
+	if ( '' !== jlife_challenges_handle_reminder_post( $user_id, $campaign_id ) ) {
+		wp_safe_redirect( jlife_challenges_screen_url( 'today' ) );
+		exit;
 	}
-	jlife_challenges_run_soap_screen( 'today', __( 'Today', 'jlife-challenges' ), $view, $user_id );
+	$view   = jlife_challenges_day_view( $user_id, jlife_challenges_posted_day_key() );
+	$prompt = 'not_enrolled' === $view['state'] ? '' : jlife_challenges_render_reminder_prompt( $user_id, $campaign_id );
+	$none   = jlife_challenges_render_no_day( $view );
+	if ( null !== $none ) {
+		jlife_challenges_send_page( __( 'Today', 'jlife-challenges' ), $prompt . $none, 'today' );
+	}
+	jlife_challenges_run_soap_screen( 'today', __( 'Today', 'jlife-challenges' ), $view, $user_id, $prompt );
 }
 
 /**
@@ -839,6 +847,11 @@ function jlife_challenges_screen_soap() {
 function jlife_challenges_screen_marathon() {
 	$user_id = jlife_challenges_require_participant();
 	$view    = jlife_challenges_marathon_view( $user_id );
+	$cid     = jlife_challenges_reminder_campaign_id( $user_id );
+	if ( $view && '' !== jlife_challenges_handle_reminder_post( $user_id, $cid ) ) {
+		wp_safe_redirect( add_query_arg( 'reminders', 'saved', jlife_challenges_screen_url( 'marathon' ) ) );
+		exit;
+	}
 	if ( ! $view ) {
 		jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), (string) jlife_challenges_render_no_day( array( 'state' => 'not_enrolled' ) ), 'marathon' );
 	}
@@ -868,7 +881,8 @@ function jlife_challenges_screen_marathon() {
 		/* translators: 1: points, 2: number of days. */
 		. '<p class="jl-score">' . esc_html( sprintf( __( '%1$d of %2$d', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>'
 		. '<p>' . esc_html__( 'Every day is a fresh start. Tap any day to read it or write your SOAP.', 'jlife-challenges' ) . '</p>'
-		. '<div class="jl-grid">' . $grid . '</div><ul class="jl-legend">' . $legend . '</ul>';
+		. '<div class="jl-grid">' . $grid . '</div><ul class="jl-legend">' . $legend . '</ul>'
+		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flag after a redirect.
 	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon' );
 }
 
@@ -891,6 +905,8 @@ function jlife_challenges_route() {
 		jlife_challenges_screen_group();
 	} elseif ( 'signout' === $screen ) {
 		jlife_challenges_screen_signout();
+	} elseif ( 'unsubscribe' === $screen ) {
+		jlife_challenges_screen_unsubscribe(); // Public: no sign-in; the signed link is the authority.
 	} elseif ( ( is_front_page() || is_home() ) && ! current_user_can( 'edit_posts' ) && is_user_logged_in() ) {
 		wp_safe_redirect( home_url( '/today/' ) );
 		exit;
