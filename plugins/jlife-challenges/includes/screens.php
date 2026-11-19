@@ -54,10 +54,10 @@ function jlife_challenges_format_date( $ymd ) {
 /**
  * Send a complete participant page and stop.
  *
- * @param string $title  Page title.
- * @param string $body   Escaped HTML.
- * @param string $active Active nav item.
- * @param string $script Optional script file ('soap' or 'share').
+ * @param string          $title  Page title.
+ * @param string          $body   Escaped HTML.
+ * @param string          $active Active nav item.
+ * @param string|string[] $script Optional script file(s): 'soap', 'share', 'reminder'.
  */
 function jlife_challenges_send_page( $title, $body, $active = '', $script = '' ) {
 	nocache_headers();
@@ -70,10 +70,10 @@ function jlife_challenges_send_page( $title, $body, $active = '', $script = '' )
 /**
  * A complete participant page: navigation, the body and the page's script.
  *
- * @param string $title  Page title.
- * @param string $body   Escaped HTML.
- * @param string $active Active nav item.
- * @param string $script Optional script file ('soap' or 'share').
+ * @param string          $title  Page title.
+ * @param string          $body   Escaped HTML.
+ * @param string          $active Active nav item.
+ * @param string|string[] $script Optional script file(s): 'soap', 'share', 'reminder'.
  * @return string
  */
 function jlife_challenges_page_html( $title, $body, $active = '', $script = '' ) {
@@ -103,14 +103,26 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '' )
 	);
 	$nav .= '<a class="jl-signout" href="' . esc_url( $ask ) . '">' . esc_html__( 'Sign out', 'jlife-challenges' ) . '</a>';
 
+	$scripts  = '';
+	$versions = array(
+		'soap'     => 3,
+		'share'    => 3,
+		'reminder' => 1,
+	);
+	foreach ( (array) $script as $file ) {
+		if ( isset( $versions[ $file ] ) ) {
+			$scripts .= '<script src="' . esc_url( $base . $file . '.js?v=' . $versions[ $file ] ) . '"></script>'; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
+		}
+	}
+
 	$dialog = 'signout' === $active ? '' : '<dialog class="jl-dialog" id="jl-signout-dialog" aria-labelledby="jl-signout-title"><div class="jl-dialog-body">' . jlife_challenges_signout_prompt( $here, true ) . '</div></dialog>';
 	$html   = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=10' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=11' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>' . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
-		. ( in_array( $script, array( 'soap', 'share' ), true ) ? '<script src="' . esc_url( $base . $script . '.js?v=3' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
+		. $scripts
 		. '</body></html>';
 	return $html;
 }
@@ -811,17 +823,35 @@ function jlife_challenges_soap_body( $view, $state = array() ) {
  * @param string $title   Page title.
  * @param array  $view    Day view (active).
  * @param int    $user_id Participant.
- * @param string $above   Escaped HTML shown above the page body (Today's reminder prompt).
  */
-function jlife_challenges_run_soap_screen( $screen, $title, $view, $user_id, $above = '' ) {
+function jlife_challenges_run_soap_screen( $screen, $title, $view, $user_id ) {
 	$state = jlife_challenges_process_soap_request( $user_id, $view, $screen );
 	if ( '' !== $state['redirect'] ) {
 		wp_safe_redirect( $state['redirect'] );
 		exit;
 	}
 	$state['flags'] = jlife_challenges_return_flags();
-	$body           = $above . ( 'today' === $screen ? jlife_challenges_today_body( $view, $state ) : jlife_challenges_soap_body( $view, $state ) );
-	jlife_challenges_send_page( $title, $body, 'today', 'soap' );
+	if ( 'today' !== $screen ) {
+		jlife_challenges_send_page( $title, jlife_challenges_soap_body( $view, $state ), 'today', 'soap' );
+	}
+	$saved = isset( $_GET['reminders'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flag after a redirect.
+	jlife_challenges_send_page( $title, jlife_challenges_today_page_body( $view, $state, $user_id, $saved ), 'today', array( 'soap', 'reminder' ) );
+}
+
+/**
+ * Today's whole body: the reading and SOAP form, then the daily reading email
+ * checkbox directly under Save draft, outside the SOAP form so it saves on its
+ * own (#135).
+ *
+ * @param array $view    Day view.
+ * @param array $state   Page state.
+ * @param int   $user_id Participant.
+ * @param bool  $saved   Show "Saved." under the checkbox (after a no-JavaScript save).
+ * @return string
+ */
+function jlife_challenges_today_page_body( $view, $state, $user_id, $saved = false ) {
+	return jlife_challenges_today_body( $view, $state )
+		. jlife_challenges_render_reminder_toggle( $user_id, jlife_challenges_reminder_campaign_id( $user_id ), false, $saved );
 }
 
 /**
@@ -829,19 +859,17 @@ function jlife_challenges_run_soap_screen( $screen, $title, $view, $user_id, $ab
  */
 function jlife_challenges_screen_today() {
 	$user_id = jlife_challenges_require_participant();
-	// The one-time "email me each morning's reading?" prompt: either answer is saved, then back to Today.
-	$campaign_id = jlife_challenges_reminder_campaign_id( $user_id );
-	if ( '' !== jlife_challenges_handle_reminder_post( $user_id, $campaign_id ) ) {
-		wp_safe_redirect( jlife_challenges_screen_url( 'today' ) );
+	// The daily reading email checkbox without JavaScript (#135): saved, then back to Today.
+	if ( '' !== jlife_challenges_handle_reminder_post( $user_id, jlife_challenges_reminder_campaign_id( $user_id ) ) ) {
+		wp_safe_redirect( add_query_arg( 'reminders', 'saved', jlife_challenges_screen_url( 'today' ) ) );
 		exit;
 	}
-	$view   = jlife_challenges_day_view( $user_id, jlife_challenges_posted_day_key() );
-	$prompt = 'not_enrolled' === $view['state'] ? '' : jlife_challenges_render_reminder_prompt( $user_id, $campaign_id );
-	$none   = jlife_challenges_render_no_day( $view );
+	$view = jlife_challenges_day_view( $user_id, jlife_challenges_posted_day_key() );
+	$none = jlife_challenges_render_no_day( $view );
 	if ( null !== $none ) {
-		jlife_challenges_send_page( __( 'Today', 'jlife-challenges' ), $prompt . $none, 'today' );
+		jlife_challenges_send_page( __( 'Today', 'jlife-challenges' ), $none, 'today' );
 	}
-	jlife_challenges_run_soap_screen( 'today', __( 'Today', 'jlife-challenges' ), $view, $user_id, $prompt );
+	jlife_challenges_run_soap_screen( 'today', __( 'Today', 'jlife-challenges' ), $view, $user_id );
 }
 
 /**
@@ -901,7 +929,7 @@ function jlife_challenges_screen_marathon() {
 		. '<p>' . esc_html__( 'Every day is a fresh start. Tap any day to read it or write your SOAP.', 'jlife-challenges' ) . '</p>'
 		. '<div class="jl-grid">' . $grid . '</div><ul class="jl-legend">' . $legend . '</ul>'
 		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flag after a redirect.
-	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon' );
+	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon', 'reminder' );
 }
 
 add_action( 'template_redirect', 'jlife_challenges_route' );

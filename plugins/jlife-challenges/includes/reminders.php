@@ -6,8 +6,8 @@
  * and jlife_challenges_unsubscribe_url().
  *
  * - A person is a recipient only after choosing it (unticked checkbox at
- *   enrollment, the one-time prompt on Today, or My Marathon). No row means no
- *   reminders.
+ *   enrollment, or the "Email me each morning's reading." checkbox on Today and
+ *   My Marathon, #135). No row means no reminders.
  * - Recipients require recorded consent (enrollments.consented), not just a ticked box.
  * - The row holds no email address; sending looks it up from the account.
  * - Unsubscribing changes only this table. It never touches sign-in codes or any
@@ -28,7 +28,7 @@ const JLIFE_CHALLENGES_REMINDER_LOCALES = array(
 );
 
 /**
- * Nonce action for the reminder forms (Today's prompt and My Marathon).
+ * Nonce action for the reminder checkbox form without JavaScript (Today and My Marathon).
  */
 const JLIFE_CHALLENGES_REMINDER_NONCE = 'jlife_reminder';
 
@@ -326,14 +326,45 @@ function jlife_challenges_screen_unsubscribe() {
 	echo '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', '' !== $req['locale'] ? $req['locale'] : determine_locale() ) ) . '"><head><meta charset="utf-8">' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every part is escaped.
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer">'
 		. '<title>' . esc_html( $page[0] ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=10' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=11' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><main>' . $page[1] . '</main></body></html>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts.
 	exit;
 }
 
 /**
- * Handle a reminder form POST (Today's prompt or My Marathon). The choice always
- * applies to the signed-in person, never to a user ID from the form.
+ * The language a choice is saved in when the request names none: '' (keep the
+ * saved one) once the person has a row, else the language the checkbox screens
+ * show for them (their account's, then the page's).
+ *
+ * @param int    $user_id     Participant.
+ * @param int    $campaign_id Campaign.
+ * @param string $posted      Language from the request, or ''.
+ * @return string
+ */
+function jlife_challenges_reminder_request_locale( $user_id, $campaign_id, $posted ) {
+	if ( '' !== $posted || null !== jlife_challenges_reminder_pref( $user_id, $campaign_id ) ) {
+		return $posted;
+	}
+	return jlife_challenges_reminder_shown_locale( $user_id, null );
+}
+
+/**
+ * The reminder language the screens show: the saved one, else the account's,
+ * else the page's.
+ *
+ * @param int        $user_id Participant.
+ * @param array|null $pref    Row from jlife_challenges_reminder_pref().
+ * @return string
+ */
+function jlife_challenges_reminder_shown_locale( $user_id, $pref ) {
+	return jlife_challenges_reminder_locale( $pref ? (string) $pref['locale'] : (string) get_user_meta( $user_id, 'locale', true ), jlife_challenges_reminder_locale( determine_locale() ) );
+}
+
+/**
+ * Handle a reminder form POST (the checkbox without JavaScript, on Today or My
+ * Marathon). The choice always applies to the signed-in person, never to a user
+ * ID from the form. The form sends a hidden "off" before the checkbox's "on",
+ * so an unticked box posts "off".
  *
  * @param int $user_id     Signed-in participant.
  * @param int $campaign_id Their campaign.
@@ -348,8 +379,39 @@ function jlife_challenges_handle_reminder_post( $user_id, $campaign_id ) {
 		return '';
 	}
 	$locale = isset( $_POST['jl_reminder_locale'] ) ? sanitize_text_field( wp_unslash( $_POST['jl_reminder_locale'] ) ) : '';
+	$locale = jlife_challenges_reminder_request_locale( $user_id, $campaign_id, $locale );
 	$r      = jlife_challenges_set_reminder( $user_id, $user_id, $campaign_id, 'on' === $choice, $locale );
 	return is_wp_error( $r ) ? '' : $choice;
+}
+
+/**
+ * REST: save the signed-in person's reminder checkbox and/or language at once
+ * (#135). Only ever their own choice: no user ID is accepted. "on" left out keeps
+ * the current on/off (a language change); "locale" left out keeps the saved
+ * language. Goes through jlife_challenges_set_reminder(), so the enrollment
+ * check, consent version and audit are the same as every other path.
+ *
+ * @param WP_REST_Request $request Request (on: bool, locale: string).
+ * @return WP_REST_Response|WP_Error
+ */
+function jlife_challenges_rest_save_reminder( WP_REST_Request $request ) {
+	$user_id     = get_current_user_id();
+	$campaign_id = jlife_challenges_reminder_campaign_id( $user_id );
+	$on          = null === $request['on'] ? jlife_challenges_reminder_is_on( jlife_challenges_reminder_pref( $user_id, $campaign_id ) ) : (bool) $request['on'];
+	$locale      = jlife_challenges_reminder_request_locale( $user_id, $campaign_id, is_string( $request['locale'] ) ? $request['locale'] : '' );
+	$r           = jlife_challenges_set_reminder( $user_id, $user_id, $campaign_id, $on, $locale );
+	if ( is_wp_error( $r ) ) {
+		$r->add_data( array( 'status' => 403 ) );
+		return $r;
+	}
+	$pref = jlife_challenges_reminder_pref( $user_id, $campaign_id );
+	return new WP_REST_Response(
+		array(
+			'on'     => jlife_challenges_reminder_is_on( $pref ),
+			'locale' => jlife_challenges_reminder_shown_locale( $user_id, $pref ),
+		),
+		200
+	);
 }
 
 /**
@@ -365,50 +427,62 @@ function jlife_challenges_reminder_campaign_id( $user_id ) {
 }
 
 /**
- * Today's one-time prompt: shown to an enrolled person with no choice yet. Either
- * answer writes a row, so it never shows again.
- *
- * @param int $user_id     Participant.
- * @param int $campaign_id Campaign.
- * @return string Escaped HTML, or '' when they already chose.
- */
-function jlife_challenges_render_reminder_prompt( $user_id, $campaign_id ) {
-	if ( $user_id < 1 || $campaign_id < 1 || null !== jlife_challenges_reminder_pref( $user_id, $campaign_id ) ) {
-		return '';
-	}
-	$locale = jlife_challenges_reminder_locale( (string) get_user_meta( $user_id, 'locale', true ), jlife_challenges_reminder_locale( determine_locale() ) );
-	return '<form method="post" class="jl-note jl-reminder-prompt">' . wp_nonce_field( JLIFE_CHALLENGES_REMINDER_NONCE, '_jlife_reminder', true, false )
-		. '<input type="hidden" name="jl_reminder_locale" value="' . esc_attr( $locale ) . '">'
-		. '<p><strong>' . esc_html__( 'Get each morning\'s reading by email?', 'jlife-challenges' ) . '</strong></p>'
-		. '<p>' . esc_html__( 'One short email a day with the reading. You can turn it off at any time.', 'jlife-challenges' ) . '</p>'
-		. '<button type="submit" name="jl_reminder" value="on" class="jl-button jl-primary">' . esc_html__( 'Yes', 'jlife-challenges' ) . '</button> '
-		. '<button type="submit" name="jl_reminder" value="off" class="jl-button">' . esc_html__( 'No thanks', 'jlife-challenges' ) . '</button></form>';
-}
-
-/**
- * The My Marathon switch: on/off and language, defaulting to the account's language.
+ * The daily reading email checkbox (#135), the same on Today (under Save draft)
+ * and My Marathon (with the language). Ticked = the saved choice is on. With
+ * JavaScript a change saves at once through the REST route and says "Saved."
+ * or, on failure, puts the box back and asks to try again; without it, the Save
+ * button posts the form.
  *
  * @param int  $user_id     Participant.
  * @param int  $campaign_id Campaign.
- * @param bool $saved       Show "Saved." after a change.
+ * @param bool $languages   Also show the email language (My Marathon).
+ * @param bool $saved       Show "Saved." (after a no-JavaScript save).
+ * @return string Escaped HTML, or '' without a campaign.
+ */
+function jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, $languages = false, $saved = false ) {
+	if ( $user_id < 1 || $campaign_id < 1 ) {
+		return '';
+	}
+	$pref = jlife_challenges_reminder_pref( $user_id, $campaign_id );
+	$on   = jlife_challenges_reminder_is_on( $pref );
+	$id   = $languages ? 'jl-reminder-on-marathon' : 'jl-reminder-on';
+	$out  = '<form method="post" class="jl-reminder-toggle" data-rest="' . esc_url( rest_url( 'jlife/v1/reminder' ) ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'wp_rest' ) ) . '"'
+		. ' data-i18n="' . esc_attr(
+			(string) wp_json_encode(
+				array(
+					'saved'  => __( 'Saved.', 'jlife-challenges' ),
+					'failed' => __( 'Not saved. Please try again.', 'jlife-challenges' ),
+				)
+			)
+		) . '">'
+		. wp_nonce_field( JLIFE_CHALLENGES_REMINDER_NONCE, '_jlife_reminder', false, false )
+		. '<input type="hidden" name="jl_reminder" value="off">'
+		. '<label class="jl-check" for="' . esc_attr( $id ) . '"><input type="checkbox" id="' . esc_attr( $id ) . '" name="jl_reminder" value="on"' . checked( $on, true, false ) . '> '
+		. esc_html__( 'Email me each morning\'s reading.', 'jlife-challenges' ) . '</label>';
+	if ( $languages ) {
+		$locale = jlife_challenges_reminder_shown_locale( $user_id, $pref );
+		$opts   = '';
+		foreach ( JLIFE_CHALLENGES_REMINDER_LOCALES as $code => $label ) {
+			$opts .= '<option value="' . esc_attr( $code ) . '"' . selected( $locale, $code, false ) . '>' . esc_html( $label ) . '</option>';
+		}
+		$out .= '<p class="jl-field"><label for="jl-reminder-locale">' . esc_html__( 'Language of the email', 'jlife-challenges' ) . '</label> '
+			. '<select id="jl-reminder-locale" name="jl_reminder_locale">' . $opts . '</select></p>';
+	}
+	return $out . '<noscript><button type="submit" class="jl-button jl-small">' . esc_html__( 'Save', 'jlife-challenges' ) . '</button></noscript>'
+		. '<p class="jl-reminder-status" role="status" aria-live="polite">' . ( $saved ? esc_html__( 'Saved.', 'jlife-challenges' ) : '' ) . '</p></form>';
+}
+
+/**
+ * My Marathon's "Daily reading email" section: the checkbox and the language.
+ * Other personal settings for the marathon can join this section later.
+ *
+ * @param int  $user_id     Participant.
+ * @param int  $campaign_id Campaign.
+ * @param bool $saved       Show "Saved." (after a no-JavaScript save).
  * @return string Escaped HTML.
  */
 function jlife_challenges_render_reminder_settings( $user_id, $campaign_id, $saved = false ) {
-	$pref   = jlife_challenges_reminder_pref( $user_id, $campaign_id );
-	$on     = jlife_challenges_reminder_is_on( $pref );
-	$locale = jlife_challenges_reminder_locale( $pref ? (string) $pref['locale'] : (string) get_user_meta( $user_id, 'locale', true ), jlife_challenges_reminder_locale( determine_locale() ) );
-	$opts   = '';
-	foreach ( JLIFE_CHALLENGES_REMINDER_LOCALES as $code => $label ) {
-		$opts .= '<option value="' . esc_attr( $code ) . '"' . selected( $locale, $code, false ) . '>' . esc_html( $label ) . '</option>';
-	}
 	return '<section class="jl-reminders"><h2>' . esc_html__( 'Daily reading email', 'jlife-challenges' ) . '</h2>'
-		. ( $saved ? '<p class="jl-ok" role="status">' . esc_html__( 'Saved.', 'jlife-challenges' ) . '</p>' : '' )
-		. '<p>' . esc_html( $on ? __( 'You get each morning\'s reading by email.', 'jlife-challenges' ) : __( 'You are not getting the reading by email.', 'jlife-challenges' ) ) . '</p>'
-		. '<form method="post">' . wp_nonce_field( JLIFE_CHALLENGES_REMINDER_NONCE, '_jlife_reminder', true, false )
-		. '<label for="jl-reminder-locale">' . esc_html__( 'Language of the email', 'jlife-challenges' ) . '</label>'
-		. '<select id="jl-reminder-locale" name="jl_reminder_locale">' . $opts . '</select> '
-		. '<button type="submit" name="jl_reminder" value="' . ( $on ? 'off' : 'on' ) . '" class="jl-button' . ( $on ? '' : ' jl-primary' ) . '">'
-		. esc_html( $on ? __( 'Turn off', 'jlife-challenges' ) : __( 'Turn on', 'jlife-challenges' ) ) . '</button>'
-		. ( $on ? ' <button type="submit" name="jl_reminder" value="on" class="jl-button">' . esc_html__( 'Save language', 'jlife-challenges' ) . '</button>' : '' )
-		. '</form></section>';
+		. jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, true, $saved )
+		. '</section>';
 }

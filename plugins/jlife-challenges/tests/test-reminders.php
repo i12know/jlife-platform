@@ -1,8 +1,8 @@
 <?php
 /**
  * Daily reading reminders, part 1 (#63 Phase B): who may change a choice, who
- * counts as a recipient, the one-time Today prompt, the My Marathon switch and
- * the public one-click unsubscribe. Nothing here sends mail. Written before the
+ * counts as a recipient, the checkbox on Today and My Marathon with its REST
+ * route (#135) and the public one-click unsubscribe. Nothing here sends mail. Written before the
  * feature.
  *
  * @package jlife-challenges
@@ -32,6 +32,8 @@ class Test_Reminders extends Jlife_Challenges_TestCase {
 		$_POST    = array();
 		$_REQUEST = array();
 		$_GET     = array();
+		unset( $_SERVER['HTTP_X_WP_NONCE'] );
+		$GLOBALS['wp_rest_auth_cookie'] = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- reset what test_rest_needs_the_nonce set.
 		wp_set_current_user( 0 );
 		parent::tear_down();
 	}
@@ -269,32 +271,221 @@ class Test_Reminders extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Today's prompt shows once: either answer writes a row, and a refresh never re-posts.
+	 * Is the reminder checkbox in this markup ticked?
+	 *
+	 * @param string $html Rendered checkbox form.
+	 * @return bool
 	 */
-	public function test_today_prompt_shows_once() {
-		$prompt = jlife_challenges_render_reminder_prompt( $this->u['a'], $this->campaign );
-		$this->assertStringContainsString( 'Get each morning&#039;s reading by email?', $prompt );
-		$this->assertStringContainsString( 'name="jl_reminder" value="on"', $prompt );
-		$this->assertStringContainsString( 'name="jl_reminder" value="off"', $prompt );
-		$this->assertStringContainsString( 'type="submit"', $prompt );
+	private function ticked( $html ) {
+		$this->assertSame( 1, preg_match( '/<input type="checkbox" id="[^"]+" name="jl_reminder" value="on"([^>]*)>/', $html, $m ), 'one checkbox' );
+		return false !== strpos( $m[1], 'checked' );
+	}
 
-		$this->post_as( $this->u['a'], array( 'jl_reminder' => 'off' ) );
-		$this->assertSame( 'off', jlife_challenges_handle_reminder_post( $this->u['a'], $this->campaign ) );
-		$this->assertSame( '', jlife_challenges_render_reminder_prompt( $this->u['a'], $this->campaign ), 'No thanks is remembered' );
+	/**
+	 * Is the checkbox ticked on Today and on My Marathon (they must agree)?
+	 *
+	 * @param int $user_id Participant.
+	 * @return bool
+	 */
+	private function ticked_on_both( $user_id ) {
+		$today    = $this->ticked( jlife_challenges_render_reminder_toggle( $user_id, $this->campaign ) );
+		$marathon = $this->ticked( jlife_challenges_render_reminder_settings( $user_id, $this->campaign ) );
+		$this->assertSame( $today, $marathon, 'Today and My Marathon show the same choice' );
+		return $today;
+	}
+
+	/**
+	 * Save through the REST route as a user.
+	 *
+	 * @param int   $user_id Signed-in user (0 = signed out).
+	 * @param array $body    JSON body.
+	 * @return WP_REST_Response
+	 */
+	private function rest_as( $user_id, $body ) {
+		wp_set_current_user( $user_id );
+		$req = new WP_REST_Request( 'POST', '/jlife/v1/reminder' );
+		$req->set_header( 'Content-Type', 'application/json' );
+		$req->set_body( (string) wp_json_encode( $body ) );
+		return rest_get_server()->dispatch( $req );
+	}
+
+	/**
+	 * One checkbox, the same on both screens (#135): the label, the REST route and
+	 * its nonce, a hidden "off" before the box for the no-JavaScript post, a live
+	 * status line; the old Yes / No thanks card and Turn on / Turn off buttons are gone.
+	 */
+	public function test_checkbox_markup_is_the_same_on_both_screens() {
+		$today    = jlife_challenges_render_reminder_toggle( $this->u['a'], $this->campaign );
+		$marathon = jlife_challenges_render_reminder_settings( $this->u['a'], $this->campaign );
+		foreach ( array( $today, $marathon ) as $html ) {
+			$this->assertStringContainsString( 'Email me each morning&#039;s reading.</label>', $html );
+			$this->assertStringContainsString( 'data-rest="' . esc_url( rest_url( 'jlife/v1/reminder' ) ) . '"', $html );
+			$this->assertStringContainsString( 'data-nonce="', $html );
+			$this->assertMatchesRegularExpression( '/<input type="hidden" name="jl_reminder" value="off"><label class="jl-check" for="([^"]+)"><input type="checkbox" id="\1"/', $html, 'clickable label; unticked posts off' );
+			$this->assertStringContainsString( 'aria-live="polite"', $html );
+			$this->assertStringContainsString( 'Not saved. Please try again.', html_entity_decode( $html ) );
+			$this->assertStringNotContainsString( 'Turn on', $html );
+			$this->assertStringNotContainsString( 'Turn off', $html );
+			$this->assertStringNotContainsString( 'No thanks', $html );
+			$this->assertStringNotContainsString( 'type="submit" name="jl_reminder"', $html );
+		}
+		$this->assertStringNotContainsString( 'jl_reminder_locale', $today, 'Today has only the checkbox' );
+		$this->assertStringContainsString( '<select id="jl-reminder-locale" name="jl_reminder_locale">', $marathon, 'My Marathon keeps the language' );
+		$this->assertStringContainsString( 'Daily reading email</h2>', $marathon );
+		$this->assertFalse( function_exists( 'jlife_challenges_render_reminder_prompt' ), 'the top-of-Today card is gone' );
+		$this->assertSame( '', jlife_challenges_render_reminder_toggle( 0, $this->campaign ), 'nothing for nobody' );
+		$this->assertSame( '', jlife_challenges_render_reminder_toggle( $this->u['a'], 0 ), 'nothing without a campaign' );
+	}
+
+	/**
+	 * The box shows the saved choice on every visit, including earlier Yes / No
+	 * thanks answers and the join form's box, and an unsubscribe unticks it on both screens.
+	 */
+	public function test_checkbox_shows_the_saved_choice_and_unsubscribe() {
+		$this->assertFalse( $this->ticked_on_both( $this->u['a'] ), 'no choice yet: unticked' );
+		jlife_challenges_set_reminder( $this->u['a'], $this->u['a'], $this->campaign, false, 'en_US' ); // An earlier "No thanks".
+		$this->assertFalse( $this->ticked_on_both( $this->u['a'] ) );
+		jlife_challenges_set_reminder( $this->u['b'], $this->u['b'], $this->campaign, true, 'vi' ); // An earlier "Yes" or the join form's box.
+		$this->assertTrue( $this->ticked_on_both( $this->u['b'] ) );
+
+		jlife_challenges_unsubscribe( $this->u['b'], $this->campaign );
+		$this->assertFalse( $this->ticked_on_both( $this->u['b'] ), 'unsubscribed: unticked on both screens' );
+		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['b'], $this->campaign )['locale'] );
+	}
+
+	/**
+	 * REST: only a signed-in, enrolled person, and only for their own choice.
+	 * ON → reload → ON; OFF → reload → OFF; the same row the sender reads.
+	 */
+	public function test_rest_saves_only_the_signed_in_persons_choice() {
+		$this->assertSame( 401, $this->rest_as( 0, array( 'on' => true ) )->get_status(), 'signed out' );
+		$r = $this->rest_as( $this->u['outsider'], array( 'on' => true ) );
+		$this->assertSame( 403, $r->get_status(), 'not enrolled' );
+		$this->assertSame( 'jlife_denied', $r->get_data()['code'] );
+		$this->assertNull( jlife_challenges_reminder_pref( $this->u['outsider'], $this->campaign ) );
+
+		$r = $this->rest_as(
+			$this->u['a'],
+			array(
+				'on'          => true,
+				'user_id'     => $this->u['b'],
+				'campaign_id' => 999999,
+			)
+		);
+		$this->assertSame( 200, $r->get_status() );
+		$this->assertTrue( $r->get_data()['on'] );
+		$this->assertNull( jlife_challenges_reminder_pref( $this->u['b'], $this->campaign ), 'a user ID in the body is ignored' );
+		$this->assertTrue( $this->ticked_on_both( $this->u['a'] ), 'ON → reload → ON' );
+		$this->assertSame( array( $this->u['a'] ), jlife_challenges_reminder_recipients( $this->campaign ) );
+
+		$r = $this->rest_as( $this->u['a'], array( 'on' => false ) );
+		$this->assertSame( 200, $r->get_status() );
+		$this->assertFalse( $r->get_data()['on'] );
+		$this->assertFalse( $this->ticked_on_both( $this->u['a'] ), 'OFF → reload → OFF' );
+		$this->assertSame( array(), jlife_challenges_reminder_recipients( $this->campaign ) );
+		$this->assertSame( array( 'reminder_opt_in', 'reminder_opt_out' ), $this->audit_actions(), 'audited like every other path' );
+
+		jlife_challenges_remove_member( $this->u['organizer'], $this->campaign, $this->u['c'] );
+		$this->assertSame( 403, $this->rest_as( $this->u['c'], array( 'on' => true ) )->get_status(), 'left: denied' );
+	}
+
+	/**
+	 * Cookie-authenticated REST calls need the wp_rest nonce: without it the
+	 * request counts as signed out and nothing changes; a wrong one is refused.
+	 */
+	public function test_rest_needs_the_nonce() {
+		global $wp_rest_auth_cookie;
+		$wp_rest_auth_cookie = true; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- the test drives cookie authentication.
+		wp_set_current_user( $this->u['a'] );
+		unset( $_SERVER['HTTP_X_WP_NONCE'] );
+		$_REQUEST = array();
+		$this->assertTrue( rest_cookie_check_errors( null ) );
+		$this->assertSame( 0, get_current_user_id(), 'no nonce: treated as signed out' );
+		$req = new WP_REST_Request( 'POST', '/jlife/v1/reminder' );
+		$req->set_body_params( array( 'on' => '1' ) );
+		$this->assertSame( 401, rest_get_server()->dispatch( $req )->get_status() );
+		$this->assertNull( jlife_challenges_reminder_pref( $this->u['a'], $this->campaign ) );
+
+		wp_set_current_user( $this->u['a'] );
+		$_SERVER['HTTP_X_WP_NONCE'] = 'not-a-nonce';
+		$this->assertSame( 'rest_cookie_invalid_nonce', rest_cookie_check_errors( null )->get_error_code(), 'a wrong nonce is refused' );
+		unset( $_SERVER['HTTP_X_WP_NONCE'] );
+		$wp_rest_auth_cookie = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- restore.
+
+		// The checkbox carries a valid wp_rest nonce for its owner, and only for them.
+		$this->assertSame( 1, preg_match( '/data-nonce="([^"]+)"/', jlife_challenges_render_reminder_toggle( $this->u['a'], $this->campaign ), $m ) );
+		$this->assertNotFalse( wp_verify_nonce( $m[1], 'wp_rest' ) );
+		wp_set_current_user( $this->u['b'] );
+		$this->assertFalse( wp_verify_nonce( $m[1], 'wp_rest' ) );
+	}
+
+	/**
+	 * Toggling keeps the saved language; a language change alone keeps on/off.
+	 */
+	public function test_toggling_keeps_the_language_and_language_saves_alone() {
+		$this->rest_as(
+			$this->u['a'],
+			array(
+				'on'     => true,
+				'locale' => 'vi',
+			)
+		);
+		$this->rest_as( $this->u['a'], array( 'on' => false ) );
+		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'], 'off keeps vi' );
+		$r = $this->rest_as( $this->u['a'], array( 'on' => true ) );
+		$this->assertSame( 'vi', $r->get_data()['locale'], 'on keeps vi' );
+		$this->assertMatchesRegularExpression( '/<option value="vi" selected=\'selected\'>/', jlife_challenges_render_reminder_settings( $this->u['a'], $this->campaign ) );
+
+		$r = $this->rest_as( $this->u['a'], array( 'locale' => 'en_US' ) );
+		$this->assertSame( 200, $r->get_status() );
+		$this->assertTrue( $r->get_data()['on'], 'a language change leaves it on' );
+		$this->assertSame( 'en_US', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'] );
+
+		$this->rest_as( $this->u['a'], array( 'on' => false ) );
+		$r = $this->rest_as( $this->u['a'], array( 'locale' => 'vi' ) );
+		$this->assertFalse( $r->get_data()['on'], 'and leaves it off' );
+		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'] );
 		$this->assertSame( array(), jlife_challenges_reminder_recipients( $this->campaign ) );
 
+		// A first choice from Today (no language sent) uses the account's language, as My Marathon shows it.
+		update_user_meta( $this->u['b'], 'locale', 'vi' );
+		$this->assertMatchesRegularExpression( '/<option value="vi" selected=\'selected\'>/', jlife_challenges_render_reminder_settings( $this->u['b'], $this->campaign ), 'account language is the default' );
+		$this->rest_as( $this->u['b'], array( 'on' => true ) );
+		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['b'], $this->campaign )['locale'] );
+	}
+
+	/**
+	 * Without JavaScript the form posts: an unticked box sends only the hidden
+	 * "off", a ticked one "off" then "on" (the last wins); the reminder nonce is required.
+	 */
+	public function test_form_post_without_javascript() {
+		$this->post_as( $this->u['a'], array( 'jl_reminder' => 'on' ) );
+		$this->assertSame( 'on', jlife_challenges_handle_reminder_post( $this->u['a'], $this->campaign ) );
+		$this->assertTrue( $this->ticked_on_both( $this->u['a'] ) );
 		$this->post_as(
-			$this->u['b'],
+			$this->u['a'],
 			array(
-				'jl_reminder'        => 'on',
+				'jl_reminder'        => 'off',
 				'jl_reminder_locale' => 'vi',
 			)
 		);
-		$this->assertSame( 'on', jlife_challenges_handle_reminder_post( $this->u['b'], $this->campaign ) );
-		$this->assertSame( '', jlife_challenges_render_reminder_prompt( $this->u['b'], $this->campaign ), 'Yes is remembered' );
-		$this->assertSame( array( $this->u['b'] ), jlife_challenges_reminder_recipients( $this->campaign ) );
-		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['b'], $this->campaign )['locale'] );
-		$this->assertSame( '', jlife_challenges_render_reminder_prompt( 0, $this->campaign ), 'nothing for nobody' );
+		$this->assertSame( 'off', jlife_challenges_handle_reminder_post( $this->u['a'], $this->campaign ) );
+		$this->assertFalse( $this->ticked_on_both( $this->u['a'] ) );
+		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'] );
+		$this->assertStringContainsString( 'Saved.', jlife_challenges_render_reminder_settings( $this->u['a'], $this->campaign, true ) );
+
+		wp_set_current_user( $this->u['b'] );
+		$_POST    = array(
+			'jl_reminder'     => 'on',
+			'_jlife_reminder' => 'bad',
+		);
+		$_REQUEST = $_POST;
+		try {
+			jlife_challenges_handle_reminder_post( $this->u['b'], $this->campaign );
+			$this->fail( 'a bad nonce must stop the request' );
+		} catch ( WPDieException $e ) {
+			$this->assertNull( jlife_challenges_reminder_pref( $this->u['b'], $this->campaign ) );
+		}
 	}
 
 	/**
