@@ -8,6 +8,10 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ## Unreleased
 
+### Fixed
+
+- **Links are readable in dark mode** (#108). The participant screens set no link color, so links such as the Harmony Bible sections fell back to the browser's default dark blue on the dark background. Links now use the theme accent (light blue in dark mode); buttons, nav and chips keep their own colors. Stylesheet version bumped to 9 so phones fetch it.
+
 ### Changed
 
 - **Landing page: sign-up buttons use the real #112 routes** (#112 part 3, #110). The seeded pages (hero and final call) now link "Read on my own" to `/join/?mode=solo`, "Start a group" to `/join/?mode=start`, "I have an invite code" to `/join/` and "Sign in" to `/signin/`; the Vietnamese page adds `lang=vi` to each so the app screens open in Vietnamese. The `TODO(#112)` code comments and the two hidden HTML-comment blocks are gone, and a guard test pins the exact hrefs per language. **The live pages are unchanged**: the seed runs once and never overwrites an edit, so the owner updates the buttons in wp-admin (hrefs in `docs/staging-latoc.md`, "Owner step"). Seed-once behavior is untouched.
