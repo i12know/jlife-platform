@@ -76,7 +76,7 @@ function buildPlan(plan, linkConfig, toEvent) {
     }
     const notes = String(r[col.notes] || '').trim();
     const harmonySections = plan.harmony_sections_url
-      ? { harmony_sections: buildHarmonySections(robertson, toEvent, plan.harmony_sections_url) }
+      ? { harmony_sections: buildHarmonySections(robertson, toEvent, plan.harmony_sections_url, plan.harmony_sections_overrides) }
       : {};
     return {
       day_id: `d${String(day).padStart(3, '0')}`,

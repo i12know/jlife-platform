@@ -348,10 +348,22 @@
           "url": "https://harmony-bible.com/sections/7/"
         },
         {
-          "number": "8",
+          "number": "8a",
           "title": "The Birth and Childhood of the Baptist, and His Desert Life",
           "gospel_event_id": "r1922-008",
-          "url": "https://harmony-bible.com/sections/8/"
+          "url": "https://harmony-bible.com/sections/8a/"
+        },
+        {
+          "number": "8b",
+          "title": "The Birth and Childhood of the Baptist, and His Desert Life",
+          "gospel_event_id": "r1922-008",
+          "url": "https://harmony-bible.com/sections/8b/"
+        },
+        {
+          "number": "8c",
+          "title": "The Birth and Childhood of the Baptist, and His Desert Life",
+          "gospel_event_id": "r1922-008",
+          "url": "https://harmony-bible.com/sections/8c/"
         }
       ],
       "passages": [
@@ -455,10 +467,22 @@
       ],
       "harmony_sections": [
         {
-          "number": "8",
+          "number": "8a",
           "title": "The Birth and Childhood of the Baptist, and His Desert Life",
           "gospel_event_id": "r1922-008",
-          "url": "https://harmony-bible.com/sections/8/"
+          "url": "https://harmony-bible.com/sections/8a/"
+        },
+        {
+          "number": "8b",
+          "title": "The Birth and Childhood of the Baptist, and His Desert Life",
+          "gospel_event_id": "r1922-008",
+          "url": "https://harmony-bible.com/sections/8b/"
+        },
+        {
+          "number": "8c",
+          "title": "The Birth and Childhood of the Baptist, and His Desert Life",
+          "gospel_event_id": "r1922-008",
+          "url": "https://harmony-bible.com/sections/8c/"
         },
         {
           "number": "9",
@@ -1789,10 +1813,16 @@
           "url": "https://harmony-bible.com/sections/31/"
         },
         {
-          "number": "32",
+          "number": "32a",
           "title": "The Interview of Nicodemus with Jesus",
           "gospel_event_id": "r1922-032",
-          "url": "https://harmony-bible.com/sections/32/"
+          "url": "https://harmony-bible.com/sections/32a/"
+        },
+        {
+          "number": "32b",
+          "title": "The Interview of Nicodemus with Jesus",
+          "gospel_event_id": "r1922-032",
+          "url": "https://harmony-bible.com/sections/32b/"
         }
       ],
       "passages": [
@@ -1940,10 +1970,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "32",
+          "number": "32a",
           "title": "The Interview of Nicodemus with Jesus",
           "gospel_event_id": "r1922-032",
-          "url": "https://harmony-bible.com/sections/32/"
+          "url": "https://harmony-bible.com/sections/32a/"
+        },
+        {
+          "number": "32b",
+          "title": "The Interview of Nicodemus with Jesus",
+          "gospel_event_id": "r1922-032",
+          "url": "https://harmony-bible.com/sections/32b/"
         },
         {
           "number": "33",
@@ -1952,10 +1988,16 @@
           "url": "https://harmony-bible.com/sections/33/"
         },
         {
-          "number": "34",
+          "number": "34a",
           "title": "Christ's Reasons for Leaving Judea",
           "gospel_event_id": "r1922-034",
-          "url": "https://harmony-bible.com/sections/34/"
+          "url": "https://harmony-bible.com/sections/34a/"
+        },
+        {
+          "number": "34b",
+          "title": "Christ's Reasons for Leaving Judea",
+          "gospel_event_id": "r1922-034",
+          "url": "https://harmony-bible.com/sections/34b/"
         }
       ],
       "passages": [
@@ -2165,10 +2207,22 @@
       ],
       "harmony_sections": [
         {
-          "number": "35",
+          "number": "35a",
           "title": "Jesus in Samaria at Jacob's Well and in Sychar",
           "gospel_event_id": "r1922-035",
-          "url": "https://harmony-bible.com/sections/35/"
+          "url": "https://harmony-bible.com/sections/35a/"
+        },
+        {
+          "number": "35b",
+          "title": "Jesus in Samaria at Jacob's Well and in Sychar",
+          "gospel_event_id": "r1922-035",
+          "url": "https://harmony-bible.com/sections/35b/"
+        },
+        {
+          "number": "35c",
+          "title": "Jesus in Samaria at Jacob's Well and in Sychar",
+          "gospel_event_id": "r1922-035",
+          "url": "https://harmony-bible.com/sections/35c/"
         }
       ],
       "passages": [
@@ -2251,10 +2305,22 @@
       ],
       "harmony_sections": [
         {
-          "number": "35",
+          "number": "35a",
           "title": "Jesus in Samaria at Jacob's Well and in Sychar",
           "gospel_event_id": "r1922-035",
-          "url": "https://harmony-bible.com/sections/35/"
+          "url": "https://harmony-bible.com/sections/35a/"
+        },
+        {
+          "number": "35b",
+          "title": "Jesus in Samaria at Jacob's Well and in Sychar",
+          "gospel_event_id": "r1922-035",
+          "url": "https://harmony-bible.com/sections/35b/"
+        },
+        {
+          "number": "35c",
+          "title": "Jesus in Samaria at Jacob's Well and in Sychar",
+          "gospel_event_id": "r1922-035",
+          "url": "https://harmony-bible.com/sections/35c/"
         },
         {
           "number": "36",
@@ -2610,6 +2676,12 @@
           "url": "https://harmony-bible.com/sections/41/"
         },
         {
+          "number": "44",
+          "title": "Jesus Finds Four Fishers of Men in Four Fishermen",
+          "gospel_event_id": "r1922-041",
+          "url": "https://harmony-bible.com/sections/44/"
+        },
+        {
           "number": "42",
           "title": "The Excitement in the Synagogue Because of the Teaching of Jesus and the Healing of a Demoniac on the Sabbath",
           "gospel_event_id": "r1922-042",
@@ -2622,10 +2694,10 @@
           "url": "https://harmony-bible.com/sections/43/"
         },
         {
-          "number": "44",
+          "number": "43b",
           "title": "The First Tour of Galilee with the Four Fishermen",
           "gospel_event_id": "r1922-044",
-          "url": "https://harmony-bible.com/sections/44/"
+          "url": "https://harmony-bible.com/sections/43b/"
         }
       ],
       "passages": [
@@ -2870,10 +2942,10 @@
       ],
       "harmony_sections": [
         {
-          "number": "44",
+          "number": "43b",
           "title": "The First Tour of Galilee with the Four Fishermen",
           "gospel_event_id": "r1922-044",
-          "url": "https://harmony-bible.com/sections/44/"
+          "url": "https://harmony-bible.com/sections/43b/"
         },
         {
           "number": "45",
@@ -2888,10 +2960,16 @@
           "url": "https://harmony-bible.com/sections/46/"
         },
         {
-          "number": "47",
+          "number": "47a",
           "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
           "gospel_event_id": "r1922-047",
-          "url": "https://harmony-bible.com/sections/47/"
+          "url": "https://harmony-bible.com/sections/47a/"
+        },
+        {
+          "number": "47b",
+          "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
+          "gospel_event_id": "r1922-047",
+          "url": "https://harmony-bible.com/sections/47b/"
         }
       ],
       "passages": [
@@ -3226,10 +3304,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "47",
+          "number": "47a",
           "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
           "gospel_event_id": "r1922-047",
-          "url": "https://harmony-bible.com/sections/47/"
+          "url": "https://harmony-bible.com/sections/47a/"
+        },
+        {
+          "number": "47b",
+          "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
+          "gospel_event_id": "r1922-047",
+          "url": "https://harmony-bible.com/sections/47b/"
         },
         {
           "number": "48",
@@ -3238,10 +3322,22 @@
           "url": "https://harmony-bible.com/sections/48/"
         },
         {
-          "number": "49",
+          "number": "49a",
           "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
           "gospel_event_id": "r1922-049",
-          "url": "https://harmony-bible.com/sections/49/"
+          "url": "https://harmony-bible.com/sections/49a/"
+        },
+        {
+          "number": "49b",
+          "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
+          "gospel_event_id": "r1922-049",
+          "url": "https://harmony-bible.com/sections/49b/"
+        },
+        {
+          "number": "49c",
+          "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
+          "gospel_event_id": "r1922-049",
+          "url": "https://harmony-bible.com/sections/49c/"
         }
       ],
       "passages": [
@@ -3475,10 +3571,22 @@
       ],
       "harmony_sections": [
         {
-          "number": "49",
+          "number": "49a",
           "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
           "gospel_event_id": "r1922-049",
-          "url": "https://harmony-bible.com/sections/49/"
+          "url": "https://harmony-bible.com/sections/49a/"
+        },
+        {
+          "number": "49b",
+          "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
+          "gospel_event_id": "r1922-049",
+          "url": "https://harmony-bible.com/sections/49b/"
+        },
+        {
+          "number": "49c",
+          "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
+          "gospel_event_id": "r1922-049",
+          "url": "https://harmony-bible.com/sections/49c/"
         }
       ],
       "passages": [
@@ -3823,10 +3931,58 @@
           "url": "https://harmony-bible.com/sections/53/"
         },
         {
-          "number": "54",
+          "number": "54a",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54/"
+          "url": "https://harmony-bible.com/sections/54a/"
+        },
+        {
+          "number": "54b",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54b/"
+        },
+        {
+          "number": "54c",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54c/"
+        },
+        {
+          "number": "54d",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54d/"
+        },
+        {
+          "number": "54e",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54e/"
+        },
+        {
+          "number": "54f",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54f/"
+        },
+        {
+          "number": "54g",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54g/"
+        },
+        {
+          "number": "54h",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54h/"
+        },
+        {
+          "number": "54i",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54i/"
         }
       ],
       "passages": [
@@ -4063,10 +4219,58 @@
       ],
       "harmony_sections": [
         {
-          "number": "54",
+          "number": "54a",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54/"
+          "url": "https://harmony-bible.com/sections/54a/"
+        },
+        {
+          "number": "54b",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54b/"
+        },
+        {
+          "number": "54c",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54c/"
+        },
+        {
+          "number": "54d",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54d/"
+        },
+        {
+          "number": "54e",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54e/"
+        },
+        {
+          "number": "54f",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54f/"
+        },
+        {
+          "number": "54g",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54g/"
+        },
+        {
+          "number": "54h",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54h/"
+        },
+        {
+          "number": "54i",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54i/"
         }
       ],
       "passages": [
@@ -4187,10 +4391,58 @@
       ],
       "harmony_sections": [
         {
-          "number": "54",
+          "number": "54a",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54/"
+          "url": "https://harmony-bible.com/sections/54a/"
+        },
+        {
+          "number": "54b",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54b/"
+        },
+        {
+          "number": "54c",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54c/"
+        },
+        {
+          "number": "54d",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54d/"
+        },
+        {
+          "number": "54e",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54e/"
+        },
+        {
+          "number": "54f",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54f/"
+        },
+        {
+          "number": "54g",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54g/"
+        },
+        {
+          "number": "54h",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54h/"
+        },
+        {
+          "number": "54i",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54i/"
         }
       ],
       "passages": [
@@ -4269,10 +4521,58 @@
       ],
       "harmony_sections": [
         {
-          "number": "54",
+          "number": "54a",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54/"
+          "url": "https://harmony-bible.com/sections/54a/"
+        },
+        {
+          "number": "54b",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54b/"
+        },
+        {
+          "number": "54c",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54c/"
+        },
+        {
+          "number": "54d",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54d/"
+        },
+        {
+          "number": "54e",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54e/"
+        },
+        {
+          "number": "54f",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54f/"
+        },
+        {
+          "number": "54g",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54g/"
+        },
+        {
+          "number": "54h",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54h/"
+        },
+        {
+          "number": "54i",
+          "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
+          "gospel_event_id": "r1922-054",
+          "url": "https://harmony-bible.com/sections/54i/"
         }
       ],
       "passages": [
@@ -4994,10 +5294,70 @@
           "url": "https://harmony-bible.com/sections/63/"
         },
         {
-          "number": "64",
+          "number": "64a",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64/"
+          "url": "https://harmony-bible.com/sections/64a/"
+        },
+        {
+          "number": "64b",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64b/"
+        },
+        {
+          "number": "64c",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64c/"
+        },
+        {
+          "number": "64d",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64d/"
+        },
+        {
+          "number": "64e",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64e/"
+        },
+        {
+          "number": "64f",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64f/"
+        },
+        {
+          "number": "64g",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64g/"
+        },
+        {
+          "number": "64h",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64h/"
+        },
+        {
+          "number": "64i",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64i/"
+        },
+        {
+          "number": "64j",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64j/"
+        },
+        {
+          "number": "64k",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64k/"
         },
         {
           "number": "106",
@@ -5291,10 +5651,70 @@
       ],
       "harmony_sections": [
         {
-          "number": "64",
+          "number": "64a",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64/"
+          "url": "https://harmony-bible.com/sections/64a/"
+        },
+        {
+          "number": "64b",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64b/"
+        },
+        {
+          "number": "64c",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64c/"
+        },
+        {
+          "number": "64d",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64d/"
+        },
+        {
+          "number": "64e",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64e/"
+        },
+        {
+          "number": "64f",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64f/"
+        },
+        {
+          "number": "64g",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64g/"
+        },
+        {
+          "number": "64h",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64h/"
+        },
+        {
+          "number": "64i",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64i/"
+        },
+        {
+          "number": "64j",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64j/"
+        },
+        {
+          "number": "64k",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64k/"
         }
       ],
       "passages": [
@@ -5495,10 +5915,70 @@
       ],
       "harmony_sections": [
         {
-          "number": "64",
+          "number": "64a",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64/"
+          "url": "https://harmony-bible.com/sections/64a/"
+        },
+        {
+          "number": "64b",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64b/"
+        },
+        {
+          "number": "64c",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64c/"
+        },
+        {
+          "number": "64d",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64d/"
+        },
+        {
+          "number": "64e",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64e/"
+        },
+        {
+          "number": "64f",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64f/"
+        },
+        {
+          "number": "64g",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64g/"
+        },
+        {
+          "number": "64h",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64h/"
+        },
+        {
+          "number": "64i",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64i/"
+        },
+        {
+          "number": "64j",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64j/"
+        },
+        {
+          "number": "64k",
+          "title": "The First Great Group of Parables",
+          "gospel_event_id": "r1922-064",
+          "url": "https://harmony-bible.com/sections/64k/"
         },
         {
           "number": "65",
@@ -6022,10 +6502,22 @@
           "url": "https://harmony-bible.com/sections/69/"
         },
         {
-          "number": "70",
+          "number": "70a",
           "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
           "gospel_event_id": "r1922-070",
-          "url": "https://harmony-bible.com/sections/70/"
+          "url": "https://harmony-bible.com/sections/70a/"
+        },
+        {
+          "number": "70b",
+          "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
+          "gospel_event_id": "r1922-070",
+          "url": "https://harmony-bible.com/sections/70b/"
+        },
+        {
+          "number": "70c",
+          "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
+          "gospel_event_id": "r1922-070",
+          "url": "https://harmony-bible.com/sections/70c/"
         }
       ],
       "passages": [
@@ -6194,16 +6686,34 @@
       ],
       "harmony_sections": [
         {
-          "number": "70",
+          "number": "70a",
           "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
           "gospel_event_id": "r1922-070",
-          "url": "https://harmony-bible.com/sections/70/"
+          "url": "https://harmony-bible.com/sections/70a/"
         },
         {
-          "number": "71",
+          "number": "70b",
+          "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
+          "gospel_event_id": "r1922-070",
+          "url": "https://harmony-bible.com/sections/70b/"
+        },
+        {
+          "number": "70c",
+          "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
+          "gospel_event_id": "r1922-070",
+          "url": "https://harmony-bible.com/sections/70c/"
+        },
+        {
+          "number": "71a",
           "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
           "gospel_event_id": "r1922-071",
-          "url": "https://harmony-bible.com/sections/71/"
+          "url": "https://harmony-bible.com/sections/71a/"
+        },
+        {
+          "number": "71b",
+          "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
+          "gospel_event_id": "r1922-071",
+          "url": "https://harmony-bible.com/sections/71b/"
         }
       ],
       "passages": [
@@ -6462,16 +6972,34 @@
       ],
       "harmony_sections": [
         {
-          "number": "71",
+          "number": "71a",
           "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
           "gospel_event_id": "r1922-071",
-          "url": "https://harmony-bible.com/sections/71/"
+          "url": "https://harmony-bible.com/sections/71a/"
         },
         {
-          "number": "72",
+          "number": "71b",
+          "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
+          "gospel_event_id": "r1922-071",
+          "url": "https://harmony-bible.com/sections/71b/"
+        },
+        {
+          "number": "72a",
           "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
           "gospel_event_id": "r1922-072",
-          "url": "https://harmony-bible.com/sections/72/"
+          "url": "https://harmony-bible.com/sections/72a/"
+        },
+        {
+          "number": "72b",
+          "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
+          "gospel_event_id": "r1922-072",
+          "url": "https://harmony-bible.com/sections/72b/"
+        },
+        {
+          "number": "72c",
+          "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
+          "gospel_event_id": "r1922-072",
+          "url": "https://harmony-bible.com/sections/72c/"
         }
       ],
       "passages": [
@@ -6625,10 +7153,22 @@
       ],
       "harmony_sections": [
         {
-          "number": "72",
+          "number": "72a",
           "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
           "gospel_event_id": "r1922-072",
-          "url": "https://harmony-bible.com/sections/72/"
+          "url": "https://harmony-bible.com/sections/72a/"
+        },
+        {
+          "number": "72b",
+          "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
+          "gospel_event_id": "r1922-072",
+          "url": "https://harmony-bible.com/sections/72b/"
+        },
+        {
+          "number": "72c",
+          "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
+          "gospel_event_id": "r1922-072",
+          "url": "https://harmony-bible.com/sections/72c/"
         },
         {
           "number": "73",
@@ -7063,10 +7603,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "76",
+          "number": "76a",
           "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
           "gospel_event_id": "r1922-076",
-          "url": "https://harmony-bible.com/sections/76/"
+          "url": "https://harmony-bible.com/sections/76a/"
+        },
+        {
+          "number": "76b",
+          "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
+          "gospel_event_id": "r1922-076",
+          "url": "https://harmony-bible.com/sections/76b/"
         }
       ],
       "passages": [
@@ -7142,10 +7688,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "76",
+          "number": "76a",
           "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
           "gospel_event_id": "r1922-076",
-          "url": "https://harmony-bible.com/sections/76/"
+          "url": "https://harmony-bible.com/sections/76a/"
+        },
+        {
+          "number": "76b",
+          "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
+          "gospel_event_id": "r1922-076",
+          "url": "https://harmony-bible.com/sections/76b/"
         },
         {
           "number": "77",
@@ -7305,10 +7857,16 @@
           "url": "https://harmony-bible.com/sections/78/"
         },
         {
-          "number": "79",
+          "number": "79a",
           "title": "The Third Withdrawal North Through Phoenicia and East Towards Hermon and South Into Decapolis: Healing of the Deaf and Dumb Man and Feeding of the Four Thousand",
           "gospel_event_id": "r1922-079",
-          "url": "https://harmony-bible.com/sections/79/"
+          "url": "https://harmony-bible.com/sections/79a/"
+        },
+        {
+          "number": "79b",
+          "title": "The Third Withdrawal North Through Phoenicia and East Towards Hermon and South Into Decapolis: Healing of the Deaf and Dumb Man and Feeding of the Four Thousand",
+          "gospel_event_id": "r1922-079",
+          "url": "https://harmony-bible.com/sections/79b/"
         }
       ],
       "passages": [
@@ -7512,10 +8070,16 @@
           "url": "https://harmony-bible.com/sections/80/"
         },
         {
-          "number": "81",
+          "number": "81a",
           "title": "The Fourth Retirement to Bethsaida Julias with Sharp Rebuke of the Dulness of the Disciples and the Healing of a Blind Man in Bethsaida",
           "gospel_event_id": "r1922-081",
-          "url": "https://harmony-bible.com/sections/81/"
+          "url": "https://harmony-bible.com/sections/81a/"
+        },
+        {
+          "number": "81b",
+          "title": "The Fourth Retirement to Bethsaida Julias with Sharp Rebuke of the Dulness of the Disciples and the Healing of a Blind Man in Bethsaida",
+          "gospel_event_id": "r1922-081",
+          "url": "https://harmony-bible.com/sections/81b/"
         },
         {
           "number": "82",
@@ -8388,10 +8952,10 @@
           "url": "https://harmony-bible.com/sections/92/"
         },
         {
-          "number": "93",
+          "number": "95",
           "title": "The Messiah's Followers Must Give Up Everything for His Service",
           "gospel_event_id": "r1922-093",
-          "url": "https://harmony-bible.com/sections/93/"
+          "url": "https://harmony-bible.com/sections/95/"
         }
       ],
       "passages": [
@@ -8648,10 +9212,10 @@
       ],
       "harmony_sections": [
         {
-          "number": "94",
+          "number": "93",
           "title": "The Unbelieving Brothers of Jesus Counsel Him to Exhibit Himself in Judea, and He Rejects the Advice",
           "gospel_event_id": "r1922-094",
-          "url": "https://harmony-bible.com/sections/94/"
+          "url": "https://harmony-bible.com/sections/93/"
         }
       ],
       "passages": [
@@ -8726,10 +9290,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "96",
+          "number": "96a",
           "title": "The Coming of Jesus to the Feast of Tabernacles Creates Intense Excitement Concerning the Messiahship",
           "gospel_event_id": "r1922-096",
-          "url": "https://harmony-bible.com/sections/96/"
+          "url": "https://harmony-bible.com/sections/96a/"
+        },
+        {
+          "number": "96b",
+          "title": "The Coming of Jesus to the Feast of Tabernacles Creates Intense Excitement Concerning the Messiahship",
+          "gospel_event_id": "r1922-096",
+          "url": "https://harmony-bible.com/sections/96b/"
         }
       ],
       "passages": [
@@ -8943,10 +9513,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "99",
+          "number": "99a",
           "title": "The Pharisees Attempt to Stone Jesus When He Exposes Their Sinfulness",
           "gospel_event_id": "r1922-099",
-          "url": "https://harmony-bible.com/sections/99/"
+          "url": "https://harmony-bible.com/sections/99a/"
+        },
+        {
+          "number": "99b",
+          "title": "The Pharisees Attempt to Stone Jesus When He Exposes Their Sinfulness",
+          "gospel_event_id": "r1922-099",
+          "url": "https://harmony-bible.com/sections/99b/"
         }
       ],
       "passages": [
@@ -9045,10 +9621,34 @@
       ],
       "harmony_sections": [
         {
-          "number": "100",
+          "number": "100a",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100/"
+          "url": "https://harmony-bible.com/sections/100a/"
+        },
+        {
+          "number": "100b",
+          "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+          "gospel_event_id": "r1922-100",
+          "url": "https://harmony-bible.com/sections/100b/"
+        },
+        {
+          "number": "100c",
+          "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+          "gospel_event_id": "r1922-100",
+          "url": "https://harmony-bible.com/sections/100c/"
+        },
+        {
+          "number": "100d",
+          "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+          "gospel_event_id": "r1922-100",
+          "url": "https://harmony-bible.com/sections/100d/"
+        },
+        {
+          "number": "100e",
+          "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+          "gospel_event_id": "r1922-100",
+          "url": "https://harmony-bible.com/sections/100e/"
         }
       ],
       "passages": [
@@ -9148,10 +9748,34 @@
       ],
       "harmony_sections": [
         {
-          "number": "100",
+          "number": "100a",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100/"
+          "url": "https://harmony-bible.com/sections/100a/"
+        },
+        {
+          "number": "100b",
+          "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+          "gospel_event_id": "r1922-100",
+          "url": "https://harmony-bible.com/sections/100b/"
+        },
+        {
+          "number": "100c",
+          "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+          "gospel_event_id": "r1922-100",
+          "url": "https://harmony-bible.com/sections/100c/"
+        },
+        {
+          "number": "100d",
+          "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+          "gospel_event_id": "r1922-100",
+          "url": "https://harmony-bible.com/sections/100d/"
+        },
+        {
+          "number": "100e",
+          "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
+          "gospel_event_id": "r1922-100",
+          "url": "https://harmony-bible.com/sections/100e/"
         }
       ],
       "passages": [
@@ -9275,16 +9899,22 @@
       ],
       "harmony_sections": [
         {
-          "number": "95",
+          "number": "94",
           "title": "He Goes Privately to Jerusalem Through Samaria",
           "gospel_event_id": "r1922-095",
-          "url": "https://harmony-bible.com/sections/95/"
+          "url": "https://harmony-bible.com/sections/94/"
         },
         {
-          "number": "101",
+          "number": "101a",
           "title": "In the Parable of the Good Shepherd Jesus Draws the Picture of the Hostile Pharisees and Intimates That He Is Going to Die for His Flock",
           "gospel_event_id": "r1922-101",
-          "url": "https://harmony-bible.com/sections/101/"
+          "url": "https://harmony-bible.com/sections/101a/"
+        },
+        {
+          "number": "101b",
+          "title": "In the Parable of the Good Shepherd Jesus Draws the Picture of the Hostile Pharisees and Intimates That He Is Going to Die for His Flock",
+          "gospel_event_id": "r1922-101",
+          "url": "https://harmony-bible.com/sections/101b/"
         }
       ],
       "passages": [
@@ -9427,10 +10057,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "102",
+          "number": "102a",
           "title": "The Mission of the Seventy; Christ's Joy in Their Work on Their Return",
           "gospel_event_id": "r1922-102",
-          "url": "https://harmony-bible.com/sections/102/"
+          "url": "https://harmony-bible.com/sections/102a/"
+        },
+        {
+          "number": "102b",
+          "title": "The Mission of the Seventy; Christ's Joy in Their Work on Their Return",
+          "gospel_event_id": "r1922-102",
+          "url": "https://harmony-bible.com/sections/102b/"
         }
       ],
       "passages": [
@@ -9746,10 +10382,34 @@
       ],
       "harmony_sections": [
         {
-          "number": "108",
+          "number": "108a",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108/"
+          "url": "https://harmony-bible.com/sections/108a/"
+        },
+        {
+          "number": "108b",
+          "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+          "gospel_event_id": "r1922-108",
+          "url": "https://harmony-bible.com/sections/108b/"
+        },
+        {
+          "number": "108c",
+          "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+          "gospel_event_id": "r1922-108",
+          "url": "https://harmony-bible.com/sections/108c/"
+        },
+        {
+          "number": "108d",
+          "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+          "gospel_event_id": "r1922-108",
+          "url": "https://harmony-bible.com/sections/108d/"
+        },
+        {
+          "number": "108e",
+          "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+          "gospel_event_id": "r1922-108",
+          "url": "https://harmony-bible.com/sections/108e/"
         }
       ],
       "passages": [
@@ -9877,10 +10537,34 @@
       ],
       "harmony_sections": [
         {
-          "number": "108",
+          "number": "108a",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108/"
+          "url": "https://harmony-bible.com/sections/108a/"
+        },
+        {
+          "number": "108b",
+          "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+          "gospel_event_id": "r1922-108",
+          "url": "https://harmony-bible.com/sections/108b/"
+        },
+        {
+          "number": "108c",
+          "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+          "gospel_event_id": "r1922-108",
+          "url": "https://harmony-bible.com/sections/108c/"
+        },
+        {
+          "number": "108d",
+          "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+          "gospel_event_id": "r1922-108",
+          "url": "https://harmony-bible.com/sections/108d/"
+        },
+        {
+          "number": "108e",
+          "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
+          "gospel_event_id": "r1922-108",
+          "url": "https://harmony-bible.com/sections/108e/"
         },
         {
           "number": "109",
@@ -10052,10 +10736,16 @@
           "url": "https://harmony-bible.com/sections/112/"
         },
         {
-          "number": "113",
+          "number": "113a",
           "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
           "gospel_event_id": "r1922-113",
-          "url": "https://harmony-bible.com/sections/113/"
+          "url": "https://harmony-bible.com/sections/113a/"
+        },
+        {
+          "number": "113b",
+          "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
+          "gospel_event_id": "r1922-113",
+          "url": "https://harmony-bible.com/sections/113b/"
         }
       ],
       "passages": [
@@ -10177,10 +10867,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "113",
+          "number": "113a",
           "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
           "gospel_event_id": "r1922-113",
-          "url": "https://harmony-bible.com/sections/113/"
+          "url": "https://harmony-bible.com/sections/113a/"
+        },
+        {
+          "number": "113b",
+          "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
+          "gospel_event_id": "r1922-113",
+          "url": "https://harmony-bible.com/sections/113b/"
         },
         {
           "number": "114",
@@ -10434,10 +11130,22 @@
       ],
       "harmony_sections": [
         {
-          "number": "117",
+          "number": "117a",
           "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
           "gospel_event_id": "r1922-117",
-          "url": "https://harmony-bible.com/sections/117/"
+          "url": "https://harmony-bible.com/sections/117a/"
+        },
+        {
+          "number": "117b",
+          "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
+          "gospel_event_id": "r1922-117",
+          "url": "https://harmony-bible.com/sections/117b/"
+        },
+        {
+          "number": "117c",
+          "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
+          "gospel_event_id": "r1922-117",
+          "url": "https://harmony-bible.com/sections/117c/"
         }
       ],
       "passages": [
@@ -10512,10 +11220,22 @@
       ],
       "harmony_sections": [
         {
-          "number": "117",
+          "number": "117a",
           "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
           "gospel_event_id": "r1922-117",
-          "url": "https://harmony-bible.com/sections/117/"
+          "url": "https://harmony-bible.com/sections/117a/"
+        },
+        {
+          "number": "117b",
+          "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
+          "gospel_event_id": "r1922-117",
+          "url": "https://harmony-bible.com/sections/117b/"
+        },
+        {
+          "number": "117c",
+          "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
+          "gospel_event_id": "r1922-117",
+          "url": "https://harmony-bible.com/sections/117c/"
         }
       ],
       "passages": [
@@ -10613,10 +11333,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "118",
+          "number": "118a",
           "title": "Jesus Raises Lazarus from the Dead",
           "gospel_event_id": "r1922-118",
-          "url": "https://harmony-bible.com/sections/118/"
+          "url": "https://harmony-bible.com/sections/118a/"
+        },
+        {
+          "number": "118b",
+          "title": "Jesus Raises Lazarus from the Dead",
+          "gospel_event_id": "r1922-118",
+          "url": "https://harmony-bible.com/sections/118b/"
         }
       ],
       "passages": [
@@ -10722,10 +11448,16 @@
           "url": "https://harmony-bible.com/sections/119/"
         },
         {
-          "number": "120",
+          "number": "120a",
           "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
           "gospel_event_id": "r1922-120",
-          "url": "https://harmony-bible.com/sections/120/"
+          "url": "https://harmony-bible.com/sections/120a/"
+        },
+        {
+          "number": "120b",
+          "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
+          "gospel_event_id": "r1922-120",
+          "url": "https://harmony-bible.com/sections/120b/"
         }
       ],
       "passages": [
@@ -10824,10 +11556,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "120",
+          "number": "120a",
           "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
           "gospel_event_id": "r1922-120",
-          "url": "https://harmony-bible.com/sections/120/"
+          "url": "https://harmony-bible.com/sections/120a/"
+        },
+        {
+          "number": "120b",
+          "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
+          "gospel_event_id": "r1922-120",
+          "url": "https://harmony-bible.com/sections/120b/"
         },
         {
           "number": "121",
@@ -11109,10 +11847,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "124",
+          "number": "124a",
           "title": "The Rich Young Ruler, the Perils of Riches, and Amazement of the Disciples; Rewards of Following the Messiah (Parable of the Laborers in the Vineyard)",
           "gospel_event_id": "r1922-124",
-          "url": "https://harmony-bible.com/sections/124/"
+          "url": "https://harmony-bible.com/sections/124a/"
+        },
+        {
+          "number": "124b",
+          "title": "The Rich Young Ruler, the Perils of Riches, and Amazement of the Disciples; Rewards of Following the Messiah (Parable of the Laborers in the Vineyard)",
+          "gospel_event_id": "r1922-124",
+          "url": "https://harmony-bible.com/sections/124b/"
         }
       ],
       "passages": [
@@ -11260,10 +12004,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "125",
+          "number": "125a",
           "title": "Jesus Again Foretells to the Disciples His Death and Resurrection, and Rebukes the Selfish Ambition of James and John",
           "gospel_event_id": "r1922-125",
-          "url": "https://harmony-bible.com/sections/125/"
+          "url": "https://harmony-bible.com/sections/125a/"
+        },
+        {
+          "number": "125b",
+          "title": "Jesus Again Foretells to the Disciples His Death and Resurrection, and Rebukes the Selfish Ambition of James and John",
+          "gospel_event_id": "r1922-125",
+          "url": "https://harmony-bible.com/sections/125b/"
         },
         {
           "number": "126",
@@ -11505,10 +12255,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "127",
+          "number": "127a",
           "title": "Jesus Visits Zacchaeus, and Speaks the Parable of the Pounds, and Sets Out for Jerusalem",
           "gospel_event_id": "r1922-127",
-          "url": "https://harmony-bible.com/sections/127/"
+          "url": "https://harmony-bible.com/sections/127a/"
+        },
+        {
+          "number": "127b",
+          "title": "Jesus Visits Zacchaeus, and Speaks the Parable of the Pounds, and Sets Out for Jerusalem",
+          "gospel_event_id": "r1922-127",
+          "url": "https://harmony-bible.com/sections/127b/"
         }
       ],
       "passages": [
@@ -11607,10 +12363,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "128",
+          "number": "128a",
           "title": "Jesus Arrives at Bethany Near Jerusalem",
           "gospel_event_id": "r1922-128a",
-          "url": "https://harmony-bible.com/sections/128/"
+          "url": "https://harmony-bible.com/sections/128a/"
+        },
+        {
+          "number": "128b",
+          "title": "Jesus Arrives at Bethany Near Jerusalem",
+          "gospel_event_id": "r1922-128a",
+          "url": "https://harmony-bible.com/sections/128b/"
         }
       ],
       "passages": [
@@ -11839,10 +12601,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "129",
+          "number": "129a",
           "title": "The Barren Fig Tree Cursed, and the Second Cleansing of the Temple",
           "gospel_event_id": "r1922-129",
-          "url": "https://harmony-bible.com/sections/129/"
+          "url": "https://harmony-bible.com/sections/129a/"
+        },
+        {
+          "number": "129b",
+          "title": "The Barren Fig Tree Cursed, and the Second Cleansing of the Temple",
+          "gospel_event_id": "r1922-129",
+          "url": "https://harmony-bible.com/sections/129b/"
         },
         {
           "number": "131",
@@ -11851,10 +12619,22 @@
           "url": "https://harmony-bible.com/sections/131/"
         },
         {
-          "number": "132",
+          "number": "139h",
+          "title": "The Barren Fig Tree Found to Have Withered",
+          "gospel_event_id": "r1922-131",
+          "url": "https://harmony-bible.com/sections/139h/"
+        },
+        {
+          "number": "132a",
           "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
           "gospel_event_id": "r1922-132",
-          "url": "https://harmony-bible.com/sections/132/"
+          "url": "https://harmony-bible.com/sections/132a/"
+        },
+        {
+          "number": "132b",
+          "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
+          "gospel_event_id": "r1922-132",
+          "url": "https://harmony-bible.com/sections/132b/"
         }
       ],
       "passages": [
@@ -12157,10 +12937,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "132",
+          "number": "132a",
           "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
           "gospel_event_id": "r1922-132",
-          "url": "https://harmony-bible.com/sections/132/"
+          "url": "https://harmony-bible.com/sections/132a/"
+        },
+        {
+          "number": "132b",
+          "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
+          "gospel_event_id": "r1922-132",
+          "url": "https://harmony-bible.com/sections/132b/"
         }
       ],
       "passages": [
@@ -12666,10 +13452,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "137",
+          "number": "137a",
           "title": "In His Last Public Discourse, Jesus Solemnly Denounces the Scribes and Pharisees",
           "gospel_event_id": "r1922-137",
-          "url": "https://harmony-bible.com/sections/137/"
+          "url": "https://harmony-bible.com/sections/137a/"
+        },
+        {
+          "number": "137b",
+          "title": "In His Last Public Discourse, Jesus Solemnly Denounces the Scribes and Pharisees",
+          "gospel_event_id": "r1922-137",
+          "url": "https://harmony-bible.com/sections/137b/"
         }
       ],
       "passages": [
@@ -12826,10 +13618,46 @@
           "url": "https://harmony-bible.com/sections/138/"
         },
         {
-          "number": "139",
+          "number": "139a",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139/"
+          "url": "https://harmony-bible.com/sections/139a/"
+        },
+        {
+          "number": "139b",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139b/"
+        },
+        {
+          "number": "139c",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139c/"
+        },
+        {
+          "number": "139d",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139d/"
+        },
+        {
+          "number": "139e",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139e/"
+        },
+        {
+          "number": "139f",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139f/"
+        },
+        {
+          "number": "139g",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139g/"
         }
       ],
       "passages": [
@@ -13200,10 +14028,46 @@
       ],
       "harmony_sections": [
         {
-          "number": "139",
+          "number": "139a",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139/"
+          "url": "https://harmony-bible.com/sections/139a/"
+        },
+        {
+          "number": "139b",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139b/"
+        },
+        {
+          "number": "139c",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139c/"
+        },
+        {
+          "number": "139d",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139d/"
+        },
+        {
+          "number": "139e",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139e/"
+        },
+        {
+          "number": "139f",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139f/"
+        },
+        {
+          "number": "139g",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139g/"
         }
       ],
       "passages": [
@@ -13322,10 +14186,46 @@
       ],
       "harmony_sections": [
         {
-          "number": "139",
+          "number": "139a",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139/"
+          "url": "https://harmony-bible.com/sections/139a/"
+        },
+        {
+          "number": "139b",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139b/"
+        },
+        {
+          "number": "139c",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139c/"
+        },
+        {
+          "number": "139d",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139d/"
+        },
+        {
+          "number": "139e",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139e/"
+        },
+        {
+          "number": "139f",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139f/"
+        },
+        {
+          "number": "139g",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139g/"
         }
       ],
       "passages": [
@@ -13451,10 +14351,46 @@
       ],
       "harmony_sections": [
         {
-          "number": "139",
+          "number": "139a",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139/"
+          "url": "https://harmony-bible.com/sections/139a/"
+        },
+        {
+          "number": "139b",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139b/"
+        },
+        {
+          "number": "139c",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139c/"
+        },
+        {
+          "number": "139d",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139d/"
+        },
+        {
+          "number": "139e",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139e/"
+        },
+        {
+          "number": "139f",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139f/"
+        },
+        {
+          "number": "139g",
+          "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
+          "gospel_event_id": "r1922-139",
+          "url": "https://harmony-bible.com/sections/139g/"
         }
       ],
       "passages": [
@@ -13528,10 +14464,16 @@
       ],
       "harmony_sections": [
         {
-          "number": "130",
+          "number": "130a",
           "title": "The Desire of Some Greeks to See Jesus Leads Jesus to Interpret Life and Death as Sacrifice and Show How Being Lifted Up He Will Draw All Men to Him",
           "gospel_event_id": "r1922-130",
-          "url": "https://harmony-bible.com/sections/130/"
+          "url": "https://harmony-bible.com/sections/130a/"
+        },
+        {
+          "number": "130b",
+          "title": "The Desire of Some Greeks to See Jesus Leads Jesus to Interpret Life and Death as Sacrifice and Show How Being Lifted Up He Will Draw All Men to Him",
+          "gospel_event_id": "r1922-130",
+          "url": "https://harmony-bible.com/sections/130b/"
         }
       ],
       "passages": [
@@ -13983,6 +14925,12 @@
           "title": "Jesus Partakes of the Paschal Meal with the Twelve Apostles and Rebukes Their Jealousy",
           "gospel_event_id": "r1922-144",
           "url": "https://harmony-bible.com/sections/144/"
+        },
+        {
+          "number": "146",
+          "title": "Jesus Partakes of the Paschal Meal with the Twelve Apostles and Rebukes Their Jealousy",
+          "gospel_event_id": "r1922-144",
+          "url": "https://harmony-bible.com/sections/146/"
         },
         {
           "number": "145",
@@ -14621,10 +15569,34 @@
       ],
       "harmony_sections": [
         {
-          "number": "150",
+          "number": "150a",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150/"
+          "url": "https://harmony-bible.com/sections/150a/"
+        },
+        {
+          "number": "150b",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150b/"
+        },
+        {
+          "number": "150c",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150c/"
+        },
+        {
+          "number": "150d",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150d/"
+        },
+        {
+          "number": "150e",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150e/"
         }
       ],
       "passages": [
@@ -14701,10 +15673,34 @@
       ],
       "harmony_sections": [
         {
-          "number": "150",
+          "number": "150a",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150/"
+          "url": "https://harmony-bible.com/sections/150a/"
+        },
+        {
+          "number": "150b",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150b/"
+        },
+        {
+          "number": "150c",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150c/"
+        },
+        {
+          "number": "150d",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150d/"
+        },
+        {
+          "number": "150e",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150e/"
         }
       ],
       "passages": [
@@ -14830,10 +15826,34 @@
       ],
       "harmony_sections": [
         {
-          "number": "150",
+          "number": "150a",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150/"
+          "url": "https://harmony-bible.com/sections/150a/"
+        },
+        {
+          "number": "150b",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150b/"
+        },
+        {
+          "number": "150c",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150c/"
+        },
+        {
+          "number": "150d",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150d/"
+        },
+        {
+          "number": "150e",
+          "title": "The Discourse on the Way to Gethsemane",
+          "gospel_event_id": "r1922-150",
+          "url": "https://harmony-bible.com/sections/150e/"
         }
       ],
       "passages": [
@@ -16612,10 +17632,16 @@
           "url": "https://harmony-bible.com/sections/166/"
         },
         {
-          "number": "167",
+          "number": "167a",
           "title": "The Burial of the Body of Jesus in the Tomb of Joseph of Arimathea After Proof of His Death",
           "gospel_event_id": "r1922-167",
-          "url": "https://harmony-bible.com/sections/167/"
+          "url": "https://harmony-bible.com/sections/167a/"
+        },
+        {
+          "number": "167b",
+          "title": "The Burial of the Body of Jesus in the Tomb of Joseph of Arimathea After Proof of His Death",
+          "gospel_event_id": "r1922-167",
+          "url": "https://harmony-bible.com/sections/167b/"
         },
         {
           "number": "168",
@@ -17945,6 +18971,12 @@
           "title": "The Appearance to the Disciples with Another Commission",
           "gospel_event_id": "r1922-183",
           "url": "https://harmony-bible.com/sections/183/"
+        },
+        {
+          "number": "184",
+          "title": "The Appearance to the Disciples with Another Commission",
+          "gospel_event_id": "r1922-183",
+          "url": "https://harmony-bible.com/sections/184/"
         }
       ],
       "passages": [
