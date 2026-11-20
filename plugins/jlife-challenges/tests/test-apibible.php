@@ -134,6 +134,23 @@ class Test_Apibible extends WP_UnitTestCase {
 				)
 			);
 		}
+		if ( false !== strpos( $url, '/bibles/' . self::BIBLE ) ) {
+			return $this->response(
+				200,
+				wp_json_encode(
+					array(
+						'data' => array(
+							'id'           => self::BIBLE,
+							'abbreviation' => 'NLT',
+							'name'         => 'Fake Living Translation',
+							'copyright'    => 'Fake Bible © 2026 Example Publisher. Used by permission.',
+							'info'         => '<p>Fake info for tests only.</p>',
+							'language'     => array( 'id' => 'eng' ),
+						),
+					)
+				)
+			);
+		}
 		return $this->response(
 			200,
 			wp_json_encode(
@@ -412,5 +429,64 @@ class Test_Apibible extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'notice-warning', jlife_challenges_scripture_admin_html( array( 'calls' => 4200 ) + $usage, true ) );
 		$this->assertStringContainsString( 'notice-error', jlife_challenges_scripture_admin_html( array( 'calls' => 5000 ) + $usage, true ) );
 		$this->assertStringContainsString( 'No API.Bible key', jlife_challenges_scripture_admin_html( $usage, false ) );
+	}
+
+	/**
+	 * One Bible's metadata (terms 7.1: the copyright information comes from it):
+	 * name, abbreviation, copyright and info as text, from a single counted call
+	 * with the key only in the header.
+	 */
+	public function test_bible_metadata() {
+		$r = jlife_challenges_apibible_fetch_bible( self::BIBLE, array( 'version' => 'nlt' ) );
+		$this->assertSame( 'ok', $r['outcome'] );
+		$this->assertSame( 'Fake Living Translation', $r['name'] );
+		$this->assertSame( 'NLT', $r['abbreviation'] );
+		$this->assertSame( 'Fake Bible © 2026 Example Publisher. Used by permission.', $r['copyright'] );
+		$this->assertSame( 'Fake info for tests only.', $r['info'], 'tags stripped' );
+		$this->assertSame( 'eng', $r['language'] );
+		$this->assertCount( 1, $this->requests );
+		$this->assertSame( JLIFE_CHALLENGES_APIBIBLE_BASE . '/bibles/' . self::BIBLE, $this->requests[0]['url'], 'no query string, no key in the URL' );
+		$this->assertSame( self::KEY, $this->requests[0]['args']['headers']['api-key'] );
+		$this->assertSame( 1, jlife_challenges_apibible_usage()['calls'], 'a real call is counted' );
+		$this->assertStringNotContainsString( self::KEY, wp_json_encode( $r ) );
+	}
+
+	/**
+	 * Metadata failures follow the passage rules: 401/403 link-only, 429, 5xx and
+	 * timeouts fall back, a bad ID makes no call, a missing key makes no call, and
+	 * the log holds only the version, an outcome and the status.
+	 */
+	public function test_bible_metadata_failures() {
+		$cases = array(
+			401 => 'link_only',
+			403 => 'link_only',
+			429 => 'fallback',
+			503 => 'fallback',
+			0   => 'fallback',
+		);
+		foreach ( $cases as $status => $outcome ) {
+			delete_site_transient( jlife_challenges_apibible_hold_key( self::BIBLE ) );
+			$this->status = $status;
+			$r            = jlife_challenges_apibible_fetch_bible( self::BIBLE, array( 'version' => 'nlt' ) );
+			$this->assertSame( $outcome, $r['outcome'], "status {$status}" );
+			$this->assertSame( '', $r['name'] );
+		}
+		delete_site_transient( jlife_challenges_apibible_hold_key( self::BIBLE ) );
+		$this->status = 200;
+		$before       = count( $this->requests );
+		$r            = jlife_challenges_apibible_fetch_bible( '../etc', array( 'version' => 'nlt' ) );
+		$this->assertSame( 'fallback', $r['outcome'] );
+		$this->assertSame( '', $r['bible_id'] );
+		$this->assertCount( $before, $this->requests, 'an invalid ID makes no request' );
+		remove_filter( 'jlife_challenges_apibible_key', array( $this, 'filter_key' ) );
+		$r = jlife_challenges_apibible_fetch_bible( self::BIBLE, array( 'version' => 'nlt' ) );
+		$this->assertSame( 'link_only', $r['outcome'] );
+		$this->assertSame( 'no_key', $r['reason'] );
+		$this->assertCount( $before, $this->requests, 'no key, no request' );
+		$log = $this->log_text();
+		$this->assertStringContainsString( 'version=nlt outcome=not_licensed status=401', $log );
+		$this->assertStringContainsString( 'version=nlt outcome=no_key status=0', $log );
+		$this->assertStringNotContainsString( self::KEY, $log );
+		$this->assertStringNotContainsString( self::BIBLE, $log );
 	}
 }

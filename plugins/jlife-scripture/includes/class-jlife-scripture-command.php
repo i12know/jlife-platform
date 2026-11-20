@@ -1,7 +1,8 @@
 <?php
 /**
- * WP-CLI: wp jlife scripture import|status|cache-purge (#139). Never prints
- * Bible text.
+ * WP-CLI: wp jlife scripture import|status|cache-purge|try (#139, #141). Never
+ * prints Bible text, except `try`, which prints one passage so the owner can
+ * check it before a version is enabled.
  *
  * @package jlife-scripture
  */
@@ -79,6 +80,50 @@ class Jlife_Scripture_Command {
 		}
 		$row = jlife_scripture_dataset_status( 'vie1934' );
 		WP_CLI::log( $row ? sprintf( 'vie1934: %d verses, imported %s UTC, edition: %s, source sha256 %s', $row['verse_count'], $row['imported'], $row['edition'], $row['source_sha256'] ) : 'vie1934: not imported' );
+	}
+
+	/**
+	 * Try one passage of one Bible version before it is enabled (#141): fetch it
+	 * through the same source and shared cache the reader uses, and print the
+	 * text, the copyright notice, the cache status and the HTTP status. The
+	 * version may still be disabled (the override lasts only for this command).
+	 * An uncached fetch counts as one API.Bible call; a cached passage costs
+	 * none (`wp jlife scripture cache-purge --all` forces a fresh fetch). Nothing
+	 * is reported to FUMS, and the API key is never printed.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <version>
+	 * : Registry version key: nlt, nkjv, csb (or any version with a text source).
+	 *
+	 * <reference>
+	 * : A reference such as "John 3:16-18".
+	 *
+	 * [--metadata]
+	 * : Also fetch the Bible's metadata (name, abbreviation, copyright notice): one more API call.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp jlife scripture try nlt "John 1:1-5"
+	 *     wp jlife scripture try csb "Luke 3:23" --metadata
+	 *
+	 * @subcommand try
+	 *
+	 * @param array $args       Positional arguments: version, reference.
+	 * @param array $assoc_args Options.
+	 */
+	public function try_passage( $args, $assoc_args ) {
+		$r = jlife_scripture_try_passage( (string) ( $args[0] ?? '' ), (string) ( $args[1] ?? '' ), array( 'metadata' => ! empty( $assoc_args['metadata'] ) ) );
+		if ( is_wp_error( $r ) ) {
+			WP_CLI::error( $r->get_error_message() );
+		}
+		foreach ( $r['lines'] as $line ) {
+			WP_CLI::log( $line );
+		}
+		if ( ! $r['ok'] ) {
+			WP_CLI::error( 'The passage could not be loaded.' );
+		}
+		WP_CLI::success( 'Done.' );
 	}
 
 	/**

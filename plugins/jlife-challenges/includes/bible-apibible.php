@@ -21,6 +21,11 @@
  *   IP address; they carry an anonymous install ID and a daily session ID and
  *   no user ID.
  *
+ * The native reader's `apibible` source (plugins/jlife-scripture,
+ * Jlife_Scripture_Apibible_Source, #141 part 2) calls the functions here and
+ * nothing else: this file stays the only place that talks to API.Bible, holds
+ * the key and counts calls.
+ *
  * @package jlife-challenges
  */
 
@@ -159,27 +164,11 @@ function jlife_challenges_apibible_fetch_passage( $bible_id, $passage_id, array 
 		$result['passage_id'] = '';
 		return jlife_challenges_apibible_finish( $result );
 	}
+	$blocked = jlife_challenges_apibible_preflight( $result, $bible_id );
+	if ( null !== $blocked ) {
+		return $blocked;
+	}
 	$key = jlife_challenges_apibible_key();
-	if ( '' === $key ) {
-		return jlife_challenges_apibible_finish(
-			array_merge(
-				$result,
-				array(
-					'outcome' => 'link_only',
-					'reason'  => 'no_key',
-				)
-			)
-		);
-	}
-	$held = get_site_transient( jlife_challenges_apibible_hold_key( $bible_id ) );
-	if ( is_array( $held ) ) {
-		$result['outcome'] = 'not_licensed' === ( $held['reason'] ?? '' ) ? 'link_only' : 'fallback';
-		$result['reason']  = 'held';
-		return $result; // Already logged when the hold started.
-	}
-	if ( jlife_challenges_apibible_usage()['calls'] >= JLIFE_CHALLENGES_APIBIBLE_MONTHLY_LIMIT ) {
-		return jlife_challenges_apibible_finish( array_merge( $result, array( 'reason' => 'quota' ) ) );
-	}
 
 	$url      = JLIFE_CHALLENGES_APIBIBLE_BASE . '/bibles/' . rawurlencode( $bible_id ) . '/passages/' . rawurlencode( $passage_id ) . '?' . http_build_query(
 		array(
@@ -228,6 +217,103 @@ function jlife_challenges_apibible_fetch_passage( $bible_id, $passage_id, array 
 		'token'   => $token,
 	) : null;
 	$result['cache']['cacheable'] = $count > 0 && $count <= $result['cache']['max_consecutive_verses'];
+	return $result;
+}
+
+/**
+ * The checks before any request to API.Bible: a key is set, the Bible is not
+ * being held after a failure, and this month's quota is not used up. Shared by
+ * every kind of request, so none of them can skip a check.
+ *
+ * @param array  $result   A result array (outcome, reason, version, http_status …) to finish.
+ * @param string $bible_id API.Bible bibleId.
+ * @return array|null The finished result to return as is, or null to go ahead.
+ */
+function jlife_challenges_apibible_preflight( array $result, $bible_id ) {
+	if ( '' === jlife_challenges_apibible_key() ) {
+		return jlife_challenges_apibible_finish(
+			array_merge(
+				$result,
+				array(
+					'outcome' => 'link_only',
+					'reason'  => 'no_key',
+				)
+			)
+		);
+	}
+	$held = get_site_transient( jlife_challenges_apibible_hold_key( $bible_id ) );
+	if ( is_array( $held ) ) {
+		$result['outcome'] = 'not_licensed' === ( $held['reason'] ?? '' ) ? 'link_only' : 'fallback';
+		$result['reason']  = 'held';
+		return $result; // Already logged when the hold started.
+	}
+	if ( jlife_challenges_apibible_usage()['calls'] >= JLIFE_CHALLENGES_APIBIBLE_MONTHLY_LIMIT ) {
+		return jlife_challenges_apibible_finish( array_merge( $result, array( 'reason' => 'quota' ) ) );
+	}
+	return null;
+}
+
+/**
+ * One Bible's metadata: name, abbreviation, the copyright notice and the
+ * free-text info, from `GET /v1/bibles/{bibleId}`. API.Bible's terms (7.1) say
+ * the copyright information for a "copyright" page comes from this response.
+ * Same rules as a passage: the key only in the header, a counted call, the
+ * hold after a failure, one allowlisted log line on a non-ok outcome. Nothing is
+ * cached here (the caller keeps it for at most the cache rule).
+ *
+ * @param string $bible_id API.Bible bibleId.
+ * @param array  $opts     { version: string registry key for logs }.
+ * @return array Result: outcome (ok|link_only|fallback), reason, http_status, version, bible_id,
+ *               name, abbreviation, copyright, info, language, fetched_at.
+ */
+function jlife_challenges_apibible_fetch_bible( $bible_id, array $opts = array() ) {
+	$version = sanitize_key( (string) ( $opts['version'] ?? '' ) );
+	$result  = array(
+		'outcome'      => 'fallback',
+		'reason'       => 'bad_request',
+		'http_status'  => 0,
+		'version'      => $version,
+		'bible_id'     => (string) $bible_id,
+		'name'         => '',
+		'abbreviation' => '',
+		'copyright'    => '',
+		'info'         => '',
+		'language'     => '',
+		'fetched_at'   => time(),
+	);
+	if ( ! preg_match( '/^[A-Za-z0-9-]{1,64}$/', (string) $bible_id ) ) {
+		$result['bible_id'] = '';
+		return jlife_challenges_apibible_finish( $result );
+	}
+	$blocked = jlife_challenges_apibible_preflight( $result, $bible_id );
+	if ( null !== $blocked ) {
+		return $blocked;
+	}
+	$key      = jlife_challenges_apibible_key();
+	$response = jlife_challenges_apibible_request( JLIFE_CHALLENGES_APIBIBLE_BASE . '/bibles/' . rawurlencode( $bible_id ), $key );
+	unset( $key );
+	$status                = is_wp_error( $response ) ? 0 : (int) wp_remote_retrieve_response_code( $response );
+	$result['http_status'] = $status;
+	if ( 200 !== $status ) {
+		$result['reason']  = jlife_challenges_apibible_reason_for_status( $status );
+		$result['outcome'] = 'not_licensed' === $result['reason'] ? 'link_only' : 'fallback';
+		jlife_challenges_apibible_hold( $bible_id, $result['reason'] );
+		return jlife_challenges_apibible_finish( $result );
+	}
+	$body = json_decode( (string) wp_remote_retrieve_body( $response ), true );
+	$data = is_array( $body ) && is_array( $body['data'] ?? null ) ? $body['data'] : array();
+	$name = sanitize_text_field( (string) ( $data['name'] ?? '' ) );
+	if ( '' === $name ) {
+		$result['reason'] = 'bad_response';
+		return jlife_challenges_apibible_finish( $result );
+	}
+	$result['outcome']      = 'ok';
+	$result['reason']       = 'ok';
+	$result['name']         = $name;
+	$result['abbreviation'] = sanitize_text_field( (string) ( $data['abbreviation'] ?? '' ) );
+	$result['copyright']    = trim( wp_strip_all_tags( (string) ( $data['copyright'] ?? '' ) ) );
+	$result['info']         = trim( wp_strip_all_tags( (string) ( $data['info'] ?? '' ) ) );
+	$result['language']     = sanitize_text_field( (string) ( $data['language']['id'] ?? '' ) );
 	return $result;
 }
 

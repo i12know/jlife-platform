@@ -13,7 +13,7 @@ The day's Scripture **on the page** (#139, part 1): a Bible version allowlist, t
 - **Version registry** `data/bible-versions.json`: the single source of truth for which versions J-Life offers (key, language, name, short code, `source` `local|youversion|apibible|link`, source ID, `display` `native|link`, copyright text and link, cache rule `max_age_seconds` / `max_consecutive_verses`, `license_evidence`, `enabled`, `default_for`) plus each language's **fallback** Bible Gateway link version and `embed` flag. The reading-plan builder takes `links_config` from it (it replaced `content/reading-plans/bible-links.json`). Only **enabled + native + license evidence + a registered source** renders text (`jlife_scripture_can_render()`); `bin/validate-scripture.js` checks the rules in CI.
 - **Kinh Thánh 1925** `data/vie1934/`: eBible.org `vie1934` USFM converted by `bin/build-scripture-vie1934.js` (one TSV per USFM book + `manifest.json` with source URL, edition, source zip SHA-256, per-file SHA-256s). Imported into `{base_prefix}jlife_scripture_verses` by `wp jlife scripture import`.
 - **Reference parser** (`includes/references.php`): the PHP twin of `bin/content-lib/scripture.js`; partial verses, ranges, chapter-crossing ranges, comma continuations, multi-passage days; English names, abbreviations and the Vietnamese names → USFM codes.
-- **Sources** behind `Jlife_Scripture_Source`: `local` (the table), `youversion` (stub: no network, always unavailable until the owner gates clear). Add API.Bible (#141) by implementing the interface (and `Jlife_Scripture_Display_Tracking` for FUMS) and registering it in `includes/sources.php`.
+- **Sources** behind `Jlife_Scripture_Source`: `local` (the table), `youversion` (stub: no network, always unavailable until the owner gates clear) and `apibible` (#141: NLT, NKJV, CSB through the client in `jlife-challenges`, guarded by `function_exists`; `Jlife_Scripture_Display_Tracking` reports every display to FUMS, `Jlife_Scripture_Source_Attribution` prints the API's own notice and the required links). Register another source in `includes/sources.php`. The three API.Bible versions have their bibleIds recorded but are `enabled: false` until the owner runs `try` and a follow-up PR enables them (`docs/bible-provider-entitlements.md`).
 - **Passage cache** (`includes/cache.php`, `{base_prefix}jlife_scripture_cache`): one shared row per source + version + passage, a lock against concurrent first fetches, the version's cache rule on every read (a source's per-response rule can only shorten it), a verse-limit check before and after a fetch, generic errors, logs with identifiers only. Local text bypasses it. A daily cron and `wp jlife scripture cache-purge` delete expired rows.
 - **Reader** (`includes/render.php`, `assets/scripture.css`).
 
@@ -42,6 +42,7 @@ Wired in: **Today and `/soap`** (`jlife_challenges_render_reader()` in `jlife-ch
 
 ## Settings
 
+- `jlife_scripture_copyright_page_url` (per-site option, default empty): the site's own copyright page for API.Bible text (terms §7.1/7.2); make a page with `[jlife_bible_copyrights]` and set this to its URL, and each API.Bible passage links to `<page>#<version key>`. No link is shown while it is empty.
 - `jlife_scripture_native_reader` (per-site option, `'0'` default / `'1'`): turns the reader on for the screens that call `jlife_scripture_maybe_render_day()` (Today and `/soap`). Turn it on per site with `wp option update jlife_scripture_native_reader 1`; back to `0` restores the framed reader at once. It is never switched on by code or by a deploy.
 - Defaults and fallbacks: edit `data/bible-versions.json` (`default_for`, `languages.<lang>.fallback`), then `npm run plans:build`. No code change.
 
@@ -52,6 +53,7 @@ Wired in: **Today and `/soap`** (`jlife_challenges_render_reader()` in `jlife-ch
 | `wp jlife scripture import [vie1934] [--force]` | Verify the dataset's checksums and import it; records source URL, edition and checksums; no-op when unchanged |
 | `wp jlife scripture status` | Flag, each language's version, dataset provenance (no text) |
 | `wp jlife scripture cache-purge [--all]` | Delete expired cached passages |
+| `wp jlife scripture try <version> "<reference>" [--metadata]` | Fetch one passage of a version (even a disabled one) and print its text, copyright notice, cache status and HTTP status; never the key; one API call when not cached (`--metadata` adds one) |
 
 ## Tests
 

@@ -279,15 +279,17 @@ function jlife_scripture_cache_read( $key, $version ) {
 }
 
 /**
- * One passage's verses in a version, through the cache when the source is
- * cacheable. Never throws; any failure is a generic WP_Error so the reader
- * can show the link instead.
+ * One passage as a cache entry { segments, meta }, from the cache when fresh,
+ * else fetched once from the source and stored if its rules allow. It is not a
+ * display: nothing is reported to display tracking (use
+ * jlife_scripture_get_passage_entry() when the text is about to be shown).
+ * Never throws; any failure is a generic WP_Error.
  *
  * @param array $version  Version entry (must be renderable).
  * @param mixed $segments Parsed segments.
- * @return array|WP_Error One list of verses per segment.
+ * @return array|WP_Error Entry { segments: one list of verses per segment, meta: array }.
  */
-function jlife_scripture_get_passage( $version, $segments ) {
+function jlife_scripture_fetch_entry( $version, $segments ) {
 	$source = jlife_scripture_can_render( $version ) ? jlife_scripture_get_source( (string) $version['source'] ) : null;
 	if ( null === $source || ! is_array( $segments ) || array() === $segments ) {
 		return jlife_scripture_unavailable();
@@ -298,12 +300,42 @@ function jlife_scripture_get_passage( $version, $segments ) {
 	if ( null !== $max && null !== $known && $known > $max ) {
 		return jlife_scripture_unavailable( 'jlife_scripture_too_long' ); // Never ask a source for more than the license allows.
 	}
-	$entry = jlife_scripture_cached_entry( $source, $version, $segments, $passage );
+	return jlife_scripture_cached_entry( $source, $version, $segments, $passage );
+}
+
+/**
+ * One passage about to be shown: the entry (verses and the meta a source kept,
+ * such as API.Bible's copyright notice), with the display reported to the
+ * source's tracking (FUMS) whether it was fetched or served from the cache.
+ *
+ * @param array $version  Version entry (must be renderable).
+ * @param mixed $segments Parsed segments.
+ * @return array|WP_Error Entry { segments, meta }.
+ */
+function jlife_scripture_get_passage_entry( $version, $segments ) {
+	$entry = jlife_scripture_fetch_entry( $version, $segments );
 	if ( is_wp_error( $entry ) ) {
 		return $entry;
 	}
-	jlife_scripture_passage_shown( $source, $version, $segments, $entry['meta'] );
-	return $entry['segments'];
+	$source = jlife_scripture_get_source( (string) $version['source'] );
+	if ( null !== $source ) {
+		jlife_scripture_passage_shown( $source, $version, $segments, $entry['meta'] );
+	}
+	return $entry;
+}
+
+/**
+ * One passage's verses in a version, through the cache when the source is
+ * cacheable. Never throws; any failure is a generic WP_Error so the reader
+ * can show the link instead.
+ *
+ * @param array $version  Version entry (must be renderable).
+ * @param mixed $segments Parsed segments.
+ * @return array|WP_Error One list of verses per segment.
+ */
+function jlife_scripture_get_passage( $version, $segments ) {
+	$entry = jlife_scripture_get_passage_entry( $version, $segments );
+	return is_wp_error( $entry ) ? $entry : $entry['segments'];
 }
 
 /**
