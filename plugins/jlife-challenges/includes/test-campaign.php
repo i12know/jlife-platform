@@ -1,8 +1,8 @@
 <?php
 /**
  * Test-drive campaign for staging (latoc): create one that starts today, and
- * remove every trace of it before the real Marathon (preview first; keep
- * accounts once real people may have joined, #174). Test campaigns are
+ * remove every trace of it before the real Marathon. Removal keeps every
+ * account unless told otherwise: alpha testers are real participants (#174). Test campaigns are
  * identified by a campaign_key starting with "test-"; nothing else is ever
  * touched by the removal.
  *
@@ -132,10 +132,10 @@ function jlife_challenges_test_accounts( $ids ) {
  * emails or IDs of people), safe for a public deploy log.
  *
  * @param int  $actor         Organizer.
- * @param bool $keep_accounts True: no account would be deleted.
+ * @param bool $delete_accounts True: preview the account-deleting removal.
  * @return array|WP_Error Counts: campaigns, one per table, accounts_deleted, accounts_kept.
  */
-function jlife_challenges_test_cleanup_preview( $actor, $keep_accounts = false ) {
+function jlife_challenges_test_cleanup_preview( $actor, $delete_accounts = false ) {
 	if ( ! jlife_challenges_is_organizer( $actor ) ) {
 		return jlife_challenges_denied();
 	}
@@ -150,25 +150,25 @@ function jlife_challenges_test_cleanup_preview( $actor, $keep_accounts = false )
 	}
 	// phpcs:enable
 	$accounts                   = jlife_challenges_test_accounts( $ids );
-	$counts['accounts_deleted'] = $keep_accounts ? 0 : count( $accounts['delete'] );
-	$counts['accounts_kept']    = $keep_accounts ? count( $accounts['delete'] ) + count( $accounts['keep'] ) : count( $accounts['keep'] );
+	$counts['accounts_deleted'] = $delete_accounts ? count( $accounts['delete'] ) : 0;
+	$counts['accounts_kept']    = $delete_accounts ? count( $accounts['keep'] ) : count( $accounts['delete'] ) + count( $accounts['keep'] );
 	return $counts;
 }
 
 /**
  * Remove all test campaigns: their groups, memberships, enrollments, SOAP
  * entries and revisions, points, shares, reminder choices, queued reminder
- * emails and audit rows. Unless $keep_accounts, participant accounts that were
- * only ever in test campaigns are deleted too, so testers start fresh in the
- * real Marathon. Staff accounts (who can edit posts) and anyone enrolled in a
- * real campaign are never deleted. Run jlife_challenges_test_cleanup_preview()
- * first to see the counts.
+ * emails and audit rows. Every account is kept by default, since testers may
+ * be real participants (owner decision, #174). Only with $delete_accounts are
+ * participant accounts that were only ever in test campaigns deleted; staff
+ * accounts (who can edit posts) and anyone enrolled in a real campaign are
+ * never deleted. Run jlife_challenges_test_cleanup_preview() first.
  *
  * @param int  $actor         Organizer.
- * @param bool $keep_accounts True: keep every account (real people joined the test).
+ * @param bool $delete_accounts True: also delete test-only participant accounts.
  * @return array|WP_Error Counts: campaigns, entries, users (deleted), kept (accounts kept).
  */
-function jlife_challenges_remove_test_campaigns( $actor, $keep_accounts = false ) {
+function jlife_challenges_remove_test_campaigns( $actor, $delete_accounts = false ) {
 	if ( ! jlife_challenges_is_organizer( $actor ) ) {
 		return jlife_challenges_denied();
 	}
@@ -185,7 +185,7 @@ function jlife_challenges_remove_test_campaigns( $actor, $keep_accounts = false 
 	$in       = implode( ',', $ids ); // Integers only (intval above).
 	$entries  = jlife_challenges_table( 'soap_entries' );
 	$accounts = jlife_challenges_test_accounts( $ids );
-	if ( $keep_accounts ) {
+	if ( ! $delete_accounts ) {
 		$accounts['keep']   = array_merge( $accounts['keep'], $accounts['delete'] );
 		$accounts['delete'] = array();
 	}
@@ -216,10 +216,10 @@ function jlife_challenges_remove_test_campaigns( $actor, $keep_accounts = false 
 		0,
 		0,
 		array(
-			'count'         => count( $ids ),
-			'accounts_gone' => $deleted,
-			'accounts_kept' => count( $accounts['keep'] ),
-			'keep_accounts' => (bool) $keep_accounts,
+			'count'           => count( $ids ),
+			'accounts_gone'   => $deleted,
+			'accounts_kept'   => count( $accounts['keep'] ),
+			'delete_accounts' => (bool) $delete_accounts,
 		)
 	);
 	return array(

@@ -10,15 +10,13 @@ on:
           Test drive: "create" makes a TEST Bible Marathon starting today and
           emails the invite link to the site admin address (run again for a
           new link); "preview-remove" only prints what a removal would do
-          (counts, no names); "remove-keep-accounts" deletes the test data but
-          keeps every account; "remove" deletes all test data and test-only
-          accounts. Once real people may have joined, use remove-keep-accounts.
+          (counts, no names); "remove" deletes all test data and keeps every
+          account (testers may be real participants, #174).
         type: choice
         options:
           - none
           - create
           - preview-remove
-          - remove-keep-accounts
           - remove
         default: none
 

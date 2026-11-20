@@ -8,7 +8,7 @@
 # Inputs (environment, from a 0600 env file the workflow uploads and this
 # script deletes):
 #   WP_PATH, SITE_URL, WP_VERSION, DB_NAME, DB_USER, DB_PASSWORD
-# Optional: TEST_CAMPAIGN (none|create|preview-remove|remove-keep-accounts|remove), DB_HOST (localhost), PHP_BIN (cPanel ea-php82), STATE_DIR (~/.latoc),
+# Optional: TEST_CAMPAIGN (none|create|preview-remove|remove), DB_HOST (localhost), PHP_BIN (cPanel ea-php82), STATE_DIR (~/.latoc),
 #   BUNDLE (the uploaded plugin tarball, $STATE_DIR/jlife-plugins.tgz)
 #   POLYLANG_VERSION (the pinned Polylang release, default below)
 #
@@ -275,13 +275,9 @@ case "${TEST_CAMPAIGN:-none}" in
     log "Test campaign: preview removal (nothing is changed)"
     wp jlife test-campaign remove --dry-run
     ;;
-  remove-keep-accounts)
-    log "Test campaign: remove, keeping every account"
-    wp jlife test-campaign remove --keep-accounts
-    rm -f "${STATE_DIR}/test-invite.txt"
-    ;;
   remove)
-    log "Test campaign: remove, deleting test-only accounts"
+    # Keeps every account: alpha testers are real participants (#174).
+    log "Test campaign: remove (accounts kept)"
     wp jlife test-campaign remove
     rm -f "${STATE_DIR}/test-invite.txt"
     ;;

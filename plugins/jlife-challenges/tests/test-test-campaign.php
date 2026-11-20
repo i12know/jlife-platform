@@ -42,7 +42,8 @@ class Test_Test_Campaign extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Remove deletes test data and test-only accounts, and nothing else.
+	 * With delete_accounts, remove deletes test data and test-only accounts,
+	 * and nothing else.
 	 */
 	public function test_remove_only_touches_test_data() {
 		$this->set_now( '2026-11-05 20:00:00' );
@@ -57,7 +58,7 @@ class Test_Test_Campaign extends Jlife_Challenges_TestCase {
 		$this->set_now( '2026-12-20 18:00:00' );
 		$this->assertIsArray( jlife_challenges_submit( $this->u['a'], $this->campaign, null, $this->soap( 'real' ) ) );
 
-		$out = jlife_challenges_remove_test_campaigns( $this->u['organizer'] );
+		$out = jlife_challenges_remove_test_campaigns( $this->u['organizer'], true );
 		$this->assertSame(
 			array(
 				'campaigns' => 1,
@@ -76,7 +77,7 @@ class Test_Test_Campaign extends Jlife_Challenges_TestCase {
 		$this->assertSame( 1, $this->ledger_rows( $this->u['a'] ), 'only the real point remains' );
 		$this->assertNull( jlife_challenges_group_for_invite( $r['invite_code'] ) );
 
-		$this->assertSame( 0, jlife_challenges_remove_test_campaigns( $this->u['organizer'] )['campaigns'], 'idempotent' );
+		$this->assertSame( 0, jlife_challenges_remove_test_campaigns( $this->u['organizer'], true )['campaigns'], 'idempotent' );
 	}
 
 	/**
@@ -147,17 +148,17 @@ class Test_Test_Campaign extends Jlife_Challenges_TestCase {
 		$t = $this->seed_test_campaign();
 		$this->assertSame( 2, $this->queued( $t['campaign_id'] ) );
 
-		jlife_challenges_remove_test_campaigns( $this->u['organizer'] );
+		jlife_challenges_remove_test_campaigns( $this->u['organizer'], true );
 		$this->assertSame( 0, $this->queued( $t['campaign_id'] ), 'no orphan queue rows' );
 		$this->assertSame( 1, $this->queued( $this->campaign ), 'real campaign queue untouched' );
 	}
 
 	/**
-	 * With keep_accounts, the test data goes and every account stays (#174).
+	 * By default the test data goes and every account stays (owner decision, #174).
 	 */
-	public function test_remove_can_keep_every_account() {
+	public function test_remove_keeps_every_account_by_default() {
 		$t   = $this->seed_test_campaign();
-		$out = jlife_challenges_remove_test_campaigns( $this->u['organizer'], true );
+		$out = jlife_challenges_remove_test_campaigns( $this->u['organizer'] );
 		$this->assertSame(
 			array(
 				'campaigns' => 1,
@@ -179,7 +180,7 @@ class Test_Test_Campaign extends Jlife_Challenges_TestCase {
 	 */
 	public function test_preview_counts_without_changing_anything() {
 		$t    = $this->seed_test_campaign();
-		$plan = jlife_challenges_test_cleanup_preview( $this->u['organizer'] );
+		$plan = jlife_challenges_test_cleanup_preview( $this->u['organizer'], true );
 		$this->assertSame( 1, $plan['campaigns'] );
 		$this->assertSame( 2, $plan['soap_entries'] );
 		$this->assertSame( 2, $plan['enrollments'] );
@@ -190,7 +191,7 @@ class Test_Test_Campaign extends Jlife_Challenges_TestCase {
 			$this->assertIsInt( $n, 'counts only, no people' );
 		}
 
-		$keep = jlife_challenges_test_cleanup_preview( $this->u['organizer'], true );
+		$keep = jlife_challenges_test_cleanup_preview( $this->u['organizer'] );
 		$this->assertSame( 0, $keep['accounts_deleted'] );
 		$this->assertSame( 2, $keep['accounts_kept'] );
 
