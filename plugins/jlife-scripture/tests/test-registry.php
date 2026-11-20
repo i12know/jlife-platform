@@ -81,15 +81,15 @@ class Test_Registry extends Jlife_Scripture_TestCase {
 	 */
 	public function not_renderable() {
 		return array(
-			'disabled'                => array( array( 'enabled' => false ) ),
-			'link display'            => array( array( 'display' => 'link' ) ),
-			'no license evidence'     => array( array( 'license_evidence' => null ) ),
-			'empty license evidence'  => array( array( 'license_evidence' => '  ' ) ),
-			'link source, native'     => array( array( 'source' => 'link' ) ),
-			'unknown source'          => array( array( 'source' => 'scraper' ) ),
-			'no copyright line'       => array( array( 'copyright' => array( 'text' => '' ) ) ),
-			'cache rule missing'      => array( array( 'cache' => array() ) ),
-			'negative max age'        => array(
+			'disabled'               => array( array( 'enabled' => false ) ),
+			'link display'           => array( array( 'display' => 'link' ) ),
+			'no license evidence'    => array( array( 'license_evidence' => null ) ),
+			'empty license evidence' => array( array( 'license_evidence' => '  ' ) ),
+			'link source, native'    => array( array( 'source' => 'link' ) ),
+			'unknown source'         => array( array( 'source' => 'scraper' ) ),
+			'no copyright line'      => array( array( 'copyright' => array( 'text' => '' ) ) ),
+			'cache rule missing'     => array( array( 'cache' => array() ) ),
+			'negative max age'       => array(
 				array(
 					'cache' => array(
 						'max_age_seconds'        => -1,
