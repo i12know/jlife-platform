@@ -168,6 +168,40 @@ class Test_Translations extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * The organizer's Groups screen (#64) reads in Vietnamese, with no English left in its labels.
+	 */
+	public function test_the_groups_admin_screen_reads_in_vietnamese() {
+		$view = jlife_challenges_groups_admin_view( $this->u['organizer'], $this->campaign, (int) $this->g['g1'] );
+		$html = jlife_challenges_groups_admin_html( $view, 'member_moved', null );
+		foreach ( array(
+			'Các nhóm nhỏ',
+			'Lập một nhóm',
+			'Thu hồi mã mời',
+			'Tạo mã mời mới',
+			'Thêm vào nhóm này',
+			'Chuyển sang nhóm khác',
+			'Đã chuyển thành viên.',
+			'>30 ngày<',
+		) as $vi ) {
+			$this->assertStringContainsString( $vi, $html, $vi );
+		}
+		foreach ( array( 'Small groups', 'Make a group', 'Revoke the invite code', 'Add a member', 'Members' ) as $en ) {
+			$this->assertStringNotContainsString( $en, $html, $en );
+		}
+		$shown = jlife_challenges_groups_admin_html(
+			$view,
+			'created',
+			array(
+				'name'    => 'Nhóm Thử',
+				'code'    => 'ABCDEFGH',
+				'expires' => '2026-12-31 00:00:00',
+			)
+		);
+		$this->assertStringContainsString( 'Mã mời của', $shown );
+		$this->assertStringContainsString( 'Đường dẫn mời:', $shown );
+	}
+
+	/**
 	 * The My Bible picker on My Marathon (#140) reads in Vietnamese, including the
 	 * "(opens Bible Gateway)" label.
 	 */

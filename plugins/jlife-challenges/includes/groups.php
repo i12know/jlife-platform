@@ -141,20 +141,22 @@ function jlife_challenges_hash_invite( $code ) {
 }
 
 /**
- * Create a group with a fresh invite code. Organizers only.
+ * Create a group with a fresh invite code. Organizers only. The name follows the
+ * same rules as starting a group: plain text, 1 to 60 characters.
  *
  * @param int    $actor       Organizer.
  * @param int    $campaign_id Campaign.
  * @param string $name        Group name.
+ * @param int    $days        Days until the first invite code expires.
  * @return array|WP_Error { id, invite_code } — the code is returned only here.
  */
-function jlife_challenges_create_group( $actor, $campaign_id, $name ) {
+function jlife_challenges_create_group( $actor, $campaign_id, $name, $days = 60 ) {
 	if ( ! jlife_challenges_is_organizer( $actor ) || ! jlife_challenges_get_campaign( $campaign_id ) ) {
 		return jlife_challenges_denied();
 	}
-	$name = sanitize_text_field( (string) $name );
-	if ( '' === $name ) {
-		return new WP_Error( 'jlife_group_invalid', 'Group name required.' );
+	$name = jlife_challenges_clean_group_name( $name );
+	if ( is_wp_error( $name ) ) {
+		return $name;
 	}
 	global $wpdb;
 	$ok = $wpdb->insert(
@@ -172,7 +174,7 @@ function jlife_challenges_create_group( $actor, $campaign_id, $name ) {
 	}
 	$id = (int) $wpdb->insert_id;
 	jlife_challenges_audit( $actor, 'group_created', 'group', $id, (int) $campaign_id );
-	$code = jlife_challenges_reset_invite( $actor, $id );
+	$code = jlife_challenges_reset_invite( $actor, $id, (int) $days );
 	return is_wp_error( $code ) ? $code : array(
 		'id'          => $id,
 		'invite_code' => $code,
@@ -771,6 +773,9 @@ function jlife_challenges_move_member( $actor, $user_id, $new_group_id, $from_gr
 	}
 	if ( ! $from_group_id ) {
 		return new WP_Error( 'jlife_move_ambiguous', 'Name the group the person is leaving.' );
+	}
+	if ( (int) $from_group_id === (int) $new_group_id ) {
+		return new WP_Error( 'jlife_move_same', __( 'Choose a different group to move them to.', 'jlife-challenges' ) );
 	}
 	$from = jlife_challenges_get_membership( $from_group_id, $user_id );
 	if ( ! $from || 'active' !== $from['status'] || (int) $from['campaign_id'] !== (int) $group['campaign_id'] ) {
