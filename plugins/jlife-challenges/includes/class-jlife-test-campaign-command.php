@@ -81,7 +81,7 @@ class Jlife_Test_Campaign_Command {
 	 * @param array $assoc_args Options.
 	 */
 	public function remove( $args = array(), $assoc_args = array() ) {
-		$actor = $this->organizer();
+		$actor  = $this->organizer();
 		$delete = ! empty( $assoc_args['delete-accounts'] );
 		$plan   = jlife_challenges_test_cleanup_preview( $actor, $delete );
 		if ( is_wp_error( $plan ) ) {
