@@ -202,7 +202,7 @@ class Test_Reading_Native extends WP_UnitTestCase {
 
 		$main = substr( $html, 0, (int) strpos( $html, '<details class="jlife-supplemental">' ) );
 		$this->assertStringContainsString( 'Day 1', $main );
-		$this->assertStringContainsString( "Today's reading", $main );
+		$this->assertStringContainsString( 'Today&#039;s reading', $main );
 		$this->assertStringNotContainsString( 'jlife-bible-links', $main, 'the per-language link blocks are replaced' );
 		$this->assertStringNotContainsString( 'jlife-passages', $main, 'the reader lists each reference itself' );
 		$this->assertStringNotContainsString( 'jlife-read-all', $main );
@@ -363,7 +363,11 @@ class Test_Reading_Native extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'Day 1', $html );
 		$this->assertStringContainsString( '<details class="jlife-supplemental">', $html, 'the rest of the page is intact' );
 		$this->assertStringContainsString( 'jlife-reading-source', $html );
-		$this->assertSame( '', $this->logged(), 'no Bible text or error detail in the log' );
+		$log = $this->logged();
+		$this->assertStringContainsString( 'jlife-scripture: fetch failed: source=local version=kt1925 passage=JHN.1.1-JHN.1.18 code=other', $log, 'identifiers only' );
+		$this->assertStringNotContainsString( 'Unavailable.', $log, 'not the source\'s own message' );
+		$this->assertStringNotContainsString( 'Ngôi Lời', $log, 'no Bible text' );
+		$this->assertSame( 1, substr_count( trim( $log ), "\n" ) + 1, 'one line' );
 	}
 
 	/**
