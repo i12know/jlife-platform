@@ -107,7 +107,7 @@
       "name": "New Living Translation",
       "short_code": "NLT",
       "source": "apibible",
-      "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+      "source_id": "d6e14a625393b4da-01",
       "display": "link",
       "copyright": {
         "text": "New Living Translation (NLT): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
@@ -120,7 +120,7 @@
       "license_evidence": null,
       "enabled": false,
       "default_for": [],
-      "note": "API.Bible (#141, PR #147): starter-plan slot. Record the bibleId (wp jlife bible apibible-list), wrap the client as a Jlife_Scripture_Source with FUMS display tracking, then enable."
+      "note": "API.Bible (#141): starter-plan slot; bibleId recorded 2026-11-20. Source and FUMS tracking are wired (Jlife_Scripture_Apibible_Source). Stays disabled until the owner runs `wp jlife scripture try` for this version and a follow-up PR sets enabled, display native and license_evidence (docs/bible-provider-entitlements.md, Enable NLT/NKJV/CSB)."
     },
     {
       "key": "nkjv",
@@ -128,7 +128,7 @@
       "name": "New King James Version",
       "short_code": "NKJV",
       "source": "apibible",
-      "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+      "source_id": "63097d2a0a2f7db3-01",
       "display": "link",
       "copyright": {
         "text": "New King James Version (NKJV): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
@@ -141,7 +141,7 @@
       "license_evidence": null,
       "enabled": false,
       "default_for": [],
-      "note": "API.Bible (#141, PR #147): starter-plan slot. Record the bibleId (wp jlife bible apibible-list), wrap the client as a Jlife_Scripture_Source with FUMS display tracking, then enable."
+      "note": "API.Bible (#141): starter-plan slot; bibleId recorded 2026-11-20. Source and FUMS tracking are wired (Jlife_Scripture_Apibible_Source). Stays disabled until the owner runs `wp jlife scripture try` for this version and a follow-up PR sets enabled, display native and license_evidence (docs/bible-provider-entitlements.md, Enable NLT/NKJV/CSB)."
     },
     {
       "key": "csb",
@@ -149,7 +149,7 @@
       "name": "Christian Standard Bible",
       "short_code": "CSB",
       "source": "apibible",
-      "source_id": "REPLACE_WITH_BIBLE_ID_FROM_apibible-list",
+      "source_id": "a556c5305ee15c3f-01",
       "display": "link",
       "copyright": {
         "text": "Christian Standard Bible (CSB): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
@@ -162,7 +162,7 @@
       "license_evidence": null,
       "enabled": false,
       "default_for": [],
-      "note": "API.Bible (#141, PR #147): starter-plan slot. Record the bibleId (wp jlife bible apibible-list), wrap the client as a Jlife_Scripture_Source with FUMS display tracking, then enable."
+      "note": "API.Bible (#141): starter-plan slot; bibleId recorded 2026-11-20. Source and FUMS tracking are wired (Jlife_Scripture_Apibible_Source). Stays disabled until the owner runs `wp jlife scripture try` for this version and a follow-up PR sets enabled, display native and license_evidence (docs/bible-provider-entitlements.md, Enable NLT/NKJV/CSB)."
     },
     {
       "key": "erv",

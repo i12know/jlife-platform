@@ -101,7 +101,7 @@ function validateRegistry() {
   for (const v of versions.filter((x) => x.source === 'apibible')) {
     const inv = ab.get(v.key);
     check(`registry: API.Bible ${v.short_code} matches the provider inventory`, !!inv && inv.code === v.short_code && inv.source_id === v.source_id && inv.language === v.language);
-    check(`registry: API.Bible ${v.short_code} renders text only with a recorded bibleId`, !(v.enabled && v.display === 'native') || !/^REPLACE_/.test(v.source_id));
+    check(`registry: API.Bible ${v.short_code} has a recorded bibleId, not a placeholder`, /^[0-9a-f]{16}-[0-9]{2}$/.test(v.source_id), v.source_id);
   }
   for (const v of versions.filter((x) => x.source === 'local')) {
     const manifest = path.join(PLUGIN, 'data', v.source_id, 'manifest.json');

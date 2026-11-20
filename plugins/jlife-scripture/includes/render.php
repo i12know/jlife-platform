@@ -156,10 +156,10 @@ function jlife_scripture_render_edition( $choice, $segments, $day ) {
 	$body  = '';
 	$shown = false;
 	if ( ! is_wp_error( $segments ) && $choice['native'] ) {
-		$result = jlife_scripture_get_passage( $choice['version'], $segments );
+		$result = jlife_scripture_get_passage_entry( $choice['version'], $segments );
 		$shown  = ! is_wp_error( $result );
 		$body   = $shown
-			? jlife_scripture_render_verses( $result ) . jlife_scripture_render_attribution( $choice['version'] )
+			? jlife_scripture_render_verses( $result['segments'] ) . jlife_scripture_render_attribution( $choice['version'], $result['meta'] )
 			: '<p class="jls-note">' . esc_html__( 'The Bible text could not be loaded.', 'jlife-scripture' ) . '</p>';
 	}
 	if ( ! $shown ) {
@@ -200,12 +200,20 @@ function jlife_scripture_render_verses( $result ) {
 }
 
 /**
- * The version name and its copyright line, under the text.
+ * The version name and its copyright line, under the text. A source that
+ * needs more under its text than the registry's line (the notice the API
+ * returned, a required link: Jlife_Scripture_Source_Attribution) prints that
+ * instead.
  *
  * @param array $version Version entry.
+ * @param array $meta    The meta stored with the passage (a source's own).
  * @return string
  */
-function jlife_scripture_render_attribution( $version ) {
+function jlife_scripture_render_attribution( $version, $meta = array() ) {
+	$source = jlife_scripture_get_source( (string) $version['source'] );
+	if ( $source instanceof Jlife_Scripture_Source_Attribution ) {
+		return $source->attribution_html( $version, (array) $meta );
+	}
 	$notice = esc_html( (string) $version['copyright']['text'] );
 	$url    = (string) ( $version['copyright']['url'] ?? '' );
 	if ( '' !== $url ) {

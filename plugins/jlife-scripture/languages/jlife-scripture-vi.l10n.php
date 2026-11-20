@@ -23,5 +23,8 @@ return array(
 		'That Scripture reference could not be read.'   => 'Không đọc được câu tham chiếu Kinh Thánh này.',
 		'This passage is not available here.'           => 'Đoạn Kinh Thánh này hiện không có ở đây.',
 		'This Bible version is not available here yet.' => 'Bản Kinh Thánh này chưa có ở đây.',
+		'Scripture text provided by API.Bible'          => 'Lời Kinh Thánh do API.Bible cung cấp',
+		'Full copyright information'                    => 'Thông tin bản quyền đầy đủ',
+		'More information'                              => 'Thông tin thêm',
 	),
 );

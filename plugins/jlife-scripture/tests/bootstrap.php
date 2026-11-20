@@ -27,6 +27,13 @@ tests_add_filter(
 	'muplugins_loaded',
 	function () {
 		require dirname( __DIR__ ) . '/jlife-scripture.php';
+		// The API.Bible source (#141) calls the client in jlife-challenges (#147). Load only that
+		// self-contained file when it sits beside this plugin (wp-env maps both): the source then
+		// works without the rest of jlife-challenges, as it must when that plugin is inactive.
+		$client = dirname( __DIR__, 2 ) . '/jlife-challenges/includes/bible-apibible.php';
+		if ( file_exists( $client ) ) {
+			require_once $client;
+		}
 	}
 );
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       J-Life Scripture
  * Plugin URI:        https://github.com/i12know/jlife-platform
- * Description:       The day's Scripture on the page (#139): Bible version allowlist, the public-domain Kinh Thánh 1925 text, a reference parser, a shared passage cache for licensed sources, and a reader with an "Open in Bible Gateway" fallback. Off until the jlife_scripture_native_reader option is turned on.
+ * Description:       The day's Scripture on the page (#139): Bible version allowlist, the public-domain Kinh Thánh 1925 text, API.Bible sources (NLT, NKJV, CSB; #141), a reference parser, a shared passage cache for licensed sources, and a reader with an "Open in Bible Gateway" fallback. Off until the jlife_scripture_native_reader option is turned on.
  * Version:           0.1.0
  * Requires at least: 6.0
  * Requires PHP:      8.0
@@ -24,11 +24,14 @@ require_once __DIR__ . '/includes/registry.php';
 require_once __DIR__ . '/includes/references.php';
 require_once __DIR__ . '/includes/interface-jlife-scripture-source.php';
 require_once __DIR__ . '/includes/interface-jlife-scripture-display-tracking.php';
+require_once __DIR__ . '/includes/interface-jlife-scripture-source-attribution.php';
 require_once __DIR__ . '/includes/class-jlife-scripture-local-source.php';
 require_once __DIR__ . '/includes/class-jlife-scripture-youversion-source.php';
+require_once __DIR__ . '/includes/class-jlife-scripture-apibible-source.php';
 require_once __DIR__ . '/includes/sources.php';
 require_once __DIR__ . '/includes/local-import.php';
 require_once __DIR__ . '/includes/cache.php';
+require_once __DIR__ . '/includes/apibible.php';
 require_once __DIR__ . '/includes/preferences.php';
 require_once __DIR__ . '/includes/render.php';
 
