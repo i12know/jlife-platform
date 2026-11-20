@@ -13,13 +13,14 @@
 class Test_Registry extends Jlife_Scripture_TestCase {
 
 	/**
-	 * Every shipped version is valid; only Kinh Thánh 1925 may render text today.
+	 * Every shipped version is valid; Kinh Thánh 1925 and the three API.Bible
+	 * versions (NLT, NKJV, CSB: enabled #141) may render text, nothing else.
 	 */
-	public function test_shipped_registry_renders_only_kinh_thanh_1925() {
+	public function test_shipped_registry_renders_only_the_licensed_versions() {
 		$versions = jlife_scripture_registry()['versions'];
 		$this->assertSame( array( 'kt1925', 'nirv', 'niv', 'kthd', 'nlt', 'nkjv', 'csb', 'erv', 'bpt' ), array_keys( $versions ), 'no shipped entry is dropped as invalid' );
 		$renderable = array_keys( array_filter( $versions, 'jlife_scripture_can_render' ) );
-		$this->assertSame( array( 'kt1925' ), $renderable );
+		$this->assertSame( array( 'kt1925', 'nlt', 'nkjv', 'csb' ), $renderable );
 		foreach ( array( 'erv', 'bpt' ) as $key ) {
 			$this->assertSame( 'link', $versions[ $key ]['source'] );
 			$this->assertSame( 'link', $versions[ $key ]['display'] );
@@ -36,8 +37,8 @@ class Test_Registry extends Jlife_Scripture_TestCase {
 	}
 
 	/**
-	 * Defaults by the participant's locale: vi -> 1925, en (or none) -> NIrV,
-	 * which is not renderable yet, so English falls back to the ERV link.
+	 * Defaults by the participant's locale: vi -> 1925, en (or none) -> NLT
+	 * (API.Bible), with the ERV link as English's fallback.
 	 */
 	public function test_defaults_by_locale() {
 		$vi   = $this->participant( 'vi' );
@@ -54,8 +55,8 @@ class Test_Registry extends Jlife_Scripture_TestCase {
 		$this->assertTrue( $choice['native'] );
 
 		$choice = jlife_scripture_reader_choice( 'en' );
-		$this->assertSame( 'nirv', $choice['version']['key'] );
-		$this->assertFalse( $choice['native'] );
+		$this->assertSame( 'nlt', $choice['version']['key'] );
+		$this->assertTrue( $choice['native'] );
 		$this->assertSame( 'ERV', $choice['fallback']['source_id'] );
 		$this->assertSame( 'BPT', jlife_scripture_fallback_version( 'vi' )['source_id'] );
 	}
@@ -130,7 +131,7 @@ class Test_Registry extends Jlife_Scripture_TestCase {
 	 * licenses them) is a registry edit only.
 	 */
 	public function test_switching_defaults_is_data_only() {
-		$this->patch_version( 'nirv', array( 'default_for' => array() ) );
+		$this->patch_version( 'nlt', array( 'default_for' => array() ) );
 		$this->patch_version( 'kt1925', array( 'default_for' => array() ) );
 		$this->patch_version( 'erv', array( 'default_for' => array( 'en' ) ) );
 		$this->patch_version( 'bpt', array( 'default_for' => array( 'vi' ) ) );

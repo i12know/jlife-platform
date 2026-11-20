@@ -96,6 +96,7 @@ function jlife_scripture_render_day( $day, $user_id = 0, $args = array() ) {
 	if ( null !== $pair[1] ) {
 		$choices[] = jlife_scripture_reader_choice_for( $pair[1], $lang );
 	}
+	$reader = $lang; // The language the participant reads in (My language, or the page's), for translated links.
 	$lang   = $choices[0]['language'];
 	$labels = (array) ( $day['i18n'][ $lang ]['passages'] ?? array() );
 	$out    = '';
@@ -105,7 +106,7 @@ function jlife_scripture_render_day( $day, $user_id = 0, $args = array() ) {
 		$segments = jlife_scripture_parse_reference( $display );
 		$out     .= '<details class="jls-passage"' . ( 0 === $i ? ' open' : '' ) . '>'
 			. '<summary>' . esc_html( $label ) . '</summary>'
-			. '<div class="jls-body">' . jlife_scripture_render_editions( $choices, $segments, $day ) . '</div>'
+			. '<div class="jls-body">' . jlife_scripture_render_editions( $choices, $segments, $day, $reader ) . '</div>'
 			. '</details>';
 	}
 	jlife_scripture_enqueue_style();
@@ -120,12 +121,13 @@ function jlife_scripture_render_day( $day, $user_id = 0, $args = array() ) {
  * @param array[]        $choices  jlife_scripture_reader_choice_for() results, first Bible first.
  * @param array|WP_Error $segments Parsed reference, or the parse error.
  * @param array          $day      Plan day.
+ * @param string         $reader   The reader's language ("en" or "vi").
  * @return string
  */
-function jlife_scripture_render_editions( $choices, $segments, $day ) {
+function jlife_scripture_render_editions( $choices, $segments, $day, $reader ) {
 	$editions = array();
 	foreach ( $choices as $choice ) {
-		$html = jlife_scripture_render_edition( $choice, $segments, $day );
+		$html = jlife_scripture_render_edition( $choice, $segments, $day, $reader );
 		if ( '' !== $html && ! in_array( $html, array_column( $editions, 'html' ), true ) ) {
 			$editions[] = array(
 				'lang' => $choice['language'],
@@ -150,16 +152,17 @@ function jlife_scripture_render_editions( $choices, $segments, $day ) {
  * @param array          $choice   jlife_scripture_reader_choice_for() result.
  * @param array|WP_Error $segments Parsed reference, or the parse error.
  * @param array          $day      Plan day.
+ * @param string         $reader   The reader's language ("en" or "vi").
  * @return string
  */
-function jlife_scripture_render_edition( $choice, $segments, $day ) {
+function jlife_scripture_render_edition( $choice, $segments, $day, $reader ) {
 	$body  = '';
 	$shown = false;
 	if ( ! is_wp_error( $segments ) && $choice['native'] ) {
 		$result = jlife_scripture_get_passage_entry( $choice['version'], $segments );
 		$shown  = ! is_wp_error( $result );
 		$body   = $shown
-			? jlife_scripture_render_verses( $result['segments'] ) . jlife_scripture_render_attribution( $choice['version'], $result['meta'] )
+			? jlife_scripture_render_verses( $result['segments'] ) . jlife_scripture_render_attribution( $choice['version'], $result['meta'], $reader )
 			: '<p class="jls-note">' . esc_html__( 'The Bible text could not be loaded.', 'jlife-scripture' ) . '</p>';
 	}
 	if ( ! $shown ) {
@@ -205,14 +208,15 @@ function jlife_scripture_render_verses( $result ) {
  * returned, a required link: Jlife_Scripture_Source_Attribution) prints that
  * instead.
  *
- * @param array $version Version entry.
- * @param array $meta    The meta stored with the passage (a source's own).
+ * @param array  $version  Version entry.
+ * @param array  $meta     The meta stored with the passage (a source's own).
+ * @param string $language The reader's language ("en" or "vi"; '' = unknown).
  * @return string
  */
-function jlife_scripture_render_attribution( $version, $meta = array() ) {
+function jlife_scripture_render_attribution( $version, $meta = array(), $language = '' ) {
 	$source = jlife_scripture_get_source( (string) $version['source'] );
 	if ( $source instanceof Jlife_Scripture_Source_Attribution ) {
-		return $source->attribution_html( $version, (array) $meta );
+		return $source->attribution_html( $version, (array) $meta, (string) $language );
 	}
 	$notice = esc_html( (string) $version['copyright']['text'] );
 	$url    = (string) ( $version['copyright']['url'] ?? '' );

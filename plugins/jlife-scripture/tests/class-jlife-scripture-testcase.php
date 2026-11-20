@@ -101,7 +101,8 @@ abstract class Jlife_Scripture_TestCase extends WP_UnitTestCase {
 	/**
 	 * Replace the YouVersion stub with the fake source and make NIrV a
 	 * renderable, cached English default (as it will be once the owner gates
-	 * clear), with the given cache rule.
+	 * clear; today NLT is the shipped English default, so this moves it), with
+	 * the given cache rule.
 	 *
 	 * @param int      $max_age   cache.max_age_seconds.
 	 * @param int|null $max_verse cache.max_consecutive_verses.
@@ -123,12 +124,14 @@ abstract class Jlife_Scripture_TestCase extends WP_UnitTestCase {
 				'display'          => 'native',
 				'enabled'          => true,
 				'license_evidence' => 'Test only.',
+				'default_for'      => array( 'en' ),
 				'cache'            => array(
 					'max_age_seconds'        => $max_age,
 					'max_consecutive_verses' => $max_verse,
 				),
 			)
 		);
+		$this->patch_version( 'nlt', array( 'default_for' => array() ) );
 		return $this->fake;
 	}
 

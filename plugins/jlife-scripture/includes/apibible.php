@@ -141,15 +141,51 @@ function jlife_scripture_apibible_error_code( $reason ) {
  * and 7.2): the site's own "copyright" page, with the version as the anchor.
  * API.Bible's metadata carries the information but no URL, so the owner makes
  * the page (shortcode [jlife_bible_copyrights]) and sets the site option
- * jlife_scripture_copyright_page_url. Empty until then: no link is shown.
+ * jlife_scripture_copyright_page_id to its ID. With Polylang the link goes to
+ * that page's translation in the reader's language (pll_get_post()), else to
+ * the page itself. The old option jlife_scripture_copyright_page_url is still
+ * read as a fallback for one release. Empty until one is set: no link is shown.
  *
- * @param array $version Registry version entry.
+ * @param array  $version  Registry version entry.
+ * @param string $language The reader's language ("en" or "vi"); '' = the page as it is.
  * @return string URL, or ''.
  */
-function jlife_scripture_copyright_page_url( $version ) {
-	$base = (string) apply_filters( 'jlife_scripture_copyright_page_url', (string) get_option( 'jlife_scripture_copyright_page_url', '' ), $version );
+function jlife_scripture_copyright_page_url( $version, $language = '' ) {
+	$base = jlife_scripture_copyright_page_permalink( (int) get_option( 'jlife_scripture_copyright_page_id', 0 ), (string) $language );
+	if ( '' === $base ) {
+		$base = (string) apply_filters( 'jlife_scripture_copyright_page_url', (string) get_option( 'jlife_scripture_copyright_page_url', '' ), $version );
+	}
 	$base = esc_url_raw( (string) preg_replace( '/#.*$/', '', trim( $base ) ), array( 'http', 'https' ) );
 	return '' === $base ? '' : $base . '#' . rawurlencode( (string) $version['key'] );
+}
+
+/**
+ * The permalink of the copyright page for a language: the page with this ID, or
+ * its Polylang translation in that language when there is a published one.
+ * Only published pages are linked.
+ *
+ * @param int    $page_id  The page's ID (the site option jlife_scripture_copyright_page_id).
+ * @param string $language "en" or "vi"; '' = the page itself.
+ * @return string '' when there is no published page.
+ */
+function jlife_scripture_copyright_page_permalink( $page_id, $language ) {
+	if ( $page_id < 1 ) {
+		return '';
+	}
+	$candidates = array( $page_id );
+	if ( '' !== $language && function_exists( 'pll_get_post' ) ) {
+		$translated = (int) pll_get_post( $page_id, $language );
+		if ( $translated > 0 && $translated !== $page_id ) {
+			array_unshift( $candidates, $translated );
+		}
+	}
+	foreach ( $candidates as $candidate ) {
+		$page = get_post( $candidate );
+		if ( $page instanceof WP_Post && 'page' === $page->post_type && 'publish' === $page->post_status ) {
+			return (string) get_permalink( $page );
+		}
+	}
+	return '';
 }
 
 /**
@@ -325,8 +361,18 @@ function jlife_scripture_try_passage( $key, $reference, $opts = array() ) {
 		$spent = max( 0, jlife_scripture_apibible_calls() - $calls );
 	}
 
-	$page    = jlife_scripture_copyright_page_url( $version );
-	$lines[] = '' !== $page ? 'Copyright page link: ' . $page : 'Copyright page link: not set (create a page with [jlife_bible_copyrights] and set the site option jlife_scripture_copyright_page_url)';
+	$pages = array(
+		'en' => jlife_scripture_copyright_page_url( $version, 'en' ),
+		'vi' => jlife_scripture_copyright_page_url( $version, 'vi' ),
+	);
+	if ( '' === $pages['en'] && '' === $pages['vi'] ) {
+		$lines[] = 'Copyright page link: not set (create a page with [jlife_bible_copyrights] and set the site option jlife_scripture_copyright_page_id to its ID)';
+	} elseif ( $pages['en'] === $pages['vi'] ) {
+		$lines[] = 'Copyright page link: ' . $pages['en'];
+	} else {
+		$lines[] = 'Copyright page link (en): ' . $pages['en'];
+		$lines[] = 'Copyright page link (vi): ' . $pages['vi'];
+	}
 	if ( 'apibible' === $version['source'] ) {
 		$limit   = defined( 'JLIFE_CHALLENGES_APIBIBLE_MONTHLY_LIMIT' ) ? (int) constant( 'JLIFE_CHALLENGES_APIBIBLE_MONTHLY_LIMIT' ) : 5000;
 		$lines[] = sprintf( 'API calls used by this command: %d (this month: %d of %d)', $spent, jlife_scripture_apibible_calls(), $limit );

@@ -33,6 +33,12 @@ tests_add_filter(
 		if ( file_exists( $scripture ) ) {
 			require $scripture;
 		}
+		// The English default is the NLT through API.Bible (#141), whose client lives in
+		// jlife-challenges: load only that self-contained file when it sits beside this plugin.
+		$client = dirname( __DIR__, 2 ) . '/jlife-challenges/includes/bible-apibible.php';
+		if ( file_exists( $client ) ) {
+			require_once $client;
+		}
 	}
 );
 

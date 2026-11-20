@@ -30,6 +30,30 @@ class Test_Reading_Native extends WP_UnitTestCase {
 	private $previous_log = false;
 
 	/**
+	 * A fake key; it must never appear anywhere but the api-key header.
+	 */
+	const KEY = 'fake-KEY-0123456789abcdef';
+
+	/**
+	 * Made-up notice (never real Scripture).
+	 */
+	const COPYRIGHT = 'FAKE COPYRIGHT NOTICE (c) 2026 Example Publisher.';
+
+	/**
+	 * What the fake API.Bible answers: an HTTP status, or 0 for a network error.
+	 *
+	 * @var int
+	 */
+	private $api_status = 200;
+
+	/**
+	 * API.Bible requests seen (passages only).
+	 *
+	 * @var string[]
+	 */
+	private $api_requests = array();
+
+	/**
 	 * The Scripture tables and the committed public-domain Kinh Thánh 1925 text,
 	 * when the Scripture plugin sits beside this one (wp-env maps both).
 	 *
@@ -50,9 +74,13 @@ class Test_Reading_Native extends WP_UnitTestCase {
 	 */
 	public function set_up() {
 		parent::set_up();
-		if ( ! function_exists( 'jlife_scripture_maybe_render_day' ) ) {
-			$this->markTestSkipped( 'jlife-scripture is not loaded.' );
+		if ( ! function_exists( 'jlife_scripture_maybe_render_day' ) || ! function_exists( 'jlife_challenges_apibible_fetch_passage' ) ) {
+			$this->markTestSkipped( 'jlife-scripture or the API.Bible client is not loaded.' );
 		}
+		add_filter( 'jlife_challenges_apibible_key', array( $this, 'filter_key' ) );
+		add_filter( 'pre_http_request', array( $this, 'fake_http' ), 10, 3 );
+		delete_site_option( JLIFE_CHALLENGES_APIBIBLE_USAGE_OPTION );
+		delete_site_transient( jlife_challenges_apibible_hold_key( jlife_scripture_get_version( 'nlt' )['source_id'] ) );
 		jlife_studies_import_reading_plan( $this->fixture( 'primary' ) );
 		jlife_studies_import_reading_plan( $this->fixture( 'supplemental' ) );
 		$GLOBALS['wp_styles'] = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- a fresh style queue per test.
@@ -64,12 +92,78 @@ class Test_Reading_Native extends WP_UnitTestCase {
 	 * Restore the log, the request and the style queue.
 	 */
 	public function tear_down() {
+		remove_filter( 'jlife_challenges_apibible_key', array( $this, 'filter_key' ) );
+		remove_filter( 'pre_http_request', array( $this, 'fake_http' ), 10 );
 		ini_set( 'error_log', (string) $this->previous_log ); // phpcs:ignore WordPress.PHP.IniSet.Risky -- test: restore the log.
 		wp_delete_file( $this->log );
 		$GLOBALS['wp_styles'] = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- leave no queue behind.
 		$_GET                 = array();
 		wp_set_current_user( 0 );
 		parent::tear_down();
+	}
+
+	/**
+	 * The fake key.
+	 *
+	 * @return string
+	 */
+	public function filter_key() {
+		return self::KEY;
+	}
+
+	/**
+	 * Answer API.Bible's requests without the network: a plain-text passage of
+	 * made-up verses ("[n] FAKE-VERSE-n for tests only.") for the passage ID asked.
+	 *
+	 * @param mixed  $pre  Short-circuit value.
+	 * @param array  $args Request args.
+	 * @param string $url  Request URL.
+	 * @return array|WP_Error
+	 */
+	public function fake_http( $pre, $args, $url ) {
+		unset( $pre, $args );
+		$ok = array(
+			'headers'  => array(),
+			'body'     => '',
+			'response' => array(
+				'code'    => 200,
+				'message' => '',
+			),
+			'cookies'  => array(),
+			'filename' => null,
+		);
+		if ( 0 === strpos( $url, JLIFE_CHALLENGES_APIBIBLE_FUMS ) ) {
+			return $ok;
+		}
+		if ( 0 === $this->api_status ) {
+			return new WP_Error( 'http_request_failed', 'cURL error 28: Operation timed out' );
+		}
+		if ( 200 !== $this->api_status ) {
+			$ok['response']['code'] = $this->api_status;
+			$ok['body']             = '{"statusCode":' . $this->api_status . ',"message":"error"}';
+			return $ok;
+		}
+		if ( 1 !== preg_match( '#/passages/([0-9A-Z.\-]+)\?#', $url, $m ) || 1 !== preg_match( '/^[0-9A-Z]{3}\.(\d+)\.(\d+)(?:-[0-9A-Z]{3}\.(\d+)\.(\d+))?$/', $m[1], $p ) ) {
+			return new WP_Error( 'http_request_failed', 'unexpected request' );
+		}
+		$this->api_requests[] = $url;
+		$content              = '';
+		for ( $v = (int) $p[2]; $v <= (int) ( $p[4] ?? $p[2] ); $v++ ) {
+			$content .= "\n     [{$v}] FAKE-VERSE-{$v} for tests only. ";
+		}
+		$ok['body'] = (string) wp_json_encode(
+			array(
+				'data' => array(
+					'id'         => $m[1],
+					'content'    => $content,
+					'reference'  => 'Fake reference',
+					'verseCount' => substr_count( $content, '[' ),
+					'copyright'  => self::COPYRIGHT,
+				),
+				'meta' => array( 'fumsToken' => 'fakeFUMStoken123' ),
+			)
+		);
+		return $ok;
 	}
 
 	/**
@@ -232,20 +326,51 @@ class Test_Reading_Native extends WP_UnitTestCase {
 	}
 
 	/**
-	 * English: the default (NIrV) is not licensed yet, so each passage opens the
-	 * ERV on Bible Gateway, with ERV's copyright line. No text, no frame.
+	 * English: the default is the NLT through API.Bible (owner, 2026-11-19): its
+	 * text with verse numbers, the API's copyright notice and the link to API.Bible,
+	 * fetched once for everyone; no Bible Gateway link, no frame. (The public
+	 * page shows the language default to every visitor.)
 	 */
-	public function test_english_page_shows_the_gateway_link() {
+	public function test_english_page_shows_the_nlt_through_the_api() {
 		$this->reader_on();
 		foreach ( array( 'en', '' ) as $lang ) { // ?lang=en, and the site language (English) with none.
 			$html = $this->render( $this->post_of( 'd001' ), $lang );
 			$this->assertStringContainsString( '<section class="jls-reader" lang="en"', $html, "lang {$lang}" );
-			$this->assertStringContainsString( 'Open in Bible Gateway (ERV)', $html );
-			$this->assertStringContainsString( 'href="https://www.biblegateway.com/passage/?search=John+1:1-18&#038;version=ERV"', $html );
-			$this->assertStringContainsString( 'Easy-to-Read Version (ERV) Copyright © 2006 by Bible League International', $html, 'the copyright line renders' );
-			$this->assertStringNotContainsString( 'jls-text', $html );
+			$this->assertStringContainsString( '<span class="jls-version-name">New Living Translation</span>', $html );
+			$this->assertStringContainsString( '<sup class="jls-num">1</sup> FAKE-VERSE-1 for tests only.', $html );
+			$this->assertStringContainsString( '<sup class="jls-num">18</sup> FAKE-VERSE-18 for tests only.', $html );
+			$this->assertStringContainsString( self::COPYRIGHT, $html, 'the notice the API returned renders' );
+			$this->assertStringContainsString( 'href="https://api.bible"', $html, 'the Starter plan link' );
+			$this->assertStringNotContainsString( 'Open in Bible Gateway (ERV)', $html );
 			$this->assertStringNotContainsString( '<iframe', $html );
+			$this->assertStringNotContainsString( self::KEY, $html );
 		}
+		$this->assertCount( 1, $this->api_requests, 'fetched once: the second view came from the cache' );
+		$this->assertStringContainsString( '/passages/JHN.1.1-JHN.1.18?', $this->api_requests[0] );
+		$this->assertSame( '', $this->logged(), 'nothing logged' );
+	}
+
+	/**
+	 * If API.Bible cannot answer, the English page shows the short note and the
+	 * ERV Bible Gateway link with ERV's copyright line, and the rest of the page
+	 * is intact.
+	 */
+	public function test_english_page_falls_back_to_the_erv_link_when_the_api_cannot_answer() {
+		$this->reader_on();
+		$this->api_status = 403;
+		$html             = $this->render( $this->post_of( 'd001' ), 'en' );
+		$this->assertStringContainsString( '<section class="jls-reader" lang="en"', $html );
+		$this->assertStringContainsString( 'The Bible text could not be loaded.', $html );
+		$this->assertStringContainsString( 'Open in Bible Gateway (ERV)', $html );
+		$this->assertStringContainsString( 'href="https://www.biblegateway.com/passage/?search=John+1:1-18&#038;version=ERV"', $html );
+		$this->assertStringContainsString( 'Easy-to-Read Version (ERV) Copyright © 2006 by Bible League International', $html, 'the copyright line renders' );
+		$this->assertStringNotContainsString( 'jls-text', $html );
+		$this->assertStringContainsString( 'Day 1', $html );
+		$this->assertStringContainsString( '<details class="jlife-supplemental">', $html );
+		$log = $this->logged();
+		$this->assertStringContainsString( 'J-Life API.Bible: version=nlt outcome=not_licensed status=403', $log );
+		$this->assertStringNotContainsString( self::KEY, $log );
+		$this->assertStringNotContainsString( 'FAKE-VERSE', $log );
 	}
 
 	/**
@@ -307,8 +432,8 @@ class Test_Reading_Native extends WP_UnitTestCase {
 		}
 		$this->assertStringContainsString( 'Kinh Thánh 1925', $this->render( $post_id, 'vi' ), 'their ERV choice does not replace the 1925 default' );
 		$html = $this->render( $post_id, 'en' );
-		$this->assertStringContainsString( 'Open in Bible Gateway (ERV)', $html );
-		$this->assertStringNotContainsString( 'Open in Bible Gateway (BPT)', $html );
+		$this->assertStringContainsString( '<span class="jls-version-name">New Living Translation</span>', $html, 'the English default, not their stored ERV' );
+		$this->assertStringNotContainsString( 'Open in Bible Gateway', $html );
 		$this->assertSame( '', $this->logged() );
 	}
 

@@ -3,8 +3,8 @@
  * The API.Bible source for the native reader (#141 part 2): NLT, NKJV and CSB
  * through #147's client and #148's shared cache. Every request is answered by a
  * fake through pre_http_request (CI never calls the live API) and every Bible
- * text in it is made up. The three versions stay disabled in the shipped
- * registry; tests enable NLT the way an owner's registry edit would.
+ * text in it is made up. The three versions are enabled in the shipped
+ * registry (owner smoke test 2026-11-19), so these tests use it as it is.
  *
  * @package jlife-scripture
  */
@@ -87,6 +87,8 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 		remove_filter( 'jlife_challenges_apibible_key', array( $this, 'filter_key' ) );
 		remove_filter( 'pre_http_request', array( $this, 'fake_http' ), 10 );
 		delete_option( 'jlife_scripture_copyright_page_url' );
+		delete_option( 'jlife_scripture_copyright_page_id' );
+		unset( $GLOBALS['jlife_scripture_test_pll'] );
 		parent::tear_down();
 	}
 
@@ -199,15 +201,16 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	}
 
 	/**
-	 * Enable the NLT the way an owner's registry edit will once the gates clear.
+	 * Put NLT back to how it was before it was enabled: disabled, link only,
+	 * no license evidence (to test what works on a version that is not enabled yet).
 	 */
-	private function enable_nlt() {
+	private function disable_nlt() {
 		$this->patch_version(
 			'nlt',
 			array(
-				'display'          => 'native',
-				'enabled'          => true,
-				'license_evidence' => 'Test only.',
+				'display'          => 'link',
+				'enabled'          => false,
+				'license_evidence' => null,
 			)
 		);
 	}
@@ -251,27 +254,64 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	}
 
 	/**
-	 * The three bibleIds are recorded as source_id, and the versions are not
-	 * renderable yet: disabled, link display, no license evidence.
+	 * The three versions are enabled and native with their recorded bibleIds
+	 * and the owner's license evidence, so they are renderable and selectable;
+	 * the rights holders' sites are their copyright links; the defaults did not move.
 	 */
-	public function test_ids_are_recorded_but_the_versions_cannot_render_yet() {
+	public function test_the_three_versions_are_enabled_native_and_selectable() {
+		$expected = array(
+			'nlt'  => array( 'd6e14a625393b4da-01', 'https://www.tyndale.com/' ),
+			'nkjv' => array( '63097d2a0a2f7db3-01', 'https://www.thomasnelson.com/' ),
+			'csb'  => array( 'a556c5305ee15c3f-01', 'https://csbible.com/' ),
+		);
+		foreach ( $expected as $key => $row ) {
+			$v = jlife_scripture_get_version( $key );
+			$this->assertSame( $row[0], $v['source_id'], $key );
+			$this->assertSame( $row[1], $v['copyright']['url'], "{$key}: the rights holder's site" );
+			$this->assertSame( 'apibible', $v['source'] );
+			$this->assertTrue( $v['enabled'], "{$key} is enabled" );
+			$this->assertSame( 'native', $v['display'] );
+			$this->assertSame( 'nlt' === $key ? array( 'en' ) : array(), $v['default_for'], 'only the NLT is a default: for English (owner, 2026-11-19)' );
+			$this->assertStringContainsString( 'API.Bible Starter plan, app Jlife', (string) $v['license_evidence'] );
+			$this->assertStringContainsString( 'wp jlife scripture try', (string) $v['license_evidence'] );
+			$this->assertStringContainsString( '2026-11-19', (string) $v['license_evidence'] );
+			$this->assertSame( 1209600, $v['cache']['max_age_seconds'], '14 days' );
+			$this->assertSame( 499, $v['cache']['max_consecutive_verses'] );
+			$this->assertTrue( jlife_scripture_can_render( $v ), "{$key} can render text" );
+			$this->assertSame( $key, jlife_scripture_selectable_version( $key )['key'], 'offered in the picker' );
+		}
+		$this->assertSame( array( 'nlt', 'nkjv', 'csb', 'erv' ), array_keys( jlife_scripture_selectable_versions()['en'] ), 'English, in registry order' );
+		$this->assertSame( 'nlt', jlife_scripture_default_version( 'en' )['key'], 'NLT is the English default (owner, 2026-11-19)' );
+		$this->assertSame( 'kt1925', jlife_scripture_default_version( 'vi' )['key'] );
+		$this->assertFalse( jlife_scripture_can_render( jlife_scripture_get_version( 'nirv' ) ), 'NIrV is still not renderable' );
+		$this->assertInstanceOf( Jlife_Scripture_Apibible_Source::class, jlife_scripture_get_source( 'apibible' ) );
+		$this->assertSame( 0, count( $this->requests ), 'nothing was fetched' );
+	}
+
+	/**
+	 * Each of the three renders on the page for a participant who chose it, from
+	 * its own bibleId, through the mocked API: text, the version's name and the
+	 * API's notice, no Bible Gateway link.
+	 */
+	public function test_nlt_nkjv_and_csb_render_on_the_page_through_the_api() {
 		$ids = array(
-			'nlt'  => 'd6e14a625393b4da-01',
+			'nlt'  => self::NLT_ID,
 			'nkjv' => '63097d2a0a2f7db3-01',
 			'csb'  => 'a556c5305ee15c3f-01',
 		);
 		foreach ( $ids as $key => $id ) {
-			$v = jlife_scripture_get_version( $key );
-			$this->assertSame( $id, $v['source_id'], $key );
-			$this->assertSame( 'apibible', $v['source'] );
-			$this->assertFalse( $v['enabled'], "{$key} stays disabled" );
-			$this->assertSame( 'link', $v['display'] );
-			$this->assertNull( $v['license_evidence'] );
-			$this->assertFalse( jlife_scripture_can_render( $v ), "{$key} cannot render text" );
-			$this->assertNull( jlife_scripture_selectable_version( $key ), 'not offered in the picker' );
+			$user = $this->participant( 'en_US' );
+			$this->assertTrue( jlife_scripture_set_user_choice( $user, array( 'primary' => $key ) ), $key );
+			$html = jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $user );
+			$this->assertStringContainsString( '<sup class="jls-num">1</sup> FAKE-VERSE-1 for tests only.', $html, $key );
+			$this->assertStringContainsString( '<span class="jls-version-name">' . esc_html( jlife_scripture_get_version( $key )['name'] ) . '</span>', $html );
+			$this->assertStringContainsString( self::COPYRIGHT, $html );
+			$this->assertStringNotContainsString( 'Open in Bible Gateway', $html );
+			$last = array_slice( $this->passage_requests(), -1 )[0];
+			$this->assertStringContainsString( '/bibles/' . $id . '/passages/JHN.1.1-JHN.1.2?', $last, "{$key} is fetched with its own bibleId" );
 		}
-		$this->assertInstanceOf( Jlife_Scripture_Apibible_Source::class, jlife_scripture_get_source( 'apibible' ) );
-		$this->assertSame( 0, count( $this->requests ), 'nothing was fetched' );
+		$this->assertSame( 3, jlife_challenges_apibible_usage()['calls'], 'one real call per version' );
+		$this->assertSame( 3, count( $this->fums_requests() ), 'and each display reported' );
 	}
 
 	/**
@@ -280,7 +320,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * participant's chosen Bible with the notice and the required links.
 	 */
 	public function test_the_source_returns_text_copyright_and_shows_them() {
-		$this->enable_nlt();
 		$segments = jlife_scripture_parse_reference( 'John 1:1-2' );
 		$entry    = jlife_scripture_get_passage_entry( jlife_scripture_get_version( 'nlt' ), $segments );
 		$this->assertIsArray( $entry );
@@ -321,7 +360,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * text with verse numbers and no titles or notes.
 	 */
 	public function test_the_request_has_the_key_only_in_the_header() {
-		$this->enable_nlt();
 		jlife_scripture_get_passage_entry( jlife_scripture_get_version( 'nlt' ), jlife_scripture_parse_reference( 'John 1:1-2' ) );
 		$urls = $this->passage_requests();
 		$this->assertCount( 1, $urls );
@@ -338,7 +376,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * every display still reports to FUMS with the stored token.
 	 */
 	public function test_a_cache_hit_sends_fums_and_spends_no_call() {
-		$this->enable_nlt();
 		$user = $this->participant( 'en_US' );
 		jlife_scripture_set_user_choice( $user, array( 'primary' => 'nlt' ) );
 		$day = $this->day( 'John 1:1-2' );
@@ -372,7 +409,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * not served and is fetched again.
 	 */
 	public function test_the_cache_honours_the_fourteen_day_rule() {
-		$this->enable_nlt();
 		$segments = jlife_scripture_parse_reference( 'John 1:1-2' );
 		$version  = jlife_scripture_get_version( 'nlt' );
 
@@ -392,7 +428,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * not keep calling.
 	 */
 	public function test_not_licensed_falls_back_to_the_link_and_stores_nothing() {
-		$this->enable_nlt();
 		$user = $this->participant( 'en_US' );
 		jlife_scripture_set_user_choice( $user, array( 'primary' => 'nlt' ) );
 		foreach ( array( 401, 403 ) as $status ) {
@@ -421,7 +456,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * short codes in the log, and nothing is stored.
 	 */
 	public function test_rate_limits_and_outages_fall_back_to_the_link() {
-		$this->enable_nlt();
 		$version  = jlife_scripture_get_version( 'nlt' );
 		$segments = jlife_scripture_parse_reference( 'John 1:1-2' );
 		$cases    = array(
@@ -451,7 +485,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * but never stored.
 	 */
 	public function test_the_consecutive_verse_limit_is_respected() {
-		$this->enable_nlt();
 		$version = jlife_scripture_get_version( 'nlt' );
 		$this->assertSame( 499, $version['cache']['max_consecutive_verses'] );
 		$r = jlife_scripture_get_passage_entry( $version, jlife_scripture_parse_reference( 'Matthew 1:1-18:35' ) );
@@ -474,7 +507,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * shown once.
 	 */
 	public function test_partial_verses_fetch_the_whole_verse() {
-		$this->enable_nlt();
 		$version = jlife_scripture_get_version( 'nlt' );
 		$entry   = jlife_scripture_get_passage_entry( $version, jlife_scripture_parse_reference( 'Luke 3:23a' ) );
 		$this->assertIsArray( $entry );
@@ -497,7 +529,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * next chapter, which the reader numbers chapter:verse.
 	 */
 	public function test_a_passage_across_chapters_numbers_the_next_chapter() {
-		$this->enable_nlt();
 		$this->content = "\n [35] FAKE-VERSE-35 for tests only. [36] FAKE-VERSE-36 for tests only. \n [1] FAKE-VERSE-1 for tests only. [2] FAKE-VERSE-2 for tests only.";
 		$entry         = jlife_scripture_get_passage_entry( jlife_scripture_get_version( 'nlt' ), jlife_scripture_parse_reference( 'John 3:35-4:2' ) );
 		$this->assertIsArray( $entry );
@@ -548,7 +579,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * markers for a range) falls back to the link without a stored row.
 	 */
 	public function test_a_malformed_answer_falls_back() {
-		$this->enable_nlt();
 		$version  = jlife_scripture_get_version( 'nlt' );
 		$segments = jlife_scripture_parse_reference( 'John 1:1-2' );
 
@@ -562,13 +592,13 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 
 	/**
 	 * The full copyright information (terms 7.1/7.2): the metadata carries no URL,
-	 * so the link goes to the site's own copyright page when the owner sets one,
-	 * with the version as the anchor.
+	 * so the link goes to the site's own page. The old URL option still works as
+	 * a fallback (for one release), with the version as the anchor.
 	 */
-	public function test_the_copyright_page_link() {
-		$this->enable_nlt();
+	public function test_the_copyright_page_url_option_is_still_a_fallback() {
 		$user = $this->participant( 'en_US' );
 		jlife_scripture_set_user_choice( $user, array( 'primary' => 'nlt' ) );
+		$this->assertStringNotContainsString( 'Full copyright information', jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $user ), 'nothing is set yet' );
 		update_option( 'jlife_scripture_copyright_page_url', 'https://example.test/bible-copyrights/#old' );
 		$html = jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $user );
 		$this->assertStringContainsString( '<a href="https://example.test/bible-copyrights/#nlt">Full copyright information</a>', $html );
@@ -578,18 +608,139 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	}
 
 	/**
+	 * The page ID option resolves to that page's permalink (with the version as
+	 * the anchor) and wins over the URL option; a page that is not published
+	 * falls back to the URL option. No Polylang is involved yet.
+	 */
+	public function test_the_copyright_page_id_resolves_to_the_pages_link() {
+		$this->assertFalse( function_exists( 'pll_get_post' ), 'this test is about a site without Polylang' );
+		$page = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'Bible Copyrights',
+			)
+		);
+		$user = $this->participant( 'vi' );
+		jlife_scripture_set_user_choice( $user, array( 'primary' => 'nkjv' ) );
+		update_option( 'jlife_scripture_copyright_page_id', $page );
+		update_option( 'jlife_scripture_copyright_page_url', 'https://example.test/old-page/' );
+		$html = jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $user );
+		$this->assertStringContainsString( '<a href="' . esc_url( get_permalink( $page ) . '#nkjv' ) . '">Full copyright information</a>', $html, 'the page ID wins; the anchor is the version' );
+		$this->assertStringNotContainsString( 'old-page', $html );
+
+		wp_update_post(
+			array(
+				'ID'          => $page,
+				'post_status' => 'draft',
+			)
+		);
+		$html = jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $user );
+		$this->assertStringContainsString( 'href="https://example.test/old-page/#nkjv"', $html, 'a draft page is not linked: the URL option answers' );
+		update_option( 'jlife_scripture_copyright_page_id', 999999 );
+		$this->assertStringContainsString( 'href="https://example.test/old-page/#nkjv"', jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $user ), 'a missing page too' );
+		delete_option( 'jlife_scripture_copyright_page_url' );
+		$this->assertStringNotContainsString( 'Full copyright information', jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $user ), 'then no link at all' );
+	}
+
+	/**
+	 * With Polylang the link goes to the page translated into the reader's
+	 * language (Tiếng Việt reader: the Vietnamese page, English reader: the
+	 * English one), falling back to the original page when there is no published
+	 * translation; the anchor is the version either way.
+	 */
+	public function test_the_copyright_link_follows_the_readers_language_with_polylang() {
+		require_once __DIR__ . '/polylang-stub.php';
+		delete_option( 'jlife_scripture_copyright_page_url' );
+		$make = static fn( $title ) => self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => $title,
+			)
+		);
+		$en   = $make( 'Bible Copyrights' );
+		$vi   = $make( 'Bản quyền Kinh Thánh' );
+
+		$GLOBALS['jlife_scripture_test_pll'] = array(
+			$en => array(
+				'en' => $en,
+				'vi' => $vi,
+			),
+			$vi => array(
+				'en' => $en,
+				'vi' => $vi,
+			),
+		);
+		update_option( 'jlife_scripture_copyright_page_id', $en );
+
+		$en_reader = $this->participant( 'en_US' );
+		$vi_reader = $this->participant( 'vi' );
+		foreach ( array( $en_reader, $vi_reader ) as $reader ) {
+			jlife_scripture_set_user_choice( $reader, array( 'primary' => 'nlt' ) );
+		}
+		$link    = static fn( $page, $key = 'nlt' ) => '<a href="' . esc_url( get_permalink( $page ) . '#' . $key ) . '">Full copyright information</a>';
+		$this->assertStringContainsString( $link( $en ), jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $en_reader ), 'an English reader: the English page' );
+		$vi_html = jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $vi_reader );
+		$this->assertStringContainsString( $link( $vi ), $vi_html, 'a Vietnamese reader of an English Bible: the Vietnamese page' );
+		$this->assertStringNotContainsString( get_permalink( $en ) . '#nlt', $vi_html );
+
+		// By the page language (the public pages force it) and from either page's ID.
+		$nlt = jlife_scripture_get_version( 'nlt' );
+		$this->assertSame( get_permalink( $vi ) . '#nlt', jlife_scripture_copyright_page_url( $nlt, 'vi' ) );
+		$this->assertSame( get_permalink( $en ) . '#nlt', jlife_scripture_copyright_page_url( $nlt, 'en' ) );
+		update_option( 'jlife_scripture_copyright_page_id', $vi );
+		$this->assertSame( get_permalink( $en ) . '#nlt', jlife_scripture_copyright_page_url( $nlt, 'en' ), 'set to the Vietnamese page, an English reader still gets the English one' );
+		$this->assertSame( get_permalink( $vi ) . '#nlt', jlife_scripture_copyright_page_url( $nlt, '' ), 'no language: the page itself' );
+		update_option( 'jlife_scripture_copyright_page_id', $en );
+
+		// No translation, or one that is not published: the original page.
+		$GLOBALS['jlife_scripture_test_pll'][ $en ]['vi'] = 0;
+		$this->assertSame( get_permalink( $en ) . '#nlt', jlife_scripture_copyright_page_url( $nlt, 'vi' ), 'no Vietnamese page: the original' );
+		$GLOBALS['jlife_scripture_test_pll'][ $en ]['vi'] = $vi;
+		wp_update_post(
+			array(
+				'ID'          => $vi,
+				'post_status' => 'draft',
+			)
+		);
+		$this->assertSame( get_permalink( $en ) . '#nlt', jlife_scripture_copyright_page_url( $nlt, 'vi' ), 'an unpublished translation is not linked' );
+
+		// The smoke test shows both languages' links.
+		wp_update_post(
+			array(
+				'ID'          => $vi,
+				'post_status' => 'publish',
+			)
+		);
+		$out = implode( "\n", jlife_scripture_try_passage( 'nlt', 'John 1:1-2' )['lines'] );
+		$this->assertStringContainsString( 'Copyright page link (en): ' . get_permalink( $en ) . '#nlt', $out );
+		$this->assertStringContainsString( 'Copyright page link (vi): ' . get_permalink( $vi ) . '#nlt', $out );
+		unset( $GLOBALS['jlife_scripture_test_pll'] );
+	}
+
+	/**
 	 * The copyright page's shortcode is built from the Bible metadata, fetched
 	 * once per version and kept for the cache rule; the page lists the enabled
 	 * versions (or all with all="yes").
 	 */
 	public function test_the_copyright_page_shortcode_uses_cached_metadata() {
-		$this->enable_nlt();
+		foreach ( array( 'nkjv', 'csb' ) as $key ) {
+			$this->patch_version(
+				$key,
+				array(
+					'display'          => 'link',
+					'enabled'          => false,
+					'license_evidence' => null,
+				)
+			);
+		}
 		$html = do_shortcode( '[jlife_bible_copyrights]' );
 		$this->assertStringContainsString( '<section class="jls-copyright" id="nlt">', $html );
 		$this->assertStringContainsString( 'Fake Bible d6e1 (FAKE-d6e1)', $html, 'name and abbreviation from the metadata' );
 		$this->assertStringContainsString( self::COPYRIGHT, $html );
 		$this->assertStringContainsString( 'Fake info for tests only.', $html );
-		$this->assertStringNotContainsString( 'id="nkjv"', $html, 'enabled versions only' );
+		$this->assertStringNotContainsString( 'id="nkjv"', $html, 'enabled versions only (the other two are disabled here)' );
 		$this->assertCount( 1, $this->requests );
 		$this->assertStringEndsWith( '/bibles/' . self::NLT_ID, $this->requests[0]['url'] );
 
@@ -618,6 +769,7 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * status and HTTP status, counts one API call, and never prints the key.
 	 */
 	public function test_try_works_on_a_disabled_version_and_never_prints_the_key() {
+		$this->disable_nlt();
 		$version = jlife_scripture_get_version( 'nlt' );
 		$this->assertFalse( jlife_scripture_can_render( $version ) );
 		$r = jlife_scripture_try_passage( 'nlt', 'John 1:1-2' );
@@ -631,7 +783,7 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 		$this->assertStringContainsString( 'HTTP status: 200', $out );
 		$this->assertStringContainsString( 'JHN.1.1-JHN.1.2', $out );
 		$this->assertStringContainsString( 'this month: 1 of 5000', $out );
-		$this->assertStringContainsString( 'Copyright page link: not set', $out );
+		$this->assertStringContainsString( 'Copyright page link: not set (create a page with [jlife_bible_copyrights] and set the site option jlife_scripture_copyright_page_id', $out );
 		$this->assertStringNotContainsString( self::KEY, $out );
 		$this->assertStringNotContainsString( self::KEY, (string) wp_json_encode( $r ) );
 		$this->assertFalse( jlife_scripture_can_render( jlife_scripture_get_version( 'nlt' ) ), 'the version is still disabled afterwards' );
@@ -679,7 +831,6 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	 * Nothing in a log line holds Bible text or the key, across the paths above.
 	 */
 	public function test_no_bible_text_or_key_in_logs() {
-		$this->enable_nlt();
 		$user = $this->participant( 'en_US' );
 		jlife_scripture_set_user_choice( $user, array( 'primary' => 'nlt' ) );
 		jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $user );
