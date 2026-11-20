@@ -1,6 +1,7 @@
 <?php
 /**
- * WP-CLI: `wp jlife test-campaign create|remove|status` (staging test drive).
+ * WP-CLI: `wp jlife test-campaign create|remove [--dry-run] [--delete-accounts]|status`
+ * (staging test drive).
  *
  * The invite code is never printed: it is emailed to the site admin address
  * and, optionally, saved to an owner-only file. Deploy logs may be public.
@@ -63,15 +64,50 @@ class Jlife_Test_Campaign_Command {
 	}
 
 	/**
-	 * Remove every test campaign and its data, and delete participant
-	 * accounts that were only in test campaigns.
+	 * Remove every test campaign and its data, keeping every account (testers
+	 * may be real participants, #174). Prints counts only, never people.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--dry-run]
+	 * : Show what would be removed and change nothing.
+	 *
+	 * [--delete-accounts]
+	 * : Also delete participant accounts that were only in test campaigns
+	 * (staff and anyone in a real campaign are always kept). Only when every
+	 * tester is known to be disposable; the latoc deploy never passes it.
+	 *
+	 * @param array $args       Positional args.
+	 * @param array $assoc_args Options.
 	 */
-	public function remove() {
-		$r = jlife_challenges_remove_test_campaigns( $this->organizer() );
+	public function remove( $args = array(), $assoc_args = array() ) {
+		$actor  = $this->organizer();
+		$delete = ! empty( $assoc_args['delete-accounts'] );
+		$plan   = jlife_challenges_test_cleanup_preview( $actor, $delete );
+		if ( is_wp_error( $plan ) ) {
+			WP_CLI::error( $plan->get_error_message() );
+		}
+		$this->print_counts( $plan );
+		if ( ! empty( $assoc_args['dry-run'] ) ) {
+			WP_CLI::success( 'Dry run: nothing was changed.' );
+			return;
+		}
+		$r = jlife_challenges_remove_test_campaigns( $actor, $delete );
 		if ( is_wp_error( $r ) ) {
 			WP_CLI::error( $r->get_error_message() );
 		}
-		WP_CLI::success( sprintf( 'Removed %d test campaign(s), %d SOAP entries and %d test-only participant account(s).', $r['campaigns'], $r['entries'], $r['users'] ) );
+		WP_CLI::success( sprintf( 'Removed %d test campaign(s) and %d SOAP entries; deleted %d account(s), kept %d account(s).', $r['campaigns'], $r['entries'], $r['users'], $r['kept'] ) );
+	}
+
+	/**
+	 * Print preview counts, one per line (no personal information).
+	 *
+	 * @param array $plan Counts from jlife_challenges_test_cleanup_preview().
+	 */
+	private function print_counts( $plan ) {
+		foreach ( $plan as $what => $n ) {
+			WP_CLI::log( sprintf( '  %-18s %d', $what, $n ) );
+		}
 	}
 
 	/**
@@ -80,6 +116,13 @@ class Jlife_Test_Campaign_Command {
 	public function status() {
 		$ids = jlife_challenges_test_campaign_ids();
 		WP_CLI::log( $ids ? sprintf( 'Test campaigns present: %d.', count( $ids ) ) : 'No test campaign.' );
+		if ( $ids ) {
+			$plan = jlife_challenges_test_cleanup_preview( $this->organizer() );
+			if ( ! is_wp_error( $plan ) ) {
+				WP_CLI::log( '"remove" would affect:' );
+				$this->print_counts( $plan );
+			}
+		}
 	}
 
 	/**

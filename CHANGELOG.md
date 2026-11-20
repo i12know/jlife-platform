@@ -10,6 +10,11 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Fixed
 
+- **Safer test-campaign cleanup before real participants arrive** (#174).
+  - **Accounts are kept:** removing the test campaigns now keeps every account by default, since alpha testers are real participants (owner decision on #174). The latoc deploy's **remove** never deletes accounts; the server command's explicit `--delete-accounts` flag restores the old behavior for a fully disposable staging copy.
+  - **Reminder queue now cleared:** removal also deletes the test campaigns' queued reminder emails (`reminder_sends`), which were previously left behind for kept accounts.
+  - **Preview first:** `wp jlife test-campaign remove --dry-run` (deploy choice **preview-remove**) prints counts only, never people, and changes nothing. `status` prints the same counts.
+  - The audit row records how many accounts were deleted and kept. Runbook: `docs/staging-latoc.md`.
 - **Emailed sign-in codes are for participant accounts only.** Staff sign in on the standard WordPress login.
   - **Who counts as staff:** a network super admin, or anyone holding a role or capability outside the participant roles (`subscriber`, filter `jlife_auth_participant_roles`) on any site of the network. The rule is an allowlist, so a custom role without `edit_posts` is still staff.
   - **What staff get:** a short "please use the staff sign-in" email instead of a code. The `/signin` and `/join` screens answer as for any other address.

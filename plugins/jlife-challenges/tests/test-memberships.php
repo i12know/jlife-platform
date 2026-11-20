@@ -411,7 +411,9 @@ class Test_Memberships extends Jlife_Challenges_TestCase {
 
 		$out = jlife_challenges_remove_test_campaigns( $this->u['organizer'] );
 		$this->assertSame( 1, $out['campaigns'] );
-		$this->assertSame( 2, $out['users'], 'the tester and the solo reader were test-only accounts' );
+		$this->assertSame( 0, $out['users'], 'removal keeps every account by default (#174)' );
+		$this->assertNotFalse( get_userdata( $tester ), 'the test-only tester keeps their account' );
+		$this->assertNotFalse( get_userdata( $solo ), 'the test-only solo reader keeps their account' );
 		$this->assertSame( 0, (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'group_members' ) . ' WHERE campaign_id = %d', $r['campaign_id'] ) ) ); // phpcs:ignore WordPress.DB
 		$this->assertSame( array( (int) $this->g['g1'] ), $this->groups_of( 'a' ), 'real memberships stay' );
 		$this->assertTrue( jlife_challenges_can_read_feed( $this->u['b'], $this->g['g1'] ) );

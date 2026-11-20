@@ -9,11 +9,14 @@ on:
         description: >-
           Test drive: "create" makes a TEST Bible Marathon starting today and
           emails the invite link to the site admin address (run again for a
-          new link); "remove" deletes all test data and test-only accounts.
+          new link); "preview-remove" only prints what a removal would do
+          (counts, no names); "remove" deletes all test data and keeps every
+          account (testers may be real participants, #174).
         type: choice
         options:
           - none
           - create
+          - preview-remove
           - remove
         default: none
 
