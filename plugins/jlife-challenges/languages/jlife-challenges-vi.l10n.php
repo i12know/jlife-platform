@@ -289,6 +289,12 @@ return array(
 		'Default for my language' => 'Mặc định theo ngôn ngữ của tôi',
 		'%s (opens Bible Gateway)' => '%s (mở trên Bible Gateway)',
 		'Your Bible follows the language above until you choose one.' => 'Bản Kinh Thánh của bạn theo ngôn ngữ ở trên cho đến khi bạn tự chọn.',
+		// Help, Rules and Privacy links (#65). DRAFT, like the rest.
+		'Help' => 'Trợ giúp',
+		'Rules' => 'Quy định',
+		'Privacy' => 'Quyền riêng tư',
+		'Help, rules and privacy' => 'Trợ giúp, quy định và quyền riêng tư',
+		'How SOAP works' => 'SOAP hoạt động thế nào',
 		"date format\4F j, Y" => 'j \\t\\h\\á\\n\\g n, Y', // Reading-day date: 18 tháng 11, 2026.
 	),
 );

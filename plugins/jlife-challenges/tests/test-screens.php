@@ -770,6 +770,35 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * With the Help page published, the SOAP one-liner keeps "More" pointing at the
+	 * in-page heading help and adds a link to the SOAP section of the Help page (#65).
+	 */
+	public function test_soap_one_liner_links_to_the_help_page_when_it_is_published() {
+		$help = (int) self::factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Help',
+			)
+		);
+		update_option( 'jlife_challenges_help_page_id', $help );
+		$form = $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
+
+		$this->assertStringContainsString( '<a href="#jlife-soap-help" class="jl-soap-more">More</a>', $form, '"More" still opens the in-page help' );
+		$this->assertStringContainsString( 'href="' . esc_url( get_permalink( $help ) ) . '#what-is-soap" class="jl-soap-more">How SOAP works</a></p>', $form );
+		$this->assertSame( 1, substr_count( $form, 'id="jlife-soap-help"' ) );
+
+		wp_update_post(
+			array(
+				'ID'          => $help,
+				'post_status' => 'draft',
+			)
+		);
+		$form = $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
+		$this->assertStringNotContainsString( 'How SOAP works', $form, 'no link to a page that is not published' );
+		$this->assertStringContainsString( '<a href="#jlife-soap-help" class="jl-soap-more">More</a></p>', $form );
+	}
+
+	/**
 	 * The SOAP block explains itself (#142): a one-liner with a "More" link to the
 	 * heading help, a visible label over the reference chips, and an accessible
 	 * name on each chip. Insertion still uses data-insert.
@@ -1169,7 +1198,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$html = jlife_challenges_page_html( 'Today', $body, 'today', array( 'soap', 'reminder' ) );
 		$this->assertStringContainsString( 'assets/soap.js?v=4', $html );
 		$this->assertStringContainsString( 'assets/reminder.js?v=1', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=14', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=15', $html );
 		$this->assertStringNotContainsString( 'reminder.js', jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' ) );
 	}
 }

@@ -9,6 +9,7 @@ The Bible Marathon engine (M5, #60): campaigns, groups and enrollment, private S
 - SOAP entries (one free text, #98) with drafts and revision history; database-enforced scoring (`includes/soap.php`)
 - Scoring engines (#98): a pluggable engine decides whether an entry earns the day's point; the default `soap-regex` checks the S, O, A, P parts (`includes/scoring-engine.php`). Chosen per campaign (`campaigns.scoring_engine`); each awarded point records the engine and version
 - Progress, organizer counts and the score export without SOAP text (`includes/scores.php`)
+- The Help, Rules and Privacy pages (#65): where they are (three page-ID options), the footer links on every participant screen, the one-time DRAFT seed (`wp jlife help-pages seed`, copy in `data/help-pages.json`) (`includes/help-pages.php`)
 - Daily reading reminder choices (opt-in, language, `reminder_prefs`), the Today prompt, the My Marathon switch and the public one-click `/unsubscribe/` (#63 Phase B part 1; **no sending yet**) (`includes/reminders.php`)
 - The **My Bible** picker on My Marathon (#140): "My Bible" and an optional "Also show…" select under the email-language row, `POST /jlife/v1/bible`, and the no-JavaScript form (`includes/bible-choice.php`, `assets/bible.js`). The choice itself (two registry keys in user meta) is stored and resolved by `jlife-scripture`; this plugin only draws the picker and answers "My language" for it. Without `jlife-scripture` the picker is absent.
 - Today and `/soap` show the day's Scripture on the page, in the participant's own Bible(s), when `jlife-scripture`'s `jlife_scripture_native_reader` option is on (#139); the framed Bible Gateway reader (#92) is the flag-off path (`jlife_challenges_render_reader()`, `includes/screens.php`).
@@ -32,6 +33,7 @@ The Bible Marathon engine (M5, #60): campaigns, groups and enrollment, private S
 
 ## Settings
 
+- `jlife_challenges_help_page_id`, `jlife_challenges_rules_page_id`, `jlife_challenges_privacy_page_id` (page IDs, English page; Polylang resolves the reader's language): the pages the footer, the consent step and the SOAP help link point to. A link is left out, not broken, while its page is unset or not published. The deploy fills an empty option when it seeds the drafts; the owner edits and publishes the pages in wp-admin (`docs/staging-latoc.md`).
 - `jlife_challenges_require_guardian_consent` (option `'0'` default / `'1'`): off by default per D19 (owner decision 2026-11-05, #55): participants aged 13–17 share with their own group with no guardian step in J-Life, because the church's existing consent process covers it. A deployment whose church needs a recorded guardian consent turns it on with `wp option update jlife_challenges_require_guardian_consent 1`; minors then share only after an organizer records it.
 
 ## Tests

@@ -102,3 +102,6 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-bible-picker .jl-field{flex-direction:column;align-items:stretch;gap:.25rem;margin:.5rem 0}
 .jl-bible-picker select{width:100%;min-height:2.75rem}
 .jl-hint{margin:.25rem 0 0;color:var(--muted);font-size:.875rem}
+/* Help, Rules and Privacy links at the foot of every participant screen (#65). */
+.jl-help-links{max-width:34rem;margin:0 auto;padding:0 1rem 2rem;text-align:center;font-size:.875rem;color:var(--muted)}
+.jl-help-links a{display:inline-block;padding:.5rem .4rem}

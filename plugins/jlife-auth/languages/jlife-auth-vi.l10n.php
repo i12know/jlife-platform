@@ -71,6 +71,7 @@ return array(
 		'Entries are private by default. You choose what to share: when you tick a group\'s box as you save, that group\'s members see the whole entry, including your Prayer, with your first name.' => 'Bài viết mặc định là riêng tư. Bạn tự chọn điều muốn chia sẻ: khi bạn đánh dấu ô của một nhóm lúc lưu, các thành viên của nhóm đó sẽ thấy toàn bộ bài viết, kể cả phần cầu nguyện, kèm tên của bạn.',
 		'You can update or remove a share at any time on the share page (/share).' => 'Bạn có thể cập nhật hoặc gỡ phần đã chia sẻ bất cứ lúc nào ở trang chia sẻ (/share).',
 		'Your %s sign-in code' => 'Mã đăng nhập %s của bạn',
+		'Read the full privacy summary' => 'Đọc bản tóm tắt đầy đủ về quyền riêng tư',
 		'Your SOAP entries are private. Only you can read them. Group leaders and organizers cannot see what you write.' => 'Các bài SOAP của bạn là riêng tư. Chỉ mình bạn đọc được. Người hướng dẫn nhóm và ban tổ chức không thấy bạn viết gì.',
 		'Your age' => 'Độ tuổi của bạn',
 		"Your code is: %s\n\nIt works once and expires in 10 minutes.\nIf you did not ask for it, you can ignore this email." => "Mã của bạn là: %s\n\nMã chỉ dùng được một lần và hết hạn sau 10 phút.\nNếu bạn không yêu cầu mã này, bạn có thể bỏ qua email này.",
