@@ -408,13 +408,26 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 	 */
 	public function test_a_signed_out_visitor_is_invited_to_join_or_sign_in() {
 		$main = $this->main_of( $this->page() );
-		$this->assertStringContainsString( '<a class="jl-button jl-primary" href="' . esc_url( home_url( '/join/' ) ) . '">Join the Bible Marathon</a>', $main );
-		$this->assertStringContainsString( '<a class="jl-button" href="' . esc_url( home_url( '/signin/' ) ) . '">Sign in</a>', $main );
-		$this->assertSame( 2, preg_match_all( '#href="[^"]*/(join|signin)/"#', $main ), 'exact URLs: nothing after the slash' );
+		$this->assertStringContainsString( '<a class="jl-button jl-primary" href="' . esc_url( home_url( '/join/?lang=en' ) ) . '">Join the Bible Marathon</a>', $main );
+		$this->assertStringContainsString( '<a class="jl-button" href="' . esc_url( home_url( '/signin/?lang=en' ) ) . '">Sign in</a>', $main );
+		$this->assertSame( 2, preg_match_all( '#href="[^"]*/(join|signin)/\?lang=en"#', $main ), 'exact URLs: only the language after the slash' );
 		$this->assertStringNotContainsString( '/soap', $main );
 		$this->assertStringNotContainsString( 'Write my SOAP', $main );
 		$this->assertStringNotContainsString( 'redirect_to', $main );
 		$this->assertStringNotContainsString( 'code=', $main );
+	}
+
+	/**
+	 * #165: a Vietnamese page's invitation opens the Vietnamese join and sign-in
+	 * forms (they read `?lang=` for visitors); the language is all it adds.
+	 */
+	public function test_a_vietnamese_page_invites_to_the_vietnamese_forms() {
+		$main = $this->main_of( $this->page( 'd001', 'vi' ) );
+		$this->assertStringContainsString( 'href="' . esc_url( home_url( '/join/?lang=vi' ) ) . '"', $main );
+		$this->assertStringContainsString( 'href="' . esc_url( home_url( '/signin/?lang=vi' ) ) . '"', $main );
+		$this->assertSame( 2, preg_match_all( '#href="[^"]*/(join|signin)/\?lang=vi"#', $main ), 'exact URLs: only the language after the slash' );
+		$this->assertStringNotContainsString( '/join/"', $main );
+		$this->assertStringNotContainsString( '/signin/"', $main );
 	}
 
 	/**

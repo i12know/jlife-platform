@@ -101,9 +101,12 @@ function jlife_challenges_render_public_invite( $view ) {
 		return '<section class="jl-invite"><a class="jl-button jl-primary" href="' . esc_url( jlife_challenges_screen_url( 'soap', (string) $view['day_key'] ) ) . '">'
 			. esc_html__( 'Write my SOAP for this day', 'jlife-challenges' ) . '</a></section>';
 	}
+	// The forms open in the page's language (they read `?lang=` for visitors);
+	// the language is the only thing added to the address.
+	$lang = 'vi' === ( $view['language'] ?? '' ) ? 'vi' : 'en';
 	return '<section class="jl-invite"><p>' . esc_html__( 'Read along with us and write your own SOAP.', 'jlife-challenges' ) . '</p>'
-		. '<a class="jl-button jl-primary" href="' . esc_url( home_url( '/join/' ) ) . '">' . esc_html__( 'Join the Bible Marathon', 'jlife-challenges' ) . '</a>'
-		. '<a class="jl-button" href="' . esc_url( home_url( '/signin/' ) ) . '">' . esc_html__( 'Sign in', 'jlife-challenges' ) . '</a></section>';
+		. '<a class="jl-button jl-primary" href="' . esc_url( add_query_arg( 'lang', $lang, home_url( '/join/' ) ) ) . '">' . esc_html__( 'Join the Bible Marathon', 'jlife-challenges' ) . '</a>'
+		. '<a class="jl-button" href="' . esc_url( add_query_arg( 'lang', $lang, home_url( '/signin/' ) ) ) . '">' . esc_html__( 'Sign in', 'jlife-challenges' ) . '</a></section>';
 }
 
 /**
