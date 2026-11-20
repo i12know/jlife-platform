@@ -325,15 +325,30 @@ The deploy has a **test_campaign** choice (default `none`):
   (0600, readable via File Manager); it is never printed in the workflow log.
   Running **create** again keeps the same campaign and issues a new link (the
   old one stops working).
-- **remove** deletes every test campaign (campaign keys starting `test-`)
-  with its groups, enrollments, SOAP entries and revisions, points, shares and
-  audit rows, and deletes participant accounts that were only ever in a test
-  campaign, so testers start fresh. Staff accounts and anything in a real
-  campaign are untouched. Run it before inviting real participants (by the
-  Dec 5 shadow pilot at the latest). The pre-deploy backup still holds the
-  test data if it is ever needed.
+- **preview-remove** changes nothing. It prints what a removal would do, as
+  counts only (campaigns, rows per table, accounts that would be deleted or
+  kept), never names, emails or IDs, so it is safe in the public workflow log.
+  Run it first and record the counts.
+- **remove-keep-accounts** deletes every test campaign (campaign keys starting
+  `test-`) with its groups, memberships, enrollments, SOAP entries and
+  revisions, points, shares, reminder choices, queued reminder emails and
+  audit rows, and **keeps every account**. Use this once any real church
+  member may have signed up during the test drive: they keep their sign-in
+  and simply join the real campaign later.
+- **remove** does the same and also deletes participant accounts that were
+  only ever in a test campaign, so testers start fresh. Staff accounts and
+  anyone enrolled in a real campaign are always kept. Use it only while every
+  tester is known to be disposable (#174).
 
-The same commands exist on the server: `wp jlife test-campaign create|remove|status`.
+Before either removal, the deploy takes its usual database backup
+(`~/.latoc/backups/`), which still holds the test data if it is ever needed.
+Run the removal before inviting real participants (by the Nov 29 announcement
+and the Dec 5 pilot at the latest). The pilot campaign must **not** use a
+`test-` key, or a later removal would delete it.
+
+The same commands exist on the server: `wp jlife test-campaign create|status`
+and `wp jlife test-campaign remove [--dry-run] [--keep-accounts]`. `status`
+also prints the counts a plain `remove` would affect.
 
 ## Backups and restore
 
