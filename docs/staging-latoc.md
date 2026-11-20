@@ -4,7 +4,7 @@ Status: development/pilot staging for the 104-Day SOAP Bible Marathon ([#49](htt
 
 **What runs there (Option C):** WordPress multisite at `https://latoc.vayhub.org/`, STUDY site only, with `jlife-studies` and `jlife-huddles`. **No Disciple.Tools and no `jlife-bridge`** (magic links stay off until #37/#38). Search engines are discouraged. A pinned **Polylang** serves the public bilingual landing page ([#110](https://github.com/i12know/jlife-platform/issues/110); see [Public landing pages](#public-landing-pages-en--vi)).
 
-> **Hosting checkpoint (D9):** latoc currently shares a hosting account with other sites. That is accepted for development and test data. **Before the Dec 5 shadow pilot stores real participants' SOAP entries, the owner re-decides** whether latoc stays on the shared account or moves to its own.
+> **Hosting checkpoint (D9), decided 2026-11-20:** latoc **stays on the shared hosting account** it uses with other sites, including after the Dec 5 shadow pilot stores real participants' SOAP entries. This is a cost decision. **The shared-hosting risk remains**: sites on one account are not isolated from each other, so every site's security affects latoc's data. Reducing that exposure ([#163](https://github.com/i12know/jlife-platform/issues/163)) and off-site backups ([#162](https://github.com/i12know/jlife-platform/issues/162)) are deferred to 2027 at low priority. Until then, the only backups are the per-deploy database dumps described below. latoc should stay portable, so another ministry can host its own copy. See [framework-direction.md](framework-direction.md).
 
 ## Pieces
 

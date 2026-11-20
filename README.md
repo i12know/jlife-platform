@@ -18,6 +18,7 @@ This repository is starting as a planning and prototype space. The first source 
 - [Challenges Engine Design](docs/challenges-engine-design.md) — design for the Bible Marathon scoring engine (M5, #60): tables, day/scoring rules, privacy-matrix rows, required tests
 - [latoc Staging Runbook](docs/staging-latoc.md) — deploy, admin login, backups, restore and rollback for the staging site
 - [Integration Boundaries](docs/integration-boundaries.md) — data ownership and sync rules across ChMeetings, Disciple.Tools, and the study surface
+- [Framework Direction](docs/framework-direction.md) — provisional direction (2026-11-20) from the LATOC pilot to reusable J-Life: two frameworks, one-site Multisite per ministry pending a comparison test, account vs enrollment vs Disciple.Tools contact, D9 hosting decision, future ADRs 0002–0004
 - [Architecture Decisions](docs/adr/) — durable records explaining important design choices, beginning with the multi-deployment tenant model
 - [Dev Environment](docs/dev-environment.md) — reproducible local multisite (wp-env + Docker): quickstart, Windows disk-space guidance, verify script
 - [Vision Architecture](docs/vision-architecture.md) — draft long-term design: church-wide disciplemaking, SMS/challenge engine, ChMeetings integration, identity ladder, phased roadmap
