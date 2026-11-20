@@ -14,13 +14,15 @@ The Bible Marathon engine (M5, #60): campaigns, groups and enrollment, private S
 - The **My Bible** picker on My Marathon (#140): "My Bible" and an optional "Also show…" select under the email-language row, `POST /jlife/v1/bible`, and the no-JavaScript form (`includes/bible-choice.php`, `assets/bible.js`). The choice itself (two registry keys in user meta) is stored and resolved by `jlife-scripture`; this plugin only draws the picker and answers "My language" for it. Without `jlife-scripture` the picker is absent.
 - Today and `/soap` show the day's Scripture on the page, in the participant's own Bible(s), when `jlife-scripture`'s `jlife_scripture_native_reader` option is on (#139); the framed Bible Gateway reader (#92) is the flag-off path (`jlife_challenges_render_reader()`, `includes/screens.php`).
 - Start a group (adults only; the starter holds the invite code and nothing more), leave a group, "Groups you left" on `/share`, and organizer oversight (`wp jlife group list|rename|disable|enable`) (`includes/groups.php`, `includes/group-admin.php`, `includes/share-screens.php`)
+- **J-Life → Groups** (#64 part 1): the organizer's plain admin screen to create and rename groups, make, replace or revoke an invite code with an expiry, and add, move or remove members, all audited and nonce-checked, display names only (`includes/groups-admin-page.php`, matrix §4g)
+- **J-Life → Daily view** and the **CSV download** (#64 part 2): per-participant status and point and per-group counts for one day, and a nonce-checked, formula-guarded CSV with no SOAP text, email or tokens (`includes/daily-view.php`, `includes/daily-admin-page.php`, matrix §4h)
 - Group shares as snapshots of the whole entry, one per group: one unticked box per group on a save, or a section per group on `/share`; a solo reader has none; hide for reported posts (`includes/shares.php`)
 - The privacy gate (`includes/gate.php`), audit log (`includes/audit.php`), account-deletion purge (`includes/lifecycle.php`)
 
 ## Does not own
 
 - Reading content and Bible links (`jlife-studies`, #59)
-- Screens: Today, SOAP form, My Group (M6, #61); share-to-chat (M7, #62); admin screens (M9, #64)
+- Screens: Today, SOAP form, My Group (M6, #61); share-to-chat (M7, #62)
 - Sign-in (M3, #58) and email (M8, #63)
 - Disciple.Tools: launch groups feed `jlife_huddles_group_membership`; D.T groups replace this source after launch (P9)
 
