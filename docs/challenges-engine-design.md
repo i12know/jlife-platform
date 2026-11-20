@@ -62,6 +62,56 @@ Whether an entry earns the day's point is decided by a separate, pluggable **sco
 - **Never revokes:** engines decide at submit time only. A future engine that runs later (for example a classifier) can add a quality signal for organizers; it can't remove a point.
 - **Out of scope until decided separately:** any engine that sends entries to an AI or other outside service. Entries include prayers and some participants are 13–17, so that needs an updated consent wording, an update to [integration-boundaries.md](integration-boundaries.md), and a data-processing agreement or self-hosting first.
 
+## 3b. The current campaign (#177)
+
+From Dec 14, 2026 a person can be enrolled in two campaigns at once: the Dec 5–13 pilot, which is ending, and the official Dec 20 Marathon, which is upcoming. Every route must agree on which campaign is "current". **One rule** decides it, in `includes/current-campaign.php`: `jlife_challenges_pick_campaign( $campaigns, $purpose )`. Nothing else may sort campaigns by `start_date` or by the `test-` prefix.
+
+**Phase of a campaign** at a moment, in the campaign's own timezone (`campaigns.timezone`, `America/Los_Angeles` for every J-Life campaign), comparing calendar dates as §3 does:
+
+| Phase | When |
+|---|---|
+| `draft` | `status = 'draft'`. Never current, never joinable |
+| `closed` | `status = 'closed'` (added by #179), or any other status that is not `draft` or `active`. View-only: never joinable |
+| `upcoming` | `active`, and today is before `start_date` |
+| `running` | `active`, and `start_date` ≤ today ≤ `end_date` |
+| `ended` | `active`, and today is after `end_date` |
+
+A day starts at 00:00 campaign time: the pilot is `upcoming` until Dec 4 23:59:59, `running` from Dec 5 00:00 to Dec 13 23:59:59, and `ended` from Dec 14 00:00. The Marathon is `upcoming` until Dec 19 23:59:59 and `running` from Dec 20 00:00.
+
+**Order (first wins):**
+
+1. **Real, running**: the latest `start_date`, then the higher ID.
+2. **Real, upcoming**: the **nearest** `start_date`, then the lower ID.
+3. **`test-*`, running**: as 1.
+4. **`test-*`, upcoming**: as 2.
+5. **Ended or closed**: the most recent `end_date`, then real before `test-*`, then the higher ID.
+
+`test-*` campaigns are disposable staging campaigns (§4b, #86). A running or upcoming real campaign always outranks a test one, even a test campaign that is running while the real one has not started yet. A running test campaign still outranks an ended real one. This keeps the earlier rule's guarantee that a staging test campaign never captures real sign-ups (#176, #178), and it means a tester enrolled in both sees the real campaign, as before. A test campaign is chosen only when no real campaign is running or upcoming for that purpose.
+
+**Purposes.** The same order serves both questions; only the candidates differ:
+
+| Purpose | Candidates | Used by |
+|---|---|---|
+| `join`: which campaign a new enrollment goes into | Every campaign on this site in phase `running` or `upcoming` (so `status = 'active'` and not past `end_date`). The `jlife_challenges_open_campaign` filter can still override the answer | `jlife_challenges_open_campaign()`: "Read on my own", "Start a group" (join form and signed-in), the `jlife-auth` join paths, the organizer screens' default campaign |
+| `view`: which campaign a signed-in participant sees | The campaigns of the person's **active** enrollments, in any phase but `draft` | `jlife_challenges_participant_campaign()`: Today, My Marathon, My Group, `/share`, joining another group from My Group, and the reminder target |
+
+**Invite codes** are tied to one group, so a code join lands in that group's campaign. The code works only while that campaign is joinable (`running` or `upcoming`): a code for a group in an ended, closed or draft campaign is "not valid", like any other unknown code. Joining from My Group also needs the code's campaign to be the person's current campaign (unchanged).
+
+**Reminder target.** The person's `view` campaign. The same campaign also anchors the account's Bible choice, Scripture language (§4f) and screen language (#159), so it is not cleared when a campaign closes; refusing reminder changes and sends for a closed campaign is #179.
+
+**The 2026–27 timeline under this rule** (one person enrolled in both, America/Los_Angeles):
+
+| Moment | Current (`view`) | New joins (`join`) |
+|---|---|---|
+| Nov 29 – Dec 4 | Pilot (upcoming: "Almost time") | Pilot (nearest start), even if the Marathon is already `active` |
+| Dec 5 – Dec 13 | Pilot (running) | Pilot |
+| Dec 14 – Dec 19 | Marathon (upcoming: "Almost time") once enrolled in it; otherwise the pilot (ended) | Marathon |
+| From Dec 20 | Marathon (running) | Marathon |
+
+Two real campaigns running on the same dates should not happen; if they do, the one that started later wins, which is what the old rule did.
+
+**Not part of this rule:** closing a campaign and refusing its writes (#179); the reminder cron, which still walks every `active` campaign (#179); moving people between campaigns (#180).
+
 ## 4. Privacy matrix: new rows for the engine
 
 Extends the [S5 matrix](spikes/S5-privacy-model.md) with the M5 objects. S = SOAP entry and its revisions; L-self = own ledger detail; L-counts = per-day/group counts; GS = group share; X = score export (CSV, no SOAP text, no email, no tokens). Site-admin reads apply only to a **confirmed** group (#48, fixed in #68).
@@ -115,6 +165,8 @@ Unchecking later never removes a post; removal stays with the per-group "Remove 
 |---|---|
 | Join with a valid code (signed in) | Adds one active membership for that group; the enrollment (consent, progress, points) is unchanged; audited |
 | Join a group the person is already in | Refused (`jlife_already_enrolled`), no duplicate row |
+| Join with a code whose group's campaign has ended, is closed or is a draft (#177, §3b) | Refused as an unknown code (`jlife_invite_invalid`, counts toward the hourly limit); no enrollment or membership is written. The code itself is unchanged |
+| "Read on my own" or "Start a group" while two campaigns are active (#177) | Joins the §3b `join` campaign only: running before upcoming (nearest start), real before `test-*`; never an ended, closed or draft campaign |
 | Fourth active membership in one campaign | Refused (`jlife_group_limit`), for adults, minors and organizer enrollment alike; the first three are untouched |
 | Leave a group, then join another | The slot frees up; the left group's shares stay there (D18); audited |
 | "Read on my own" (`/join/?mode=solo`) | Creates or keeps the enrollment with **no** membership; consent and age band recorded as for any join |

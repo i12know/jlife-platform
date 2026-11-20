@@ -24,6 +24,7 @@ require_once __DIR__ . '/includes/calendar.php';
 require_once __DIR__ . '/includes/audit.php';
 require_once __DIR__ . '/includes/gate.php';
 require_once __DIR__ . '/includes/groups.php';
+require_once __DIR__ . '/includes/current-campaign.php';
 require_once __DIR__ . '/includes/group-admin.php';
 require_once __DIR__ . '/includes/soap.php';
 require_once __DIR__ . '/includes/scores.php';

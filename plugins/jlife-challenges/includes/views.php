@@ -9,27 +9,6 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * The participant's current campaign: their most recently started active
- * enrollment.
- *
- * @param int $user_id Participant.
- * @return array|null { campaign, enrollment }
- */
-function jlife_challenges_participant_campaign( $user_id ) {
-	$best = null;
-	foreach ( jlife_challenges_user_enrollments( $user_id ) as $e ) {
-		$c = jlife_challenges_get_campaign( (int) $e['campaign_id'] );
-		if ( $c && ( null === $best || $c['start_date'] > $best['campaign']['start_date'] ) ) {
-			$best = array(
-				'campaign'   => $c,
-				'enrollment' => $e,
-			);
-		}
-	}
-	return $best;
-}
-
-/**
  * Languages in display order: the given language first, the others after it.
  *
  * @param array  $links_config Language => config from the reading plan.
