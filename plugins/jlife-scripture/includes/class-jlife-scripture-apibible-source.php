@@ -176,18 +176,19 @@ class Jlife_Scripture_Apibible_Source implements Jlife_Scripture_Source, Jlife_S
 	 * link to API.Bible, and (when the site has one) the link to the full
 	 * copyright information (terms 7.1 and 7.2).
 	 *
-	 * @param array $version Registry version entry.
-	 * @param array $meta    The meta stored with the passage.
+	 * @param array  $version  Registry version entry.
+	 * @param array  $meta     The meta stored with the passage.
+	 * @param string $language The reader's language ("en" or "vi"): the copyright page is the one in that language.
 	 * @return string
 	 */
-	public function attribution_html( array $version, array $meta ) {
+	public function attribution_html( array $version, array $meta, $language ) {
 		$notice = trim( (string) ( $meta['copyright'] ?? '' ) );
 		if ( '' === $notice ) {
 			$notice = (string) $version['copyright']['text'];
 		}
 		$out  = '<p class="jls-version"><small><span class="jls-version-name">' . esc_html( (string) $version['name'] ) . '</span> · ' . esc_html( $notice )
 			. ' · <a href="https://api.bible" target="_blank" rel="noopener">' . esc_html__( 'Scripture text provided by API.Bible', 'jlife-scripture' ) . '</a>';
-		$page = jlife_scripture_copyright_page_url( $version );
+		$page = jlife_scripture_copyright_page_url( $version, (string) $language );
 		if ( '' !== $page ) {
 			$out .= ' · <a href="' . esc_url( $page ) . '">' . esc_html__( 'Full copyright information', 'jlife-scripture' ) . '</a>';
 		}

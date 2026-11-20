@@ -94,22 +94,32 @@ The view counts per passage stay accurate; device and session counts understate 
 
 ### Enable NLT/NKJV/CSB
 
-The three bibleIds (not secret) are recorded in `plugins/jlife-scripture/data/bible-versions.json` and `content/reading-plans/bible-provider-registry.json`: NLT `d6e14a625393b4da-01`, NKJV `63097d2a0a2f7db3-01`, CSB `a556c5305ee15c3f-01`. All three stay `enabled: false` and `display: link` until the owner has tried them:
+**Status: enabled (#141, final part).** On latoc the owner ran `wp jlife scripture try nlt|nkjv|csb "John 3:16"`: each returned HTTP 200 with the passage and a copyright line (2026-11-19). The registry now has `enabled: true`, `display: native` and that evidence as `license_evidence` for all three, and each `copyright.url` is the rights holder's site (NLT https://www.tyndale.com/, NKJV https://www.thomasnelson.com/, CSB https://csbible.com/). The owner's decision: the free church app is **noncommercial** (the Starter plan and the NKJV terms need that). The three bibleIds (not secret) are NLT `d6e14a625393b4da-01`, NKJV `63097d2a0a2f7db3-01`, CSB `a556c5305ee15c3f-01`. The defaults did not change: NIrV stays the English default (still not renderable, so English readers see the ERV link until they pick a version) and Kinh Thánh 1925 the Vietnamese one. A participant sees NLT, NKJV or CSB only when they choose it on My Marathon; the public `/reading/` pages never show them (they show each language's default only).
 
-1. **Try each version on the host** (run from the WordPress directory, with `--url=<the site's URL>` on a multisite). Each uncached run is **one API call**; a repeat run is a cache hit and costs none (`wp jlife scripture cache-purge --all` forces a fresh fetch). The command works while the version is disabled, prints the text, the copyright notice, the cache status and the HTTP status, and never prints the key:
+To repeat the check on a host (run from the WordPress directory, with `--url=<the site's URL>` on a multisite). Each uncached run is **one API call**; a repeat run is a cache hit and costs none (`wp jlife scripture cache-purge --all` forces a fresh fetch):
+
+```
+wp jlife scripture try nlt "John 3:16"
+wp jlife scripture try nkjv "John 3:16"
+wp jlife scripture try csb "John 3:16"
+```
+
+`--metadata` adds one more API call (the Bible's metadata). `wp jlife bible usage` shows the month's count.
+
+**The copyright page (terms §7.1/7.2).** API.Bible's metadata has no page URL, so each citation links to the site's own pages, which contain the shortcode `[jlife_bible_copyrights]` (the name, abbreviation and notice from the Bible's metadata, one section per version with the version key as its anchor). The owner made two Polylang-linked pages, "Bible Copyrights" (English) and "Bản quyền Kinh Thánh" (Tiếng Việt). To point the reader at them:
+
+1. Find the English page's ID: `wp post list --post_type=page --fields=ID,post_title,post_status`.
+2. Set it (on each site that shows readers; either page of the pair works):
 
    ```
-   wp jlife scripture try nlt "John 1:1-5"
-   wp jlife scripture try nkjv "John 1:1-5"
-   wp jlife scripture try csb "John 1:1-5"
-   wp jlife scripture try nlt "Luke 3:23" --metadata
+   wp option update jlife_scripture_copyright_page_id <the page's ID>
    ```
 
-   The last one also checks a partial verse and fetches the Bible's metadata (`--metadata` is one more API call). `wp jlife bible usage` shows the month's count.
-2. **Confirm** for each version: HTTP status 200; the copyright line is the publisher's notice; the verse numbers and text read correctly; the passage's own verse count looks right.
-3. **Make the copyright page** (terms §7.1): a WordPress page containing `[jlife_bible_copyrights all="yes"]`, then `wp option update jlife_scripture_copyright_page_url "<the page's URL>"` on the site that shows readers. Check each version's section, and set its `copyright.url` in the registry to the IP holder's website.
-4. **A follow-up PR** sets, for each version you accept, `enabled: true`, `display: native` and `license_evidence` (the date and what was confirmed, for example "2026-12-01: `wp jlife scripture try` returned 200 with the publisher's notice; copyright page published; terms of the account reviewed"). `bin/validate-scripture.js` then checks the allowlist rules. Turn the reader on per site with `jlife_scripture_native_reader` if it is not on yet.
-5. Watch **J-Life → Scripture** (or `wp jlife bible usage`): cached use stays in the hundreds of calls a month; uncached use would pass 5,000.
+3. Check it: `wp jlife scripture try nlt "John 3:16"` prints `Copyright page link (en): …#nlt` and `(vi): …#nlt`.
+
+A citation links to `<the page in the reader's language>#<version key>`: with Polylang, `pll_get_post( $id, 'vi' )` / `'en'` (so the Polylang language slugs must be `en` and `vi`), falling back to the page itself when there is no published translation. Only published pages are linked. The older option `jlife_scripture_copyright_page_url` (a URL) is still read as a fallback for one release; remove it once the ID is set (`wp option delete jlife_scripture_copyright_page_url`). Until one of them is set, no "Full copyright information" link is shown. **Owner to confirm** the pages meet §7.1 (the translation, abbreviation, and the holder's website, which each version's registry `copyright.url` now carries).
+
+Watch **J-Life → Scripture** (or `wp jlife bible usage`): cached use stays in the hundreds of calls a month; uncached use would pass 5,000. Turn the reader on per site with `jlife_scripture_native_reader` if it is not on yet. To disable a version again, set `enabled: false` in the registry (a participant's choice then falls back to their language's default, quietly).
 
 ### The client
 
@@ -126,7 +136,7 @@ The three bibleIds (not secret) are recorded in `plugins/jlife-scripture/data/bi
 1. Consider regenerating the key first (it was shown on screen during setup). Copy `config/latoc-bible.example.php` to `~/.latoc/bible.php` on the latoc host, set the key privately, `chmod 600`. Never in the repo, issues or chat.
 2. Run `wp jlife bible apibible-list --language=eng` on the host (one API call) and record the `id` of the NLT, NKJV and CSB editions in `api_bible.versions[].source_id`.
 3. Read the account's accepted terms and confirm the rules above (cache age, FUMS, attribution, the full-copyright-page link).
-4. Done 2026-11-20: the bibleIds are recorded and #139's registry, source and cache are wired (#141 part 2). Next: **Enable NLT/NKJV/CSB** above (run `wp jlife scripture try`, make the copyright page, then a follow-up PR sets `enabled: true`).
+4. Done: the bibleIds are recorded, #139's registry, source and cache are wired (#141 part 2), and NLT, NKJV and CSB are enabled (#141, final part): see **Enable NLT/NKJV/CSB** above.
 
 ## Bible League: explicit permission pending
 
@@ -146,7 +156,7 @@ This registry is **not currently read by WordPress runtime**. The next engineeri
 
 ## Next owner actions
 
-1. API.Bible: the key is on the host and the NLT/NKJV/CSB `bibleId`s are recorded (#141). Run `wp jlife scripture try` for each and enable them (see **API.Bible → Enable NLT/NKJV/CSB**).
+1. API.Bible: NLT, NKJV and CSB are enabled (#141). Set the copyright page (`wp option update jlife_scripture_copyright_page_id <ID>`) and confirm the account's terms (see **API.Bible → Enable NLT/NKJV/CSB**).
 2. Await Bible League's written ERV/BPT response.
 3. Confirm whether the owner wants the previously recorded **NIrV + KTHD** native-reader selection or a newly proposed **NIV + KTHD** default.
 4. Complete publisher-specific terms review and proof-of-concept before exposing licensed text publicly.

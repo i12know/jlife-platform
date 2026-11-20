@@ -148,7 +148,7 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 	public function test_unknown_and_disabled_keys_are_refused() {
 		$user = $this->participant( 'en_US' );
 		jlife_scripture_set_user_choice( $user, array( 'primary' => 'kt1925' ) );
-		foreach ( array( 'bogus', 'NIV ', '../kt1925', 'nirv', 'niv', 'nlt', str_repeat( 'a', 500 ) ) as $key ) {
+		foreach ( array( 'bogus', 'NIV ', '../kt1925', 'nirv', 'niv', 'kthd', str_repeat( 'a', 500 ) ) as $key ) {
 			foreach ( array( 'primary', 'secondary' ) as $slot ) {
 				$r = jlife_scripture_set_user_choice( $user, array( $slot => $key ) );
 				$this->assertWPError( $r, $slot . ' ' . $key );
@@ -235,7 +235,10 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 	public function test_selectable_versions_are_enabled_and_grouped_by_language() {
 		$groups = jlife_scripture_selectable_versions();
 		$this->assertSame( array( 'en', 'vi' ), array_keys( $groups ), 'registry language order' );
-		$this->assertSame( array( 'erv' ), array_keys( $groups['en'] ), 'only enabled versions: NIrV, NIV, NLT … are not there yet' );
+		$this->assertSame( array( 'nlt', 'nkjv', 'csb', 'erv' ), array_keys( $groups['en'] ), 'only enabled versions: NLT, NKJV, CSB and ERV; NIrV and NIV are not there yet' );
+		foreach ( array( 'nlt', 'nkjv', 'csb' ) as $key ) {
+			$this->assertTrue( jlife_scripture_can_render( $groups['en'][ $key ] ), "{$key}: text on the page" );
+		}
 		$this->assertSame( array( 'kt1925', 'bpt' ), array_keys( $groups['vi'] ) );
 		$this->assertTrue( jlife_scripture_can_render( $groups['vi']['kt1925'] ) );
 		$this->assertFalse( jlife_scripture_can_render( $groups['en']['erv'] ), 'ERV opens Bible Gateway' );
@@ -252,12 +255,13 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 			)
 		);
 		$groups = jlife_scripture_selectable_versions();
-		$this->assertSame( array( 'nirv', 'niv', 'erv' ), array_keys( $groups['en'] ), 'registry order inside a language' );
+		$this->assertSame( array( 'nirv', 'niv', 'nlt', 'nkjv', 'csb', 'erv' ), array_keys( $groups['en'] ), 'registry order inside a language' );
 		$this->assertTrue( jlife_scripture_can_render( $groups['en']['nirv'] ) );
 		$this->assertFalse( jlife_scripture_can_render( $groups['en']['niv'] ), 'enabled but link-only' );
 
 		$this->assertSame( 'kt1925', jlife_scripture_selectable_version( 'kt1925' )['key'] );
-		$this->assertNull( jlife_scripture_selectable_version( 'nlt' ), 'disabled' );
+		$this->assertNull( jlife_scripture_selectable_version( 'kthd' ), 'disabled' );
+		$this->assertSame( 'nlt', jlife_scripture_selectable_version( 'nlt' )['key'], 'enabled' );
 		$this->assertNull( jlife_scripture_selectable_version( 'nope' ) );
 		$this->assertNull( jlife_scripture_selectable_version( '' ) );
 	}

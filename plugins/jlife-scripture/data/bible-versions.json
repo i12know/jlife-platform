@@ -108,19 +108,19 @@
       "short_code": "NLT",
       "source": "apibible",
       "source_id": "d6e14a625393b4da-01",
-      "display": "link",
+      "display": "native",
       "copyright": {
-        "text": "New Living Translation (NLT): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
-        "url": "https://scripture.api.bible/"
+        "text": "New Living Translation (NLT): text provided by API.Bible; the full copyright information names the publisher's notice.",
+        "url": "https://www.tyndale.com/"
       },
       "cache": {
         "max_age_seconds": 1209600,
         "max_consecutive_verses": 499
       },
-      "license_evidence": null,
-      "enabled": false,
+      "license_evidence": "API.Bible Starter plan, app Jlife; premium slot selected 2026-11-19; owner smoke-tested with `wp jlife scripture try` on latoc 2026-11-19 (HTTP 200, copyright returned)",
+      "enabled": true,
       "default_for": [],
-      "note": "API.Bible (#141): starter-plan slot; bibleId recorded 2026-11-20. Source and FUMS tracking are wired (Jlife_Scripture_Apibible_Source). Stays disabled until the owner runs `wp jlife scripture try` for this version and a follow-up PR sets enabled, display native and license_evidence (docs/bible-provider-entitlements.md, Enable NLT/NKJV/CSB)."
+      "note": "API.Bible (#141): starter-plan slot, enabled after the owner's smoke test with `wp jlife scripture try` on latoc (2026-11-19). The notice the API returns with each passage is shown under the text; the line above is only the fallback when it returns none."
     },
     {
       "key": "nkjv",
@@ -129,19 +129,19 @@
       "short_code": "NKJV",
       "source": "apibible",
       "source_id": "63097d2a0a2f7db3-01",
-      "display": "link",
+      "display": "native",
       "copyright": {
-        "text": "New King James Version (NKJV): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
-        "url": "https://scripture.api.bible/"
+        "text": "New King James Version (NKJV): text provided by API.Bible; the full copyright information names the publisher's notice.",
+        "url": "https://www.thomasnelson.com/"
       },
       "cache": {
         "max_age_seconds": 1209600,
         "max_consecutive_verses": 499
       },
-      "license_evidence": null,
-      "enabled": false,
+      "license_evidence": "API.Bible Starter plan, app Jlife; premium slot selected 2026-11-19; owner smoke-tested with `wp jlife scripture try` on latoc 2026-11-19 (HTTP 200, copyright returned)",
+      "enabled": true,
       "default_for": [],
-      "note": "API.Bible (#141): starter-plan slot; bibleId recorded 2026-11-20. Source and FUMS tracking are wired (Jlife_Scripture_Apibible_Source). Stays disabled until the owner runs `wp jlife scripture try` for this version and a follow-up PR sets enabled, display native and license_evidence (docs/bible-provider-entitlements.md, Enable NLT/NKJV/CSB)."
+      "note": "API.Bible (#141): starter-plan slot, enabled after the owner's smoke test with `wp jlife scripture try` on latoc (2026-11-19). The notice the API returns with each passage is shown under the text; the line above is only the fallback when it returns none."
     },
     {
       "key": "csb",
@@ -150,19 +150,19 @@
       "short_code": "CSB",
       "source": "apibible",
       "source_id": "a556c5305ee15c3f-01",
-      "display": "link",
+      "display": "native",
       "copyright": {
-        "text": "Christian Standard Bible (CSB): the publisher's notice is returned by API.Bible with each passage and must replace this line when enabled.",
-        "url": "https://scripture.api.bible/"
+        "text": "Christian Standard Bible (CSB): text provided by API.Bible; the full copyright information names the publisher's notice.",
+        "url": "https://csbible.com/"
       },
       "cache": {
         "max_age_seconds": 1209600,
         "max_consecutive_verses": 499
       },
-      "license_evidence": null,
-      "enabled": false,
+      "license_evidence": "API.Bible Starter plan, app Jlife; premium slot selected 2026-11-19; owner smoke-tested with `wp jlife scripture try` on latoc 2026-11-19 (HTTP 200, copyright returned)",
+      "enabled": true,
       "default_for": [],
-      "note": "API.Bible (#141): starter-plan slot; bibleId recorded 2026-11-20. Source and FUMS tracking are wired (Jlife_Scripture_Apibible_Source). Stays disabled until the owner runs `wp jlife scripture try` for this version and a follow-up PR sets enabled, display native and license_evidence (docs/bible-provider-entitlements.md, Enable NLT/NKJV/CSB)."
+      "note": "API.Bible (#141): starter-plan slot, enabled after the owner's smoke test with `wp jlife scripture try` on latoc (2026-11-19). The notice the API returns with each passage is shown under the text; the line above is only the fallback when it returns none."
     },
     {
       "key": "erv",

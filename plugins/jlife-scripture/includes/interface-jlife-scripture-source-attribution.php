@@ -18,9 +18,10 @@ interface Jlife_Scripture_Source_Attribution {
 	/**
 	 * The attribution paragraph for one shown passage.
 	 *
-	 * @param array $version Registry version entry.
-	 * @param array $meta    The meta stored with the passage.
+	 * @param array  $version  Registry version entry.
+	 * @param array  $meta     The meta stored with the passage.
+	 * @param string $language The reader's language ("en" or "vi"), for a link that is translated.
 	 * @return string Escaped HTML (a <p class="jls-version"> element).
 	 */
-	public function attribution_html( array $version, array $meta );
+	public function attribution_html( array $version, array $meta, $language );
 }

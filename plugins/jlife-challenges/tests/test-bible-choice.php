@@ -245,7 +245,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 	public function test_unknown_and_disabled_keys_are_rejected() {
 		$this->rest_as( $this->u['a'], array( 'bible_version' => 'kt1925' ) );
 		foreach ( array( 'bible_version', 'bible_version_2' ) as $field ) {
-			foreach ( array( 'bogus', 'nirv', 'nlt', '../kt1925', 'KT1925 ' ) as $key ) {
+			foreach ( array( 'bogus', 'nirv', 'kthd', '../kt1925', 'KT1925 ' ) as $key ) {
 				$r = $this->rest_as( $this->u['a'], array( $field => $key ) );
 				$this->assertSame( 400, $r->get_status(), "{$field}: {$key}" );
 				$this->assertSame( 'jlife_bible_unknown', $r->get_data()['code'] );
@@ -399,7 +399,8 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Every enabled version, grouped by language in the registry's order;
+	 * Every enabled version, grouped by language in the registry's order: NLT,
+	 * NKJV and CSB (text on the page through API.Bible, #141) with ERV (a link);
 	 * versions whose text cannot be shown say "(opens Bible Gateway)". Disabled
 	 * ones are not there.
 	 */
@@ -410,12 +411,16 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 			$this->assertSame( 'ERV — Easy-to-Read Version (opens Bible Gateway)', $this->option_text( $html, $name, 'erv' ), $name );
 			$this->assertSame( 'BPT — Vietnamese Bible: Easy-to-Read Version (opens Bible Gateway)', $this->option_text( $html, $name, 'bpt' ) );
 			$this->assertSame( 'KT1925 — Kinh Thánh 1925 (Bản Truyền Thống)', $this->option_text( $html, $name, 'kt1925' ), 'text on the page: no label' );
-			foreach ( array( 'nirv', 'niv', 'kthd', 'nlt', 'nkjv', 'csb' ) as $disabled ) {
+			$this->assertSame( 'NLT — New Living Translation', $this->option_text( $html, $name, 'nlt' ), 'text on the page: no label' );
+			$this->assertSame( 'NKJV — New King James Version', $this->option_text( $html, $name, 'nkjv' ) );
+			$this->assertSame( 'CSB — Christian Standard Bible', $this->option_text( $html, $name, 'csb' ) );
+			foreach ( array( 'nirv', 'niv', 'kthd' ) as $disabled ) {
 				$this->assertNull( $this->option_text( $html, $name, $disabled ), "{$disabled} is not enabled" );
 			}
 		}
 		$this->assertSame( 1, preg_match( '/<optgroup label="English">(.*?)<\/optgroup>/s', $html, $english ) );
-		$this->assertStringContainsString( 'value="erv"', $english[1] );
+		preg_match_all( '/<option value="([a-z0-9]+)"/', $english[1], $keys );
+		$this->assertSame( array( 'nlt', 'nkjv', 'csb', 'erv' ), $keys[1], 'English: the enabled versions, in registry order' );
 		$this->assertStringNotContainsString( 'kt1925', $english[1], 'grouped by the version\'s own language' );
 
 		// An owner enables NIrV (text on the page) and NIV (link only): both appear in English.

@@ -13,13 +13,14 @@
 class Test_Registry extends Jlife_Scripture_TestCase {
 
 	/**
-	 * Every shipped version is valid; only Kinh Thánh 1925 may render text today.
+	 * Every shipped version is valid; Kinh Thánh 1925 and the three API.Bible
+	 * versions (NLT, NKJV, CSB: enabled #141) may render text, nothing else.
 	 */
-	public function test_shipped_registry_renders_only_kinh_thanh_1925() {
+	public function test_shipped_registry_renders_only_the_licensed_versions() {
 		$versions = jlife_scripture_registry()['versions'];
 		$this->assertSame( array( 'kt1925', 'nirv', 'niv', 'kthd', 'nlt', 'nkjv', 'csb', 'erv', 'bpt' ), array_keys( $versions ), 'no shipped entry is dropped as invalid' );
 		$renderable = array_keys( array_filter( $versions, 'jlife_scripture_can_render' ) );
-		$this->assertSame( array( 'kt1925' ), $renderable );
+		$this->assertSame( array( 'kt1925', 'nlt', 'nkjv', 'csb' ), $renderable );
 		foreach ( array( 'erv', 'bpt' ) as $key ) {
 			$this->assertSame( 'link', $versions[ $key ]['source'] );
 			$this->assertSame( 'link', $versions[ $key ]['display'] );

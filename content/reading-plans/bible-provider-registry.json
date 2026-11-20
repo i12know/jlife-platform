@@ -231,8 +231,8 @@
     ]
   },
   "api_bible": {
-    "account_and_licensed_translations_verified": false,
-    "account": "App \"Jlife\", Starter plan ($0): 5,000 API calls/month, 3 premium slots selected as NLT, NKJV, CSB (owner, 2026-11-19, #141). Exact bibleIds recorded 2026-11-20 (owner ran `wp jlife bible apibible-list`).",
+    "account_and_licensed_translations_verified": true,
+    "account": "App \"Jlife\", Starter plan ($0): 5,000 API calls/month, 3 premium slots selected as NLT, NKJV, CSB (owner, 2026-11-19, #141). Exact bibleIds recorded (owner ran `wp jlife bible apibible-list`); NLT, NKJV and CSB enabled in the native reader after the owner smoke-tested each with `wp jlife scripture try` on latoc (2026-11-19: HTTP 200, copyright returned). Noncommercial use (owner decision).",
     "starter_plan": "open-access translations plus up to 3 copyrighted Bibles; non-commercial use (owner decision: the free church app is non-commercial)",
     "client": "plugins/jlife-challenges/includes/bible-apibible.php (#141); IDs were looked up with `wp jlife bible apibible-list --language=eng`; the native reader's source is plugins/jlife-scripture/includes/class-jlife-scripture-apibible-source.php (#141 part 2)",
     "versions": [
@@ -249,9 +249,9 @@
           "max_age_days": 14,
           "max_consecutive_verses": 499
         },
-        "enabled": false,
+        "enabled": true,
         "default_for": null,
-        "status": "bible_id_recorded_not_yet_smoke_tested"
+        "status": "enabled_after_owner_smoke_test_2026-11-19"
       },
       {
         "key": "nkjv",
@@ -266,9 +266,9 @@
           "max_age_days": 14,
           "max_consecutive_verses": 499
         },
-        "enabled": false,
+        "enabled": true,
         "default_for": null,
-        "status": "bible_id_recorded_not_yet_smoke_tested"
+        "status": "enabled_after_owner_smoke_test_2026-11-19"
       },
       {
         "key": "csb",
@@ -283,17 +283,17 @@
           "max_age_days": 14,
           "max_consecutive_verses": 499
         },
-        "enabled": false,
+        "enabled": true,
         "default_for": null,
-        "status": "bible_id_recorded_not_yet_smoke_tested"
+        "status": "enabled_after_owner_smoke_test_2026-11-19"
       }
     ],
     "requirements_before_use": [
-      "Put JLIFE_APIBIBLE_KEY on the host in ~/.latoc/bible.php (0600)",
+      "DONE: JLIFE_APIBIBLE_KEY is on the host in a private file",
       "DONE 2026-11-20: bible_id (source_id) recorded for NLT, NKJV and CSB",
-      "Smoke-test one passage per version with `wp jlife scripture try <key> \"<reference>\"` and confirm the copyright line, then a follow-up PR sets enabled: true, display: native and license_evidence",
-      "Owner confirms cache and FUMS rules against the account's terms (docs/bible-provider-entitlements.md)",
-      "DONE (#141 part 2): wired into #139's registry and shared passage cache behind enabled: false"
+      "DONE 2026-11-19: owner ran `wp jlife scripture try` for each version (HTTP 200, copyright returned)",
+      "OWNER DECISION 2026-11-19: the free church app is noncommercial (NKJV on the Starter plan needs a noncommercial app). The account's accepted terms (cache age, FUMS with cached tokens) remain the owner's to confirm (docs/bible-provider-entitlements.md)",
+      "DONE (#141): enabled: true, display: native and license_evidence set in plugins/jlife-scripture/data/bible-versions.json"
     ]
   },
   "bible_league": {
