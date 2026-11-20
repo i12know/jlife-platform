@@ -54,6 +54,9 @@ function jlife_challenges_share( $user_id, $entry_id, $group_id ) {
 	if ( ! $enrollment || ! $group || (int) $group['campaign_id'] !== (int) $entry['campaign_id'] || ! jlife_challenges_is_group_member( $user_id, $group_id ) ) {
 		return jlife_challenges_denied();
 	}
+	if ( ! jlife_challenges_campaign_accepts_writes( (int) $entry['campaign_id'] ) ) {
+		return jlife_challenges_campaign_closed_error();
+	}
 	if ( jlife_challenges_needs_guardian_consent( $enrollment ) ) {
 		return new WP_Error( 'jlife_guardian_consent_required', __( 'Sharing with your group starts once a parent or guardian has agreed.', 'jlife-challenges' ) );
 	}
@@ -191,6 +194,9 @@ function jlife_challenges_unshare( $user_id, $share_id ) {
 	$share = jlife_challenges_find_share( $share_id );
 	if ( ! $share || $user_id < 1 || (int) $share['user_id'] !== (int) $user_id ) {
 		return jlife_challenges_denied();
+	}
+	if ( ! jlife_challenges_campaign_accepts_writes( (int) $share['campaign_id'] ) ) {
+		return jlife_challenges_campaign_closed_error();
 	}
 	global $wpdb;
 	// An organizer-hidden post stays hidden (D17): the author's text is cleared,

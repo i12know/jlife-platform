@@ -56,6 +56,7 @@ function jlife_challenges_day_view( $user_id, $day_key = null ) {
 		'today'     => $today,
 		'day_count' => jlife_challenges_day_count( $campaign ),
 		'points'    => (int) jlife_challenges_progress( $user_id, $user_id, (int) $campaign['id'] )['points'],
+		'closed'    => ! jlife_challenges_campaign_accepts_writes( $campaign ),
 	);
 	if ( null === $day_key && 0 === $today ) {
 		$local = jlife_challenges_local_date( $campaign, jlife_challenges_now() );

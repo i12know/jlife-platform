@@ -883,6 +883,14 @@ function jlife_challenges_soap_guidance() {
  * @return string
  */
 function jlife_challenges_render_soap_panel( $view, $state = array() ) {
+	if ( ! empty( $view['closed'] ) ) {
+		// A closed campaign (#179): the reading and the person's own words, read-only; no form, no share boxes.
+		$body = ! empty( $view['entry'] ) ? trim( (string) $view['entry']['body'] ) : '';
+		return jlife_challenges_render_reader( $view )
+			. '<h2>' . esc_html__( 'My SOAP', 'jlife-challenges' ) . '</h2>'
+			. '<p class="jl-note" role="status">' . esc_html( jlife_challenges_campaign_closed_error()->get_error_message() ) . '</p>'
+			. ( '' !== $body ? '<div class="jl-preview">' . esc_html( $body ) . '</div>' : '' );
+	}
 	$state     = jlife_challenges_page_state( $state );
 	$text      = null === $state['text'] ? jlife_challenges_entry_text( $view ) : (string) $state['text'];
 	$submitted = jlife_challenges_is_submitted( $view );

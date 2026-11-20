@@ -63,6 +63,12 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Added
 
+- **Closing a campaign freezes it** (#179, part of #174; owner decision D4-A). `wp jlife campaign close <id> [--dry-run]` sets the new `closed` status. The dry run prints counts only; the real run is audited with counts only and is safe to run twice.
+  - **Refused once closed** (`jlife_campaign_closed`): SOAP save and submit; creating, re-posting or removing a share; group joins, moves, starts, new groups and invite resets; new ledger rows; and opting in to reminder emails. Each check runs after the existing gate, so outsiders still get the plain denial.
+  - **Reminders:** queued `reminder_sends` rows are cancelled (new status `cancelled`, class `campaign_closed`), and the sender cancels any row it still meets for a closed campaign. Opting out and the unsubscribe link keep working.
+  - **Reads unchanged:** each person still reads their own entries and points, and group members still read their feed, now read-only. Nothing becomes more visible. The day screen of a closed campaign shows the person's own text read-only, with a notice (Vietnamese draft added). The closed campaign stays the anchor for the Bible choice and language settings.
+  - **Design:** §3c in `docs/challenges-engine-design.md`, with new rows in the §4b and §4d matrices. **Tests:** new `Test_Campaign_Close`. The paused-campaign reminder test now pauses with `draft`, because `closed` cancels instead of skipping.
+
 - **Pilot Feedback link for LATOC testers** (#171). A small **Pilot Feedback** / **Góp ý thử nghiệm** link now sits in the footer of Today, `/soap`, My Marathon, My Group, `/share`, the sign-out confirmation, `/join`, `/signin`, `/consent` and the public `/reading/` day pages. The label follows the screen language. It points at one ordinary WordPress post that the owner writes, publishes and moderates in wp-admin; testers leave moderated comments there, with no GitHub account needed.
   - **Configuration:** the post's ID is the site option `jlife_pilot_feedback_post_id`, and the address comes from `get_permalink()`. A published Polylang translation is used for its language when one exists; otherwise both languages go to the same bilingual post.
   - **No link** while the option is unset or the post is missing, unpublished or password-protected. Removing the link after the beta means deleting the option.

@@ -154,6 +154,9 @@ function jlife_challenges_create_group( $actor, $campaign_id, $name, $days = 60 
 	if ( ! jlife_challenges_is_organizer( $actor ) || ! jlife_challenges_get_campaign( $campaign_id ) ) {
 		return jlife_challenges_denied();
 	}
+	if ( ! jlife_challenges_campaign_accepts_writes( (int) $campaign_id ) ) {
+		return jlife_challenges_campaign_closed_error();
+	}
 	$name = jlife_challenges_clean_group_name( $name );
 	if ( is_wp_error( $name ) ) {
 		return $name;
@@ -197,6 +200,9 @@ function jlife_challenges_reset_invite( $actor, $group_id, $days = 60 ) {
 	$organizer = jlife_challenges_is_organizer( $actor );
 	if ( ! $group || ! ( $organizer || jlife_challenges_is_group_starter( $actor, $group_id ) ) ) {
 		return jlife_challenges_denied();
+	}
+	if ( ! jlife_challenges_campaign_accepts_writes( (int) $group['campaign_id'] ) ) {
+		return jlife_challenges_campaign_closed_error();
 	}
 	$alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No 0/O/1/I confusion.
 	$code     = '';
@@ -420,6 +426,9 @@ function jlife_challenges_open_enrollment( $user_id, $campaign_id, $age_band ) {
 	if ( ! in_array( $age_band, JLIFE_CHALLENGES_AGE_BANDS, true ) ) {
 		return new WP_Error( 'jlife_age_band', 'age_band must be adult or minor (participants are 13 or older).' );
 	}
+	if ( ! jlife_challenges_campaign_accepts_writes( (int) $campaign_id ) ) {
+		return jlife_challenges_campaign_closed_error();
+	}
 	$existing = jlife_challenges_get_enrollment( $campaign_id, $user_id );
 	if ( $existing && 'active' === $existing['status'] ) {
 		return array(
@@ -464,6 +473,9 @@ function jlife_challenges_open_enrollment( $user_id, $campaign_id, $age_band ) {
 function jlife_challenges_add_membership( $actor, $enrollment, $group, $role = 'member', $source = 'invite_code' ) {
 	if ( 'active' !== $group['status'] || (int) $group['campaign_id'] !== (int) $enrollment['campaign_id'] || 'active' !== $enrollment['status'] ) {
 		return jlife_challenges_denied();
+	}
+	if ( ! jlife_challenges_campaign_accepts_writes( (int) $group['campaign_id'] ) ) {
+		return jlife_challenges_campaign_closed_error();
 	}
 	$role        = in_array( $role, array( 'starter', 'member' ), true ) ? $role : 'member';
 	$user_id     = (int) $enrollment['user_id'];
@@ -743,6 +755,9 @@ function jlife_challenges_move_member( $actor, $user_id, $new_group_id, $from_gr
 	$e = jlife_challenges_active_enrollment( (int) $group['campaign_id'], $user_id );
 	if ( ! $e ) {
 		return jlife_challenges_denied();
+	}
+	if ( ! jlife_challenges_campaign_accepts_writes( (int) $group['campaign_id'] ) ) {
+		return jlife_challenges_campaign_closed_error();
 	}
 	$current = jlife_challenges_active_memberships( (int) $group['campaign_id'], $user_id );
 	if ( ! $from_group_id && 1 === count( $current ) ) {
