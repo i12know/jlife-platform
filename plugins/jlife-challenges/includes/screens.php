@@ -119,7 +119,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 		. '<title>' . esc_html( $title ) . '</title>'
 		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=16' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
-		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
+		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. $scripts
 		. '</body></html>';

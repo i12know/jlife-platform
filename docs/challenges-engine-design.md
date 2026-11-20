@@ -110,6 +110,10 @@ A day starts at 00:00 campaign time: the pilot is `upcoming` until Dec 4 23:59:5
 
 Two real campaigns running on the same dates should not happen; if they do, the one that started later wins, which is what the old rule did.
 
+**The pilot campaign and "I'll start Dec 20" (#178).** The pilot is an ordinary campaign: key `pilot-2026-12` (the prefix is `pilot-`, never `test-`, so the staging cleanup cannot touch it), Dec 5–13, 2026, `America/Los_Angeles`, status `active`, the same reading plan as the Marathon. It is created by `wp jlife pilot create` (deploy choice `pilot_campaign`), which is safe to rerun and creates no groups and enrolls no one. The pilot is recognised only by its key prefix; **which campaign is current is still decided only by the rule above.** While the pilot is a person's current campaign and has not ended, Today, My Marathon, My Group and `/share` show the practice banner (the nav items `today`, `marathon` and `group`; not the public reading pages or the sign-out page).
+
+"I'll start Dec 20" is a join mode (`/join/?mode=wait`), offered only while the `join` pick is the pilot. It creates the account as usual (name, age band, language, consent as today) and sets the user meta `jlife_start_official` (UTC time of the choice). It enrolls no one, records no consent and no reminder choice, and the rollover (#180) reads `jlife_challenges_waiting_for_official_ids()` to enroll those people in the official campaign. The flag is not a consent and is not cleared by enrolling in the pilot.
+
 **Not part of this rule:** closing a campaign and refusing its writes (#179); the reminder cron, which still walks every `active` campaign (#179); moving people between campaigns (#180).
 
 ## 4. Privacy matrix: new rows for the engine

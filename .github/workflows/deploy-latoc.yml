@@ -19,6 +19,18 @@ on:
           - preview-remove
           - remove
         default: none
+      pilot_campaign:
+        description: >-
+          Pilot campaign (#178): "create" makes the Dec 5-13 pilot campaign
+          (key pilot-2026-12) if it does not exist yet; running it again changes
+          nothing; "status" prints its counts. It creates no groups and enrolls
+          no one.
+        type: choice
+        options:
+          - none
+          - create
+          - status
+        default: none
 
 permissions:
   contents: read
@@ -85,6 +97,7 @@ jobs:
           DB_USER: ${{ secrets.LATOC_DB_USER }}
           DB_PASSWORD: ${{ secrets.LATOC_DB_PASSWORD }}
           TEST_CAMPAIGN: ${{ inputs.test_campaign }}
+          PILOT_CAMPAIGN: ${{ inputs.pilot_campaign }}
         run: |
           scp -q "$RUNNER_TEMP/jlife-plugins.tgz" latoc:.latoc/jlife-plugins.tgz
           scp -q bin/deploy/latoc-remote.sh latoc:.latoc/latoc-remote.sh
@@ -98,6 +111,7 @@ jobs:
             printf 'DB_USER=%q\n' "$DB_USER"
             printf 'DB_PASSWORD=%q\n' "$DB_PASSWORD"
             printf 'TEST_CAMPAIGN=%q\n' "$TEST_CAMPAIGN"
+            printf 'PILOT_CAMPAIGN=%q\n' "$PILOT_CAMPAIGN"
           } | ssh latoc 'umask 077; cat > ~/.latoc/deploy.env'
 
       - name: Install or update on the server

@@ -389,5 +389,7 @@ return array(
 		// Pilot feedback link (#171). DRAFT, like the rest: for the Vietnamese reviewers.
 		'Pilot Feedback' => 'Góp ý thử nghiệm',
 		'Pilot feedback' => 'Góp ý thử nghiệm',
+		// Practice-week banner (#178). DRAFT: for the Vietnamese reviewers.
+		"Practice week: Dec 5–13. Points don't count for prizes. The Marathon starts Dec 20." => 'Tuần thực hành: 5–13 tháng 12. Điểm không được tính cho giải thưởng. Marathon bắt đầu ngày 20 tháng 12.',
 	),
 );
