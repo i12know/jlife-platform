@@ -54,7 +54,8 @@ function jlife_challenges_order_languages( $links_config, $first ) {
  */
 function jlife_challenges_language_order( $user_id, $links_config ) {
 	$locale = (string) get_user_meta( $user_id, 'locale', true );
-	return jlife_challenges_order_languages( $links_config, 0 === strpos( $locale, 'vi' ) ? 'vi' : 'en' );
+	$first  = 0 === strpos( $locale, 'vi' ) ? 'vi' : 'en';
+	return jlife_challenges_order_languages( $links_config, $first );
 }
 
 /**

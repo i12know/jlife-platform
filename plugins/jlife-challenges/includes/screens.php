@@ -1144,7 +1144,7 @@ function jlife_challenges_route() {
 	} elseif ( 'unsubscribe' === $screen ) {
 		jlife_challenges_screen_unsubscribe(); // Public: no sign-in; the signed link is the authority.
 	} elseif ( defined( 'JLIFE_READING_DAY_CPT' ) && is_singular( JLIFE_READING_DAY_CPT ) ) {
-		jlife_challenges_screen_reading_day(); // Public (#106): a signed-out Today; the post's own content is not used.
+		jlife_challenges_screen_reading_day(); // Public page (#106): a signed-out Today instead of the post body.
 	} elseif ( ( is_front_page() || is_home() ) && ! current_user_can( 'edit_posts' ) && is_user_logged_in() ) {
 		wp_safe_redirect( home_url( '/today/' ) );
 		exit;
