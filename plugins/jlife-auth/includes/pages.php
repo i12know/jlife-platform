@@ -331,6 +331,7 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 		'solo'   => '<a href="' . esc_url( add_query_arg( 'mode', 'solo', $join ) ) . '">' . esc_html__( 'Read on my own', 'jlife-auth' ) . '</a>',
 		'start'  => '<a href="' . esc_url( add_query_arg( 'mode', 'start', $join ) ) . '">' . esc_html__( 'Start a group', 'jlife-auth' ) . '</a>',
 	);
+
 	$links['wait'] = '<a href="' . esc_url( add_query_arg( 'mode', 'wait', $join ) ) . '">' . esc_html__( "I'll start Dec 20", 'jlife-auth' ) . '</a>';
 	if ( ! jlife_auth_wait_offered() ) {
 		unset( $links['wait'] );

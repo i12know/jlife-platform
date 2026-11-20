@@ -91,7 +91,7 @@ class Test_Wait_Choice extends WP_UnitTestCase {
 	 *
 	 * @param string $utc Y-m-d H:i:s.
 	 */
-	private function at( $utc ) {
+	private function set_now( $utc ) {
 		$this->now = new DateTimeImmutable( $utc, new DateTimeZone( 'UTC' ) );
 	}
 
@@ -189,14 +189,14 @@ class Test_Wait_Choice extends WP_UnitTestCase {
 	 */
 	public function test_waiting_is_offered_only_while_the_pilot_is_open() {
 		foreach ( array( '2026-11-29 08:00:00', '2026-12-07 18:00:00', '2026-12-14 07:59:59' ) as $utc ) {
-			$this->at( $utc );
+			$this->set_now( $utc );
 			$this->assertTrue( jlife_auth_wait_offered(), $utc );
 		}
 		foreach ( array( '2026-12-14 08:00:00', '2026-12-20 18:00:00' ) as $utc ) {
-			$this->at( $utc );
+			$this->set_now( $utc );
 			$this->assertFalse( jlife_auth_wait_offered(), $utc );
 		}
-		$this->at( '2026-12-14 08:00:00' );
+		$this->set_now( '2026-12-14 08:00:00' );
 		$late = jlife_auth_start_join( $this->input( array( 'mode' => 'wait' ) ) );
 		$this->assertWPError( $late );
 		$this->assertCount( 0, tests_retrieve_phpmailer_instance()->mock_sent, 'no email for a choice that is no longer offered' );
@@ -230,7 +230,7 @@ class Test_Wait_Choice extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'name="first_name"', $wait );
 		$this->assertStringContainsString( 'name="age_band"', $wait );
 
-		$this->at( '2026-12-20 18:00:00' );
+		$this->set_now( '2026-12-20 18:00:00' );
 		foreach ( array( 'invite', 'solo', 'start' ) as $mode ) {
 			$this->assertStringNotContainsString( 'mode=wait', jlife_auth_join_form( $mode, array() ), "no link on $mode after the pilot" );
 		}
