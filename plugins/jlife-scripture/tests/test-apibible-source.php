@@ -679,7 +679,7 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 		foreach ( array( $en_reader, $vi_reader ) as $reader ) {
 			jlife_scripture_set_user_choice( $reader, array( 'primary' => 'nlt' ) );
 		}
-		$link = static fn( $page, $key = 'nlt' ) => '<a href="' . esc_url( get_permalink( $page ) . '#' . $key ) . '">Full copyright information</a>';
+		$link    = static fn( $page, $key = 'nlt' ) => '<a href="' . esc_url( get_permalink( $page ) . '#' . $key ) . '">Full copyright information</a>';
 		$this->assertStringContainsString( $link( $en ), jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $en_reader ), 'an English reader: the English page' );
 		$vi_html = jlife_scripture_render_day( $this->day( 'John 1:1-2' ), $vi_reader );
 		$this->assertStringContainsString( $link( $vi ), $vi_html, 'a Vietnamese reader of an English Bible: the Vietnamese page' );
