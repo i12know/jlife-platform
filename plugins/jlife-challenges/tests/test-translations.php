@@ -123,6 +123,34 @@ class Test_Translations extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * The Help, Rules and Privacy links and the SOAP help link read in Vietnamese
+	 * (#65), and each new string has a draft translation.
+	 */
+	public function test_the_help_links_read_in_vietnamese() {
+		$catalog = include dirname( __DIR__ ) . '/languages/jlife-challenges-vi.l10n.php';
+		foreach ( array( 'Help', 'Rules', 'Privacy', 'Help, rules and privacy', 'How SOAP works' ) as $key ) {
+			$this->assertArrayHasKey( $key, $catalog['messages'], $key );
+		}
+		foreach ( array_keys( jlife_challenges_help_page_options() ) as $key ) {
+			update_option(
+				jlife_challenges_help_page_options()[ $key ],
+				self::factory()->post->create(
+					array(
+						'post_type'  => 'page',
+						'post_title' => $key,
+					)
+				)
+			);
+		}
+		$footer = jlife_challenges_help_footer();
+		foreach ( array( '>Trợ giúp</a>', '>Quy định</a>', '>Quyền riêng tư</a>', 'aria-label="Trợ giúp, quy định và quyền riêng tư"' ) as $vi ) {
+			$this->assertStringContainsString( $vi, $footer );
+		}
+		$this->assertStringNotContainsString( '>Help</a>', $footer );
+		$this->assertStringContainsString( 'SOAP hoạt động thế nào', jlife_challenges_soap_help_page_link() );
+	}
+
+	/**
 	 * English keeps the site's own date format.
 	 */
 	public function test_english_dates_keep_the_site_format() {

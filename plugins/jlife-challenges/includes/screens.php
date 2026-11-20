@@ -128,9 +128,9 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '' )
 	$html   = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=14' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=15' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
-		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>' . $dialog
+		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>' . jlife_challenges_help_footer() . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. $scripts
 		. '</body></html>';
@@ -740,6 +740,17 @@ function jlife_challenges_render_soap_feedback( $view, $state ) {
 }
 
 /**
+ * A link to the SOAP section of the Help page, for the one-line SOAP definition,
+ * or '' when the Help page is not set or not published.
+ *
+ * @return string Escaped HTML, starting with a separator.
+ */
+function jlife_challenges_soap_help_page_link() {
+	$url = jlife_challenges_help_page_url( 'help', '', JLIFE_CHALLENGES_SOAP_HELP_ANCHOR );
+	return '' === $url ? '' : ' · <a href="' . esc_url( $url ) . '" class="jl-soap-more">' . esc_html__( 'How SOAP works', 'jlife-challenges' ) . '</a>';
+}
+
+/**
  * Short guidance for each part, shown under the textbox.
  *
  * @return array<string,string> Letter => guidance.
@@ -792,7 +803,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		. wp_nonce_field( 'jlife_soap_' . $view['day_key'], '_jlife_soap', true, false )
 		. '<input type="hidden" name="jl_day" value="' . esc_attr( $view['day_key'] ) . '">'
 		. '<label for="jl-text">' . esc_html__( 'My SOAP', 'jlife-challenges' ) . '</label>'
-		. '<p class="jl-soap-def">' . esc_html__( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) . ' <a href="#jlife-soap-help" class="jl-soap-more">' . esc_html__( 'More', 'jlife-challenges' ) . '</a></p>'
+		. '<p class="jl-soap-def">' . esc_html__( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) . ' <a href="#jlife-soap-help" class="jl-soap-more">' . esc_html__( 'More', 'jlife-challenges' ) . '</a>' . jlife_challenges_soap_help_page_link() . '</p>'
 		. '<small>' . esc_html__( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ) . '</small>'
 		. '<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary><ul>';
 	foreach ( jlife_challenges_soap_guidance() as $letter => $guidance ) {

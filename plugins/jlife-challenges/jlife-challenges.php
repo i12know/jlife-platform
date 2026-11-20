@@ -37,6 +37,7 @@ require_once __DIR__ . '/includes/daily-view.php';
 require_once __DIR__ . '/includes/daily-admin-page.php';
 require_once __DIR__ . '/includes/lifecycle.php';
 require_once __DIR__ . '/includes/views.php';
+require_once __DIR__ . '/includes/help-pages.php';
 require_once __DIR__ . '/includes/screens.php';
 require_once __DIR__ . '/includes/share-views.php';
 require_once __DIR__ . '/includes/share-screens.php';
@@ -52,6 +53,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	WP_CLI::add_command( 'jlife test-campaign', 'Jlife_Test_Campaign_Command' );
 	WP_CLI::add_command( 'jlife group', 'Jlife_Group_Command' );
 	require_once __DIR__ . '/includes/class-jlife-bible-command.php';
+	require_once __DIR__ . '/includes/class-jlife-help-pages-command.php';
+	WP_CLI::add_command( 'jlife help-pages', 'Jlife_Help_Pages_Command' );
 	WP_CLI::add_command( 'jlife reminders', 'Jlife_Reminders_Command' );
 	WP_CLI::add_command( 'jlife bible', 'Jlife_Bible_Command' );
 }

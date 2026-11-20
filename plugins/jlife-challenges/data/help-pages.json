@@ -1,0 +1,181 @@
+{
+	"_comment": "Starting copy for the three participant pages (#65): How it works, Rules, Privacy. Seeded ONCE, as DRAFTS, by `wp jlife help-pages seed` (includes/help-pages.php); after that the owner edits the live pages in wp-admin and nothing here is ever applied again. The wording is the OWNER's lane: every page opens with a DRAFT notice to delete once approved. Block types: h2 [text, optional anchor id], p [text], ul [items]. In text, **double asterisks** make bold. The two languages must have the same block types in the same order. Contact details are placeholders: the owner fills them in wp-admin. No real contact details here (CLAUDE.md, PRD §21).",
+	"help": {
+		"en": {
+			"title": "How the Bible Marathon works",
+			"slug": "how-it-works",
+			"blocks": [
+				["p", "**DRAFT for the owner to review. This is starting wording, not approved wording. Edit this page in wp-admin and delete this notice when you approve it.**"],
+				["p", "The 104-Day Bible Marathon is a daily habit: read a short passage of Scripture, write a few honest sentences about it, and, if you want to, share what you wrote with your group. Day 1 is December 20, 2026 and Day 104 is April 2, 2027."],
+				["h2", "Four steps each day: Read, SOAP, Submit, Share"],
+				["ul", [
+					"**Read.** Open **Today**. It shows the day's reading. On **My Marathon** you can choose which Bible you read, where more than one is offered.",
+					"**SOAP.** Write your reflection in the one SOAP box, under its four headings (see below). A few honest sentences under each heading are enough.",
+					"**Submit.** Tap **Submit SOAP**. If all four parts have your own writing and it is in time, the day earns one point (see the Rules page). **Save draft** keeps your writing without submitting it, and you can come back and change it later.",
+					"**Share (optional).** Your entry is private unless you choose otherwise. To share, tick a group's box as you save: that group's members then see the whole entry, including your Prayer, with your first name. You can update or remove a share at any time on the share page."
+				]],
+				["h2", "What SOAP means", "what-is-soap"],
+				["p", "SOAP gives your reflection a shape. Write under each of the four headings, in this order:"],
+				["ul", [
+					"**S: Scripture.** Write the verse or reference that stood out to you.",
+					"**O: Observation.** What does it say? What do you notice about Jesus?",
+					"**A: Application.** What will you believe, change, or do today?",
+					"**P: Prayer.** Talk to God about what you read."
+				]],
+				["p", "Keep the headings in the box: they help you and your group read it, and the app uses them to check that the entry is complete."],
+				["h2", "Where to find things"],
+				["ul", [
+					"**Today:** the day's reading and your SOAP box.",
+					"**My Group:** what members of your groups have shared, and where to join or start a group.",
+					"**My Marathon:** your progress through the 104 days, your points, your Bible choice, and your choice about the morning reading email.",
+					"**The share page:** the entries you have shared, where you can update or remove a share."
+				]],
+				["h2", "On your own, or with groups"],
+				["p", "You can read on your own, or belong to up to three groups. Joining a group needs an invite code from someone in it. Only adults (18 or older) can start a group. Groups never change your points: points are personal."],
+				["h2", "Questions"],
+				["p", "Questions or problems? Email [privacy contact email]."]
+			]
+		},
+		"vi": {
+			"title": "Marathon Kinh Thánh hoạt động thế nào",
+			"slug": "cach-hoat-dong",
+			"blocks": [
+				["p", "**BẢN NHÁP (DRAFT) cho chủ dự án xem lại, và bản dịch tiếng Việt này cần người dịch xem lại trước khi dùng thật. Đây chỉ là lời văn khởi đầu, chưa được duyệt. Hãy chỉnh trang này trong wp-admin và xóa ghi chú này khi đã duyệt.**"],
+				["p", "Marathon Kinh Thánh 104 ngày là một thói quen mỗi ngày: đọc một đoạn Kinh Thánh ngắn, viết vài câu chân thật về đoạn đó, và nếu muốn, chia sẻ điều bạn viết với nhóm của mình. Ngày 1 là 20 tháng 12 năm 2026 và Ngày 104 là 2 tháng 4 năm 2027."],
+				["h2", "Bốn bước mỗi ngày: Đọc, SOAP, Gửi, Chia sẻ"],
+				["ul", [
+					"**Đọc.** Mở **Hôm nay**. Trang này cho thấy bài đọc của ngày. Trong **Marathon của tôi**, bạn có thể chọn bản Kinh Thánh mình đọc, khi có nhiều hơn một bản.",
+					"**SOAP.** Viết suy ngẫm của bạn trong một khung SOAP duy nhất, dưới bốn tiêu đề (xem bên dưới). Vài câu chân thật dưới mỗi tiêu đề là đủ.",
+					"**Gửi.** Nhấn **Gửi SOAP**. Nếu cả bốn phần đều có chữ do chính bạn viết và còn kịp hạn, ngày đó được một điểm (xem trang Quy định). **Lưu bản nháp** giữ lại điều bạn viết mà chưa gửi, và bạn có thể quay lại sửa sau.",
+					"**Chia sẻ (tùy chọn).** Bài của bạn là riêng tư, trừ khi bạn chọn khác. Để chia sẻ, hãy đánh dấu ô của một nhóm lúc lưu: các thành viên của nhóm đó sẽ thấy toàn bộ bài viết, kể cả phần Cầu nguyện, kèm tên của bạn. Bạn có thể cập nhật hoặc gỡ phần đã chia sẻ bất cứ lúc nào ở trang chia sẻ."
+				]],
+				["h2", "SOAP nghĩa là gì", "what-is-soap"],
+				["p", "SOAP giúp suy ngẫm của bạn có hình dạng rõ ràng. Hãy viết dưới từng tiêu đề trong bốn tiêu đề, theo thứ tự này:"],
+				["ul", [
+					"**S: Scripture (Kinh Thánh).** Ghi lại câu hoặc đoạn Kinh Thánh đã làm bạn chú ý.",
+					"**O: Observation (Quan sát).** Đoạn này nói gì? Bạn nhận thấy điều gì về Chúa Giê-xu?",
+					"**A: Application (Áp dụng).** Hôm nay bạn sẽ tin, thay đổi hoặc làm điều gì?",
+					"**P: Prayer (Cầu nguyện).** Hãy thưa chuyện với Chúa về điều bạn đã đọc."
+				]],
+				["p", "Hãy giữ nguyên các tiêu đề trong khung viết: chúng giúp bạn và nhóm dễ đọc, và ứng dụng dùng chúng để kiểm tra bài đã đầy đủ chưa."],
+				["h2", "Tìm mọi thứ ở đâu"],
+				["ul", [
+					"**Hôm nay:** bài đọc của ngày và khung viết SOAP của bạn.",
+					"**Nhóm của tôi:** những gì thành viên trong nhóm của bạn đã chia sẻ, và nơi để tham gia hoặc lập một nhóm.",
+					"**Marathon của tôi:** tiến độ của bạn qua 104 ngày, điểm của bạn, bản Kinh Thánh bạn chọn, và lựa chọn của bạn về email nhắc bài đọc mỗi sáng.",
+					"**Trang chia sẻ:** những bài bạn đã chia sẻ, nơi bạn cập nhật hoặc gỡ phần đã chia sẻ."
+				]],
+				["h2", "Đi một mình hoặc theo nhóm"],
+				["p", "Bạn có thể đọc một mình, hoặc tham gia tối đa ba nhóm. Muốn vào một nhóm, bạn cần mã mời từ một người trong nhóm đó. Chỉ người lớn (từ 18 tuổi) mới lập được nhóm. Nhóm không làm thay đổi điểm của bạn: điểm là của riêng mỗi người."],
+				["h2", "Câu hỏi"],
+				["p", "Có câu hỏi hoặc vấn đề? Hãy gửi email đến [privacy contact email]."]
+			]
+		}
+	},
+	"rules": {
+		"en": {
+			"title": "Rules",
+			"slug": "rules",
+			"blocks": [
+				["p", "**DRAFT for the owner to review. This is starting wording, not approved wording. Edit this page in wp-admin and delete this notice when you approve it.**"],
+				["p", "These are the rules for points. Their purpose is to recognize that you showed up. They do not measure how deep your faith is."],
+				["h2", "One point per day"],
+				["p", "You earn **one point** for each day when you submit a complete SOAP in time. You can never earn more than one point for a day, so the most anyone can earn is 104. Everyone is scored the same way, and your group does not change your points."],
+				["p", "A SOAP is complete when it has the four parts S, O, A and P, in that order, each with something you wrote. There is no minimum number of words. The app checks that the parts are there. It does not judge your writing, your theology or your sincerity. An entry that looks empty or copied may be looked at by a person; the point stands unless that review removes it."],
+				["h2", "The grace window"],
+				["p", "A day's point is available until **11:59 PM Pacific time on the next day**. That is, Day 5 can earn its point until the end of Day 6. The time is the campaign's Pacific time, taken from the server clock, not from your phone, so traveling does not change it."],
+				["h2", "Catching up"],
+				["p", "You can write a past day's SOAP at any time, for your own growth in the Word. After the grace window it earns no point. Missing a day never removes you from the Marathon: the next day is a fresh start. A day opens on its own date, so you cannot write days ahead."],
+				["h2", "Editing"],
+				["p", "You can always edit an entry you submitted, and the earlier versions are kept. The point is fixed by your first complete submission that was in time: editing later neither adds nor removes a point."],
+				["h2", "Who can take part"],
+				["ul", [
+					"The Marathon is for ages 13 and up. People aged 13 to 17 normally join a youth group with their youth leaders, under the church's existing consent process.",
+					"[Owner to confirm: whether participants aged 13 to 17 are eligible for the cash prize. This is an organizer decision made outside the app.]"
+				]],
+				["h2", "The prize"],
+				["p", "The Marathon is not about prizes, and the points are not the point. If there is a grand cash prize, it is shared **equally among everyone tied for the highest score** when the Marathon is finalized, with no other tiebreaker. The organizers take care of the prize outside the app. The app takes no payments and stores no payment information."],
+				["h2", "Who sees points"],
+				["p", "You see your own points. Organizers can see points and completion counts. There is no public leaderboard and no ranking of groups."]
+			]
+		},
+		"vi": {
+			"title": "Quy định",
+			"slug": "quy-dinh",
+			"blocks": [
+				["p", "**BẢN NHÁP (DRAFT) cho chủ dự án xem lại, và bản dịch tiếng Việt này cần người dịch xem lại trước khi dùng thật. Đây chỉ là lời văn khởi đầu, chưa được duyệt. Hãy chỉnh trang này trong wp-admin và xóa ghi chú này khi đã duyệt.**"],
+				["p", "Đây là các quy định về điểm. Mục đích của điểm là ghi nhận việc bạn đã có mặt. Điểm không đo độ sâu của đức tin bạn."],
+				["h2", "Mỗi ngày một điểm"],
+				["p", "Bạn được **một điểm** cho mỗi ngày bạn gửi một bài SOAP đầy đủ và còn kịp hạn. Một ngày không bao giờ được hơn một điểm, nên nhiều nhất ai cũng chỉ được 104 điểm. Mọi người được tính điểm giống nhau, và nhóm của bạn không làm thay đổi điểm của bạn."],
+				["p", "Một bài SOAP đầy đủ khi có đủ bốn phần S, O, A và P, theo thứ tự đó, mỗi phần đều có chữ do bạn viết. Không có số từ tối thiểu. Ứng dụng chỉ kiểm tra các phần có mặt hay chưa. Ứng dụng không đánh giá cách viết, thần học hay sự chân thành của bạn. Một bài trông như để trống hoặc chép lại có thể được một người xem xét; điểm vẫn được giữ trừ khi việc xem xét đó gỡ điểm."],
+				["h2", "Thời gian ân hạn"],
+				["p", "Điểm của một ngày được nhận đến **11 giờ 59 phút tối, giờ Thái Bình Dương, của ngày hôm sau**. Nghĩa là Ngày 5 có thể được điểm đến hết Ngày 6. Giờ tính là giờ Thái Bình Dương của Marathon, lấy từ đồng hồ máy chủ chứ không phải điện thoại của bạn, nên đi xa cũng không làm đổi giờ."],
+				["h2", "Đọc bù"],
+				["p", "Bạn có thể viết SOAP cho một ngày đã qua bất cứ lúc nào, để lớn lên trong Lời Chúa. Sau thời gian ân hạn thì bài đó không được điểm. Bỏ lỡ một ngày không bao giờ loại bạn khỏi Marathon: ngày kế tiếp là một khởi đầu mới. Mỗi ngày mở vào đúng ngày của nó, nên bạn không viết trước các ngày chưa đến được."],
+				["h2", "Chỉnh sửa"],
+				["p", "Bạn luôn có thể sửa bài đã gửi, và các bản trước đó được giữ lại. Điểm được định bởi lần gửi đầy đủ đầu tiên còn kịp hạn: sửa về sau không thêm cũng không bớt điểm."],
+				["h2", "Ai được tham gia"],
+				["ul", [
+					"Marathon dành cho người từ 13 tuổi trở lên. Người từ 13 đến 17 tuổi thường tham gia một nhóm thanh thiếu niên cùng các người hướng dẫn của nhóm, theo quy trình đồng ý sẵn có của hội thánh.",
+					"[Chủ dự án xác nhận: người từ 13 đến 17 tuổi có đủ điều kiện nhận giải thưởng tiền mặt hay không. Đây là quyết định của ban tổ chức, thực hiện ngoài ứng dụng.]"
+				]],
+				["h2", "Giải thưởng"],
+				["p", "Marathon không phải để lấy giải thưởng, và điểm không phải là mục đích. Nếu có giải thưởng tiền mặt lớn, giải sẽ được chia **đều cho tất cả những người đồng điểm cao nhất** khi Marathon được chốt, không có tiêu chí phân định nào khác. Ban tổ chức lo việc giải thưởng ngoài ứng dụng. Ứng dụng không nhận thanh toán và không lưu thông tin thanh toán."],
+				["h2", "Ai thấy điểm"],
+				["p", "Bạn thấy điểm của chính mình. Ban tổ chức thấy điểm và số lượng hoàn thành. Không có bảng xếp hạng công khai và không xếp hạng các nhóm."]
+			]
+		}
+	},
+	"privacy": {
+		"en": {
+			"title": "Privacy",
+			"slug": "privacy",
+			"blocks": [
+				["p", "**DRAFT for the owner to review. This is starting wording, not approved wording. Edit this page in wp-admin and delete this notice when you approve it.**"],
+				["h2", "What we keep and why"],
+				["p", "We keep your name, email address, age band, language choice and group enrollment to provide your account and group access. We keep the SOAP entries and revisions you save, the entries you deliberately share, and your points and completion record. Basic security and audit records help protect accounts and record administrative actions."],
+				["h2", "Your journal and your group"],
+				["p", "Your private journal is available to you through the app. When you tick a group's box as you save, the **whole entry, including your Prayer,** is shared with that group, and its members see it with your first name. Nothing is shared unless you tick a box. You can update or remove a share on the share page. Organizers can see points and completion counts; they cannot browse private journals or group feeds through the organizer screens. An organizer may hide a reported share; the action is recorded and the author is told that it was hidden."],
+				["h2", "If you change groups"],
+				["p", "Past shares stay with the old group. You lose access to its feed, and your new group does not see those old shares. You can still see and remove your own shares. Removing a share cannot erase copies that other people have already saved."],
+				["h2", "Youth participation"],
+				["p", "J-Life is for ages 13 and up. Participants aged 13 to 17 normally join a youth group with their youth leaders. Youth participation follows the church's existing consent process; there is no separate parent or guardian approval step in the app. Sharing is always your choice: when you tick a group's box, the whole entry, including your Prayer, is shown to that group with your first name."],
+				["h2", "Email"],
+				["p", "We use your email address to send sign-in codes. If you choose the daily reading email, it is optional, it is in the language you chose, and every email has a link to turn it off. Turning it off does not stop a sign-in code you ask for. Email delivery services process the address and the message needed for delivery. Your SOAP entries are never included in these messages."],
+				["h2", "Technical access"],
+				["p", "Authorized people who maintain the website, the database and the backups can technically access stored information. The app's privacy controls do not prevent this infrastructure access."],
+				["h2", "Keeping and deleting information"],
+				["p", "Your journal remains available after the Marathon while your account exists. To ask for your account to be deleted, email [privacy contact email]. Deleting the account removes its SOAP entries, revisions, shares, points, group memberships, reminder choices and enrollment from the live database. Limited audit records may remain."],
+				["h2", "Backups"],
+				["p", "Bluehost retains emergency backups for one week. J-Life separately keeps its ten most recent deployment backups, which may remain longer. Account deletion does not immediately remove information from existing backup copies."],
+				["h2", "Questions or deletion requests"],
+				["p", "Email **[privacy contact email]**."]
+			]
+		},
+		"vi": {
+			"title": "Quyền riêng tư",
+			"slug": "quyen-rieng-tu",
+			"blocks": [
+				["p", "**BẢN NHÁP (DRAFT) cho chủ dự án xem lại, và bản dịch tiếng Việt này cần người dịch xem lại trước khi dùng thật. Đây chỉ là lời văn khởi đầu, chưa được duyệt. Hãy chỉnh trang này trong wp-admin và xóa ghi chú này khi đã duyệt.**"],
+				["h2", "Chúng tôi giữ gì và vì sao"],
+				["p", "Chúng tôi giữ tên, địa chỉ email, nhóm tuổi, ngôn ngữ bạn chọn và việc ghi danh vào nhóm của bạn, để cung cấp tài khoản và quyền vào nhóm. Chúng tôi giữ các bài SOAP và các bản sửa bạn lưu, những bài bạn chủ ý chia sẻ, cùng điểm và hồ sơ hoàn thành của bạn. Một số hồ sơ bảo mật và kiểm tra cơ bản giúp bảo vệ tài khoản và ghi lại các thao tác quản trị."],
+				["h2", "Nhật ký của bạn và nhóm của bạn"],
+				["p", "Nhật ký riêng tư của bạn chỉ bạn xem được qua ứng dụng. Khi bạn đánh dấu ô của một nhóm lúc lưu, **toàn bộ bài viết, kể cả phần Cầu nguyện,** được chia sẻ với nhóm đó, và các thành viên thấy bài kèm tên của bạn. Không có gì được chia sẻ nếu bạn không đánh dấu ô. Bạn có thể cập nhật hoặc gỡ phần đã chia sẻ ở trang chia sẻ. Ban tổ chức thấy điểm và số lượng hoàn thành; họ không duyệt xem được nhật ký riêng tư hay nguồn bài của nhóm qua màn hình dành cho ban tổ chức. Ban tổ chức có thể ẩn một bài chia sẻ bị báo cáo; thao tác này được ghi lại và tác giả được cho biết bài đã bị ẩn."],
+				["h2", "Nếu bạn đổi nhóm"],
+				["p", "Các bài đã chia sẻ vẫn ở lại với nhóm cũ. Bạn mất quyền xem nguồn bài của nhóm đó, và nhóm mới không thấy các bài chia sẻ cũ ấy. Bạn vẫn xem và gỡ được các bài chia sẻ của chính mình. Việc gỡ một bài chia sẻ không xóa được các bản sao mà người khác đã lưu."],
+				["h2", "Thanh thiếu niên tham gia"],
+				["p", "J-Life dành cho người từ 13 tuổi trở lên. Người từ 13 đến 17 tuổi thường tham gia một nhóm thanh thiếu niên cùng các người hướng dẫn của nhóm. Việc thanh thiếu niên tham gia theo quy trình đồng ý sẵn có của hội thánh; ứng dụng không có thêm bước cha mẹ hoặc người giám hộ phê duyệt riêng. Việc chia sẻ luôn do bạn chọn: khi bạn đánh dấu ô của một nhóm, toàn bộ bài viết, kể cả phần Cầu nguyện, được hiển thị cho nhóm đó kèm tên của bạn."],
+				["h2", "Email"],
+				["p", "Chúng tôi dùng địa chỉ email của bạn để gửi mã đăng nhập. Nếu bạn chọn nhận email bài đọc hằng ngày, việc này là tùy chọn, email viết bằng ngôn ngữ bạn đã chọn, và mỗi email đều có liên kết để tắt. Tắt email này không làm ngừng mã đăng nhập mà bạn yêu cầu. Các dịch vụ gửi email xử lý địa chỉ và nội dung thư cần cho việc gửi. Bài SOAP của bạn không bao giờ nằm trong các thư này."],
+				["h2", "Quyền truy cập kỹ thuật"],
+				["p", "Những người được ủy quyền bảo trì trang web, cơ sở dữ liệu và bản sao lưu về mặt kỹ thuật có thể truy cập thông tin đã lưu. Các thiết lập riêng tư của ứng dụng không ngăn được quyền truy cập ở tầng hạ tầng này."],
+				["h2", "Lưu giữ và xóa thông tin"],
+				["p", "Nhật ký của bạn vẫn có sẵn sau khi Marathon kết thúc, chừng nào tài khoản của bạn còn. Để yêu cầu xóa tài khoản, hãy gửi email đến [privacy contact email]. Khi tài khoản bị xóa, các bài SOAP, bản sửa, bài chia sẻ, điểm, việc tham gia nhóm, lựa chọn nhắc nhở và việc ghi danh của tài khoản đó được xóa khỏi cơ sở dữ liệu đang hoạt động. Một số hồ sơ kiểm tra giới hạn có thể còn lại."],
+				["h2", "Bản sao lưu"],
+				["p", "Bluehost giữ các bản sao lưu khẩn cấp trong một tuần. J-Life giữ riêng mười bản sao lưu triển khai gần nhất, các bản này có thể được giữ lâu hơn. Việc xóa tài khoản không xóa ngay thông tin khỏi các bản sao lưu đã có."],
+				["h2", "Câu hỏi hoặc yêu cầu xóa"],
+				["p", "Hãy gửi email đến **[privacy contact email]**."]
+			]
+		}
+	}
+}

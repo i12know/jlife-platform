@@ -243,6 +243,11 @@ LATOC_LANDING_STATE="${LANDING_STATE}" wp eval-file "${LANDING_DIR}/latoc-landin
 # it in a fresh process, or /vi/ can keep redirecting to the VI page's slug.
 wp transient delete pll_languages_list >/dev/null 2>&1 || true
 wp rewrite flush >/dev/null
+# Help, Rules and Privacy pages (#65): created once, as drafts, in EN and VI, linked
+# through Polylang; never updated, so the owner's edits in wp-admin are safe.
+log "Help, Rules and Privacy pages (seeded once, as drafts)"
+wp jlife help-pages seed
+wp jlife help-pages status
 
 log "Hardening staging settings"
 wp option update blog_public 0 >/dev/null # discourage search engines

@@ -289,6 +289,12 @@ return array(
 		'Default for my language' => 'Mặc định theo ngôn ngữ của tôi',
 		'%s (opens Bible Gateway)' => '%s (mở trên Bible Gateway)',
 		'Your Bible follows the language above until you choose one.' => 'Bản Kinh Thánh của bạn theo ngôn ngữ ở trên cho đến khi bạn tự chọn.',
+		// Help, Rules and Privacy links (#65). DRAFT, like the rest.
+		'Help' => 'Trợ giúp',
+		'Rules' => 'Quy định',
+		'Privacy' => 'Quyền riêng tư',
+		'Help, rules and privacy' => 'Trợ giúp, quy định và quyền riêng tư',
+		'How SOAP works' => 'SOAP hoạt động thế nào',
 		// J-Life → Groups admin screen (#64 part 1). DRAFT, like the rest: for the organizer, to be reviewed by the translator.
 		'Participant #%d' => 'Người tham gia số %d',
 		'Small groups' => 'Các nhóm nhỏ',

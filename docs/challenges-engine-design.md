@@ -81,6 +81,8 @@ Since D14 changed (#112) a participant is **solo** (no group) or in **up to 3 gr
 | Anonymous | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Magic-link actor | ❌ (bridge off at launch) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
+**Help, Rules and Privacy pages (#65).** Ordinary public WordPress pages that the owner writes in wp-admin, seeded once as drafts by `wp jlife help-pages seed`. They read and write **no participant data**: the only stored values are three page IDs in site options (`jlife_challenges_help_page_id`, `jlife_challenges_rules_page_id`, `jlife_challenges_privacy_page_id`). The footer on the participant screens, the consent step's Privacy link and the SOAP help link resolve a page in the reader's language and are left out unless it is published, so they add no new access path and need no matrix row of their own.
+
 Unknown campaign, group or entry → **denied, indistinguishable from "not found."**
 
 ### 4a. Share on save (#98, per group since #112): one checkbox per group

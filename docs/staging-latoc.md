@@ -13,6 +13,7 @@ Status: development/pilot staging for the 104-Day SOAP Bible Marathon ([#49](htt
 | Workflow | [`.github/workflows/deploy-latoc.yml`](../.github/workflows/deploy-latoc.yml), manual trigger only |
 | Server script | [`bin/deploy/latoc-remote.sh`](../bin/deploy/latoc-remote.sh), idempotent, uploaded on each run |
 | Landing-page seed (#110) | [`bin/deploy/latoc-landing.php`](../bin/deploy/latoc-landing.php) (Polylang settings + one-time draft seed) and [`bin/deploy/latoc-landing-content.php`](../bin/deploy/latoc-landing-content.php) (starting block markup, EN and VI). Both travel in the plugin bundle; the script keeps them in `~/.latoc/landing/` |
+| Help, Rules and Privacy pages (#65) | `wp jlife help-pages seed` (run by the deploy), copy in [`plugins/jlife-challenges/data/help-pages.json`](../plugins/jlife-challenges/data/help-pages.json); see [Help, Rules and Privacy pages](#help-rules-and-privacy-pages-65) |
 | Secrets | GitHub → Settings → Environments → `latoc-staging` (9 secrets; deployments restricted to `main`) |
 | Server state | `~/.latoc/` on the host (mode 700): WP-CLI, backups, debug log, first-install admin password, `landing-state` (page statuses and slugs for the smoke test; no secrets) |
 | PHP | Site and WP-CLI both use cPanel's PHP 8.2 (`/opt/cpanel/ea-php82/root/usr/bin/php`); the host's default CLI PHP is 8.3 |
@@ -105,6 +106,27 @@ So the drafts-only state passes, a draft that became public would fail the run, 
 - Polylang caches its language list; the deploy clears it and flushes rewrites after each run. If `/vi/` ever redirects to the Vietnamese page's slug, re-run the deploy.
 - The Vietnamese page's browser `<title>` is the site title until the owner sets a Vietnamese site title in Languages > Translations.
 - The deploy resets web file permissions after the Polylang install and language packs too (the script's strict umask would otherwise make them unreadable to Apache).
+
+## Help, Rules and Privacy pages (#65)
+
+Three ordinary WordPress pages, in English and Vietnamese, linked as Polylang translations. The wording is **the owner's** (human-only lane, `docs/team.md`): the deploy seeds clearly marked **DRAFT** starting copy, once, and never touches it again.
+
+| | GitHub (the deploy) | wp-admin (the owner) |
+|---|---|---|
+| The six pages (3 × EN/VI): wording, titles, slugs, publishing | creates them **once**, as **drafts** | **edits and publishes them**; the deploy never updates them |
+| The three page-ID options | fills in an option **only if it is empty** | may point an option at another page |
+
+- **What is seeded** (`wp jlife help-pages seed`, run by the deploy after Polylang is set up; copy in [`plugins/jlife-challenges/data/help-pages.json`](../plugins/jlife-challenges/data/help-pages.json)): How it works (`how-it-works` / `cach-hoat-dong`), Rules (`rules` / `quy-dinh`), Privacy (`privacy` / `quyen-rieng-tu`). Each starts with a DRAFT notice to delete once approved. The Vietnamese is a draft marked for translator review.
+- **Contact placeholder:** the pages say `[privacy contact email]` where the privacy and deletion contact goes. No real address is in the repository. Replace it in wp-admin (it appears on How it works and Privacy, in both languages). Rules also has an `[Owner to confirm: ...]` line about prize eligibility for ages 13 to 17.
+- **Seeded once:** recorded in the option `jlife_challenges_help_pages_seeded`; each page also carries the meta `_jlife_help_seed`. An edited page is never overwritten, and a page the owner deletes or trashes is not recreated. To recreate on purpose: `wp option delete jlife_challenges_help_pages_seeded` and re-deploy; only missing pages are created.
+- **Page IDs live in options** (the English page; Polylang resolves the reader's language): `jlife_challenges_help_page_id`, `jlife_challenges_rules_page_id`, `jlife_challenges_privacy_page_id`. `wp jlife help-pages status` prints each option, its ID and the page's status. To use a page you wrote yourself: `wp option update jlife_challenges_privacy_page_id <page ID>`.
+- **Where the links appear.** A small Help · Rules · Privacy footer on Today, `/soap`, My Marathon, My Group, `/share`, the sign-out confirmation, `/join`, `/signin` and `/consent`, in the participant's language (the Polylang translation when it is published, else the page the option names). A **Privacy** link ("Read the full privacy summary") on the consent step. A "How SOAP works" link beside the SOAP one-liner's "More". **A link appears only when its page is published**: drafts and missing pages give no link, never a broken one. So until the owner publishes the pages, the screens look exactly as before, and the consent step has no Privacy link.
+- **Keep the SOAP anchor.** The heading "What SOAP means" on the Help page has the HTML anchor `what-is-soap`, which the SOAP link jumps to. If you retitle that heading, keep the anchor (Advanced > HTML anchor in the editor).
+- **Publish order:** edit the wording, replace the placeholder, delete the DRAFT notice, get the Vietnamese reviewed, then publish the English and Vietnamese page of each. Publish all three before the Dec 5 shadow pilot stores real participant data.
+
+### D19: youth (13 to 17) group sharing needs no setting
+
+The church's D19 policy (no separate guardian approval step in J-Life) is the **default**: the setting `jlife_challenges_require_guardian_consent` is off unless it is set to `1`. Nothing needs configuring. To check a site: `wp option get jlife_challenges_require_guardian_consent` should say the option does not exist, or print `0`. If it prints `1`, turn the guardian step off with `wp option update jlife_challenges_require_guardian_consent 0`. Sharing stays optional, chosen by the author, and limited to their own groups; private entries stay private.
 
 ## First install: admin login
 
