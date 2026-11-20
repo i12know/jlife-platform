@@ -309,7 +309,12 @@ class Test_Reading_Native extends WP_UnitTestCase {
 		$html = $this->render( $post_id, 'en' );
 		$this->assertStringContainsString( 'Open in Bible Gateway (ERV)', $html );
 		$this->assertStringNotContainsString( 'Open in Bible Gateway (BPT)', $html );
-		$this->assertSame( '', $this->logged() );
+		// English defaults to NLT (API.Bible), unavailable here: the reader logs its
+		// identifiers-only line and falls back to the ERV link.
+		foreach ( array_filter( explode( "
+", $this->logged() ) ) as $line ) {
+			$this->assertMatchesRegularExpression( '/jlife-scripture: fetch failed: source=apibible version=nlt passage=[A-Z0-9.-]+ code=[a-z_]+$/', $line, 'identifiers only, never Bible text' );
+		}
 	}
 
 	/**

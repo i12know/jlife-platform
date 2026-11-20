@@ -57,10 +57,13 @@ class Test_Render extends Jlife_Scripture_TestCase {
 	}
 
 	/**
-	 * An English participant's default (NIrV) is not renderable yet: every
-	 * passage is an "Open in Bible Gateway" link in today's ERV, no text.
+	 * When the English default is a version that cannot render (here NIrV, as
+	 * before NLT became the default), every passage is an "Open in Bible
+	 * Gateway" link in ERV, no text and no failure note.
 	 */
 	public function test_english_participant_gets_bible_gateway_links() {
+		$this->patch_version( 'nlt', array( 'default_for' => array() ) );
+		$this->patch_version( 'nirv', array( 'default_for' => array( 'en' ) ) );
 		$html = jlife_scripture_render_day( $this->day10(), $this->participant( 'en_US' ) );
 		$this->assertStringContainsString( 'lang="en"', $html );
 		$this->assertStringNotContainsString( 'jls-text', $html );
@@ -78,6 +81,8 @@ class Test_Render extends Jlife_Scripture_TestCase {
 	 */
 	public function test_native_english_once_enabled() {
 		$this->use_fake_nirv();
+		$this->patch_version( 'nlt', array( 'default_for' => array() ) );
+		$this->patch_version( 'nirv', array( 'default_for' => array( 'en' ) ) );
 		$html = jlife_scripture_render_day( $this->day( 'John 1:1-5' ), $this->participant( 'en' ) );
 		$this->assertStringContainsString( '<span class="jls-version-name">New International Reader&#039;s Version</span>', $html );
 		$this->assertStringContainsString( 'Biblica', $html );
