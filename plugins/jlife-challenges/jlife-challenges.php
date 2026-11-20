@@ -33,6 +33,8 @@ require_once __DIR__ . '/includes/bible-choice.php';
 require_once __DIR__ . '/includes/reminder-sends.php';
 require_once __DIR__ . '/includes/reminders-admin.php';
 require_once __DIR__ . '/includes/groups-admin-page.php';
+require_once __DIR__ . '/includes/daily-view.php';
+require_once __DIR__ . '/includes/daily-admin-page.php';
 require_once __DIR__ . '/includes/lifecycle.php';
 require_once __DIR__ . '/includes/views.php';
 require_once __DIR__ . '/includes/screens.php';
