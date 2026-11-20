@@ -330,7 +330,9 @@ class Test_Reminders extends Jlife_Challenges_TestCase {
 			$this->assertStringNotContainsString( 'type="submit" name="jl_reminder"', $html );
 		}
 		$this->assertStringNotContainsString( 'jl_reminder_locale', $today, 'Today has only the checkbox' );
-		$this->assertStringContainsString( '<select id="jl-reminder-locale" name="jl_reminder_locale">', $marathon, 'My Marathon keeps the language' );
+		$this->assertStringNotContainsString( 'jl_reminder_locale', $marathon, 'the email language is the Language setting now (#159)' );
+		$this->assertStringNotContainsString( 'Language of the email', $marathon );
+		$this->assertSame( 1, substr_count( $marathon, '<select id="jl-language" name="jl_language">' ), 'one Language setting' );
 		$this->assertStringContainsString( 'Daily reading email</h2>', $marathon );
 		$this->assertFalse( function_exists( 'jlife_challenges_render_reminder_prompt' ), 'the top-of-Today card is gone' );
 		$this->assertSame( '', jlife_challenges_render_reminder_toggle( 0, $this->campaign ), 'nothing for nobody' );
@@ -420,38 +422,33 @@ class Test_Reminders extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Toggling keeps the saved language; a language change alone keeps on/off.
+	 * Toggling keeps the saved language, and the reminder route no longer
+	 * changes it (#159: the Language setting owns it, so a "locale" in the body
+	 * from a page opened before the change is ignored).
 	 */
-	public function test_toggling_keeps_the_language_and_language_saves_alone() {
-		$this->rest_as(
-			$this->u['a'],
-			array(
-				'on'     => true,
-				'locale' => 'vi',
-			)
-		);
+	public function test_toggling_keeps_the_language_and_the_route_cannot_change_it() {
+		update_user_meta( $this->u['a'], 'locale', 'vi' );
+		$this->rest_as( $this->u['a'], array( 'on' => true ) );
+		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'], 'first choice: the account language' );
 		$this->rest_as( $this->u['a'], array( 'on' => false ) );
 		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'], 'off keeps vi' );
 		$r = $this->rest_as( $this->u['a'], array( 'on' => true ) );
 		$this->assertSame( 'vi', $r->get_data()['locale'], 'on keeps vi' );
-		$this->assertMatchesRegularExpression( '/<option value="vi" selected=\'selected\'>/', jlife_challenges_render_reminder_settings( $this->u['a'], $this->campaign ) );
 
-		$r = $this->rest_as( $this->u['a'], array( 'locale' => 'en_US' ) );
+		$r = $this->rest_as(
+			$this->u['a'],
+			array(
+				'on'     => true,
+				'locale' => 'en_US',
+			)
+		);
 		$this->assertSame( 200, $r->get_status() );
-		$this->assertTrue( $r->get_data()['on'], 'a language change leaves it on' );
-		$this->assertSame( 'en_US', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'] );
+		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'], 'a locale in the body is ignored' );
+		$this->assertSame( 'vi', get_user_meta( $this->u['a'], 'locale', true ), 'and the account language too' );
 
-		$this->rest_as( $this->u['a'], array( 'on' => false ) );
-		$r = $this->rest_as( $this->u['a'], array( 'locale' => 'vi' ) );
-		$this->assertFalse( $r->get_data()['on'], 'and leaves it off' );
-		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'] );
-		$this->assertSame( array(), jlife_challenges_reminder_recipients( $this->campaign ) );
-
-		// A first choice from Today (no language sent) uses the account's language, as My Marathon shows it.
-		update_user_meta( $this->u['b'], 'locale', 'vi' );
-		$this->assertMatchesRegularExpression( '/<option value="vi" selected=\'selected\'>/', jlife_challenges_render_reminder_settings( $this->u['b'], $this->campaign ), 'account language is the default' );
+		// A first choice with no account language: English, as the page shows it.
 		$this->rest_as( $this->u['b'], array( 'on' => true ) );
-		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['b'], $this->campaign )['locale'] );
+		$this->assertSame( 'en_US', jlife_challenges_reminder_pref( $this->u['b'], $this->campaign )['locale'] );
 	}
 
 	/**
@@ -466,12 +463,12 @@ class Test_Reminders extends Jlife_Challenges_TestCase {
 			$this->u['a'],
 			array(
 				'jl_reminder'        => 'off',
-				'jl_reminder_locale' => 'vi',
+				'jl_reminder_locale' => 'vi', // From a page opened before #159: ignored.
 			)
 		);
 		$this->assertSame( 'off', jlife_challenges_handle_reminder_post( $this->u['a'], $this->campaign ) );
 		$this->assertFalse( $this->ticked_on_both( $this->u['a'] ) );
-		$this->assertSame( 'vi', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'] );
+		$this->assertSame( 'en_US', jlife_challenges_reminder_pref( $this->u['a'], $this->campaign )['locale'] );
 		$this->assertStringContainsString( 'Saved.', jlife_challenges_render_reminder_settings( $this->u['a'], $this->campaign, true ) );
 
 		wp_set_current_user( $this->u['b'] );

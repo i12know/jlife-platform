@@ -1,17 +1,17 @@
 /* The daily reading email checkbox on Today and My Marathon (#135). A change
- * saves at once: "Saved." on success; on failure the checkbox and language go
- * back to what is saved and a short retry message shows. Without this script
- * the form's Save button posts it instead. */
+ * saves at once: "Saved." on success; on failure the checkbox goes back to
+ * what is saved and a short retry message shows. Without this script the
+ * form's Save button posts it instead. The email language is not here: the
+ * Language setting owns it (#159, language.js). */
 (function () {
 	'use strict';
 	document.querySelectorAll('form.jl-reminder-toggle').forEach(function (form) {
 		var box = form.querySelector('input[type=checkbox][name=jl_reminder]');
-		var lang = form.querySelector('select[name=jl_reminder_locale]');
 		var status = form.querySelector('.jl-reminder-status');
 		if (!box || !status) { return; }
 		var msg = { saved: 'Saved.', failed: 'Not saved. Please try again.' };
 		try { msg = JSON.parse(form.dataset.i18n); } catch (e) { /* keep fallbacks */ }
-		var saved = { on: box.checked, locale: lang ? lang.value : '' };
+		var saved = box.checked;
 		var latest = 0;
 
 		function show(text, failed) {
@@ -19,8 +19,7 @@
 			status.classList.toggle('jl-reminder-failed', !!failed);
 		}
 		function restore() {
-			box.checked = saved.on;
-			if (lang) { lang.value = saved.locale; }
+			box.checked = saved;
 		}
 		function send(body) {
 			var mine = ++latest;
@@ -35,7 +34,7 @@
 				return r.json();
 			}).then(function (data) {
 				if (!data || typeof data.on !== 'boolean') { throw new Error('bad response'); }
-				saved = { on: data.on, locale: typeof data.locale === 'string' ? data.locale : saved.locale };
+				saved = data.on;
 				if (mine !== latest) { return; }
 				restore();
 				show(msg.saved, false);
@@ -46,19 +45,10 @@
 			});
 		}
 
-		box.addEventListener('change', function () {
-			var body = { on: box.checked };
-			if (lang) { body.locale = saved.locale; } // Toggling never changes the language.
-			send(body);
-		});
-		if (lang) {
-			lang.addEventListener('change', function () { send({ locale: lang.value }); });
-		}
+		box.addEventListener('change', function () { send({ on: box.checked }); });
 		form.addEventListener('submit', function (e) {
 			e.preventDefault();
-			var body = { on: box.checked };
-			if (lang) { body.locale = lang.value; }
-			send(body);
+			send({ on: box.checked });
 		});
 	});
 }());

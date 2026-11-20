@@ -234,13 +234,14 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * On: a Vietnamese reader (My language, the email language) reads Kinh Thánh
-	 * 1925 on Today with no frame; the reader sits above the SOAP form, the
-	 * reference chips and the form are as before, and typed text is untouched.
+	 * On: a Vietnamese reader (My language: since #159 the account language,
+	 * set by the Language setting) reads Kinh Thánh 1925 on Today with no frame;
+	 * the reader sits above the SOAP form, the reference chips and the form are
+	 * as before, and typed text is untouched.
 	 */
 	public function test_flag_on_shows_the_vietnamese_default_on_the_page() {
 		$this->reader_on();
-		jlife_challenges_set_reminder( $this->u['a'], $this->u['a'], $this->campaign, false, 'vi' );
+		$this->assertTrue( jlife_challenges_set_language( $this->u['a'], $this->u['a'], 'vi' ) );
 		wp_set_current_user( $this->u['a'] );
 		$body = jlife_challenges_today_body( $this->view( $this->u['a'] ), array( 'text' => 'My own words (kept).' ) );
 

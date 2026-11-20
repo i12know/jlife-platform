@@ -2,9 +2,11 @@
 /**
  * My Bible (#140): each participant chooses their Bible on My Marathon.
  *
- * This file is only the My Marathon side: the two selects under the language
- * row, the `POST /jlife/v1/bible` route, the no-JavaScript form handler, and
- * the "My language" answer the Scripture plugin asks for. The choice itself
+ * This file is only the My Marathon side: the two selects under the reminder
+ * checkbox, the `POST /jlife/v1/bible` route and the no-JavaScript form
+ * handler. "My language" (the default Bible's language) is the account's
+ * `locale`, the Scripture plugin's own answer; since #159 the Language setting
+ * on My Marathon changes it (language.php). The choice itself
  * (storage, validation against the version registry, resolution order) belongs
  * to jlife-scripture: see jlife_scripture_set_user_choice() and
  * jlife_scripture_versions_for_user(). Every call into that plugin is guarded,
@@ -24,8 +26,6 @@ defined( 'ABSPATH' ) || exit;
  */
 const JLIFE_CHALLENGES_BIBLE_NONCE = 'jlife_bible';
 
-add_filter( 'jlife_scripture_user_language', 'jlife_challenges_scripture_language', 10, 2 );
-
 /**
  * Is the Scripture plugin's choice API here?
  *
@@ -39,29 +39,6 @@ function jlife_challenges_bible_choice_available() {
 		&& function_exists( 'jlife_scripture_versions_for_user' )
 		&& function_exists( 'jlife_scripture_can_render' )
 		&& function_exists( 'jlife_scripture_registry' );
-}
-
-/**
- * "My language" for the Scripture plugin: for a participant with an active
- * enrollment, the reminder-email language shown on My Marathon (the saved
- * one, else the account's language, else the page's). Anyone else keeps the
- * Scripture plugin's own answer.
- *
- * @param string $lang    "en" or "vi" (the plugin's answer from the account's locale).
- * @param int    $user_id Participant (0 = not signed in).
- * @return string "en" or "vi".
- */
-function jlife_challenges_scripture_language( $lang, $user_id ) {
-	$user_id = (int) $user_id;
-	if ( $user_id < 1 ) {
-		return $lang;
-	}
-	$campaign_id = jlife_challenges_reminder_campaign_id( $user_id );
-	if ( $campaign_id < 1 ) {
-		return $lang;
-	}
-	$locale = jlife_challenges_reminder_shown_locale( $user_id, jlife_challenges_reminder_pref( $user_id, $campaign_id ) );
-	return 0 === strpos( $locale, 'vi' ) ? 'vi' : 'en';
 }
 
 /**
@@ -192,7 +169,7 @@ function jlife_challenges_bible_options( $groups, $selected, $none ) {
 
 /**
  * The My Bible picker, for My Marathon's Daily reading email section (under
- * the language row): "My Bible" lists every enabled version grouped by
+ * the checkbox, below the Language section): "My Bible" lists every enabled version grouped by
  * language; "Also show…" is an optional second Bible. With JavaScript a change
  * saves at once ("Saved." / restore and "Not saved. Please try again.", as for
  * the reminder checkbox); without it the Save button posts the form.
