@@ -61,6 +61,11 @@ function jlife_challenges_create_pilot_campaign( $actor, $args = array() ) {
 	if ( 0 !== strpos( $key, JLIFE_CHALLENGES_PILOT_PREFIX ) || strlen( $key ) <= strlen( JLIFE_CHALLENGES_PILOT_PREFIX ) ) {
 		return new WP_Error( 'jlife_campaign_invalid', 'The pilot campaign key must start with "' . JLIFE_CHALLENGES_PILOT_PREFIX . '".' );
 	}
+	$start = (string) $args['start_date'];
+	$end   = (string) $args['end_date'];
+	if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $start ) || ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $end ) || $start > $end ) {
+		return new WP_Error( 'jlife_campaign_invalid', 'The pilot dates must be YYYY-MM-DD, with the start on or before the end.' );
+	}
 	global $wpdb;
 	$t = jlife_challenges_table( 'campaigns' );
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table; name from $wpdb->prefix.

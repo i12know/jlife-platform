@@ -53,6 +53,7 @@ class Jlife_Pilot_Command {
 	 * @param array $assoc_args Options.
 	 */
 	public function status( $args, $assoc_args ) {
+		unset( $args, $assoc_args ); // WP-CLI always passes them; status takes no options.
 		global $wpdb;
 		$t    = jlife_challenges_table( 'campaigns' );
 		$e    = jlife_challenges_table( 'enrollments' );

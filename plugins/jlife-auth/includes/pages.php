@@ -324,6 +324,7 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 		. '<input id="jl-invite" type="text" name="invite_code" value="' . esc_attr( $in['invite_code'] ) . '" autocapitalize="characters" required>' : '';
 	$code .= 'start' === $mode ? '<label for="jl-group">' . esc_html__( 'Group name', 'jlife-auth' ) . '</label>'
 		. '<input id="jl-group" type="text" name="group_name" value="' . esc_attr( $in['group_name'] ) . '" maxlength="' . (int) JLIFE_CHALLENGES_GROUP_NAME_MAX . '" autocomplete="off" required>' : '';
+
 	// The other two ways in.
 	$links = array(
 		'invite' => '<a href="' . esc_url( $join ) . '">' . esc_html__( 'I have an invite code', 'jlife-auth' ) . '</a>',
