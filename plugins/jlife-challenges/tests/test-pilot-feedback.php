@@ -237,6 +237,7 @@ class Test_Pilot_Feedback extends WP_UnitTestCase {
 		$this->assertSame( $signin, wp_login_url( get_permalink( $id ) ) );
 		$this->assertSame( $signin, wp_login_url( get_permalink( $id ) . '#comments' ), 'a fragment is replaced' );
 		$this->assertStringContainsString( 'wp-login.php', wp_login_url( get_permalink( $other ) ), 'another post' );
+		$this->assertStringContainsString( 'wp-login.php', wp_login_url( home_url( '/' ) ), 'the front page' );
 		$this->assertStringContainsString( 'wp-login.php', wp_login_url( admin_url() ), 'wp-admin' );
 		$this->assertStringContainsString( 'wp-login.php', wp_login_url(), 'no redirect' );
 

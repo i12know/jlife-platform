@@ -78,14 +78,15 @@ function jlife_challenges_pilot_feedback_link() {
 }
 
 /**
- * Is this address the feedback post (or its published translation)? Query
- * string and fragment are ignored.
+ * Is this address the feedback post (or its published translation)? The
+ * fragment is ignored; the query string is kept, because with plain
+ * permalinks it is the post's address (?p=123).
  *
  * @param string $url Address.
  * @return bool
  */
 function jlife_challenges_is_pilot_feedback_url( $url ) {
-	$url = strtok( (string) $url, '?#' );
+	$url = strtok( (string) $url, '#' );
 	if ( false === $url ) {
 		return false;
 	}
