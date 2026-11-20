@@ -1,6 +1,7 @@
 <?php
 /**
- * Reading-plan import and rendering (#59).
+ * Reading-plan import and data (#59). The pages that show a day (Today, /soap
+ * and the public /reading/ page) are rendered, and tested, in jlife-challenges (#106).
  *
  * Fixtures are days 1, 38 and 53 cut from the real generated plans
  * (content/reading-plans/*.json), so the edge cases are real data:
@@ -23,23 +24,6 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 	private function fixture( $name ) {
 		$raw = file_get_contents( __DIR__ . "/fixtures/plan-{$name}.json" ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 		return json_decode( (string) $raw, true );
-	}
-
-	/**
-	 * Render a reading day's content as a front-end single page would.
-	 *
-	 * @param int $post_id Post ID.
-	 * @return string
-	 */
-	private function render( $post_id ) {
-		$this->go_to( get_permalink( $post_id ) );
-		$this->assertTrue( is_singular( JLIFE_READING_DAY_CPT ) );
-		$html = '';
-		while ( have_posts() ) {
-			the_post();
-			$html = apply_filters( 'the_content', '' );
-		}
-		return $html;
 	}
 
 	/**
@@ -102,62 +86,6 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		$this->assertWPError( jlife_studies_import_reading_plan( array( 'schema_version' => '2.0' ) ) );
 	}
 
-	/**
-	 * The day page shows source references and the owner-tested links, opening in new tabs.
-	 */
-	public function test_day_page_shows_references_and_links_in_new_tabs() {
-		jlife_studies_import_reading_plan( $this->fixture( 'primary' ) );
-		jlife_studies_import_reading_plan( $this->fixture( 'supplemental' ) );
-		$day38 = jlife_studies_get_reading_day( 'rpl-life-and-teachings-of-jesus-2026', 'd038' );
-		$html  = $this->render( $day38['post_id'] );
-
-		$this->assertStringContainsString( 'Day 38', $html );
-		$this->assertStringContainsString( 'John 6:8-15a', $html, 'source reference shown exactly, half-verse letter kept' );
-		$this->assertStringContainsString(
-			esc_url( 'https://www.biblegateway.com/passage/?search=Mark+6:30-37;John+6:8-15;Mark+6:45;Matthew+14:23-33;Mark+6:53-56&version=ERV' ),
-			$html,
-			'the owner-tested combined English link'
-		);
-		$this->assertStringContainsString(
-			esc_url( 'https://www.biblegateway.com/passage/?search=Mark+6:30-37;John+6:8-15;Mark+6:45;Matthew+14:23-33;Mark+6:53-56&version=BPT' ),
-			$html,
-			'one Vietnamese BPT link with every passage, like English (#91)'
-		);
-		$this->assertStringNotContainsString( 'bible.com', $html );
-		$supp = substr( $html, (int) strpos( $html, '<details class="jlife-supplemental">' ) );
-		$this->assertMatchesRegularExpression( '/class="jlife-read-all" href="[^"]*version=BPT"/', $supp, 'optional parallels get their own BPT button' );
-		$this->assertStringContainsString( 'target="_blank" rel="noopener"', $html );
-		$this->assertStringContainsString( '<details class="jlife-supplemental">', $html, 'parallel readings collapsed and optional' );
-	}
-
-	/**
-	 * Optional parallel readings list their Harmony Bible sections (#90).
-	 */
-	public function test_day_page_links_harmony_sections_in_the_optional_readings() {
-		jlife_studies_import_reading_plan( $this->fixture( 'primary' ) );
-		jlife_studies_import_reading_plan( $this->fixture( 'supplemental' ) );
-		$day1 = jlife_studies_get_reading_day( 'rpl-life-and-teachings-of-jesus-2026', 'd001' );
-		$html = $this->render( $day1['post_id'] );
-
-		$this->assertStringNotContainsString( 'harmony-bible.com', substr( $html, 0, (int) strpos( $html, '<details class="jlife-supplemental">' ) ), 'only inside the optional section' );
-		$this->assertStringContainsString( '<a href="https://harmony-bible.com/sections/1/" target="_blank" rel="noopener">Harmony&#039;s section 1: In the Dedication Luke Explains His Method of Research</a>', $html );
-		$this->assertSame( 1, substr_count( $html, 'harmony-bible.com/sections/2/' ) );
-		$this->assertLessThan( strpos( $html, 'sections/2/' ), strpos( $html, 'sections/1/' ), 'reading order' );
-		$this->assertStringContainsString( 'version=BPT', $html, 'parallel Scripture and Bible links stay' );
-	}
-
-	/**
-	 * Imported text is escaped on output.
-	 */
-	public function test_day_page_escapes_titles_and_references() {
-		$doc                                      = $this->fixture( 'primary' );
-		$doc['days'][0]['passages'][0]['display'] = '<script>alert(1)</script>';
-		jlife_studies_import_reading_plan( $doc );
-		$day1 = jlife_studies_get_reading_day( 'rpl-life-and-teachings-of-jesus-2026', 'd001' );
-		$html = $this->render( $day1['post_id'] );
-		$this->assertStringNotContainsString( '<script>', $html );
-		$this->assertStringContainsString( '&lt;script&gt;', $html );
-	}
 	/**
 	 * A Vietnamese reader gets the plan's Vietnamese title and Protestant book
 	 * names; English and other languages keep the English day (#119).
@@ -222,5 +150,33 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		add_filter( 'determine_locale', $vi );
 		$this->assertSame( 'Tiêu đề ' . $day_id, jlife_studies_get_reading_day( $doc['plan_id'], $day_id )['day']['title'] );
 		remove_filter( 'determine_locale', $vi );
+	}
+
+	/**
+	 * A day for a given post and language, whatever language the request is in:
+	 * what the public reading page uses for its own ?lang= switch (#106).
+	 */
+	public function test_reading_day_for_post_takes_its_own_language() {
+		$doc = $this->fixture( 'primary' );
+		foreach ( $doc['days'] as &$d ) {
+			$d['i18n'] = array(
+				'vi' => array(
+					'title'    => 'Tiêu đề ' . $d['day_id'],
+					'passages' => array_fill( 0, count( $d['passages'] ), 'Giăng 1:1' ),
+				),
+			);
+		}
+		unset( $d );
+		jlife_studies_import_reading_plan( $doc );
+		$day_id = $doc['days'][0]['day_id'];
+		$post   = jlife_studies_find_reading_day( $doc['plan_id'], $day_id );
+
+		$vi = jlife_studies_reading_day_for_post( $post, 'vi' );
+		$en = jlife_studies_reading_day_for_post( $post, 'en' );
+		$this->assertSame( 'Tiêu đề ' . $day_id, $vi['day']['title'], 'the request is English; the day is Vietnamese' );
+		$this->assertSame( $doc['days'][0]['title'], $en['day']['title'] );
+		$this->assertSame( $post->ID, $vi['post_id'] );
+		$this->assertSame( get_permalink( $post ), $vi['url'] );
+		$this->assertSame( $vi['plan'], $en['plan'] );
 	}
 }

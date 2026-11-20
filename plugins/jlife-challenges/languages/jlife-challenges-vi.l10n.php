@@ -379,5 +379,10 @@ return array(
 		'Download this day (CSV)' => 'Tải ngày này (CSV)',
 		'Download all days (CSV)' => 'Tải tất cả các ngày (CSV)',
 		"date format\4F j, Y" => 'j \\t\\h\\á\\n\\g n, Y', // Reading-day date: 18 tháng 11, 2026.
+		// The public /reading/ day pages (#106). DRAFT, like the rest: to be reviewed by the translator.
+		'Read along with us and write your own SOAP.' => 'Hãy đọc cùng chúng tôi và viết SOAP của riêng bạn.',
+		'Join the Bible Marathon' => 'Tham gia Marathon Kinh Thánh',
+		'Sign in' => 'Đăng nhập',
+		'Write my SOAP for this day' => 'Viết SOAP của tôi cho ngày này',
 	),
 );

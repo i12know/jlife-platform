@@ -22,7 +22,7 @@ The Bible Marathon engine (M5, #60): campaigns, groups and enrollment, private S
 ## Does not own
 
 - Reading content and Bible links (`jlife-studies`, #59)
-- Screens: Today, SOAP form, My Group (M6, #61); share-to-chat (M7, #62)
+- Screens: Today, SOAP form, My Group (M6, #61); share-to-chat (M7, #62); the public `/reading/` day pages, a signed-out Today (#106, `includes/reading-page.php`)
 - Sign-in (M3, #58) and email (M8, #63)
 - Disciple.Tools: launch groups feed `jlife_huddles_group_membership`; D.T groups replace this source after launch (P9)
 

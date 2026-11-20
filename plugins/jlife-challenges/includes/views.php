@@ -30,6 +30,22 @@ function jlife_challenges_participant_campaign( $user_id ) {
 }
 
 /**
+ * Languages in display order: the given language first, the others after it.
+ *
+ * @param array  $links_config Language => config from the reading plan.
+ * @param string $first        The language to put first ("en" or "vi").
+ * @return string[] Language keys.
+ */
+function jlife_challenges_order_languages( $links_config, $first ) {
+	$langs = array_keys( (array) $links_config );
+	usort(
+		$langs,
+		static fn( $a, $b ) => ( $b === $first ) <=> ( $a === $first )
+	);
+	return $langs;
+}
+
+/**
  * Languages in display order: the participant's language first.
  *
  * @param int   $user_id      Participant.
@@ -37,14 +53,8 @@ function jlife_challenges_participant_campaign( $user_id ) {
  * @return string[] Language keys.
  */
 function jlife_challenges_language_order( $user_id, $links_config ) {
-	$langs  = array_keys( (array) $links_config );
 	$locale = (string) get_user_meta( $user_id, 'locale', true );
-	$first  = 0 === strpos( $locale, 'vi' ) ? 'vi' : 'en';
-	usort(
-		$langs,
-		static fn( $a, $b ) => ( $b === $first ) <=> ( $a === $first )
-	);
-	return $langs;
+	return jlife_challenges_order_languages( $links_config, 0 === strpos( $locale, 'vi' ) ? 'vi' : 'en' );
 }
 
 /**
