@@ -262,47 +262,43 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Until a person picks, the Bible follows My language (the reminder email
-	 * language, else the account's language); once they pick it stays put.
+	 * Until a person picks, the Bible follows My language (since #159 the
+	 * account's language, set by the Language setting); once they pick it stays put.
 	 */
 	public function test_default_follows_my_language_then_the_choice_is_sticky() {
 		$a = $this->u['a'];
 		$this->assertSame( array( 'nlt', null ), $this->keys( $a ), 'no language chosen: English' );
 
-		jlife_challenges_set_reminder( $a, $a, $this->campaign, false, 'vi' );
-		$this->assertSame( array( 'kt1925', null ), $this->keys( $a ), 'email language Tiếng Việt: Kinh Thánh 1925' );
+		$this->assertTrue( jlife_challenges_set_language( $a, $a, 'vi' ) );
+		$this->assertSame( array( 'kt1925', null ), $this->keys( $a ), 'Tiếng Việt: Kinh Thánh 1925' );
 		$this->rest_as( $a, array() ); // An empty save changes nothing.
-		jlife_challenges_set_reminder( $a, $a, $this->campaign, false, 'en_US' );
+		$this->assertTrue( jlife_challenges_set_language( $a, $a, 'en_US' ) );
 		$this->assertSame( array( 'nlt', null ), $this->keys( $a ), 'back to English: NLT' );
 
-		// Account language, when no email language was saved.
+		// The account language decides, not a saved email language that differs (#159 migration rule).
 		update_user_meta( $this->u['b'], 'locale', 'vi' );
-		$this->assertNull( jlife_challenges_reminder_pref( $this->u['b'], $this->campaign ) );
+		jlife_challenges_set_reminder( $this->u['b'], $this->u['b'], $this->campaign, false, 'en_US' );
 		$this->assertSame( array( 'kt1925', null ), $this->keys( $this->u['b'] ) );
-		$this->assertSame( 'vi', apply_filters( 'jlife_scripture_user_language', 'en', $this->u['b'] ) );
+		$this->assertFalse( has_filter( 'jlife_scripture_user_language' ), 'nothing overrides the account language' );
 
 		// The language has no say once a person has picked.
 		$this->assertSame( 200, $this->rest_as( $a, array( 'bible_version' => 'kt1925' ) )->get_status() );
 		foreach ( array( 'vi', 'en_US', 'vi', 'en_US' ) as $language ) {
-			jlife_challenges_set_reminder( $a, $a, $this->campaign, false, $language );
-			$this->assertSame( array( 'kt1925', null ), $this->keys( $a ), "after changing the email language to {$language}" );
+			jlife_challenges_set_language( $a, $a, $language );
+			$this->assertSame( array( 'kt1925', null ), $this->keys( $a ), "after changing the language to {$language}" );
 		}
 		$this->rest_as( $a, array( 'bible_version' => 'erv' ) );
-		jlife_challenges_set_reminder( $a, $a, $this->campaign, false, 'vi' );
+		jlife_challenges_set_language( $a, $a, 'vi' );
 		$this->assertSame( array( 'erv', null ), $this->keys( $a ) );
 
 		// Clearing goes back to following the language.
 		$r = $this->rest_as( $a, array( 'bible_version' => null ) );
 		$this->assertSame( 200, $r->get_status() );
 		$this->assertSame( '', $r->get_data()['bible_version'] );
-		$this->assertSame( array( 'kt1925', null ), $this->keys( $a ), 'follows the (Vietnamese) email language again' );
+		$this->assertSame( array( 'kt1925', null ), $this->keys( $a ), 'follows the (Vietnamese) language again' );
 		$this->rest_as( $a, array( 'bible_version' => 'erv' ) );
 		$this->rest_as( $a, array( 'bible_version' => '' ) );
 		$this->assertSame( '', (string) get_user_meta( $a, 'jlife_bible_version', true ), 'an empty value clears too' );
-
-		// Not a participant of any campaign: the filter leaves the language alone.
-		$this->assertSame( 'en', apply_filters( 'jlife_scripture_user_language', 'en', $this->u['outsider'] ) );
-		$this->assertSame( 'en', apply_filters( 'jlife_scripture_user_language', 'en', 0 ) );
 	}
 
 	/**
@@ -361,18 +357,22 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * The picker sits in the Daily reading email section, under the language
-	 * row: "My Bible" grouped by language, "Also show…" with a None choice, the
-	 * REST route and its nonce, a status line, and a Save button without JavaScript.
+	 * The picker sits in the Daily reading email section, below the Language
+	 * section (#159): "My Bible" grouped by language, "Also show…" with a None
+	 * choice, the REST route and its nonce, a status line, and a Save button
+	 * without JavaScript.
 	 */
-	public function test_picker_markup_is_in_the_same_section_under_the_language() {
+	public function test_picker_markup_is_in_the_reminder_section_under_the_language() {
 		$html = $this->section( $this->u['a'] );
-		$this->assertStringStartsWith( '<section class="jl-reminders"><h2>Daily reading email</h2>', $html );
+		$this->assertStringStartsWith( '<section class="jl-reminders jl-language"><h2>Language</h2>', $html );
 		$this->assertStringEndsWith( '</section>', $html );
-		$language = strpos( $html, 'id="jl-reminder-locale"' );
+		$language = strpos( $html, 'id="jl-language"' );
+		$reminder = strpos( $html, '<section class="jl-reminders"><h2>Daily reading email</h2>' );
 		$picker   = strpos( $html, 'class="jl-bible-picker"' );
 		$this->assertNotFalse( $language );
-		$this->assertGreaterThan( $language, $picker, 'under the language row' );
+		$this->assertNotFalse( $reminder );
+		$this->assertGreaterThan( $language, $reminder, 'the Language section comes first' );
+		$this->assertGreaterThan( $reminder, $picker, 'in the Daily reading email section' );
 		$this->assertSame( 1, substr_count( $html, 'class="jl-bible-picker"' ) );
 
 		$this->assertStringContainsString( 'data-rest="' . esc_url( rest_url( 'jlife/v1/bible' ) ) . '"', $html );
@@ -549,7 +549,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 	public function test_my_marathon_loads_the_script_and_stylesheet_version() {
 		$html = jlife_challenges_page_html( 'My Marathon', $this->section( $this->u['a'] ), 'marathon', array( 'reminder', 'bible' ) );
 		$this->assertStringContainsString( 'assets/bible.js?v=1', $html );
-		$this->assertStringContainsString( 'assets/reminder.js?v=1', $html );
+		$this->assertStringContainsString( 'assets/reminder.js?v=2', $html );
 		$this->assertStringContainsString( 'assets/screens.css?v=16', $html );
 		$this->assertStringNotContainsString( 'bible.js', jlife_challenges_page_html( 'Today', '', 'today', array( 'soap', 'reminder' ) ) );
 		$css = (string) file_get_contents( dirname( __DIR__ ) . '/assets/screens.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.

@@ -152,7 +152,7 @@ A reminder is a message the person asked for. The table holds the choice and the
 
 | Actor / case | Read the choice | Change the choice | Notes |
 |---|---|---|---|
-| The participant (active enrollment) | ✅ own | ✅ own, from the join form's unticked box or the "Email me each morning's reading." checkbox on Today (under Save draft) and My Marathon (#135) | Always for the signed-in user: a user ID in a form post or REST body is ignored. The checkbox saves through `POST /jlife/v1/reminder` (signed in, `wp_rest` nonce via cookie auth; `on` and/or `locale`, leaving out either keeps it) or, without JavaScript, the `jlife_reminder` nonce form; both call `jlife_challenges_set_reminder()` |
+| The participant (active enrollment) | ✅ own | ✅ own, from the join form's unticked box or the "Email me each morning's reading." checkbox on Today (under Save draft) and My Marathon (#135) | Always for the signed-in user: a user ID in a form post or REST body is ignored. The checkbox saves through `POST /jlife/v1/reminder` (signed in, `wp_rest` nonce via cookie auth; `on`, leaving it out keeps it; since #159 a `locale` in the body is ignored) or, without JavaScript, the `jlife_reminder` nonce form; both call `jlife_challenges_set_reminder()`. The row's `locale` is a copy of the account's (see "Language setting" below) |
 | Another participant, group member, starter or leader | ❌ | ❌ `jlife_denied` | Nothing about who gets reminders is shown to groups |
 | Organizer | ✅ (recipient list, for PR 2's queue and status) | ✅ (audited, e.g. `wp` tooling later) | Never reads what anyone wrote |
 | Person with no active enrollment (never joined, left, removed) | ❌ | ❌ `jlife_denied` | An organizer cannot set one for them either; a left or removed person is not a recipient even if a row remains |
@@ -177,13 +177,23 @@ Recipients require **recorded consent** (`enrollments.consented`): the join form
 | Logs | | | A save writes no log line and no audit row; an error never names the posted value or a user |
 | Account deletion | | | WordPress deletes the user's meta with the account |
 
-*Default until a person picks:* the Bible follows **My language**: the reminder-email language on My Marathon, else the account's `locale`; English → the registry's `default_for: en`, Vietnamese → `default_for: vi`. Once a person picks, the choice stays even if they change the email language.
+*Default until a person picks:* the Bible follows **My language**: since #159 the account's `locale` (the Language setting below); English → the registry's `default_for: en`, Vietnamese → `default_for: vi`. Once a person picks, the choice stays even if they change the language.
+
+**Language setting (#159).** One **Language** select on My Marathon (English / Tiếng Việt) replaces "Language of the email". The one source of truth is the account's `locale` user meta, which the screens already read (`jlife_auth_front_locale()`). Saving it (`jlife_challenges_set_language()`, `includes/language.php`) writes `locale` and copies the same code onto every `reminder_prefs` row of the person (only `locale` and `updated` change; on/off and consent stay), so the sender is unchanged; the default Bible follows `locale` through jlife-scripture's own answer (the `jlife_scripture_user_language` filter is no longer hooked). Audit action: `language_change` (object `account`, detail: `from` and `locale` codes only). Existing accounts whose saved email language differs from their screen language keep that email language until they next save the setting; the setting shows the screen language (owner confirmed on #159, 2026-11-20).
+
+| Actor / case | Read | Change | Notes |
+|---|---|---|---|
+| The participant (active enrollment) | ✅ own, on My Marathon | ✅ own | Always for the signed-in user: a user ID in a form post or REST body is ignored. Saves through `POST /jlife/v1/language` (signed in, `wp_rest` nonce via cookie auth; `locale` = `en_US` or `vi`, anything else HTTP 400) or, without JavaScript, the `jlife_language` nonce form. With JavaScript the page then reloads in the new language |
+| Another participant, organizer, group member | ❌ | ❌ `jlife_denied` | No screen or REST path acts for another person; organizers cannot change it either |
+| Person with no active enrollment | ❌ | ❌ `jlife_denied` (HTTP 403) | The setting is only on My Marathon |
+| Signed out, or a cookie request without the `wp_rest` nonce | ❌ | ❌ HTTP 401, nothing changes | Signed-out pages keep the site language or `?lang=` on /join, /signin, /consent and /reading |
+| Logs | | | One audit row per change; no log line, no email address or name |
 
 Consent wording: the consent page says reminders are **optional** ("If you choose daily reminders..."); only a ticked box (at joining, or the checkbox on Today or My Marathon) records an opt-in, with the consent wording version in force.
 
 ### 4f. On-page Scripture reader (#139, plugin `jlife-scripture`)
 
-No participant data is stored by the reader. It reads the participant's language (My language: the reminder-email language, else the `locale` user meta, the same rule as `jlife_challenges_language_order()`) and, since #140, their own Bible choice (§4d, "My Bible choice": two registry keys in user meta); a visitor who is not signed in gets the page's locale and the language's default Bible.
+No participant data is stored by the reader. It reads the participant's language (My language: the `locale` user meta, the same rule as `jlife_challenges_language_order()`; since #159 the Language setting on My Marathon changes it) and, since #140, their own Bible choice (§4d, "My Bible choice": two registry keys in user meta); a visitor who is not signed in gets the page's locale and the language's default Bible.
 
 | Object | Who reads | Who writes | Notes |
 |---|---|---|---|

@@ -168,9 +168,10 @@ function jlife_scripture_can_render( $version ) {
 
 /**
  * My language for a participant: their `locale` user meta (the same rule as
- * jlife_challenges_language_order()) unless the `jlife_scripture_user_language`
- * filter says otherwise (the reminder-email language, #140), or for a visitor
- * who is not signed in, the page's locale. Only "vi" and "en" are offered.
+ * jlife_challenges_language_order(); since #159 the Language setting on My
+ * Marathon changes it) unless the `jlife_scripture_user_language` filter says
+ * otherwise, or for a visitor who is not signed in, the page's locale. Only
+ * "vi" and "en" are offered.
  *
  * Reads language preferences only; no other participant data.
  *
@@ -181,8 +182,8 @@ function jlife_scripture_language_for_user( $user_id ) {
 	$locale = $user_id > 0 ? (string) get_user_meta( (int) $user_id, 'locale', true ) : determine_locale();
 	$lang   = 0 === strpos( $locale, 'vi' ) ? 'vi' : 'en';
 	/**
-	 * "My language" for a participant. jlife-challenges answers with the
-	 * reminder-email language chosen on My Marathon (#140); nothing else uses it.
+	 * "My language" for a participant. Nothing hooks it since #159 (the
+	 * account's `locale` is the one source of truth); kept as an extension point.
 	 *
 	 * @param string $lang    "en" or "vi", from the account's `locale`.
 	 * @param int    $user_id Participant (0 = not signed in).

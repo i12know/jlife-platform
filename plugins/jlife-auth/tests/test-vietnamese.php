@@ -185,6 +185,58 @@ class Test_Vietnamese extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The Language setting on My Marathon (#159) switches a participant's screens
+	 * from the next request; signed-out pages keep the site language and `?lang=`.
+	 */
+	public function test_the_my_marathon_language_setting_switches_screens_and_leaves_visitors_alone() {
+		$organizer = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		$campaign  = jlife_challenges_create_campaign(
+			$organizer,
+			array(
+				'campaign_key' => 'lang-' . wp_generate_password( 6, false ),
+				'plan_id'      => 'rpl-life-and-teachings-of-jesus-2026',
+				'title'        => 'Bible Marathon (test)',
+				'start_date'   => '2026-12-20',
+				'end_date'     => '2027-04-02',
+				'status'       => 'active',
+			)
+		);
+		$id        = self::factory()->user->create(
+			array(
+				'role'   => 'subscriber',
+				'locale' => 'en_US',
+			)
+		);
+		$this->assertIsInt( jlife_challenges_enroll_solo( $id, $campaign, 'adult' ) );
+		wp_set_current_user( $id );
+		$this->visit( '/marathon/' );
+		$this->assertSame( 'en_US', determine_locale() );
+
+		$this->assertTrue( jlife_challenges_set_language( $id, $id, 'vi' ) );
+		$this->visit( '/marathon/' );
+		$this->assertSame( 'vi', determine_locale(), 'the screens follow the new language' );
+		$this->visit( '/consent/', array( 'lang' => 'en' ) );
+		$this->assertSame( 'vi', determine_locale(), 'a signed-in person keeps their language whatever the link says' );
+
+		// Signed out: unchanged behavior.
+		wp_set_current_user( 0 );
+		$this->visit( '/join/' );
+		$this->assertSame( 'en_US', determine_locale(), 'a visitor gets the site language' );
+		$this->visit( '/join/', array( 'lang' => 'vi' ) );
+		$this->assertSame( 'vi', determine_locale(), '?lang= still picks it on the sign-in pages' );
+		$this->visit( '/signin/', array( 'lang' => 'en' ) );
+		$this->assertSame( 'en_US', determine_locale() );
+		$this->visit( '/today/', array( 'lang' => 'vi' ) );
+		$this->assertSame( 'en_US', determine_locale(), 'and only there' );
+
+		// Back to English from Vietnamese.
+		wp_set_current_user( $id );
+		$this->assertTrue( jlife_challenges_set_language( $id, $id, 'en_US' ) );
+		$this->visit( '/marathon/' );
+		$this->assertSame( 'en_US', determine_locale() );
+	}
+
+	/**
 	 * A visitor who is not signed in picks the language with ?lang= on the sign-in pages, and only there.
 	 */
 	public function test_a_visitor_can_pick_vietnamese_on_the_sign_in_pages() {

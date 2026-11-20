@@ -123,7 +123,9 @@ return array(
 		'Yes' => 'Có',
 		'Daily reading email' => 'Email bài đọc hằng ngày',
 		'Saved.' => 'Đã lưu.',
-		'Language of the email' => 'Ngôn ngữ của email',
+		'Language' => 'Ngôn ngữ',
+		'Language for screens and emails' => 'Ngôn ngữ cho màn hình và email',
+		'The page reloads in the language you choose. Your Bible follows it too, unless you chose one below.' => 'Trang sẽ tải lại bằng ngôn ngữ bạn chọn. Bản Kinh Thánh của bạn cũng theo ngôn ngữ này, trừ khi bạn đã tự chọn một bản ở dưới.',
 		'Turn off' => 'Tắt',
 		// The daily reading email checkbox on Today and My Marathon (#135). DRAFT, like the rest.
 		'Email me each morning\'s reading.' => 'Gửi bài đọc mỗi sáng cho tôi qua email.',

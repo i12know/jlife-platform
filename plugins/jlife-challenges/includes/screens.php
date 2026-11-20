@@ -58,7 +58,7 @@ function jlife_challenges_format_date( $ymd ) {
  * @param string          $title  Page title.
  * @param string          $body   Escaped HTML.
  * @param string          $active Active nav item.
- * @param string|string[] $script Optional script file(s): 'soap', 'share', 'reminder', 'bible'.
+ * @param string|string[] $script Optional script file(s): 'soap', 'share', 'reminder', 'bible', 'language'.
  */
 function jlife_challenges_send_page( $title, $body, $active = '', $script = '' ) {
 	nocache_headers();
@@ -78,7 +78,7 @@ function jlife_challenges_send_page( $title, $body, $active = '', $script = '' )
  * @param string          $title  Page title.
  * @param string          $body   Escaped HTML.
  * @param string          $active Active nav item, or 'public'.
- * @param string|string[] $script Optional script file(s): 'soap', 'share', 'reminder', 'bible'.
+ * @param string|string[] $script Optional script file(s): 'soap', 'share', 'reminder', 'bible', 'language'.
  * @param string          $lang   Page language for the html element ('' = the current locale).
  * @return string
  */
@@ -95,8 +95,9 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 	$versions = array(
 		'soap'     => 4,
 		'share'    => 4,
-		'reminder' => 1,
+		'reminder' => 2,
 		'bible'    => 1,
+		'language' => 1,
 	);
 	foreach ( (array) $script as $file ) {
 		if ( isset( $versions[ $file ] ) ) {
@@ -1083,6 +1084,11 @@ function jlife_challenges_screen_marathon() {
 		wp_safe_redirect( add_query_arg( 'reminders', 'saved', jlife_challenges_screen_url( 'marathon' ) ) );
 		exit;
 	}
+	// Language (#159) without JavaScript: saved, then My Marathon again, now in the new language.
+	if ( $view && jlife_challenges_handle_language_post( $user_id ) ) {
+		wp_safe_redirect( add_query_arg( 'language', 'saved', jlife_challenges_screen_url( 'marathon' ) ) );
+		exit;
+	}
 	// My Bible without JavaScript (#140): saved, then back to My Marathon.
 	if ( $view && jlife_challenges_handle_bible_post( $user_id ) ) {
 		wp_safe_redirect( add_query_arg( 'bible', 'saved', jlife_challenges_screen_url( 'marathon' ) ) );
@@ -1118,8 +1124,8 @@ function jlife_challenges_screen_marathon() {
 		. '<p class="jl-score">' . esc_html( sprintf( __( '%1$d of %2$d', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>'
 		. '<p>' . esc_html__( 'Every day is a fresh start. Tap any day to read it or write your SOAP.', 'jlife-challenges' ) . '</p>'
 		. '<div class="jl-grid">' . $grid . '</div><ul class="jl-legend">' . $legend . '</ul>'
-		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ), isset( $_GET['bible'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flags after a redirect.
-	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon', array( 'reminder', 'bible' ) );
+		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ), isset( $_GET['bible'] ), isset( $_GET['language'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flags after a redirect.
+	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon', array( 'language', 'reminder', 'bible' ) );
 }
 
 add_action( 'template_redirect', 'jlife_challenges_route' );
