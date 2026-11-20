@@ -23,6 +23,8 @@ return array(
 	'language'     => 'vi',
 	'plural-forms' => 'nplurals=1; plural=0;',
 	'messages'     => array(
+		'%s: please use the staff sign-in' => '%s: vui lòng dùng trang đăng nhập dành cho ban điều hành',
+		"Someone asked for a sign-in code for this address. This address belongs to a staff account, and staff accounts cannot sign in with an emailed code. No code was sent.\n\nPlease sign in on the site's staff login page with your password.\n\nTo take part in a reading campaign as a participant, join with a different email address.\n\nIf you did not ask for a code, you can ignore this email." => "Có người đã xin mã đăng nhập cho địa chỉ này. Địa chỉ này thuộc về một tài khoản ban điều hành, và tài khoản ban điều hành không thể đăng nhập bằng mã gửi qua email. Chúng tôi không gửi mã nào.\n\nVui lòng đăng nhập bằng mật khẩu trên trang đăng nhập dành cho ban điều hành của trang web.\n\nNếu muốn tham gia một chương trình đọc Kinh Thánh với tư cách người tham gia, hãy tham gia bằng một địa chỉ email khác.\n\nNếu bạn không xin mã, bạn có thể bỏ qua email này.",
 		'13 to 17' => '13 đến 17 tuổi',
 		'18 or older' => '18 tuổi trở lên',
 		'6-digit code' => 'Mã gồm 6 chữ số',

@@ -8,6 +8,7 @@
  * - No account enumeration: requesting a code answers the same way whether
  *   or not the address belongs to an account.
  * - The email contains the code only, never a sign-in link.
+ * - Codes are for participant accounts only (see eligibility.php).
  *
  * @package jlife-auth
  */
@@ -103,8 +104,14 @@ function jlife_auth_request_code( $email, $purpose = 'signin', $payload = array(
 	if ( ! $email_ok || ! $ip_ok ) {
 		return new WP_Error( 'jlife_auth_slow_down', __( 'Too many code requests. Please wait a few minutes and try again.', 'jlife-auth' ) );
 	}
-	if ( 'signin' === $purpose && ! get_user_by( 'email', $email ) ) {
+	$existing = get_user_by( 'email', $email );
+	if ( 'signin' === $purpose && ! $existing ) {
 		return true; // Same answer as a real send: no account enumeration.
+	}
+	if ( $existing && ! jlife_auth_email_code_allowed( $existing->ID ) ) {
+		// Staff sign in on the standard login, never with an emailed code. Same answer on screen.
+		jlife_auth_send_staff_notice( $email, $payload );
+		return true;
 	}
 
 	$code = sprintf( '%06d', random_int( 0, 999999 ) );

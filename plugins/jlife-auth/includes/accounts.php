@@ -162,6 +162,10 @@ function jlife_auth_complete( $email, $code ) {
 	}
 	$email = jlife_auth_normalize_email( $email );
 	$user  = get_user_by( 'email', $email );
+	if ( $user && ! jlife_auth_email_code_allowed( $user->ID ) ) {
+		// Checked again here: an account that became staff after the code was sent cannot use it (the code is already spent).
+		return new WP_Error( 'jlife_auth_code', __( 'That code is not valid. Please check it or ask for a new one.', 'jlife-auth' ) );
+	}
 
 	if ( 'signin' === $checked['purpose'] ) {
 		return $user ? array(

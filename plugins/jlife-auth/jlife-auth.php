@@ -19,6 +19,7 @@
 defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/includes/mail.php';
+require_once __DIR__ . '/includes/eligibility.php';
 require_once __DIR__ . '/includes/codes.php';
 require_once __DIR__ . '/includes/accounts.php';
 require_once __DIR__ . '/includes/session.php';
