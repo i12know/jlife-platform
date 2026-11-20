@@ -358,7 +358,10 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 	 * Two Bibles that both fall back to the same link show it once.
 	 */
 	public function test_identical_links_are_not_repeated() {
-		$user = $this->participant( 'en_US' ); // NLT cannot answer here (no key): the ERV link.
+		// A default that shows no text (NIrV, disabled) falls back to the ERV link.
+		$this->patch_version( 'nlt', array( 'default_for' => array() ) );
+		$this->patch_version( 'nirv', array( 'default_for' => array( 'en' ) ) );
+		$user = $this->participant( 'en_US' );
 		jlife_scripture_set_user_choice( $user, array( 'secondary' => 'erv' ) );
 		$html = jlife_scripture_render_day( $this->day( 'John 1:1-5' ), $user );
 		$this->assertSame( 1, substr_count( $html, 'Open in Bible Gateway (ERV)' ) );
