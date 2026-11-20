@@ -202,6 +202,28 @@ class Test_Translations extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * The organizer's Daily view (#64 part 2) reads in Vietnamese, with no English left in its labels.
+	 */
+	public function test_the_daily_view_reads_in_vietnamese() {
+		$html = jlife_challenges_daily_admin_html( jlife_challenges_daily_view( $this->u['organizer'], $this->campaign, 'd001' ) );
+		foreach ( array(
+			'Xem theo ngày',
+			'Đọc một mình',
+			'SOAP đã nộp',
+			'Bài đã chia sẻ',
+			'Chưa viết',
+			'Tải ngày này (CSV)',
+			'Tải tất cả các ngày (CSV)',
+			'Chỉ có số đếm',
+		) as $vi ) {
+			$this->assertStringContainsString( $vi, $html, $vi );
+		}
+		foreach ( array( 'Daily view', 'Done on time', 'Download', 'Shared posts', 'Participants' ) as $en ) {
+			$this->assertStringNotContainsString( $en, $html, $en );
+		}
+	}
+
+	/**
 	 * The My Bible picker on My Marathon (#140) reads in Vietnamese, including the
 	 * "(opens Bible Gateway)" label.
 	 */

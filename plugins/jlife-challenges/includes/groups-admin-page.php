@@ -297,22 +297,12 @@ function jlife_challenges_groups_admin_view( $actor, $campaign_id = 0, $group_id
 		return jlife_challenges_denied();
 	}
 	$campaigns = jlife_challenges_admin_campaigns();
-	$by_id     = array_column( $campaigns, null, 'id' );
-	$chosen    = null;
 	$asked     = jlife_challenges_get_group( (int) $group_id );
 	if ( (int) $campaign_id < 1 && $asked ) {
 		$campaign_id = (int) $asked['campaign_id'];
 	}
-	foreach ( $campaigns as $c ) {
-		if ( (int) $c['id'] === (int) $campaign_id ) {
-			$chosen = $c;
-		}
-	}
-	if ( ! $chosen ) {
-		$open   = jlife_challenges_open_campaign();
-		$chosen = $open && isset( $by_id[ $open['id'] ] ) ? $by_id[ $open['id'] ] : ( $campaigns ? $campaigns[0] : null );
-	}
-	$view = array(
+	$chosen = jlife_challenges_admin_default_campaign( $campaigns, (int) $campaign_id );
+	$view   = array(
 		'campaigns' => $campaigns,
 		'campaign'  => $chosen,
 		'groups'    => array(),

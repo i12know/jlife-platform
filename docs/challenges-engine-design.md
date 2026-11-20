@@ -230,6 +230,26 @@ Rules the tests pin down:
 - **D18, both directions (move and remove).** Past shares stay with the old group; the person loses the old feed at once; the new group never sees anything shared to the old one; the old group never sees what the person shares afterwards; the person can still see and remove their own old shares ("Groups you left" on `/share`); no one else's private entries are reachable from either feed. Organizers still cannot read any feed (D17).
 - **Scores.** Add, move, remove, rename, regenerate and revoke never write or change a `score_ledger` row, an enrollment's status or consent, or the export; points, eligibility and prize standing are individual (principle 6).
 
+### 4h. Organizer daily view and CSV export (M9 part 2, #64)
+
+Two organizer surfaces: **J-Life → Daily view** (`admin.php?page=jlife-daily`) and a **CSV download** (a nonce-checked POST to `admin-post.php?action=jlife_challenges_csv`, offered on that page). Both need `manage_options`; as in §4g an organizer and a site admin are the same thing, and "their scope" is this site's campaigns. Neither surface reads or prints SOAP text, share text, email addresses, invite codes or hashes, session tokens or nonces inside the data.
+
+| Actor / case | Open the Daily view | Per-participant status and point | Per-group counts | Download the CSV | SOAP or share text on either surface |
+|---|---|---|---|---|---|
+| Site admin or organizer (`manage_options`) | ✅ | ✅ display name, group names, status, point | ✅ counts only | ✅ POST with a valid nonce for that campaign and day; audited | ❌ never |
+| Participant, group member, group starter, leader, editor, subscriber | ❌ no menu entry; the page answers 403 | ❌ | ❌ | ❌ 403 | ❌ |
+| Anonymous | ❌ | ❌ | ❌ | ❌ | ❌ |
+| A download with no nonce, a nonce for another campaign or day, or a GET | n/a | n/a | n/a | ❌ nothing is sent or audited | ❌ |
+
+Rules the tests pin down:
+
+- **Status of a day** (one per active participant): *done on time* (the ledger row is `earned`, point 1), *done late* (`late_no_point`, point 0), *draft* (an entry row exists and no ledger row, point 0), *none* (point 0), and *point removed on review* (`removed_by_review`, point 0; only the future P1 review path writes it, so it is rare). The point is the ledger's, never a guess.
+- **Group counts** for the chosen day: *members* (active members of an active enrollment), *SOAPs submitted* (those members with a submitted entry that day, on time or late) and *shares* (posts currently shared to the group for that day). A person in two groups is counted in both, so never add the rows up (use the ledger for totals); a *solo readers* row lists people in no group. The queries select ids, statuses and counts only: `soap_entries.body` and `group_shares.body` are never selected.
+- **CSV.** Columns `participant_id, display_name, groups, day, point, status` (English, fixed; `status` is `done_on_time`, `done_late`, `draft`, `none` or `point_removed`). Either the whole campaign (one row per participant and day that has a result in the ledger; a person in several groups has them in one cell, `A; B`) or one day (every active participant, so drafts and *none* appear). UTF-8 with a byte-order mark so Excel reads Vietnamese names. **Formula guard:** a cell that begins with `=`, `+`, `-`, `@`, a tab or a carriage return gets a leading `'` (display names and group names are typed by people). Display names follow §4g (a name that looks like an email address becomes `Participant #ID`). Every export writes one `scores_exported` audit row with the row count (and the day), never a name.
+- **IDs from the request.** The campaign must exist and the day must be one of its days; anything else is "Not found or not allowed" and sends nothing. The nonce is bound to the campaign and day.
+- **D17.** Admins cannot browse group feeds, and neither surface lists or opens a share. An organizer's one route to a shared post stays `jlife_challenges_hide_share()`: it takes a share ID from a report, is audited (`share_hidden`) and tells the author. Hiding changes no count of points and no text appears anywhere afterwards.
+- **Scores.** Both surfaces are read-only: viewing or exporting never writes a ledger row, enrollment or membership.
+
 ## 5. Required tests (written first; CI)
 
 **Calendar:**
@@ -287,6 +307,15 @@ Rules the tests pin down:
 - a member is added only if already enrolled; a fourth group is refused; a move across campaigns is refused
 - membership changes leave the ledger, enrollment, consent and the score export untouched
 - acceptance: two groups, several participants joined by invite and by admin, each sees the correct My Group, one moved and one removed with no leak
+
+**Daily view and CSV (#64 part 2; written first, `test-daily-view.php`):**
+- a subscriber, participant, starter and editor get no menu entry and a 403 on the page and on the download; an organizer and a site admin get both
+- a download needs the capability, a POST and a nonce for that campaign and day; an unknown campaign or day sends nothing
+- each status (done on time, done late, draft, none) shows with the ledger's point; per-group members, submitted and shares are right
+- no SOAP text, share text, email address, login or token appears in the page or the CSV, including for hidden and removed shares and drafts
+- the CSV has individual points and the formula guard on every text cell
+- viewing and exporting write no ledger, enrollment or membership change; an export is audited with a count only
+- acceptance: the CSV for the two-group scenario has each person's point and no reflection
 
 ## 6. Interfaces for the screens (M6/M7)
 

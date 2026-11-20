@@ -218,6 +218,28 @@ function jlife_challenges_admin_campaigns() {
 }
 
 /**
+ * The campaign an organizer screen shows: the one asked for if it exists, else the
+ * open campaign, else the first.
+ *
+ * @param array[] $campaigns  From jlife_challenges_admin_campaigns().
+ * @param int     $campaign_id Campaign asked for (0 = none).
+ * @return array|null Campaign row ({ id, title, status }).
+ */
+function jlife_challenges_admin_default_campaign( array $campaigns, $campaign_id ) {
+	foreach ( $campaigns as $c ) {
+		if ( (int) $c['id'] === (int) $campaign_id ) {
+			return $c;
+		}
+	}
+	$by_id = array_column( $campaigns, null, 'id' );
+	$open  = jlife_challenges_open_campaign();
+	if ( $open && isset( $by_id[ $open['id'] ] ) ) {
+		return $by_id[ $open['id'] ];
+	}
+	return $campaigns ? $campaigns[0] : null;
+}
+
+/**
  * The people in a group, for an organizer: display name and role only. Active
  * members of an active enrollment.
  *
