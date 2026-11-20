@@ -10,6 +10,14 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Fixed
 
+- **Emailed sign-in codes are for participant accounts only.** Staff sign in on the standard WordPress login.
+  - **Who counts as staff:** a network super admin, or anyone holding a role or capability outside the participant roles (`subscriber`, filter `jlife_auth_participant_roles`) on any site of the network. The rule is an allowlist, so a custom role without `edit_posts` is still staff.
+  - **What staff get:** a short "please use the staff sign-in" email instead of a code. The `/signin` and `/join` screens answer as for any other address.
+  - **When it's checked:** when the code is requested and again when it is entered, so a promotion in between voids the code.
+  - **Sessions:** gaining a staff role (a role, a role on another site, or super admin) ends the person's sessions, and only participants get the 180-day session.
+  - **Staff who also take part** use a second address for their participant account.
+  - **Tests:** new `Test_Code_Eligibility`, also run in CI under `WP_MULTISITE=1`. The two new strings have Vietnamese drafts.
+
 - **Vietnamese public reading pages invite to the Vietnamese forms** (#165). On `/reading/…?lang=vi` the Join and Sign in buttons opened `/join/` and `/signin/` in English. They now carry the page's language (`?lang=vi`, or `?lang=en` on an English page); nothing else is added to the address.
 - **The SOAP help jump clears the sticky navigation.** More / Xem thêm now leaves room above the expanded heading help, including the two-row Vietnamese phone navigation, so its heading and Scripture guidance stay visible. Stylesheet version 13 ensures participant and unsubscribe pages fetch the fix.
 - **Today: no "Draft saved" before anything is written, labelled reference buttons, and what SOAP means** (#142, pilot feedback). "Draft saved" (the status line and the autosave note) now appears only once the saved text holds something beyond the S/O/A/P headings; a blank box or the untouched template shows nothing (status line: "Not started yet."). Autosave, Save draft, Submit and scoring are unchanged. The reference chips above the textbox have a label, "Tap a reference to add it under S:", and each chip's accessible name is "Add <reference> to my SOAP"; tapping still inserts the reference under S. Under **My SOAP** a line reads "SOAP = Scripture, Observation, Application, Prayer." with a **More** link that jumps to and opens "What goes under each heading?" (now `id="jlife-soap-help"`). Vietnamese drafts for translator review; stylesheet version 12 (after #135's 11) and SOAP/share script version 4 so phones fetch them.

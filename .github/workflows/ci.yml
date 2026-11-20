@@ -99,6 +99,8 @@ jobs:
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-scripture vendor/bin/phpunit
       - name: Verify mail transport across actual multisite switches
         run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-auth env WP_MULTISITE=1 vendor/bin/phpunit --filter Test_Mail
+      - name: Verify emailed codes stay participant-only across a real multisite network
+        run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/jlife-auth env WP_MULTISITE=1 vendor/bin/phpunit --filter Test_Code_Eligibility
 
   dependency-audit:
     # Advisory checks (#57). Non-blocking for now: findings show as warnings

@@ -45,7 +45,7 @@ add_filter( 'auth_cookie_expiration', 'jlife_auth_cookie_expiration', 10, 3 );
  * @return int
  */
 function jlife_auth_cookie_expiration( $length, $user_id, $remember ) {
-	return ( $remember && jlife_auth_is_participant( (int) $user_id ) ) ? JLIFE_AUTH_SESSION_DAYS * DAY_IN_SECONDS : $length;
+	return ( $remember && jlife_auth_email_code_allowed( (int) $user_id ) ) ? JLIFE_AUTH_SESSION_DAYS * DAY_IN_SECONDS : $length;
 }
 
 add_filter( 'show_admin_bar', 'jlife_auth_show_admin_bar' );
