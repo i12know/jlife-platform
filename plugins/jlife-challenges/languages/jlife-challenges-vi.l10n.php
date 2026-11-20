@@ -389,5 +389,7 @@ return array(
 		// Pilot feedback link (#171). DRAFT, like the rest: for the Vietnamese reviewers.
 		'Pilot Feedback' => 'Góp ý thử nghiệm',
 		'Pilot feedback' => 'Góp ý thử nghiệm',
+		// Closed campaign (#179). DRAFT, like the rest: for the Vietnamese reviewers.
+		'This reading period has closed. You can still read what you wrote, but it can no longer be changed or shared.' => 'Đợt đọc này đã kết thúc. Bạn vẫn đọc được những gì mình đã viết, nhưng không thể sửa hay chia sẻ nữa.',
 	),
 );

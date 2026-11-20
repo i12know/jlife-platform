@@ -117,6 +117,9 @@ function jlife_challenges_save_draft( $user_id, $campaign_id, $day_key, $text ) 
 	if ( ! jlife_challenges_can_write_entry( $user_id, $campaign_id ) ) {
 		return jlife_challenges_denied();
 	}
+	if ( ! jlife_challenges_campaign_accepts_writes( (int) $campaign_id ) ) {
+		return jlife_challenges_campaign_closed_error();
+	}
 	$day = jlife_challenges_resolve_day( $campaign_id, $day_key );
 	if ( is_wp_error( $day ) ) {
 		return $day;
@@ -154,6 +157,9 @@ function jlife_challenges_save_draft( $user_id, $campaign_id, $day_key, $text ) 
 function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $text ) {
 	if ( ! jlife_challenges_can_write_entry( $user_id, $campaign_id ) ) {
 		return jlife_challenges_denied();
+	}
+	if ( ! jlife_challenges_campaign_accepts_writes( (int) $campaign_id ) ) {
+		return jlife_challenges_campaign_closed_error();
 	}
 	$day = jlife_challenges_resolve_day( $campaign_id, $day_key );
 	if ( is_wp_error( $day ) ) {
@@ -262,9 +268,12 @@ function jlife_challenges_ledger_row( $campaign_id, $user_id, $day_key ) {
  * @param int   $index    Day index.
  * @param int   $entry_id Entry ID.
  * @param array $score    Engine result ({ engine, version }).
- * @return array { points, status, reason }
+ * @return array|null { points, status, reason }; null for a closed campaign (no row is written).
  */
 function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id, $score ) {
+	if ( ! jlife_challenges_campaign_accepts_writes( $campaign ) ) {
+		return null;
+	}
 	global $wpdb;
 	$on_time = jlife_challenges_is_on_time( $campaign, $index );
 	$day_key = jlife_challenges_day_key( $index );

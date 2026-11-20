@@ -366,14 +366,15 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * A paused campaign sends nothing, even for rows already queued.
+	 * A paused (back to draft) campaign sends nothing, even for rows already
+	 * queued. A closed one cancels them instead (test-campaign-close.php).
 	 */
 	public function test_an_inactive_campaign_sends_nothing() {
 		global $wpdb;
 		$this->opt_in( array( 'a' ) );
 		$this->set_now( '2026-12-20 14:00:00' );
 		jlife_challenges_reminders_enqueue( $this->campaign_row(), jlife_challenges_now() );
-		$wpdb->update( jlife_challenges_table( 'campaigns' ), array( 'status' => 'closed' ), array( 'id' => $this->campaign ) );
+		$wpdb->update( jlife_challenges_table( 'campaigns' ), array( 'status' => 'draft' ), array( 'id' => $this->campaign ) );
 		$this->tick();
 		$this->assertCount( 0, $this->sent );
 		$this->assertSame( 'campaign_inactive', $this->row_of( 'a' )['last_error_class'] );

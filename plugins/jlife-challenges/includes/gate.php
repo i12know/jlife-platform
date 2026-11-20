@@ -40,6 +40,33 @@ function jlife_challenges_is_organizer( $user_id ) {
 }
 
 /**
+ * Does this campaign still take writes (§3c)? A closed campaign (#179) is
+ * read-only: no SOAP save or submit, no share created, changed or removed, no
+ * group join, start, move or invite reset, no ledger row and no reminder
+ * opt-in. Reads are unchanged. Personal entries (campaign 0) always do; an
+ * unknown campaign is left to the caller's own gate.
+ *
+ * @param array|int $campaign Campaign row or ID.
+ * @return bool
+ */
+function jlife_challenges_campaign_accepts_writes( $campaign ) {
+	if ( ! is_array( $campaign ) ) {
+		$campaign = (int) $campaign > 0 ? jlife_challenges_get_campaign( (int) $campaign ) : null;
+	}
+	return ! $campaign || 'closed' !== jlife_challenges_campaign_phase( $campaign );
+}
+
+/**
+ * The refusal for a write to a closed campaign. Given only after the caller's
+ * own gate has passed, so it never tells an outsider that a campaign exists.
+ *
+ * @return WP_Error
+ */
+function jlife_challenges_campaign_closed_error() {
+	return new WP_Error( 'jlife_campaign_closed', __( 'This reading period has closed. You can still read what you wrote, but it can no longer be changed or shared.', 'jlife-challenges' ) );
+}
+
+/**
  * The user's active enrollment in a campaign, or null.
  *
  * @param int $campaign_id Campaign ID.
