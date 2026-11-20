@@ -211,8 +211,9 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 	 * @return string
 	 */
 	private function page( $day_id = 'd001', $lang = '' ) {
-		$_GET = '' === $lang ? array() : array( 'lang' => $lang );
-		$html = jlife_challenges_public_reading_page_html( $this->post_of( $day_id ) );
+		$_GET                 = '' === $lang ? array() : array( 'lang' => $lang );
+		$GLOBALS['wp_styles'] = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- each page is its own request: the reader's stylesheet prints again.
+		$html                 = jlife_challenges_public_reading_page_html( $this->post_of( $day_id ) );
 		$this->assertIsString( $html );
 		return $html;
 	}
@@ -392,8 +393,10 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 	 * Edge case 2: no supplemental plan, no optional box.
 	 */
 	public function test_a_day_without_a_supplemental_plan_has_no_optional_box() {
+		$this->assertStringContainsString( 'jl-optional', $this->main_of( $this->page( 'd001' ) ), 'a day with a supplemental plan has the box' );
+		delete_post_meta( $this->post_of( 'd038' ), '_jlife_supplemental' );
 		$html = $this->main_of( $this->page( 'd038' ) );
-		$this->assertStringNotContainsString( 'jl-optional', $html, 'Day 38 has no parallel readings in the fixtures' );
+		$this->assertStringNotContainsString( 'jl-optional', $html );
 		$this->assertStringNotContainsString( 'Optional', $html );
 		$this->assertStringContainsString( 'jl-invite', $html );
 		$this->assertStringContainsString( 'jl-source', $html );
