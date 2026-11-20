@@ -37,10 +37,26 @@ const JLIFE_AUTH_CONSENT_VERSION = 'draft-2026-11-18';
  * /join/?mode=solo or ?mode=start; the form carries it on.
  *
  * @param string $raw Requested mode.
- * @return string invite|solo|start
+ * @return string invite|solo|start|wait
  */
 function jlife_auth_join_mode( $raw ) {
-	return in_array( $raw, array( 'solo', 'start' ), true ) ? $raw : 'invite';
+	return in_array( $raw, array( 'solo', 'start', 'wait' ), true ) ? $raw : 'invite';
+}
+
+/**
+ * Is "I'll start Dec 20" offered right now (#178)? Only while the pilot is what
+ * new people join: the join rule's pick is the pilot campaign. Before it and
+ * after Dec 14 everyone joins the one campaign that is open, so there is
+ * nothing to wait out.
+ *
+ * @return bool
+ */
+function jlife_auth_wait_offered() {
+	if ( ! function_exists( 'jlife_challenges_open_campaign' ) || ! function_exists( 'jlife_challenges_is_pilot_campaign' ) ) {
+		return false;
+	}
+	$campaign = jlife_challenges_open_campaign();
+	return $campaign && jlife_challenges_is_pilot_campaign( $campaign );
 }
 
 /**
@@ -60,7 +76,7 @@ const JLIFE_AUTH_SOFT_JOIN_ERRORS = array(
 /**
  * Validate join details and send a join code.
  *
- * @param array  $input { email, first_name, invite_code, group_name, age_band (adult|minor), locale, mode (invite|solo|start), reminders (truthy = the unticked-by-default box was ticked) }.
+ * @param array  $input { email, first_name, invite_code, group_name, age_band (adult|minor), locale, mode (invite|solo|start|wait), reminders (truthy = the unticked-by-default box was ticked) }.
  * @param string $ip    Requester IP.
  * @return true|WP_Error
  */
@@ -90,7 +106,13 @@ function jlife_auth_start_join( $input, $ip = '' ) {
 			return new WP_Error( 'jlife_auth_no_campaign', __( 'There is no Marathon open to join right now. Please try again later.', 'jlife-auth' ) );
 		}
 	}
-	if ( 'start' === $mode ) {
+	if ( 'wait' === $mode ) {
+		// "I'll start Dec 20": an account and a flag, no campaign, no group, no reminder choice. A code typed anyway is ignored.
+		$code = '';
+		if ( ! jlife_auth_wait_offered() ) {
+			return new WP_Error( 'jlife_auth_wait_closed', __( 'That choice is no longer offered. You can join the Marathon now instead.', 'jlife-auth' ) );
+		}
+	} elseif ( 'start' === $mode ) {
 		// Adults only. This is checked again, on the stored age band, when the group is made.
 		if ( 'adult' !== $band ) {
 			return new WP_Error( 'jlife_auth_minor_cannot_start', __( 'Only adults (18 or older) can start a group. You can join a group with an invite code, or read on your own.', 'jlife-auth' ) );
@@ -113,7 +135,7 @@ function jlife_auth_start_join( $input, $ip = '' ) {
 			'campaign_id' => $campaign_id,
 			'age_band'    => $band,
 			'locale'      => $loc,
-			'reminders'   => ! empty( $input['reminders'] ) ? 1 : 0,
+			'reminders'   => ( 'wait' !== $mode && ! empty( $input['reminders'] ) ) ? 1 : 0,
 		),
 		$ip
 	);
@@ -153,7 +175,7 @@ function jlife_auth_create_participant( $email, $payload ) {
  *
  * @param string $email Email address.
  * @param string $code  Code as typed.
- * @return array|WP_Error { user_id, purpose, notice, notice_code, started? } `started` is { id, invite_code, name } when a group was just started; `notice` explains a join that did not happen (the person is still signed in).
+ * @return array|WP_Error { user_id, purpose, notice, notice_code, started?, waiting? } `waiting` is true after "I'll start Dec 20"; `started` is { id, invite_code, name } when a group was just started; `notice` explains a join that did not happen (the person is still signed in).
  */
 function jlife_auth_complete( $email, $code ) {
 	$checked = jlife_auth_check_code( $email, $code );
@@ -201,6 +223,9 @@ function jlife_auth_complete( $email, $code ) {
 	if ( $done['started'] ) {
 		$result['started'] = $done['started'];
 	}
+	if ( ! empty( $done['waiting'] ) ) {
+		$result['waiting'] = true;
+	}
 	return $result;
 }
 
@@ -211,7 +236,7 @@ function jlife_auth_complete( $email, $code ) {
  *
  * @param int   $user_id Participant.
  * @param array $payload Join details from the code request.
- * @return array { error: WP_Error|null, notice: string, notice_code: string, started: array|null }
+ * @return array { error: WP_Error|null, notice: string, notice_code: string, started: array|null, waiting?: bool }
  */
 function jlife_auth_do_join( $user_id, $payload ) {
 	$out  = array(
@@ -221,6 +246,15 @@ function jlife_auth_do_join( $user_id, $payload ) {
 		'started'     => null,
 	);
 	$mode = jlife_auth_join_mode( (string) ( $payload['mode'] ?? '' ) );
+	if ( 'wait' === $mode ) {
+		// The person chose to start on Dec 20 (#178). Only that choice is kept here,
+		// with no enrollment, consent or reminder; the rollover (#180) enrolls them later.
+		if ( function_exists( 'jlife_challenges_set_waiting_for_official' ) ) {
+			jlife_challenges_set_waiting_for_official( $user_id );
+			$out['waiting'] = true;
+		}
+		return $out;
+	}
 	if ( 'solo' === $mode ) {
 		$joined = jlife_challenges_enroll_solo( $user_id, (int) ( $payload['campaign_id'] ?? 0 ), $payload['age_band'] );
 	} elseif ( 'start' === $mode ) {

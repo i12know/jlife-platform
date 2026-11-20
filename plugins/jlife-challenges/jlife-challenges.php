@@ -25,6 +25,7 @@ require_once __DIR__ . '/includes/audit.php';
 require_once __DIR__ . '/includes/gate.php';
 require_once __DIR__ . '/includes/groups.php';
 require_once __DIR__ . '/includes/current-campaign.php';
+require_once __DIR__ . '/includes/pilot-campaign.php';
 require_once __DIR__ . '/includes/campaign-close.php';
 require_once __DIR__ . '/includes/group-admin.php';
 require_once __DIR__ . '/includes/soap.php';
@@ -54,8 +55,10 @@ require_once __DIR__ . '/includes/bible-admin.php';
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once __DIR__ . '/includes/class-jlife-group-command.php';
 	require_once __DIR__ . '/includes/class-jlife-test-campaign-command.php';
+	require_once __DIR__ . '/includes/class-jlife-pilot-command.php';
 	require_once __DIR__ . '/includes/class-jlife-reminders-command.php';
 	WP_CLI::add_command( 'jlife test-campaign', 'Jlife_Test_Campaign_Command' );
+	WP_CLI::add_command( 'jlife pilot', 'Jlife_Pilot_Command' );
 	WP_CLI::add_command( 'jlife group', 'Jlife_Group_Command' );
 	require_once __DIR__ . '/includes/class-jlife-campaign-command.php';
 	WP_CLI::add_command( 'jlife campaign', 'Jlife_Campaign_Command' );

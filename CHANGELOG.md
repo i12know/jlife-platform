@@ -62,6 +62,11 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 - Sign out on the participant screens now asks first (#89): an in-page dialog with Cancel and Sign out, or a `/signout/` confirmation page without JavaScript. Cancel keeps the participant on the same screen and day.
 
 ### Added
+- **Pilot campaign, practice banner and "I'll start Dec 20"** (#178, part of #174).
+  - **Pilot campaign:** `wp jlife pilot create|status` (deploy choice **pilot_campaign**) makes `pilot-2026-12`, Dec 5–13, 2026, Pacific time, with a key that does not start with `test-`. It is safe to rerun and creates no groups. Which campaign is current is still decided only by the #177 rule.
+  - **Practice banner:** "Practice week: Dec 5–13. Points don't count for prizes. The Marathon starts Dec 20." above Today, My Marathon, My Group and `/share`, only while the pilot is the person's current campaign. Vietnamese draft included. No stylesheet change.
+  - **"I'll start Dec 20":** a fourth way in on `/join` (offered only while the pilot is what people join). It creates the account, records the per-user flag `jlife_start_official`, and enrolls no one and records no reminder choice. The rollover (#180) enrolls these people in the official Marathon.
+  - **Tests:** new `Test_Pilot_Campaign` and jlife-auth `Test_Wait_Choice`. Runbook: `docs/staging-latoc.md`; design §3b.
 
 - **Closing a campaign freezes it** (#179, part of #174; owner decision D4-A). `wp jlife campaign close <id> [--dry-run]` sets the new `closed` status. The dry run prints counts only; the real run is audited with counts only and is safe to run twice.
   - **Refused once closed** (`jlife_campaign_closed`): SOAP save and submit; creating, re-posting or removing a share; group joins, moves, starts, new groups and invite resets; new ledger rows; and opting in to reminder emails. Each check runs after the existing gate, so outsiders still get the plain denial.

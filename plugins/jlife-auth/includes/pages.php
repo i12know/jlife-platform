@@ -194,7 +194,7 @@ function jlife_auth_handle_verify() {
 	$target = jlife_auth_needs_consent( $result['user_id'] )
 		? add_query_arg( 'redirect_to', rawurlencode( jlife_auth_redirect_target() ), home_url( '/consent/' ) )
 		: jlife_auth_redirect_target();
-	if ( 'join' === $result['purpose'] && ( '' !== $result['notice'] || ! empty( $result['started'] ) ) ) {
+	if ( 'join' === $result['purpose'] && ( '' !== $result['notice'] || ! empty( $result['started'] ) || ! empty( $result['waiting'] ) ) ) {
 		jlife_auth_send_page( __( 'Join', 'jlife-auth' ), jlife_auth_join_result_html( $result, $target ) );
 	}
 	wp_safe_redirect( $target );
@@ -214,7 +214,10 @@ function jlife_auth_handle_verify() {
  */
 function jlife_auth_join_result_html( $result, $next ) {
 	$out = '';
-	if ( ! empty( $result['started'] ) ) {
+	if ( ! empty( $result['waiting'] ) ) {
+		$out .= '<h1>' . esc_html__( 'You are on the list', 'jlife-auth' ) . '</h1>'
+			. '<p>' . esc_html__( 'Your account is ready. The Marathon starts Dec 20. We will sign you up for it, so there is nothing else to do. Sign in then with an emailed code.', 'jlife-auth' ) . '</p>';
+	} elseif ( ! empty( $result['started'] ) ) {
 		$out .= '<h1>' . esc_html__( 'Your group is ready', 'jlife-auth' ) . '</h1>'
 			. '<p>' . esc_html__( 'Share the code or the link with the people you want to invite.', 'jlife-auth' ) . '</p>'
 			. jlife_challenges_invite_reveal_html( (string) $result['started']['name'], (string) $result['started']['invite_code'] );
@@ -308,6 +311,9 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 	if ( 'solo' === $mode ) {
 		$head = '<h1>' . esc_html__( 'Read the Bible Marathon on my own', 'jlife-auth' ) . '</h1>'
 			. '<p>' . esc_html__( 'No group needed. Your SOAP entries are private. You can join a group later with an invite code.', 'jlife-auth' ) . '</p>';
+	} elseif ( 'wait' === $mode ) {
+		$head = '<h1>' . esc_html__( "I'll start Dec 20", 'jlife-auth' ) . '</h1>'
+			. '<p>' . esc_html__( 'Skip the practice week. We will create your account now and sign you up for the Marathon that starts Dec 20. Nothing is shared and you will not be emailed until you choose.', 'jlife-auth' ) . '</p>';
 	} elseif ( 'start' === $mode ) {
 		$head = '<h1>' . esc_html__( 'Start a group', 'jlife-auth' ) . '</h1>'
 			. '<p>' . esc_html__( 'For adults (18 or older). Name your group, and you will get an invite code and link to share with friends or the people you mentor. As the starter you can make a new code later; you do not see anyone else\'s SOAP.', 'jlife-auth' ) . '</p>';
@@ -318,12 +324,18 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 		. '<input id="jl-invite" type="text" name="invite_code" value="' . esc_attr( $in['invite_code'] ) . '" autocapitalize="characters" required>' : '';
 	$code .= 'start' === $mode ? '<label for="jl-group">' . esc_html__( 'Group name', 'jlife-auth' ) . '</label>'
 		. '<input id="jl-group" type="text" name="group_name" value="' . esc_attr( $in['group_name'] ) . '" maxlength="' . (int) JLIFE_CHALLENGES_GROUP_NAME_MAX . '" autocomplete="off" required>' : '';
+
 	// The other two ways in.
 	$links = array(
 		'invite' => '<a href="' . esc_url( $join ) . '">' . esc_html__( 'I have an invite code', 'jlife-auth' ) . '</a>',
 		'solo'   => '<a href="' . esc_url( add_query_arg( 'mode', 'solo', $join ) ) . '">' . esc_html__( 'Read on my own', 'jlife-auth' ) . '</a>',
 		'start'  => '<a href="' . esc_url( add_query_arg( 'mode', 'start', $join ) ) . '">' . esc_html__( 'Start a group', 'jlife-auth' ) . '</a>',
 	);
+
+	$links['wait'] = '<a href="' . esc_url( add_query_arg( 'mode', 'wait', $join ) ) . '">' . esc_html__( "I'll start Dec 20", 'jlife-auth' ) . '</a>';
+	if ( ! jlife_auth_wait_offered() ) {
+		unset( $links['wait'] );
+	}
 	unset( $links[ $mode ] );
 	$swap = '<p>' . implode( ' · ', $links ) . '</p>';
 	return $head
@@ -340,8 +352,8 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 		. '<label><input type="radio" name="age_band" value="minor"' . checked( $in['age_band'], 'minor', false ) . '> ' . esc_html__( '13 to 17', 'jlife-auth' ) . '</label>'
 		. '<small>' . esc_html__( 'J-Life is for ages 13 and up.', 'jlife-auth' ) . '</small></fieldset>'
 		. '<label for="jl-lang">' . esc_html__( 'Language', 'jlife-auth' ) . '</label><select id="jl-lang" name="locale">' . $langs . '</select>'
-		. '<label><input type="checkbox" name="reminders" value="1"' . checked( '' !== (string) $in['reminders'], true, false ) . '> ' . esc_html__( 'Email me each morning\'s reading', 'jlife-auth' ) . '</label>'
-		. '<small>' . esc_html__( 'Optional. We write in the language you chose above. You can turn it off at any time.', 'jlife-auth' ) . '</small>'
+		. ( 'wait' === $mode ? '' : '<label><input type="checkbox" name="reminders" value="1"' . checked( '' !== (string) $in['reminders'], true, false ) . '> ' . esc_html__( 'Email me each morning\'s reading', 'jlife-auth' ) . '</label>'
+		. '<small>' . esc_html__( 'Optional. We write in the language you chose above. You can turn it off at any time.', 'jlife-auth' ) . '</small>' )
 		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
 		. $swap
 		. '<p><a href="' . esc_url( jlife_auth_keep_lang( home_url( '/signin/' ) ) ) . '">' . esc_html__( 'Already joined? Sign in.', 'jlife-auth' ) . '</a></p>';
@@ -384,6 +396,7 @@ function jlife_auth_page_join() {
 		'solo'   => __( 'Read on my own', 'jlife-auth' ),
 		'start'  => __( 'Start a group', 'jlife-auth' ),
 		'invite' => __( 'Join the Bible Marathon', 'jlife-auth' ),
+		'wait'   => __( "I'll start Dec 20", 'jlife-auth' ),
 	);
 	jlife_auth_send_page( $titles[ $mode ], jlife_auth_join_form( $mode, $in, $error ) );
 }

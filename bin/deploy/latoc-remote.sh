@@ -8,7 +8,7 @@
 # Inputs (environment, from a 0600 env file the workflow uploads and this
 # script deletes):
 #   WP_PATH, SITE_URL, WP_VERSION, DB_NAME, DB_USER, DB_PASSWORD
-# Optional: TEST_CAMPAIGN (none|create|preview-remove|remove), DB_HOST (localhost), PHP_BIN (cPanel ea-php82), STATE_DIR (~/.latoc),
+# Optional: TEST_CAMPAIGN (none|create|preview-remove|remove), PILOT_CAMPAIGN (none|create|status), DB_HOST (localhost), PHP_BIN (cPanel ea-php82), STATE_DIR (~/.latoc),
 #   BUNDLE (the uploaded plugin tarball, $STATE_DIR/jlife-plugins.tgz)
 #   POLYLANG_VERSION (the pinned Polylang release, default below)
 #
@@ -283,6 +283,20 @@ case "${TEST_CAMPAIGN:-none}" in
     ;;
   none) ;;
   *) die "Unknown TEST_CAMPAIGN: ${TEST_CAMPAIGN}" ;;
+esac
+
+# The Dec 5-13 pilot campaign (#178): counts and dates only, safe in the public log.
+case "${PILOT_CAMPAIGN:-none}" in
+  create)
+    log "Pilot campaign: create (no change if it exists)"
+    wp jlife pilot create
+    ;;
+  status)
+    log "Pilot campaign: status"
+    wp jlife pilot status
+    ;;
+  none) ;;
+  *) die "Unknown PILOT_CAMPAIGN: ${PILOT_CAMPAIGN}" ;;
 esac
 
 log "Status"

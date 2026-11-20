@@ -414,6 +414,28 @@ The same commands exist on the server: `wp jlife test-campaign create|status`
 and `wp jlife test-campaign remove [--dry-run] [--delete-accounts]`. `status`
 also prints the counts `remove` would affect.
 
+## Pilot campaign (#178)
+
+The Dec 5–13 pilot ("practice week") is a normal campaign whose key starts
+with `pilot-`, never `test-`, so the test-campaign removal cannot delete it.
+
+- **Create it** with the deploy choice **pilot_campaign = create** (or
+  `wp jlife pilot create` on the server). It makes `pilot-2026-12` (Dec 5–13,
+  2026, Pacific time, active, same reading plan as the Marathon). Running it
+  again changes nothing. It creates no groups and enrolls no one.
+- **Check it** with **pilot_campaign = status** (`wp jlife pilot status`):
+  key, dates, phase, number of enrollments, and how many people chose
+  "I'll start Dec 20". Counts only, safe in the public log.
+- **Do this after the test campaign is removed** and before the Nov 29
+  announcement. Sign-ups from Nov 29 join the pilot by default (the join rule,
+  design §3b); from Dec 14 00:00 Pacific new sign-ups go to the Marathon.
+- **While the pilot is current** its participants see "Practice week: Dec 5–13.
+  Points don't count for prizes. The Marathon starts Dec 20." above Today, My
+  Marathon, My Group and `/share`.
+- **"I'll start Dec 20"** appears on `/join` while the pilot is what people
+  join. It creates the account and a flag; the person is not enrolled and gets
+  no email until the rollover (#180) and their reminder choice (#181).
+
 ## Backups and restore
 
 - Every deploy writes `~/.latoc/backups/<UTC timestamp>.sql.gz`; the 10 most recent are kept.
