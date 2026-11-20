@@ -244,7 +244,7 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 		$this->reader_on();
 		jlife_scripture_set_user_choice( $this->u['a'], array( 'primary' => 'kt1925' ) );
 		wp_set_current_user( $this->u['a'] );
-		$body = jlife_challenges_today_body( $this->view( $this->u['a'], array( 'John 1:99' ) ) );
+		$body = jlife_challenges_today_body( $this->view( $this->u['a'], array( 'John 1:1, 99' ) ) );
 		$this->assertStringContainsString( 'The Bible text could not be loaded.', $body );
 		$this->assertStringContainsString( 'Open in Bible Gateway (BPT)', $body );
 		$this->assertStringContainsString( 'class="jl-soap"', $body );
