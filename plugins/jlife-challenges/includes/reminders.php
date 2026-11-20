@@ -133,6 +133,10 @@ function jlife_challenges_set_reminder( $actor, $user_id, $campaign_id, $on, $lo
 	if ( null === jlife_challenges_active_enrollment( $campaign_id, $user_id ) ) {
 		return jlife_challenges_denied();
 	}
+	if ( $on && ! jlife_challenges_campaign_accepts_writes( $campaign_id ) ) {
+		// A closed campaign sends nothing: opting out still works, opting in does not (#179).
+		return jlife_challenges_campaign_closed_error();
+	}
 	$old      = jlife_challenges_reminder_pref( $user_id, $campaign_id );
 	$fallback = jlife_challenges_reminder_locale( $old ? (string) $old['locale'] : (string) get_user_meta( $user_id, 'locale', true ) );
 	$locale   = jlife_challenges_reminder_locale( (string) $locale, $fallback );

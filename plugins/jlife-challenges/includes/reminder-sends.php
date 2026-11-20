@@ -471,6 +471,10 @@ function jlife_challenges_reminders_process_row( $row, $mode, DateTimeImmutable 
 	$id       = (int) $row['id'];
 	$user_id  = (int) $row['user_id'];
 	$campaign = jlife_challenges_get_campaign( (int) $row['campaign_id'] );
+	if ( $campaign && ! jlife_challenges_campaign_accepts_writes( $campaign ) ) {
+		jlife_challenges_reminders_mark( $id, 'cancelled', 'campaign_closed', $now );
+		return;
+	}
 	if ( ! $campaign || 'active' !== $campaign['status'] ) {
 		jlife_challenges_reminders_mark( $id, 'skipped', 'campaign_inactive', $now );
 		return;
@@ -581,7 +585,7 @@ function jlife_challenges_reminders_tick() {
 function jlife_challenges_reminders_status( $campaign ) {
 	global $wpdb;
 	$window = jlife_challenges_reminder_window( $campaign, jlife_challenges_now() );
-	$counts = array_fill_keys( array( 'queued', 'accepted', 'failed', 'skipped' ), 0 );
+	$counts = array_fill_keys( array( 'queued', 'accepted', 'failed', 'skipped', 'cancelled' ), 0 );
 	if ( '' !== $window['day_key'] ) {
 		$table = jlife_challenges_table( 'reminder_sends' );
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table; name from $wpdb->prefix.
