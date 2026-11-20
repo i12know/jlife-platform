@@ -85,7 +85,6 @@ class Test_Registry extends Jlife_Scripture_TestCase {
 			'link display'            => array( array( 'display' => 'link' ) ),
 			'no license evidence'     => array( array( 'license_evidence' => null ) ),
 			'empty license evidence'  => array( array( 'license_evidence' => '  ' ) ),
-			'source without a client' => array( array( 'source' => 'apibible' ) ),
 			'link source, native'     => array( array( 'source' => 'link' ) ),
 			'unknown source'          => array( array( 'source' => 'scraper' ) ),
 			'no copyright line'       => array( array( 'copyright' => array( 'text' => '' ) ) ),
@@ -99,6 +98,31 @@ class Test_Registry extends Jlife_Scripture_TestCase {
 				),
 			),
 		);
+	}
+
+	/**
+	 * A source with no registered implementation cannot show text: the API.Bible
+	 * client is optional (it lives in jlife-challenges), so with it missing an
+	 * otherwise enabled, native, licensed NLT is not renderable.
+	 */
+	public function test_a_source_without_a_registered_client_cannot_render() {
+		$this->patch_version(
+			'nlt',
+			array(
+				'enabled'          => true,
+				'display'          => 'native',
+				'license_evidence' => 'Test only.',
+			)
+		);
+		$this->assertTrue( jlife_scripture_can_render( jlife_scripture_get_version( 'nlt' ) ), 'the apibible source is registered' );
+		add_filter(
+			'jlife_scripture_sources',
+			static function ( $sources ) {
+				unset( $sources['apibible'] );
+				return $sources;
+			}
+		);
+		$this->assertFalse( jlife_scripture_can_render( jlife_scripture_get_version( 'nlt' ) ), 'no registered source, no text' );
 	}
 
 	/**
