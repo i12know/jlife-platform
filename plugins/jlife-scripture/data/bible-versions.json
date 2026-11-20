@@ -54,10 +54,8 @@
       },
       "license_evidence": null,
       "enabled": false,
-      "default_for": [
-        "en"
-      ],
-      "note": "Owner gates on #139: read the Biblica terms accepted in the YouVersion Platform portal (record them in docs/bible-provider-entitlements.md) and put the app key on the host. Until then English falls back to the ERV link. Replace copyright.text with YouVersion's version.copyright when the client lands; set the cache rule from the license."
+      "default_for": [],
+      "note": "Owner gates on #139: read the Biblica terms accepted in the YouVersion Platform portal (record them in docs/bible-provider-entitlements.md) and put the app key on the host. English defaults to NLT (owner, 2026-11-19); NIrV is a later choice. Replace copyright.text with YouVersion's version.copyright when the client lands; set the cache rule from the license."
     },
     {
       "key": "niv",
@@ -119,7 +117,9 @@
       },
       "license_evidence": "API.Bible Starter plan, app Jlife; premium slot selected 2026-11-19; owner smoke-tested with `wp jlife scripture try` on latoc 2026-11-19 (HTTP 200, copyright returned)",
       "enabled": true,
-      "default_for": [],
+      "default_for": [
+        "en"
+      ],
       "note": "API.Bible (#141): starter-plan slot, enabled after the owner's smoke test with `wp jlife scripture try` on latoc (2026-11-19). The notice the API returns with each passage is shown under the text; the line above is only the fallback when it returns none."
     },
     {

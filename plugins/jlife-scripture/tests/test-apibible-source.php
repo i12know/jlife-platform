@@ -281,7 +281,7 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 			$this->assertSame( $key, jlife_scripture_selectable_version( $key )['key'], 'offered in the picker' );
 		}
 		$this->assertSame( array( 'nlt', 'nkjv', 'csb', 'erv' ), array_keys( jlife_scripture_selectable_versions()['en'] ), 'English, in registry order' );
-		$this->assertSame( 'nirv', jlife_scripture_default_version( 'en' )['key'], 'NIrV stays the English default' );
+		$this->assertSame( 'nlt', jlife_scripture_default_version( 'en' )['key'], 'NLT is the English default (owner, 2026-11-19)' );
 		$this->assertSame( 'kt1925', jlife_scripture_default_version( 'vi' )['key'] );
 		$this->assertFalse( jlife_scripture_can_render( jlife_scripture_get_version( 'nirv' ) ), 'NIrV is still not renderable' );
 		$this->assertInstanceOf( Jlife_Scripture_Apibible_Source::class, jlife_scripture_get_source( 'apibible' ) );

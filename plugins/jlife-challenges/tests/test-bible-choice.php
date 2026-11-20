@@ -267,13 +267,13 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 	 */
 	public function test_default_follows_my_language_then_the_choice_is_sticky() {
 		$a = $this->u['a'];
-		$this->assertSame( array( 'nirv', null ), $this->keys( $a ), 'no language chosen: English' );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $a ), 'no language chosen: English' );
 
 		jlife_challenges_set_reminder( $a, $a, $this->campaign, false, 'vi' );
 		$this->assertSame( array( 'kt1925', null ), $this->keys( $a ), 'email language Tiếng Việt: Kinh Thánh 1925' );
 		$this->rest_as( $a, array() ); // An empty save changes nothing.
 		jlife_challenges_set_reminder( $a, $a, $this->campaign, false, 'en_US' );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $a ), 'back to English: NIrV' );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $a ), 'back to English: NLT' );
 
 		// Account language, when no email language was saved.
 		update_user_meta( $this->u['b'], 'locale', 'vi' );
@@ -324,7 +324,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 		$this->assertSame( array( 'niv', null ), $this->keys( $a ) );
 		remove_filter( 'jlife_scripture_registry', $filter );
 
-		$this->assertSame( array( 'nirv', null ), $this->keys( $a ), 'disabled: the language default' );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $a ), 'disabled: the language default' );
 		$html = $this->section( $a );
 		$this->assertNull( $this->option_text( $html, 'jl_bible_version', 'niv' ), 'no longer offered' );
 		$this->assertSame( '', $this->selected_value( $html, 'jl_bible_version' ), 'shown as the language default' );
@@ -341,7 +341,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 		$this->assertSame( 200, $r->get_status() );
 		$this->assertSame( 'erv', $r->get_data()['bible_version_2'] );
 		$this->assertSame( '', $r->get_data()['bible_version'], 'the first still follows the language' );
-		$this->assertSame( array( 'nirv', 'erv' ), $this->keys( $a ) );
+		$this->assertSame( array( 'nlt', 'erv' ), $this->keys( $a ) );
 
 		$r = $this->rest_as( $a, array( 'bible_version' => 'kt1925' ) );
 		$this->assertSame( 'erv', $r->get_data()['bible_version_2'], 'saving the first keeps the second' );
@@ -474,12 +474,12 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 			)
 		);
 		$this->assertTrue( jlife_challenges_handle_bible_post( $a ) );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $a ) );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $a ) );
 
 		// An unknown key saves nothing.
 		$this->post_as( $a, array( 'jl_bible_version' => 'bogus' ) );
 		$this->assertFalse( jlife_challenges_handle_bible_post( $a ) );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $a ) );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $a ) );
 
 		// Not enrolled: nothing.
 		$o = $this->u['outsider'];
@@ -504,7 +504,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 			jlife_challenges_handle_bible_post( $a );
 			$this->fail( 'a bad nonce must stop the request' );
 		} catch ( WPDieException $e ) {
-			$this->assertSame( array( 'nirv', null ), $this->keys( $a ) );
+			$this->assertSame( array( 'nlt', null ), $this->keys( $a ) );
 		}
 
 		// The reminder form's nonce does not open this form.
@@ -518,7 +518,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 			jlife_challenges_handle_bible_post( $a );
 			$this->fail( 'another form\'s nonce must not work' );
 		} catch ( WPDieException $e ) {
-			$this->assertSame( array( 'nirv', null ), $this->keys( $a ) );
+			$this->assertSame( array( 'nlt', null ), $this->keys( $a ) );
 		}
 	}
 

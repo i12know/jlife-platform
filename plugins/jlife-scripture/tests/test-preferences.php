@@ -48,11 +48,11 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 	 */
 	public function test_default_follows_the_language_from_the_registry() {
 		$this->assertSame( array( 'kt1925', null ), $this->keys( $this->participant( 'vi' ) ) );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $this->participant( 'en_US' ) ) );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $this->participant( '' ) ), 'no account language: English' );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $this->participant( 'en_US' ) ) );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $this->participant( '' ) ), 'no account language: English' );
 
 		// Switching a default is a data edit (default_for), not a code change.
-		$this->patch_version( 'nirv', array( 'default_for' => array() ) );
+		$this->patch_version( 'nlt', array( 'default_for' => array() ) );
 		$this->patch_version( 'niv', array( 'default_for' => array( 'en' ) ) );
 		$this->assertSame( array( 'niv', null ), $this->keys( $this->participant( 'en_US' ) ) );
 		$this->assertSame( array( 'kt1925', null ), $this->keys( $this->participant( 'vi' ) ), 'the other language is untouched' );
@@ -64,12 +64,12 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 	 */
 	public function test_language_default_uses_the_my_language_filter() {
 		$user = $this->participant( 'en_US' );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $user ) );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $user ) );
 		$to_vi = static fn() => 'vi';
 		add_filter( 'jlife_scripture_user_language', $to_vi );
 		$this->assertSame( array( 'kt1925', null ), $this->keys( $user ), 'My language: Vietnamese' );
 		remove_filter( 'jlife_scripture_user_language', $to_vi );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $user ) );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $user ) );
 	}
 
 	/**
@@ -81,7 +81,7 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 		add_filter( 'determine_locale', $vi );
 		$this->assertSame( array( 'kt1925', null ), $this->keys( 0 ) );
 		remove_filter( 'determine_locale', $vi );
-		$this->assertSame( array( 'nirv', null ), $this->keys( 0 ) );
+		$this->assertSame( array( 'nlt', null ), $this->keys( 0 ) );
 		$this->assertSame( 'kt1925', jlife_scripture_versions_for_user( 0, 'vi' )[0]['key'] );
 	}
 
@@ -92,10 +92,10 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 	public function test_site_default_is_the_last_resort() {
 		$this->patch_version( 'kt1925', array( 'default_for' => array() ) );
 		$user = $this->participant( 'vi' );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $user ), 'no Vietnamese default: the site default (English)' );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $user ), 'no Vietnamese default: the site default (English)' );
 		$vi_site = static fn() => 'vi';
 		add_filter( 'locale', $vi_site );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $user ), 'the site language has no default either: English' );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $user ), 'the site language has no default either: English' );
 		remove_filter( 'locale', $vi_site );
 	}
 
@@ -115,7 +115,7 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 		$this->assertTrue( jlife_scripture_set_user_choice( $user, array( 'primary' => '' ) ) );
 		$this->assertSame( array( 'kt1925', null ), $this->keys( $user ), 'cleared: follows My language again (now vi)' );
 		remove_filter( 'jlife_scripture_user_language', $to_vi );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $user ) );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $user ) );
 		$this->assertSame( '', get_user_meta( $user, 'jlife_bible_version', true ), 'null = no meta value' );
 	}
 
@@ -221,7 +221,7 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 		$b = $this->participant( 'en_US' );
 		jlife_scripture_set_user_choice( $a, array( 'primary' => 'kt1925' ) );
 		$this->assertSame( array( 'kt1925', null ), $this->keys( $a ) );
-		$this->assertSame( array( 'nirv', null ), $this->keys( $b ) );
+		$this->assertSame( array( 'nlt', null ), $this->keys( $b ) );
 		$this->assertSame( '', (string) get_user_meta( $b, 'jlife_bible_version', true ) );
 		require_once ABSPATH . 'wp-admin/includes/user.php';
 		wp_delete_user( $a );

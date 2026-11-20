@@ -37,8 +37,8 @@ class Test_Registry extends Jlife_Scripture_TestCase {
 	}
 
 	/**
-	 * Defaults by the participant's locale: vi -> 1925, en (or none) -> NIrV,
-	 * which is not renderable yet, so English falls back to the ERV link.
+	 * Defaults by the participant's locale: vi -> 1925, en (or none) -> NLT
+	 * (API.Bible), with the ERV link as English's fallback.
 	 */
 	public function test_defaults_by_locale() {
 		$vi   = $this->participant( 'vi' );
@@ -55,8 +55,8 @@ class Test_Registry extends Jlife_Scripture_TestCase {
 		$this->assertTrue( $choice['native'] );
 
 		$choice = jlife_scripture_reader_choice( 'en' );
-		$this->assertSame( 'nirv', $choice['version']['key'] );
-		$this->assertFalse( $choice['native'] );
+		$this->assertSame( 'nlt', $choice['version']['key'] );
+		$this->assertTrue( $choice['native'] );
 		$this->assertSame( 'ERV', $choice['fallback']['source_id'] );
 		$this->assertSame( 'BPT', jlife_scripture_fallback_version( 'vi' )['source_id'] );
 	}
@@ -131,7 +131,7 @@ class Test_Registry extends Jlife_Scripture_TestCase {
 	 * licenses them) is a registry edit only.
 	 */
 	public function test_switching_defaults_is_data_only() {
-		$this->patch_version( 'nirv', array( 'default_for' => array() ) );
+		$this->patch_version( 'nlt', array( 'default_for' => array() ) );
 		$this->patch_version( 'kt1925', array( 'default_for' => array() ) );
 		$this->patch_version( 'erv', array( 'default_for' => array( 'en' ) ) );
 		$this->patch_version( 'bpt', array( 'default_for' => array( 'vi' ) ) );
