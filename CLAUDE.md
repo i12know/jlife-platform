@@ -10,6 +10,34 @@ authoritative), `docs/vision-architecture.md` (long-term draft), and
 `docs/integration-boundaries.md` (data ownership/privacy rules — amend
 deliberately, never incidentally).
 
+## Architecture decisions (gate)
+
+Before work that touches installation topology, accounts/identity or
+Disciple.Tools contact creation, deployment tooling, cross-site or cross-tenant
+data flow, or ChMeetings integration, read the **decision register** in
+[docs/framework-direction.md](docs/framework-direction.md),
+[ADR 0001](docs/adr/0001-multi-deployment-tenant-domain-architecture.md), and
+the pending-decisions issue [#168](https://github.com/i12know/jlife-platform/issues/168).
+
+Authority, highest first:
+
+1. Accepted ADRs (`docs/adr/`, `Status: Accepted`), approved requirements
+   (`docs/PRD.md`), and the privacy rules in `docs/integration-boundaries.md`.
+2. Curated design docs and runbooks (`docs/*.md`).
+3. Proposed or provisional direction: register entries not yet accepted,
+   `docs/vision-architecture.md`.
+4. Supporting evidence only: spike records, older drafts, `docs/research/`.
+
+- **Pending is not settled.** Don't implement a Proposed or Provisional
+  decision as if it were accepted, and don't write or accept an ADR unless the
+  owner asks; status changes only through an owner-approved ADR PR that also
+  updates the register.
+- **Flag conflicts; never resolve them silently.** When sources disagree, say
+  so in your reply or PR, follow the higher tier, and ask the owner. Known
+  conflicts are listed in `docs/framework-direction.md` §4.
+- **Every architecture-related PR states its basis**: follows an accepted
+  decision (name it), depends on a pending ADR (name it, #168), or none.
+
 ## Shared skills
 
 - **ChMeetings** (any work touching ChMeetings, `jlife-chm-sync`, or spike
