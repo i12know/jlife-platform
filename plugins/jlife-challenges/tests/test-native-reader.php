@@ -237,14 +237,51 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * A passage the 1925 text lacks (or a source that fails) never blocks the
-	 * page: a short note and the Bible Gateway link, and the SOAP form as usual.
+	 * A source that fails (here the 1925 text's) never blocks the page: a short
+	 * note and the Bible Gateway link, and the SOAP form as usual.
 	 */
 	public function test_an_unavailable_passage_falls_back_to_the_link() {
 		$this->reader_on();
+		add_filter(
+			'jlife_scripture_sources',
+			static function ( $sources ) {
+				$sources['local'] = new class() implements Jlife_Scripture_Source {
+
+					/**
+					 * Registry source value.
+					 *
+					 * @return string
+					 */
+					public function id() {
+						return 'local';
+					}
+
+					/**
+					 * No cache.
+					 *
+					 * @return bool
+					 */
+					public function cacheable() {
+						return false;
+					}
+
+					/**
+					 * A source that is down.
+					 *
+					 * @param array $version  Version.
+					 * @param array $segments Segments.
+					 * @return WP_Error
+					 */
+					public function fetch( array $version, array $segments ) {
+						return new WP_Error( 'jlife_scripture_unavailable', 'Unavailable.' );
+					}
+				};
+				return $sources;
+			}
+		);
 		jlife_scripture_set_user_choice( $this->u['a'], array( 'primary' => 'kt1925' ) );
 		wp_set_current_user( $this->u['a'] );
-		$body = jlife_challenges_today_body( $this->view( $this->u['a'], array( 'John 1:1, 99' ) ) );
+		$body = jlife_challenges_today_body( $this->view( $this->u['a'] ) );
 		$this->assertStringContainsString( 'The Bible text could not be loaded.', $body );
 		$this->assertStringContainsString( 'Open in Bible Gateway (BPT)', $body );
 		$this->assertStringContainsString( 'class="jl-soap"', $body );
