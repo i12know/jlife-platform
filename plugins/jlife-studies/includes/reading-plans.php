@@ -3,9 +3,13 @@
  * Reading plans (#59): one public page per scheduled day, imported from the
  * portable JSON built by bin/build-reading-plans.js (content/reading-plans/).
  *
- * References and external Bible links only; no Bible text is stored or shown
- * (docs/bible-quotation-permissions.md). The JSON files stay the source of
- * truth; posts are their rendering and are upserted by (plan_id, day_id).
+ * References and external Bible links only; no Bible text is stored in the
+ * posts (docs/bible-quotation-permissions.md). The one exception is display
+ * only: when the site option jlife_scripture_native_reader is on, the page
+ * shows the page language's default Bible through the jlife-scripture plugin
+ * (public-domain text, or the Bible Gateway link) instead of the link blocks.
+ * The JSON files stay the source of truth; posts are their rendering and are
+ * upserted by (plan_id, day_id).
  *
  * A supplemental plan (optional parallel readings) is attached to the
  * primary plan's day of the same day_id; it never creates its own pages.
@@ -309,11 +313,78 @@ function jlife_studies_render_harmony_sections( $day ) {
 	return '<div class="jlife-harmony-sections"><h3>' . esc_html__( 'Harmony Bible sections', 'jlife-studies' ) . '</h3><ul>' . $items . '</ul></div>';
 }
 
+/**
+ * The language a public reading page shows its Bible in: the page's `?lang=`
+ * ("en" or "vi", like the sign-in pages), else the site's language (Polylang
+ * and similar set it through the `locale` filter). Never the visitor's account
+ * language and not determine_locale(), which follows the signed-in person: a
+ * public page may be page-cached, so it must look the same for everyone.
+ *
+ * @return string "en" or "vi".
+ */
+function jlife_studies_reading_page_language() {
+	if ( isset( $_GET['lang'] ) && is_string( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- a display language only; type-tested, then sanitized.
+		$lang = sanitize_key( wp_unslash( $_GET['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
+		if ( in_array( $lang, array( 'en', 'vi' ), true ) ) {
+			return $lang;
+		}
+	}
+	return 0 === strpos( strtolower( (string) get_locale() ), 'vi' ) ? 'vi' : 'en';
+}
+
+/**
+ * Links to this page in each language (plain `?lang=` links: no JavaScript,
+ * and the page stays cacheable per URL). Shown only with the on-page reader,
+ * which shows one language's Bible at a time.
+ *
+ * @param int    $post_id Reading-day post.
+ * @param string $current The page's language ("en" or "vi").
+ * @return string
+ */
+function jlife_studies_render_reading_language_links( $post_id, $current ) {
+	$url   = get_permalink( $post_id );
+	$links = array();
+	foreach ( array(
+		'en' => 'English',
+		'vi' => 'Tiếng Việt',
+	) as $lang => $name ) {
+		$links[] = '<a href="' . esc_url( add_query_arg( 'lang', $lang, $url ) ) . '" hreflang="' . esc_attr( $lang ) . '" lang="' . esc_attr( $lang ) . '"'
+			. ( $lang === $current ? ' aria-current="true"' : '' ) . '>' . esc_html( $name ) . '</a>';
+	}
+	return '<p class="jlife-reading-lang">' . implode( ' | ', $links ) . '</p>';
+}
+
+/**
+ * The day's passages shown on the page itself by jlife-scripture, for the
+ * public reading page, or null to keep the Bible Gateway link blocks.
+ *
+ * Null when the Scripture plugin is not active, the site option
+ * jlife_scripture_native_reader is off (the default), or the day has no
+ * passages. Otherwise the page language's default Bible (Kinh Thánh 1925 for
+ * Tiếng Việt; the Bible Gateway ERV link for English until NIrV is licensed),
+ * with the same note-and-link fallback as Today when a passage cannot load.
+ * The call passes no user: the reader never reads a stored My Bible choice
+ * here, so the markup is the same for every visitor.
+ *
+ * @param int   $post_id Reading-day post.
+ * @param array $day     The primary plan's day data.
+ * @return string|null Markup, or null.
+ */
+function jlife_studies_render_native_reading( $post_id, $day ) {
+	if ( ! function_exists( 'jlife_scripture_maybe_render_day' ) ) {
+		return null;
+	}
+	$lang   = jlife_studies_reading_page_language();
+	$native = jlife_scripture_maybe_render_day( $day, 0, array( 'language' => $lang ) );
+	return null === $native ? null : jlife_studies_render_reading_language_links( $post_id, $lang ) . $native;
+}
+
 add_filter( 'the_content', 'jlife_studies_render_reading_day' );
 
 /**
- * Render a reading-day page: day and date, passages, Bible links, and the
- * optional parallel readings collapsed below.
+ * Render a reading-day page: day and date, passages, Bible links (or the
+ * on-page reader, when it is on), and the optional parallel readings collapsed
+ * below, which always keep their outside links.
  *
  * @param string $content Post content.
  * @return string
@@ -335,7 +406,9 @@ function jlife_studies_render_reading_day( $content ) {
 	/* translators: 1: day number, 2: formatted date. */
 	$out .= '<p class="jlife-reading-date">' . esc_html( sprintf( __( 'Day %1$d · %2$s', 'jlife-studies' ), (int) $day['day'], $date ) ) . '</p>';
 	$out .= '<h2>' . esc_html__( "Today's reading", 'jlife-studies' ) . '</h2>';
-	$out .= jlife_studies_render_reading_links( $day, $plan['links_config'] ?? array() );
+	// With the on-page reader on (jlife_scripture_native_reader), it replaces the main reading's passage list and link blocks.
+	$native = jlife_studies_render_native_reading( $post_id, $day );
+	$out   .= null !== $native ? $native : jlife_studies_render_reading_links( $day, $plan['links_config'] ?? array() );
 
 	if ( is_array( $supp ) && ! empty( $supp['day'] ) ) {
 		$out .= '<details class="jlife-supplemental"><summary>' . esc_html__( 'Optional: parallel readings for deeper study', 'jlife-studies' ) . '</summary>';

@@ -27,6 +27,12 @@ tests_add_filter(
 	'muplugins_loaded',
 	function () {
 		require dirname( __DIR__ ) . '/jlife-studies.php';
+		// The on-page Scripture reader on /reading/ (#139) works with jlife-scripture beside this
+		// plugin (wp-env maps both into wp-content/plugins). Without it the page is the old one.
+		$scripture = dirname( __DIR__, 2 ) . '/jlife-scripture/jlife-scripture.php';
+		if ( file_exists( $scripture ) ) {
+			require $scripture;
+		}
 	}
 );
 

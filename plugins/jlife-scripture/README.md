@@ -38,7 +38,7 @@ Which Bible a participant reads comes from `jlife_scripture_versions_for_user( $
 | Picker data | `jlife_scripture_selectable_versions()` → language => key => entry, enabled versions only, registry order; `jlife_scripture_can_render()` tells which open Bible Gateway instead of showing text |
 | UI | My Marathon (`jlife-challenges`, `includes/bible-choice.php`) |
 
-Wired in: **Today and `/soap`** (`jlife_challenges_render_reader()` in `jlife-challenges` calls `jlife_scripture_maybe_render_day( $day, get_current_user_id() )` when the option below is on; the framed Bible Gateway reader is the flag-off path, and the standalone page prints this plugin's stylesheet). Not wired yet: the public `/reading/` pages (`jlife-studies`) still show their own links.
+Wired in: **Today and `/soap`** (`jlife_challenges_render_reader()` in `jlife-challenges` calls `jlife_scripture_maybe_render_day( $day, get_current_user_id() )` when the option below is on; the framed Bible Gateway reader is the flag-off path, and the standalone page prints this plugin's stylesheet), and the **public `/reading/` day pages** (`jlife_studies_render_native_reading()` in `jlife-studies` calls `jlife_scripture_maybe_render_day( $day, 0, array( 'language' => <page language> ) )`: user 0 and a forced language, so it never reads a stored choice and the output is the same for every visitor; the link blocks are the flag-off path). The option is per site: turn it on on each site that serves these pages.
 
 ## Settings
 
