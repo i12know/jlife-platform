@@ -39,7 +39,7 @@ Related: [#49](https://github.com/i12know/jlife-platform/issues/49) (spec); #60 
 - **Sharing.** One unticked checkbox per active group on the SOAP form, no "share with all", none for a solo reader; `/share` has one section per group; `/group` has a picker when there is more than one group. See §4a.
 - **Starting a group** (adults only, §4c): an adult names a group and becomes its `starter` member; it uses one of their 3 slots; at most 2 started per person per campaign; the code and link are shown once and the starter can reset the code. The age check reads the *stored* enrollment, never the form.
 - **Leaving.** `/group` has a confirmed **Leave this group**; the person keeps their past shares in that group (D18) until they remove them from **Groups you left** on `/share`; the slot frees at once.
-- **Organizers** can still enroll, move (naming which group is left when there are several) and remove, and (#112 part 2) list, rename, disable and re-enable any group with `wp jlife group ...` (audited; the list shows names, status, the starter's user ID and active member counts, never codes or member names). They never browse feeds (D17).
+- **Organizers** can still enroll, move (naming which group is left when there are several) and remove, and (#112 part 2) list, rename, disable and re-enable any group with `wp jlife group ...` (audited; the CLI list shows names, status, the starter's user ID and active member counts, never codes or member names). Since #64 part 1 the same work, plus creating groups, invite expiry and revoking, is on the **J-Life → Groups** admin screen (§4g), which does show each member's *display name* because an organizer cannot add, move or remove someone they cannot name. They never browse feeds (D17).
 
 ## 3. Days and scoring
 
@@ -138,7 +138,7 @@ An adult can make a group and hold its invite code. Holding the code is the **on
 | Reset the invite code: the group's own active starter, or an organizer | New code; the old one stops working at once; audited with who did it |
 | Reset: another member, a non-member, a starter of a different group, a former starter, anonymous, or a starter of a disabled group | Denied (`jlife_denied`); the code is unchanged |
 | Starter reads a member's entry, progress, score counts, or a group they are not in | ❌ denied; the group feed returns only what members shared, the same as for a member |
-| Organizer lists, renames, disables or re-enables any group (starter-made included) | ✅ through `wp jlife group list\|rename\|disable\|enable` (no participant-facing path); audited as `group_renamed`, `group_disabled`, `group_enabled`. Listing shows names, status, starter's user ID and active member counts; never codes, hashes, entries or member names |
+| Organizer lists, renames, disables or re-enables any group (starter-made included) | ✅ through `wp jlife group list\|rename\|disable\|enable`, and (since #64) rename on **J-Life → Groups** (§4g); no participant-facing path; audited as `group_renamed`, `group_disabled`, `group_enabled`. Listing shows names, status, starter's user ID and active member counts; never codes, hashes, entries or member names |
 | Disabled group | Its code stops working; members lose its feed and the slot is freed; past shares stay stored (re-enabling restores them) but are readable by nobody meanwhile. Re-enabling is refused if it would put a member over 3 groups |
 | Group name seen by | Its active members and organizers only. Another participant asking for the group by ID gets "Not found or not allowed" with no name; `/join` never prints a group name; the audit log holds IDs |
 | Leave a group | Feed access ends and the slot frees; the person's past shares stay with the group (D18) until they remove them from "Groups you left" on `/share`; audited (`group_left`). A starter who leaves stops holding the code (organizers can still reset or disable) |
@@ -211,6 +211,25 @@ The scheduler turns the recipients from §4d into one `reminder_sends` row per p
 | Delivery status | `accepted` means `wp_mail` returned true, not delivery. Delivered/bounced need Brevo webhooks (a later phase) |
 | Account deletion | The person's rows are deleted with the account |
 
+### 4g. Groups admin screen (M9 part 1, #64)
+
+**J-Life → Groups** (`wp-admin/admin.php?page=jlife-groups`) is the organizer's plain WordPress screen for the roughly 12 pilot groups. There is no separate "organizer" role: an organizer is anyone with `manage_options` on this site (`jlife_challenges_is_organizer()`), so "their scope" is this site's campaigns and a site admin gets the same. The screen never reads or prints SOAP text, shares, email addresses, invite hashes or session tokens; it shows display names only (a name that looks like an email address is replaced by `Participant #ID`). Audit actions: `group_created`, `group_renamed`, `invite_reset`, `invite_revoked`, `group_joined` (source `organizer`), `member_moved`, `group_member_removed`.
+
+| Actor / case | Open the screen (menu and page) | Create / rename a group | Show, regenerate or revoke an invite | Member list (display names) | Add / move / remove a member |
+|---|---|---|---|---|---|
+| Site admin or organizer (`manage_options`) | ✅ | ✅ audited | ✅ the code is shown **once**, on the page that regenerates it (never stored in clear); afterwards only the state (none, active until a date, expired) | ✅ names and role only | ✅ audited, each through a nonce-checked POST |
+| Participant, group member, group starter, leader, editor, subscriber | ❌ no menu entry; the page answers 403 | ❌ | ❌ (a starter's own reset stays on `/group`, §4c) | ❌ | ❌ |
+| Anonymous | ❌ (sent to sign in) | ❌ | ❌ | ❌ | ❌ |
+| A POST with no nonce, a nonce for another action or another group, or a GET | n/a | ❌ nothing changes | ❌ | n/a | ❌ nothing changes |
+
+Rules the tests pin down:
+
+- **IDs.** The group and campaign come from the organizer's own list; a group ID the site does not know is "Not found or not allowed". The participant in an add, move or remove must hold an **active enrollment** in that group's campaign (the screen never enrolls anyone: consent comes from sign-up), and a move's two groups must be in the same campaign. Each write's nonce is bound to its action and the group ID.
+- **Invites.** Expiry is chosen from 7, 14, 30, 60 or 90 days. Regenerating replaces the old code at once; revoking leaves the group with no working code. Neither changes any member. A disabled group's code never works. The hash is never printed. The link is `/join/?code=CODE`: the code is the only parameter, with no sign-in token, session, nonce or user ID.
+- **Remove from this group** ends that one membership (status `removed`); the enrollment, entries, points and other groups are untouched. **Remove from the Marathon** stays a separate organizer action (`jlife_challenges_remove_member()`) and is not on this screen. A person removed from a group can rejoin it with a valid code, so regenerate or revoke the code first when that is not wanted.
+- **D18, both directions (move and remove).** Past shares stay with the old group; the person loses the old feed at once; the new group never sees anything shared to the old one; the old group never sees what the person shares afterwards; the person can still see and remove their own old shares ("Groups you left" on `/share`); no one else's private entries are reachable from either feed. Organizers still cannot read any feed (D17).
+- **Scores.** Add, move, remove, rename, regenerate and revoke never write or change a `score_ledger` row, an enrollment's status or consent, or the export; points, eligibility and prize standing are individual (principle 6).
+
 ## 5. Required tests (written first; CI)
 
 **Calendar:**
@@ -258,6 +277,16 @@ The scheduler turns the recipients from §4d into one `reminder_sends` row per p
 - migration of existing single-group enrollments (idempotent, never resurrects a left membership)
 - the test-campaign create/remove command and account deletion clean up memberships
 - points are identical for solo, one-group and three-group participants
+
+**Groups admin (#64 part 1; written first, `test-groups-admin.php`):**
+- a subscriber, participant, starter and editor get no menu entry and a 403 on the page and on every write; an organizer and a site admin get the screen
+- every write needs a valid nonce bound to its action and group; a GET or a forged nonce changes nothing
+- create, rename, regenerate, revoke, add, move and remove each write one audit row without personal data
+- the invite link holds only the code; regenerating replaces the old code; revoking leaves none; the page never prints a hash
+- move and remove, both directions (D18), and nobody else's private entry leaks
+- a member is added only if already enrolled; a fourth group is refused; a move across campaigns is refused
+- membership changes leave the ledger, enrollment, consent and the score export untouched
+- acceptance: two groups, several participants joined by invite and by admin, each sees the correct My Group, one moved and one removed with no leak
 
 ## 6. Interfaces for the screens (M6/M7)
 
