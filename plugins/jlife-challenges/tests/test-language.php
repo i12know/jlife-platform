@@ -209,7 +209,7 @@ class Test_Language extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Migration rule (owner to confirm, #159): an account whose saved email
+	 * Migration rule (owner confirmed 2026-11-20, #159): an account whose saved email
 	 * language differs from its screen language shows the screen language in
 	 * the setting, and keeps its email language until the next save.
 	 */

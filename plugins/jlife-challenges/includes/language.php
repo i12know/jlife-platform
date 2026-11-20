@@ -18,7 +18,7 @@
  *
  * Existing accounts whose saved email language differs from their screen
  * language keep that email language until they next save this setting; the
- * screen language is what the setting shows (owner to confirm, #159).
+ * screen language is what the setting shows (owner confirmed 2026-11-20, #159).
  *
  * @package jlife-challenges
  */
