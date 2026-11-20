@@ -56,6 +56,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
   - **Configuration:** the post's ID is the site option `jlife_pilot_feedback_post_id`, and the address comes from `get_permalink()`. A published Polylang translation is used for its language when one exists; otherwise both languages go to the same bilingual post.
   - **No link** while the option is unset or the post is missing, unpublished or password-protected. Removing the link after the beta means deleting the option.
   - **No post content or comment settings come from code.** Comments are not enabled globally. Runbook: `docs/staging-latoc.md` § Pilot feedback post.
+  - **Signed-in accounts only, no avatars** (owner decisions, 2026-11-20; set in Settings > Discussion). On the feedback post only, WordPress's "log in to post a comment" link goes to `/signin` and back to the comment form instead of `wp-login.php`, where participants cannot sign in.
   - **Details:** new `includes/pilot-feedback.php`; two new strings with Vietnamese drafts; no stylesheet change (`screens.css` stays `?v=16`); PHPUnit tests in both plugins.
 - **Architecture decision gate for agent sessions** (documentation only):
   - `CLAUDE.md` gains an "Architecture decisions" section: what to read before architecture work, the authority order (accepted ADRs and approved requirements over proposals, with spikes and drafts as evidence only), flagging conflicts instead of resolving them, and stating each architecture PR's basis.

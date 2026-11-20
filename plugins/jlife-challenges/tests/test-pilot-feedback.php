@@ -224,6 +224,40 @@ class Test_Pilot_Feedback extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Signed-in accounts only: on the feedback post, the "log in to post a
+	 * comment" link goes to /signin and back to the comment form. Other login
+	 * links (other posts, wp-admin, no option) keep wp-login.php.
+	 */
+	public function test_the_feedback_post_sends_visitors_to_signin() {
+		$other = (int) self::factory()->post->create();
+		$this->assertStringContainsString( 'wp-login.php', wp_login_url( get_permalink( $other ) ), 'no option: unchanged' );
+
+		$id     = $this->configure();
+		$signin = add_query_arg( 'redirect_to', rawurlencode( get_permalink( $id ) . '#respond' ), home_url( '/signin/' ) );
+		$this->assertSame( $signin, wp_login_url( get_permalink( $id ) ) );
+		$this->assertSame( $signin, wp_login_url( get_permalink( $id ) . '#comments' ), 'a fragment is replaced' );
+		$this->assertStringContainsString( 'wp-login.php', wp_login_url( get_permalink( $other ) ), 'another post' );
+		$this->assertStringContainsString( 'wp-login.php', wp_login_url( admin_url() ), 'wp-admin' );
+		$this->assertStringContainsString( 'wp-login.php', wp_login_url(), 'no redirect' );
+
+		update_option( 'comment_registration', '1' );
+		wp_update_post(
+			array(
+				'ID'             => $id,
+				'comment_status' => 'open',
+			)
+		);
+		wp_set_current_user( 0 );
+		$this->go_to( get_permalink( $id ) );
+		ob_start();
+		comment_form( array(), $id );
+		$form = (string) ob_get_clean();
+		$this->assertStringContainsString( 'href="' . esc_url( $signin ) . '"', $form, 'the must-log-in link' );
+		$this->assertStringNotContainsString( 'wp-login.php', $form );
+		$this->assertStringNotContainsString( 'name="email"', $form, 'no signed-out form' );
+	}
+
+	/**
 	 * The feedback link reads no participant data and creates no post.
 	 */
 	public function test_nothing_is_created_or_read_from_participants() {

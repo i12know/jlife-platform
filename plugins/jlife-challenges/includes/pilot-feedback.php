@@ -13,6 +13,9 @@
  *   when one exists; otherwise every language goes to the same (bilingual) post.
  * - No link at all when the option is unset or the post is missing or not
  *   published. Ending the pilot is a config change: delete the option.
+ * - Commenting is for signed-in accounts only (owner decision; the owner sets
+ *   it in Settings > Discussion). On this post alone, WordPress's "log in to
+ *   comment" link goes to /signin instead of wp-login.php.
  * - Reads no participant data.
  *
  * @package jlife-challenges
@@ -72,6 +75,47 @@ function jlife_challenges_pilot_feedback_link() {
 		return '';
 	}
 	return '<a class="jl-pilot-feedback" href="' . esc_url( $url ) . '">' . esc_html__( 'Pilot Feedback', 'jlife-challenges' ) . '</a>';
+}
+
+/**
+ * Is this address the feedback post (or its published translation)? Query
+ * string and fragment are ignored.
+ *
+ * @param string $url Address.
+ * @return bool
+ */
+function jlife_challenges_is_pilot_feedback_url( $url ) {
+	$url = strtok( (string) $url, '?#' );
+	if ( false === $url ) {
+		return false;
+	}
+	foreach ( array( 'en', 'vi' ) as $language ) {
+		$feedback = jlife_challenges_pilot_feedback_url( $language );
+		if ( '' !== $feedback && untrailingslashit( $feedback ) === untrailingslashit( $url ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+add_filter( 'login_url', 'jlife_challenges_pilot_feedback_login_url', 10, 2 );
+
+/**
+ * Comments on the feedback post are for signed-in accounts only (owner
+ * decision, #171). WordPress's "log in to post a comment" link goes to
+ * wp-login.php, where participants cannot sign in (they use emailed codes), so
+ * for that one post the link goes to /signin and comes back to the post. Every
+ * other login link is unchanged.
+ *
+ * @param string $login_url Login address.
+ * @param string $redirect  Where to return after signing in.
+ * @return string
+ */
+function jlife_challenges_pilot_feedback_login_url( $login_url, $redirect ) {
+	if ( '' === (string) $redirect || ! jlife_challenges_is_pilot_feedback_url( $redirect ) ) {
+		return $login_url;
+	}
+	return add_query_arg( 'redirect_to', rawurlencode( strtok( (string) $redirect, '#' ) . '#respond' ), home_url( '/signin/' ) );
 }
 
 /**

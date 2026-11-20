@@ -136,7 +136,7 @@ During the Dec 5–13 shadow pilot, testers leave feedback as **comments on one 
 | | GitHub (the code) | wp-admin (the owner) |
 |---|---|---|
 | The post: wording, slug, language, publishing | **creates nothing**; a deploy never touches it | writes, publishes and edits it |
-| Comments on the post, moderation, replies | **opens nothing**; no global comment setting is changed | turns comments on for this post only, approves and replies |
+| Comments on the post, moderation, replies | **opens nothing**; no global comment setting is changed. On this post only, the "log in to comment" link goes to `/signin` | turns comments on for this post only, approves and replies |
 | The footer link | shows it only while the option names a **published** post | sets or deletes the option |
 
 **Where the link appears.** It sits at the end of the Help · Rules · Privacy footer on Today, `/soap`, My Marathon, My Group, `/share`, the sign-out confirmation, `/join`, `/signin` and `/consent`. On the public `/reading/` day pages, which have no other footer, it appears on its own. It shows for signed-in and signed-out visitors, and its label follows the screen language. The address comes from WordPress (`get_permalink()`), never a typed URL. A published Polylang translation of the post is used for Vietnamese if one exists; otherwise both languages go to the same bilingual post, so there is one comment thread. **There is no link while the option is unset or the post is a draft, private, scheduled, password-protected, trashed or deleted.**
@@ -152,27 +152,26 @@ During the Dec 5–13 shadow pilot, testers leave feedback as **comments on one 
 
      > Help us improve LATOC! If something is confusing, broken, or could be easier, leave a comment below. Include the page, device/browser, what you tried, and what happened. Comments are reviewed before publication. Please do not share private SOAP entries or personal information.
      >
-     > **Approved comments are public.** Please do not post private SOAP reflections, passwords, email addresses (yours or anyone else's), invite codes, screenshots showing private information, or pastoral or prayer matters about anyone. The name you give appears with your comment; your email address is never shown.
+     > **To comment, sign in with your LATOC account first** (the same email code you use for the Bible Marathon). **Approved comments are public.** Please do not post private SOAP reflections, passwords, email addresses (yours or anyone else's), invite codes, screenshots showing private information, or pastoral or prayer matters about anyone. The first name on your account appears with your comment; your email address is never shown.
      >
      > [DRAFT: Vietnamese below is for the Vietnamese reviewers to check before publishing.]
      >
      > Xin giúp chúng tôi cải thiện LATOC! Nếu có điều gì khó hiểu, không hoạt động hoặc cần đơn giản hơn, xin để lại nhận xét bên dưới. Hãy cho biết trang đang dùng, thiết bị/trình duyệt, các bước đã thử và kết quả. Nhận xét sẽ được duyệt trước khi đăng. Xin đừng chia sẻ bài SOAP riêng tư hoặc thông tin cá nhân.
      >
-     > **Nhận xét đã được duyệt sẽ hiển thị công khai.** Xin đừng đăng bài SOAP riêng tư, mật khẩu, địa chỉ email (của bạn hay của người khác), mã mời, ảnh chụp màn hình có thông tin riêng tư, hoặc các vấn đề mục vụ hay cầu nguyện của bất kỳ ai. Tên bạn nhập sẽ hiển thị cùng nhận xét; địa chỉ email của bạn không bao giờ được hiển thị.
+     > **Để nhận xét, xin đăng nhập bằng tài khoản LATOC của bạn trước** (cùng mã qua email bạn dùng cho Marathon Kinh Thánh). **Nhận xét đã được duyệt sẽ hiển thị công khai.** Xin đừng đăng bài SOAP riêng tư, mật khẩu, địa chỉ email (của bạn hay của người khác), mã mời, ảnh chụp màn hình có thông tin riêng tư, hoặc các vấn đề mục vụ hay cầu nguyện của bất kỳ ai. Tên trong tài khoản của bạn sẽ hiển thị cùng nhận xét; địa chỉ email của bạn không bao giờ được hiển thị.
 
 2. **Give the post a language (Polylang).** In the editor sidebar, the **Languages** box should say **English**; set it if it doesn't. **Don't** add a Vietnamese translation: one bilingual post keeps one comment thread. Leave Languages > Settings alone, because the deploy re-asserts them.
 3. **Turn comments on for this post only.** In the post sidebar, open Discussion and tick **Allow comments**. Leave pingbacks and trackbacks off. Don't change the site default for new posts (Settings > Discussion > Default post settings).
-4. **Hold every comment for approval.** Settings > Discussion:
+4. **Hold every comment for approval, accounts only, no avatars.** Settings > Discussion (owner decisions, 2026-11-20):
+   - Tick **Users must be registered and logged in to comment**. **No signed-out comments.** A signed-out visitor sees the post and approved comments, plus "You must be logged in to post a comment". On this post only, that link goes to `/signin` (not `wp-login.php`, where participants can't sign in) and returns to the comment form.
    - Tick **Comment must be manually approved**.
    - Tick **Email me whenever … a comment is held for moderation**.
    - Keep the default link limit (2 links holds a comment).
-   - **Turn Show Avatars off.** Otherwise each commenter's email hash goes to Gravatar.
+   - **Untick Show Avatars** (Avatar Display). Otherwise each commenter's email hash goes to Gravatar.
 
-   These settings are site-wide, but they only matter where comments are open, which is this post.
-5. **Decide who may comment** (owner decision). Also in Settings > Discussion:
-   - **Signed-out testers allowed** (recommended for the pilot; matches #171): untick **Users must be registered and logged in to comment**, and tick **Comment author must fill out name and email**. The email is stored for moderation and never shown.
-   - **Accounts only:** tick **Users must be registered and logged in to comment**. Participants who are signed in through `/signin` comment under their account's display name, which is then shown publicly with the comment.
-6. **Publish**, then click **View Post** and note the real address. With the `/blog/%postname%/` permalink structure it should be `https://latoc.vayhub.org/blog/pilot-feedback/`. Open it signed out to confirm the comment form shows.
+   These settings are site-wide, but they only matter where comments are open, which is this post. A participant comments under their account's display name, which is the first name they gave on `/join`.
+5. **Who can comment:** anyone with a LATOC account who has signed in, so the tester needs to have joined (any join mode). Membership in the LATOC Pilot Testers group is not required. Staff comment and reply from wp-admin, signed in with the standard WordPress login.
+6. **Publish**, then click **View Post** and note the real address. With the `/blog/%postname%/` permalink structure it should be `https://latoc.vayhub.org/blog/pilot-feedback/`. Open it signed in as a participant to confirm the comment form shows, and signed out to confirm there is only the sign-in prompt.
 7. **Point the footer link at it.** The post ID is the number after `post=` in the editor's address. In cPanel > Terminal (`wp` = the WP-CLI call from the restore section, with `--url=https://latoc.vayhub.org`):
 
    ```bash
@@ -192,7 +191,8 @@ During the Dec 5–13 shadow pilot, testers leave feedback as **comments on one 
 - Visit `/today/`, `/marathon/`, `/group/`, `/join/`, `/signin/` and a `/reading/` day page at 375 px wide, signed out where possible and signed in. Each shows the **Pilot Feedback** link at the bottom, after the page content, and it opens the post's real address.
 - Add `?lang=vi` on `/join/` and `/signin/`, and use a Vietnamese account on the other screens. The label reads **Góp ý thử nghiệm** and goes to the **same** post.
 - Open `/vi/` and the post's address. The post opens (HTTP 200), not a 404 or a redirect to another page.
-- Signed out, leave a test comment with a `.test` email address. The page says it is awaiting moderation, and it is not public. Approve it in Comments > Pending and reply; both now show on the post. Then delete the test comment.
+- Signed out, open the post. There is no comment form, only "You must be logged in to post a comment". Its link opens `/signin` and, after signing in, returns to the post's comment form. No avatar images appear anywhere on the post.
+- Signed in as a test participant (a `.test` account), leave a comment. It says it is awaiting moderation, and it isn't visible signed out. Approve it in Comments > Pending and reply; both now show on the post under the first name. Then delete the test comment.
 - Unset the option. The link is gone from every screen.
 
 ## First install: admin login
