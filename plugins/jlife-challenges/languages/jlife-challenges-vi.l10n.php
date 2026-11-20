@@ -384,5 +384,8 @@ return array(
 		'Join the Bible Marathon' => 'Tham gia Marathon Kinh Thánh',
 		'Sign in' => 'Đăng nhập',
 		'Write my SOAP for this day' => 'Viết SOAP của tôi cho ngày này',
+		// Pilot feedback link (#171). DRAFT, like the rest: for the Vietnamese reviewers.
+		'Pilot Feedback' => 'Góp ý thử nghiệm',
+		'Pilot feedback' => 'Góp ý thử nghiệm',
 	),
 );

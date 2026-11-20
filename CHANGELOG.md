@@ -52,6 +52,11 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Added
 
+- **Pilot Feedback link for LATOC testers** (#171). A small **Pilot Feedback** / **Góp ý thử nghiệm** link now sits in the footer of Today, `/soap`, My Marathon, My Group, `/share`, the sign-out confirmation, `/join`, `/signin`, `/consent` and the public `/reading/` day pages. The label follows the screen language. It points at one ordinary WordPress post that the owner writes, publishes and moderates in wp-admin; testers leave moderated comments there, with no GitHub account needed.
+  - **Configuration:** the post's ID is the site option `jlife_pilot_feedback_post_id`, and the address comes from `get_permalink()`. A published Polylang translation is used for its language when one exists; otherwise both languages go to the same bilingual post.
+  - **No link** while the option is unset or the post is missing, unpublished or password-protected. Removing the link after the beta means deleting the option.
+  - **No post content or comment settings come from code.** Comments are not enabled globally. Runbook: `docs/staging-latoc.md` § Pilot feedback post.
+  - **Details:** new `includes/pilot-feedback.php`; two new strings with Vietnamese drafts; no stylesheet change (`screens.css` stays `?v=16`); PHPUnit tests in both plugins.
 - **Architecture decision gate for agent sessions** (documentation only):
   - `CLAUDE.md` gains an "Architecture decisions" section: what to read before architecture work, the authority order (accepted ADRs and approved requirements over proposals, with spikes and drafts as evidence only), flagging conflicts instead of resolving them, and stating each architecture PR's basis.
   - A new `AGENTS.md` points Codex and other agents to the same rules without copying them.

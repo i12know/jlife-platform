@@ -91,7 +91,8 @@ function jlife_challenges_help_page_url( $which, $language = '', $fragment = '' 
 
 /**
  * The small footer on every participant screen: Help, Rules and Privacy, each
- * only when its page exists and is published. Empty when none is.
+ * only when its page exists and is published, then the pilot feedback link
+ * (#171) when its post is configured. Empty when none is.
  *
  * @return string Escaped HTML.
  */
@@ -106,6 +107,10 @@ function jlife_challenges_help_footer() {
 		if ( '' !== $url ) {
 			$links[] = '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
 		}
+	}
+	$feedback = jlife_challenges_pilot_feedback_link(); // #171: only while the pilot post is configured.
+	if ( '' !== $feedback ) {
+		$links[] = $feedback;
 	}
 	if ( ! $links ) {
 		return '';

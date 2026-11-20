@@ -14,6 +14,7 @@ Status: development/pilot staging for the 104-Day SOAP Bible Marathon ([#49](htt
 | Server script | [`bin/deploy/latoc-remote.sh`](../bin/deploy/latoc-remote.sh), idempotent, uploaded on each run |
 | Landing-page seed (#110) | [`bin/deploy/latoc-landing.php`](../bin/deploy/latoc-landing.php) (Polylang settings + one-time draft seed) and [`bin/deploy/latoc-landing-content.php`](../bin/deploy/latoc-landing-content.php) (starting block markup, EN and VI). Both travel in the plugin bundle; the script keeps them in `~/.latoc/landing/` |
 | Help, Rules and Privacy pages (#65) | `wp jlife help-pages seed` (run by the deploy), copy in [`plugins/jlife-challenges/data/help-pages.json`](../plugins/jlife-challenges/data/help-pages.json); see [Help, Rules and Privacy pages](#help-rules-and-privacy-pages-65) |
+| Pilot feedback post (#171) | Nothing deployed: the owner writes the post in wp-admin and sets `jlife_pilot_feedback_post_id`; see [Pilot feedback post](#pilot-feedback-post-171) |
 | Secrets | GitHub → Settings → Environments → `latoc-staging` (9 secrets; deployments restricted to `main`) |
 | Server state | `~/.latoc/` on the host (mode 700): WP-CLI, backups, debug log, first-install admin password, `landing-state` (page statuses and slugs for the smoke test; no secrets) |
 | PHP | Site and WP-CLI both use cPanel's PHP 8.2 (`/opt/cpanel/ea-php82/root/usr/bin/php`); the host's default CLI PHP is 8.3 |
@@ -127,6 +128,72 @@ Three ordinary WordPress pages, in English and Vietnamese, linked as Polylang tr
 ### D19: youth (13 to 17) group sharing needs no setting
 
 The church's D19 policy (no separate guardian approval step in J-Life) is the **default**: the setting `jlife_challenges_require_guardian_consent` is off unless it is set to `1`. Nothing needs configuring. To check a site: `wp option get jlife_challenges_require_guardian_consent` should say the option does not exist, or print `0`. If it prints `1`, turn the guardian step off with `wp option update jlife_challenges_require_guardian_consent 0`. Sharing stays optional, chosen by the author, and limited to their own groups; private entries stay private.
+
+## Pilot feedback post (#171)
+
+During the Dec 5–13 shadow pilot, testers leave feedback as **comments on one ordinary WordPress post**. They don't need a GitHub account. A small **Pilot Feedback** / **Góp ý thử nghiệm** link in the footer of the participant screens leads there.
+
+| | GitHub (the code) | wp-admin (the owner) |
+|---|---|---|
+| The post: wording, slug, language, publishing | **creates nothing**; a deploy never touches it | writes, publishes and edits it |
+| Comments on the post, moderation, replies | **opens nothing**; no global comment setting is changed | turns comments on for this post only, approves and replies |
+| The footer link | shows it only while the option names a **published** post | sets or deletes the option |
+
+**Where the link appears.** It sits at the end of the Help · Rules · Privacy footer on Today, `/soap`, My Marathon, My Group, `/share`, the sign-out confirmation, `/join`, `/signin` and `/consent`. On the public `/reading/` day pages, which have no other footer, it appears on its own. It shows for signed-in and signed-out visitors, and its label follows the screen language. The address comes from WordPress (`get_permalink()`), never a typed URL. A published Polylang translation of the post is used for Vietnamese if one exists; otherwise both languages go to the same bilingual post, so there is one comment thread. **There is no link while the option is unset or the post is a draft, private, scheduled, password-protected, trashed or deleted.**
+
+**Comments and the theme.** No jlife plugin blocks comments, and none opens them. Twenty Twenty-Five's single-post template includes the comments block (comment list and form), which renders the form only when comments are open on that post. If latoc runs another theme (Appearance > Themes), check that its single-post template shows comments.
+
+### Owner steps (wp-admin, before testers are invited)
+
+1. **Write the post.** Posts > Add New.
+   - **Title:** `LATOC Pilot Testing - Feedback & Questions`
+   - **Slug:** `pilot-feedback`. In the post sidebar, open Summary > URL.
+   - **Body:** paste the text below. It is English first, then Vietnamese. The Vietnamese is a **draft for the Vietnamese reviewers**; publish it only after they've reviewed it. Remove the `[DRAFT …]` line once they approve.
+
+     > Help us improve LATOC! If something is confusing, broken, or could be easier, leave a comment below. Include the page, device/browser, what you tried, and what happened. Comments are reviewed before publication. Please do not share private SOAP entries or personal information.
+     >
+     > **Approved comments are public.** Please do not post private SOAP reflections, passwords, email addresses (yours or anyone else's), invite codes, screenshots showing private information, or pastoral or prayer matters about anyone. The name you give appears with your comment; your email address is never shown.
+     >
+     > [DRAFT: Vietnamese below is for the Vietnamese reviewers to check before publishing.]
+     >
+     > Xin giúp chúng tôi cải thiện LATOC! Nếu có điều gì khó hiểu, không hoạt động hoặc cần đơn giản hơn, xin để lại nhận xét bên dưới. Hãy cho biết trang đang dùng, thiết bị/trình duyệt, các bước đã thử và kết quả. Nhận xét sẽ được duyệt trước khi đăng. Xin đừng chia sẻ bài SOAP riêng tư hoặc thông tin cá nhân.
+     >
+     > **Nhận xét đã được duyệt sẽ hiển thị công khai.** Xin đừng đăng bài SOAP riêng tư, mật khẩu, địa chỉ email (của bạn hay của người khác), mã mời, ảnh chụp màn hình có thông tin riêng tư, hoặc các vấn đề mục vụ hay cầu nguyện của bất kỳ ai. Tên bạn nhập sẽ hiển thị cùng nhận xét; địa chỉ email của bạn không bao giờ được hiển thị.
+
+2. **Give the post a language (Polylang).** In the editor sidebar, the **Languages** box should say **English**; set it if it doesn't. **Don't** add a Vietnamese translation: one bilingual post keeps one comment thread. Leave Languages > Settings alone, because the deploy re-asserts them.
+3. **Turn comments on for this post only.** In the post sidebar, open Discussion and tick **Allow comments**. Leave pingbacks and trackbacks off. Don't change the site default for new posts (Settings > Discussion > Default post settings).
+4. **Hold every comment for approval.** Settings > Discussion:
+   - Tick **Comment must be manually approved**.
+   - Tick **Email me whenever … a comment is held for moderation**.
+   - Keep the default link limit (2 links holds a comment).
+   - **Turn Show Avatars off.** Otherwise each commenter's email hash goes to Gravatar.
+
+   These settings are site-wide, but they only matter where comments are open, which is this post.
+5. **Decide who may comment** (owner decision). Also in Settings > Discussion:
+   - **Signed-out testers allowed** (recommended for the pilot; matches #171): untick **Users must be registered and logged in to comment**, and tick **Comment author must fill out name and email**. The email is stored for moderation and never shown.
+   - **Accounts only:** tick **Users must be registered and logged in to comment**. Participants who are signed in through `/signin` comment under their account's display name, which is then shown publicly with the comment.
+6. **Publish**, then click **View Post** and note the real address. With the `/blog/%postname%/` permalink structure it should be `https://latoc.vayhub.org/blog/pilot-feedback/`. Open it signed out to confirm the comment form shows.
+7. **Point the footer link at it.** The post ID is the number after `post=` in the editor's address. In cPanel > Terminal (`wp` = the WP-CLI call from the restore section, with `--url=https://latoc.vayhub.org`):
+
+   ```bash
+   wp option update jlife_pilot_feedback_post_id <post ID>
+   ```
+
+   Check it with `wp option get jlife_pilot_feedback_post_id` and `wp post get <post ID> --field=post_status`, which should print `publish`.
+8. **Moderate and reply.** Comments > Pending: **Approve**, **Spam** or **Trash**. Reply from the row's **Reply** link; a reply from an administrator is published at once. Before approving, edit out anything private (Quick Edit). Copy confirmed bugs into GitHub Issues **without** names, emails or other private details.
+
+### After the beta (Dec 13) and for the Dec 20 launch
+
+- **Remove the link:** run `wp option delete jlife_pilot_feedback_post_id`. The link disappears from every screen at once; no deploy is needed. Then untick **Allow comments** on the post, or set it to Draft or Private.
+- **"Help & Feedback" at launch:** the simplest option is to rely on the existing **Help** link and add a feedback section to the Help page. To keep a separate link instead, open a small PR that renames the label (`Pilot Feedback` in `plugins/jlife-challenges/includes/pilot-feedback.php`, with its Vietnamese entry in `languages/jlife-challenges-vi.l10n.php`). Then point the same option at the launch post. The Help, Rules and Privacy links are unaffected either way.
+
+### Smoke test
+
+- Visit `/today/`, `/marathon/`, `/group/`, `/join/`, `/signin/` and a `/reading/` day page at 375 px wide, signed out where possible and signed in. Each shows the **Pilot Feedback** link at the bottom, after the page content, and it opens the post's real address.
+- Add `?lang=vi` on `/join/` and `/signin/`, and use a Vietnamese account on the other screens. The label reads **Góp ý thử nghiệm** and goes to the **same** post.
+- Open `/vi/` and the post's address. The post opens (HTTP 200), not a 404 or a redirect to another page.
+- Signed out, leave a test comment with a `.test` email address. The page says it is awaiting moderation, and it is not public. Approve it in Comments > Pending and reply; both now show on the post. Then delete the test comment.
+- Unset the option. The link is gone from every screen.
 
 ## First install: admin login
 
