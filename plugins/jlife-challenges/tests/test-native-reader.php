@@ -30,6 +30,23 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 	private $previous_log = false;
 
 	/**
+	 * A fake key; it must never appear anywhere but the api-key header.
+	 */
+	const KEY = 'fake-KEY-0123456789abcdef';
+
+	/**
+	 * Made-up notice (never real Scripture).
+	 */
+	const COPYRIGHT = 'FAKE COPYRIGHT NOTICE (c) 2026 Example Publisher.';
+
+	/**
+	 * What the fake API.Bible answers: an HTTP status, or 0 for a network error.
+	 *
+	 * @var int
+	 */
+	private $api_status = 200;
+
+	/**
 	 * The challenges tables, and (when the Scripture plugin is beside this one)
 	 * its tables with the committed public-domain Kinh Thánh 1925 text.
 	 *
@@ -55,6 +72,10 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 		if ( ! function_exists( 'jlife_scripture_maybe_render_day' ) ) {
 			$this->markTestSkipped( 'jlife-scripture is not loaded.' );
 		}
+		add_filter( 'jlife_challenges_apibible_key', array( $this, 'filter_key' ) );
+		add_filter( 'pre_http_request', array( $this, 'fake_http' ), 10, 3 );
+		delete_site_option( JLIFE_CHALLENGES_APIBIBLE_USAGE_OPTION );
+		delete_site_transient( jlife_challenges_apibible_hold_key( jlife_scripture_get_version( 'nlt' )['source_id'] ) );
 		$GLOBALS['wp_styles'] = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- a fresh style queue per test.
 		$this->log            = wp_tempnam( 'jlnr-log' );
 		$this->previous_log   = ini_set( 'error_log', $this->log ); // phpcs:ignore WordPress.PHP.IniSet.Risky -- test: capture the log.
@@ -64,11 +85,76 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 	 * Restore the log and the style queue.
 	 */
 	public function tear_down() {
+		remove_filter( 'jlife_challenges_apibible_key', array( $this, 'filter_key' ) );
+		remove_filter( 'pre_http_request', array( $this, 'fake_http' ), 10 );
 		ini_set( 'error_log', (string) $this->previous_log ); // phpcs:ignore WordPress.PHP.IniSet.Risky -- test: restore the log.
 		wp_delete_file( $this->log );
 		$GLOBALS['wp_styles'] = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- leave no queue behind.
 		wp_set_current_user( 0 );
 		parent::tear_down();
+	}
+
+	/**
+	 * The fake key.
+	 *
+	 * @return string
+	 */
+	public function filter_key() {
+		return self::KEY;
+	}
+
+	/**
+	 * Answer API.Bible's requests without the network: a plain-text passage of
+	 * made-up verses ("[n] FAKE-VERSE-n for tests only.") for the passage ID asked.
+	 *
+	 * @param mixed  $pre  Short-circuit value.
+	 * @param array  $args Request args.
+	 * @param string $url  Request URL.
+	 * @return array|WP_Error
+	 */
+	public function fake_http( $pre, $args, $url ) {
+		unset( $pre, $args );
+		$ok = array(
+			'headers'  => array(),
+			'body'     => '',
+			'response' => array(
+				'code'    => 200,
+				'message' => '',
+			),
+			'cookies'  => array(),
+			'filename' => null,
+		);
+		if ( 0 === strpos( $url, JLIFE_CHALLENGES_APIBIBLE_FUMS ) ) {
+			return $ok;
+		}
+		if ( 0 === $this->api_status ) {
+			return new WP_Error( 'http_request_failed', 'cURL error 28: Operation timed out' );
+		}
+		if ( 200 !== $this->api_status ) {
+			$ok['response']['code'] = $this->api_status;
+			$ok['body']             = '{"statusCode":' . $this->api_status . ',"message":"error"}';
+			return $ok;
+		}
+		if ( 1 !== preg_match( '#/passages/([0-9A-Z.\-]+)\?#', $url, $m ) || 1 !== preg_match( '/^[0-9A-Z]{3}\.(\d+)\.(\d+)(?:-[0-9A-Z]{3}\.(\d+)\.(\d+))?$/', $m[1], $p ) ) {
+			return new WP_Error( 'http_request_failed', 'unexpected request' );
+		}
+		$content = '';
+		for ( $v = (int) $p[2]; $v <= (int) ( $p[4] ?? $p[2] ); $v++ ) {
+			$content .= "\n     [{$v}] FAKE-VERSE-{$v} for tests only. ";
+		}
+		$ok['body'] = (string) wp_json_encode(
+			array(
+				'data' => array(
+					'id'         => $m[1],
+					'content'    => $content,
+					'reference'  => 'Fake reference',
+					'verseCount' => substr_count( $content, '[' ),
+					'copyright'  => self::COPYRIGHT,
+				),
+				'meta' => array( 'fumsToken' => 'fakeFUMStoken123' ),
+			)
+		);
+		return $ok;
 	}
 
 	/**
@@ -180,14 +266,35 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * An English reader's default (NIrV) is not licensed yet: the reader shows the
-	 * Bible Gateway link for ERV, never a frame, never a blocked page.
+	 * An English reader's default is the NLT through API.Bible (owner,
+	 * 2026-11-19): its text on the page with the API's notice, never a frame.
 	 */
-	public function test_english_default_is_a_gateway_link_until_nirv_is_licensed() {
+	public function test_english_default_is_the_nlt_through_the_api() {
 		$this->reader_on();
 		wp_set_current_user( $this->u['a'] );
 		$body = jlife_challenges_today_body( $this->view( $this->u['a'] ) );
 		$this->assertStringContainsString( '<section class="jls-reader" lang="en"', $body );
+		$this->assertStringContainsString( '<span class="jls-version-name">New Living Translation</span>', $body );
+		$this->assertStringContainsString( '<sup class="jls-num">1</sup> FAKE-VERSE-1 for tests only.', $body );
+		$this->assertStringContainsString( self::COPYRIGHT, $body );
+		$this->assertStringContainsString( 'href="https://api.bible"', $body );
+		$this->assertStringNotContainsString( 'Open in Bible Gateway', $body );
+		$this->assertStringNotContainsString( '<iframe', $body );
+		$this->assertStringContainsString( 'class="jl-soap"', $body );
+		$this->assertStringNotContainsString( self::KEY, $body );
+	}
+
+	/**
+	 * When API.Bible cannot answer, the English reader shows the short note and
+	 * the Bible Gateway link for ERV, never a frame, never a blocked page.
+	 */
+	public function test_english_default_falls_back_to_the_erv_link_when_the_api_cannot_answer() {
+		$this->reader_on();
+		$this->api_status = 503;
+		wp_set_current_user( $this->u['a'] );
+		$body = jlife_challenges_today_body( $this->view( $this->u['a'] ) );
+		$this->assertStringContainsString( '<section class="jls-reader" lang="en"', $body );
+		$this->assertStringContainsString( 'The Bible text could not be loaded.', $body );
 		$this->assertStringContainsString( 'Open in Bible Gateway (ERV)', $body );
 		$this->assertStringContainsString( 'href="https://www.biblegateway.com/passage/?search=Luke+3:1-6&#038;version=ERV"', $body, 'the link is for the passage in the Bible the reader would show' );
 		$this->assertStringNotContainsString( 'jls-text', $body );
@@ -219,7 +326,8 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 
 		wp_set_current_user( $this->u['c'] );
 		$c = jlife_challenges_today_body( $this->view( $this->u['c'] ) );
-		$this->assertStringContainsString( 'Open in Bible Gateway (ERV)', $c, 'no choice: the language default' );
+		$this->assertStringContainsString( '<span class="jls-version-name">New Living Translation</span>', $c, 'no choice: the language default' );
+		$this->assertStringNotContainsString( 'Open in Bible Gateway', $c );
 	}
 
 	/**

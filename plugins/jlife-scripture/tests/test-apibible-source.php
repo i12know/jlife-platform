@@ -271,7 +271,7 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 			$this->assertSame( 'apibible', $v['source'] );
 			$this->assertTrue( $v['enabled'], "{$key} is enabled" );
 			$this->assertSame( 'native', $v['display'] );
-			$this->assertSame( array(), $v['default_for'], 'not a default for any language' );
+			$this->assertSame( 'nlt' === $key ? array( 'en' ) : array(), $v['default_for'], 'only the NLT is a default: for English (owner, 2026-11-19)' );
 			$this->assertStringContainsString( 'API.Bible Starter plan, app Jlife', (string) $v['license_evidence'] );
 			$this->assertStringContainsString( 'wp jlife scripture try', (string) $v['license_evidence'] );
 			$this->assertStringContainsString( '2026-11-19', (string) $v['license_evidence'] );

@@ -76,8 +76,8 @@ class Test_Render extends Jlife_Scripture_TestCase {
 	}
 
 	/**
-	 * Once NIrV clears its gates (a registry edit), English shows text with
-	 * NIrV's name and copyright line.
+	 * Once NIrV clears its gates and becomes the English default (a registry
+	 * edit), English shows text with NIrV's name and copyright line.
 	 */
 	public function test_native_english_once_enabled() {
 		$this->use_fake_nirv();
