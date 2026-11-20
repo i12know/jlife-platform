@@ -14,6 +14,7 @@ Study content engine for the **STUDY** subsite. Scaffold only — see issue #14;
 
 - Huddle membership, discussion, notes, progress (→ `jlife-huddles`)
 - Any Disciple.Tools integration or ID mapping (→ `jlife-bridge`)
-- Rendered copyrighted Scripture text — references and licensed/API paths only ([content-rights.md](../../docs/content-rights.md)). The public `/reading/` day pages show Bible text only through `jlife-scripture`'s on-page reader when the site option `jlife_scripture_native_reader` is on (`jlife_studies_render_native_reading()`, page language from `?lang=` or the site language); off, they show references and Bible Gateway links only
+- Rendered copyrighted Scripture text — references and licensed/API paths only ([content-rights.md](../../docs/content-rights.md)).
+- How a reading day looks (#106): this plugin holds the reading-day posts and data (`jlife_studies_get_reading_day()`, `jlife_studies_reading_day_for_post()`); Today, `/soap` and the public `/reading/` pages are all rendered by `jlife-challenges`, one renderer (see `plugins/jlife-challenges/includes/reading-page.php`). Without `jlife-challenges` active a reading-day page has no body
 
 Text domain: `jlife-studies`. All strings translation-ready from the first commit.

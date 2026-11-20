@@ -27,18 +27,6 @@ tests_add_filter(
 	'muplugins_loaded',
 	function () {
 		require dirname( __DIR__ ) . '/jlife-studies.php';
-		// The on-page Scripture reader on /reading/ (#139) works with jlife-scripture beside this
-		// plugin (wp-env maps both into wp-content/plugins). Without it the page is the old one.
-		$scripture = dirname( __DIR__, 2 ) . '/jlife-scripture/jlife-scripture.php';
-		if ( file_exists( $scripture ) ) {
-			require $scripture;
-		}
-		// The English default is the NLT through API.Bible (#141), whose client lives in
-		// jlife-challenges: load only that self-contained file when it sits beside this plugin.
-		$client = dirname( __DIR__, 2 ) . '/jlife-challenges/includes/bible-apibible.php';
-		if ( file_exists( $client ) ) {
-			require_once $client;
-		}
 	}
 );
 

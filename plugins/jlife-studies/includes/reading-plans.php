@@ -4,12 +4,12 @@
  * portable JSON built by bin/build-reading-plans.js (content/reading-plans/).
  *
  * References and external Bible links only; no Bible text is stored in the
- * posts (docs/bible-quotation-permissions.md). The one exception is display
- * only: when the site option jlife_scripture_native_reader is on, the page
- * shows the page language's default Bible through the jlife-scripture plugin
- * (public-domain text, or the Bible Gateway link) instead of the link blocks.
- * The JSON files stay the source of truth; posts are their rendering and are
- * upserted by (plan_id, day_id).
+ * posts (docs/bible-quotation-permissions.md). The JSON files stay the source
+ * of truth; posts are their data and are upserted by (plan_id, day_id).
+ *
+ * This plugin holds the data only. What a day looks like (Today, /soap and the
+ * public /reading/ page, which is a signed-out Today, #106) is rendered by
+ * jlife-challenges from jlife_studies_get_reading_day(), one renderer for all.
  *
  * A supplemental plan (optional parallel readings) is attached to the
  * primary plan's day of the same day_id; it never creates its own pages.
@@ -232,6 +232,24 @@ function jlife_studies_localize_day( $day, $locale ) {
 }
 
 /**
+ * A reading-day post as data, in a language (for the Today page, the public
+ * day page and other surfaces).
+ *
+ * @param WP_Post $post   Reading-day post.
+ * @param string  $locale WordPress locale (vi, en_US, ...) the day is shown in.
+ * @return array { day, plan, supplemental, post_id, url }
+ */
+function jlife_studies_reading_day_for_post( $post, $locale ) {
+	return array(
+		'post_id'      => $post->ID,
+		'url'          => get_permalink( $post ),
+		'day'          => jlife_studies_localize_day( jlife_studies_get_json_meta( $post->ID, '_jlife_reading_day' ), $locale ),
+		'plan'         => jlife_studies_get_json_meta( $post->ID, '_jlife_plan' ),
+		'supplemental' => jlife_studies_get_json_meta( $post->ID, '_jlife_supplemental' ),
+	);
+}
+
+/**
  * Get a reading day as data (for the Today page and other surfaces), in the
  * current reader's language where the plan has it.
  *
@@ -241,186 +259,5 @@ function jlife_studies_localize_day( $day, $locale ) {
  */
 function jlife_studies_get_reading_day( $plan_id, $day_id ) {
 	$post = jlife_studies_find_reading_day( $plan_id, $day_id );
-	if ( ! $post ) {
-		return null;
-	}
-	return array(
-		'post_id'      => $post->ID,
-		'url'          => get_permalink( $post ),
-		'day'          => jlife_studies_localize_day( jlife_studies_get_json_meta( $post->ID, '_jlife_reading_day' ), determine_locale() ),
-		'plan'         => jlife_studies_get_json_meta( $post->ID, '_jlife_plan' ),
-		'supplemental' => jlife_studies_get_json_meta( $post->ID, '_jlife_supplemental' ),
-	);
-}
-
-/**
- * Render the passage list and Bible links for one day.
- *
- * @param array $day          Day data.
- * @param array $links_config Language => provider config.
- * @return string HTML.
- */
-function jlife_studies_render_reading_links( $day, $links_config ) {
-	$out = '<ul class="jlife-passages">';
-	foreach ( (array) $day['passages'] as $passage ) {
-		$out .= '<li>' . esc_html( (string) $passage['display'] ) . '</li>';
-	}
-	$out .= '</ul>';
-
-	foreach ( (array) $links_config as $lang => $cfg ) {
-		$links = $day['links'][ $lang ] ?? null;
-		if ( ! is_array( $links ) ) {
-			continue;
-		}
-		$out .= '<div class="jlife-bible-links" lang="' . esc_attr( (string) $lang ) . '">';
-		/* translators: 1: language name, 2: Bible version code. */
-		$out .= '<h3>' . esc_html( sprintf( __( '%1$s (%2$s)', 'jlife-studies' ), (string) ( $cfg['label'] ?? $lang ), (string) $links['version'] ) ) . '</h3>';
-		if ( ! empty( $links['combined']['url'] ) ) {
-			$out .= '<p><a class="jlife-read-all" href="' . esc_url( $links['combined']['url'] ) . '" target="_blank" rel="noopener">'
-				. esc_html__( "Read all of today's passages", 'jlife-studies' ) . '</a></p>';
-		}
-		$out .= '<ul>';
-		foreach ( (array) $links['passages'] as $link ) {
-			$out .= '<li><a href="' . esc_url( (string) $link['url'] ) . '" target="_blank" rel="noopener">' . esc_html( (string) $link['label'] ) . '</a></li>';
-		}
-		$out .= '</ul></div>';
-	}
-	return $out;
-}
-
-/**
- * Harmony Bible sections for a day's optional parallel readings (#90): number
- * and Robertson title, each linking to the matching harmony-bible.com page.
- * Links open in a new tab so the participant's J-Life page stays where it was.
- *
- * @param array $day Supplemental day data.
- * @return string HTML, or '' when the day has no sections.
- */
-function jlife_studies_render_harmony_sections( $day ) {
-	$items = '';
-	foreach ( (array) ( $day['harmony_sections'] ?? array() ) as $section ) {
-		$url = (string) ( $section['url'] ?? '' );
-		if ( 0 !== strpos( $url, 'https://harmony-bible.com/sections/' ) ) {
-			continue;
-		}
-		/* translators: 1: Harmony Bible section number, 2: section title. */
-		$label  = sprintf( __( "Harmony's section %1\$s: %2\$s", 'jlife-studies' ), (string) $section['number'], (string) $section['title'] );
-		$items .= '<li><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . esc_html( $label ) . '</a></li>';
-	}
-	if ( '' === $items ) {
-		return '';
-	}
-	return '<div class="jlife-harmony-sections"><h3>' . esc_html__( 'Harmony Bible sections', 'jlife-studies' ) . '</h3><ul>' . $items . '</ul></div>';
-}
-
-/**
- * The language a public reading page shows its Bible in: the page's `?lang=`
- * ("en" or "vi", like the sign-in pages), else the site's language (Polylang
- * and similar set it through the `locale` filter). Never the visitor's account
- * language and not determine_locale(), which follows the signed-in person: a
- * public page may be page-cached, so it must look the same for everyone.
- *
- * @return string "en" or "vi".
- */
-function jlife_studies_reading_page_language() {
-	if ( isset( $_GET['lang'] ) && is_string( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- a display language only; type-tested, then sanitized.
-		$lang = sanitize_key( wp_unslash( $_GET['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
-		if ( in_array( $lang, array( 'en', 'vi' ), true ) ) {
-			return $lang;
-		}
-	}
-	return 0 === strpos( strtolower( (string) get_locale() ), 'vi' ) ? 'vi' : 'en';
-}
-
-/**
- * Links to this page in each language (plain `?lang=` links: no JavaScript,
- * and the page stays cacheable per URL). Shown only with the on-page reader,
- * which shows one language's Bible at a time.
- *
- * @param int    $post_id Reading-day post.
- * @param string $current The page's language ("en" or "vi").
- * @return string
- */
-function jlife_studies_render_reading_language_links( $post_id, $current ) {
-	$url   = get_permalink( $post_id );
-	$links = array();
-	foreach ( array(
-		'en' => 'English',
-		'vi' => 'Tiếng Việt',
-	) as $lang => $name ) {
-		$links[] = '<a href="' . esc_url( add_query_arg( 'lang', $lang, $url ) ) . '" hreflang="' . esc_attr( $lang ) . '" lang="' . esc_attr( $lang ) . '"'
-			. ( $lang === $current ? ' aria-current="true"' : '' ) . '>' . esc_html( $name ) . '</a>';
-	}
-	return '<p class="jlife-reading-lang">' . implode( ' | ', $links ) . '</p>';
-}
-
-/**
- * The day's passages shown on the page itself by jlife-scripture, for the
- * public reading page, or null to keep the Bible Gateway link blocks.
- *
- * Null when the Scripture plugin is not active, the site option
- * jlife_scripture_native_reader is off (the default), or the day has no
- * passages. Otherwise the page language's default Bible (Kinh Thánh 1925 for
- * Tiếng Việt; the Bible Gateway ERV link for English until NIrV is licensed),
- * with the same note-and-link fallback as Today when a passage cannot load.
- * The call passes no user: the reader never reads a stored My Bible choice
- * here, so the markup is the same for every visitor.
- *
- * @param int   $post_id Reading-day post.
- * @param array $day     The primary plan's day data.
- * @return string|null Markup, or null.
- */
-function jlife_studies_render_native_reading( $post_id, $day ) {
-	if ( ! function_exists( 'jlife_scripture_maybe_render_day' ) ) {
-		return null;
-	}
-	$lang   = jlife_studies_reading_page_language();
-	$native = jlife_scripture_maybe_render_day( $day, 0, array( 'language' => $lang ) );
-	return null === $native ? null : jlife_studies_render_reading_language_links( $post_id, $lang ) . $native;
-}
-
-add_filter( 'the_content', 'jlife_studies_render_reading_day' );
-
-/**
- * Render a reading-day page: day and date, passages, Bible links (or the
- * on-page reader, when it is on), and the optional parallel readings collapsed
- * below, which always keep their outside links.
- *
- * @param string $content Post content.
- * @return string
- */
-function jlife_studies_render_reading_day( $content ) {
-	if ( ! is_singular( JLIFE_READING_DAY_CPT ) || ! in_the_loop() || ! is_main_query() ) {
-		return $content;
-	}
-	$post_id = (int) get_the_ID();
-	$day     = jlife_studies_get_json_meta( $post_id, '_jlife_reading_day' );
-	$plan    = jlife_studies_get_json_meta( $post_id, '_jlife_plan' );
-	if ( ! is_array( $day ) || ! is_array( $plan ) ) {
-		return $content;
-	}
-	$supp = jlife_studies_get_json_meta( $post_id, '_jlife_supplemental' );
-
-	$date = date_i18n( get_option( 'date_format' ), (int) strtotime( (string) $day['date'] . ' 12:00:00' ) );
-	$out  = '<div class="jlife-reading-day">';
-	/* translators: 1: day number, 2: formatted date. */
-	$out .= '<p class="jlife-reading-date">' . esc_html( sprintf( __( 'Day %1$d · %2$s', 'jlife-studies' ), (int) $day['day'], $date ) ) . '</p>';
-	$out .= '<h2>' . esc_html__( "Today's reading", 'jlife-studies' ) . '</h2>';
-	// With the on-page reader on (jlife_scripture_native_reader), it replaces the main reading's passage list and link blocks.
-	$native = jlife_studies_render_native_reading( $post_id, $day );
-	$out   .= null !== $native ? $native : jlife_studies_render_reading_links( $day, $plan['links_config'] ?? array() );
-
-	if ( is_array( $supp ) && ! empty( $supp['day'] ) ) {
-		$out .= '<details class="jlife-supplemental"><summary>' . esc_html__( 'Optional: parallel readings for deeper study', 'jlife-studies' ) . '</summary>';
-		$out .= '<p><em>' . esc_html__( 'Optional. Reading these does not change your daily points.', 'jlife-studies' ) . '</em></p>';
-		$out .= jlife_studies_render_harmony_sections( $supp['day'] );
-		$out .= jlife_studies_render_reading_links( $supp['day'], $supp['plan']['links_config'] ?? array() );
-		$out .= '</details>';
-	}
-
-	if ( '' !== (string) ( $plan['source_attribution'] ?? '' ) ) {
-		$out .= '<p class="jlife-reading-source"><small>' . esc_html( (string) $plan['source_attribution'] ) . '</small></p>';
-	}
-	$out .= '</div>';
-	return $content . $out;
+	return $post ? jlife_studies_reading_day_for_post( $post, determine_locale() ) : null;
 }
