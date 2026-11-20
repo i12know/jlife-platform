@@ -10,6 +10,11 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Fixed
 
+- **One rule decides "the current campaign"** (#177, part of #174). With the Dec 5–13 pilot and the Dec 20 Marathon both active, two functions used to disagree: Today and My Marathon showed the campaign with the latest start, so a future Marathon enrollment hid the running pilot, and "Read on my own" preferred a real campaign even before it started.
+  - **The rule** (`includes/current-campaign.php`, design §3b): running, then upcoming (nearest start), then the most recently ended, in America/Los_Angeles dates. Running or upcoming `test-*` campaigns rank after every running or upcoming real one. Draft campaigns are never current; closed (#179) ones are view-only.
+  - **Used by:** Today, My Marathon, My Group, `/share`, joining a group from My Group, the reminder target, "Read on my own" and "Start a group" (signed in and from `/join`), and the organizer screens' default campaign. `jlife_challenges_open_campaign()` and `jlife_challenges_participant_campaign()` keep their names and return shapes; the `jlife_challenges_open_campaign` filter still overrides the join target.
+  - **Invite codes** work only while their group's campaign is running or upcoming. A pilot code used from Dec 14 is "not valid", like an unknown code.
+  - **Tests:** new `Test_Current_Campaign` (the pilot/gap/Marathon matrix at the midnight-Pacific boundaries, future-only and finished-only enrollments, solo, code and start-group joins, test campaigns, ties) and jlife-auth `Test_Current_Campaign_Join`. No schema change and no new strings.
 - **Safer test-campaign cleanup before real participants arrive** (#174).
   - **Accounts are kept:** removing the test campaigns now keeps every account by default, since alpha testers are real participants (owner decision on #174). The latoc deploy's **remove** never deletes accounts; the server command's explicit `--delete-accounts` flag restores the old behavior for a fully disposable staging copy.
   - **Reminder queue now cleared:** removal also deletes the test campaigns' queued reminder emails (`reminder_sends`), which were previously left behind for kept accounts.

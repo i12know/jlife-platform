@@ -99,7 +99,7 @@ function jlife_auth_start_join( $input, $ip = '' ) {
 		if ( is_wp_error( $group_name ) ) {
 			return $group_name;
 		}
-	} elseif ( 'solo' !== $mode && ( ! function_exists( 'jlife_challenges_group_for_invite' ) || ! jlife_challenges_group_for_invite( $code ) ) ) {
+	} elseif ( 'solo' !== $mode && ( ! function_exists( 'jlife_challenges_joinable_group_for_invite' ) || ! jlife_challenges_joinable_group_for_invite( $code ) ) ) {
 		return new WP_Error( 'jlife_invite_invalid', __( 'That invite code is not valid. Please ask your group for a new one.', 'jlife-auth' ) );
 	}
 	return jlife_auth_request_code(

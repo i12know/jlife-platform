@@ -580,7 +580,7 @@ function jlife_challenges_join_with_code( $user_id, $code, $age_band ) {
 	if ( $tries >= JLIFE_CHALLENGES_JOIN_TRIES ) {
 		return new WP_Error( 'jlife_join_rate', __( 'Too many codes were tried. Please wait an hour, or ask your group for a new one.', 'jlife-challenges' ) );
 	}
-	$group = jlife_challenges_group_for_invite( $code );
+	$group = jlife_challenges_joinable_group_for_invite( $code );
 	if ( ! $group ) {
 		set_transient( $key, $tries + 1, HOUR_IN_SECONDS );
 		return new WP_Error( 'jlife_invite_invalid', __( 'That invite code is not valid. Please ask your group for a new one.', 'jlife-challenges' ) );
@@ -597,46 +597,6 @@ function jlife_challenges_join_with_code( $user_id, $code, $age_band ) {
 		delete_transient( $key );
 	}
 	return $id;
-}
-
-/**
- * The campaign "Read on my own" enrolls into: an active campaign that has not
- * finished, preferring real campaigns over staging test ones, then the most
- * recently started. Filterable.
- *
- * @return array|null Campaign row.
- */
-function jlife_challenges_open_campaign() {
-	global $wpdb;
-	$rows = (array) $wpdb->get_results( 'SELECT * FROM ' . jlife_challenges_table( 'campaigns' ) . " WHERE status = 'active'", ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix.
-	$open = array_values( array_filter( $rows, 'jlife_challenges_campaign_is_open' ) );
-	usort(
-		$open,
-		static function ( $a, $b ) {
-			$a_test = 0 === strpos( (string) $a['campaign_key'], 'test-' );
-			$b_test = 0 === strpos( (string) $b['campaign_key'], 'test-' );
-			return $a_test === $b_test ? strcmp( (string) $b['start_date'], (string) $a['start_date'] ) : ( $a_test <=> $b_test );
-		}
-	);
-	$campaign = $open ? $open[0] : null;
-	/**
-	 * Filters the campaign "Read on my own" enrolls into.
-	 *
-	 * @param mixed $campaign Campaign row (array), or null when none is open.
-	 */
-	$filtered = apply_filters( 'jlife_challenges_open_campaign', $campaign );
-	return $filtered ? (array) $filtered : null;
-}
-
-/**
- * Can people still enroll in this campaign (active and not yet finished)?
- *
- * @param array $campaign Campaign row.
- * @return bool
- */
-function jlife_challenges_campaign_is_open( $campaign ) {
-	return 'active' === $campaign['status']
-		&& jlife_challenges_local_date( $campaign, jlife_challenges_now() ) <= $campaign['end_date'];
 }
 
 /**
@@ -693,6 +653,23 @@ function jlife_challenges_group_for_invite( $code ) {
 		return null;
 	}
 	return $group;
+}
+
+/**
+ * The group an invite code opens, only while its campaign can be joined
+ * (running or upcoming, §3b). A code for a group in an ended, closed or draft
+ * campaign opens nothing, like an unknown code.
+ *
+ * @param string $code Invite code.
+ * @return array|null Group row.
+ */
+function jlife_challenges_joinable_group_for_invite( $code ) {
+	$group = jlife_challenges_group_for_invite( $code );
+	if ( ! $group ) {
+		return null;
+	}
+	$campaign = jlife_challenges_get_campaign( (int) $group['campaign_id'] );
+	return $campaign && jlife_challenges_campaign_is_open( $campaign ) ? $group : null;
 }
 
 /**

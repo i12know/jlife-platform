@@ -418,8 +418,8 @@ function jlife_challenges_rest_save_reminder( WP_REST_Request $request ) {
 }
 
 /**
- * The campaign a signed-in person's reminder choice belongs to: their most
- * recent campaign with an active enrollment.
+ * The campaign a signed-in person's reminder choice belongs to: their current
+ * campaign (docs/challenges-engine-design.md §3b).
  *
  * @param int $user_id Participant.
  * @return int Campaign ID, or 0.
