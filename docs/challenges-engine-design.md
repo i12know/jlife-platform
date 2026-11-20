@@ -97,7 +97,7 @@ A day starts at 00:00 campaign time: the pilot is `upcoming` until Dec 4 23:59:5
 
 **Invite codes** are tied to one group, so a code join lands in that group's campaign. The code works only while that campaign is joinable (`running` or `upcoming`): a code for a group in an ended, closed or draft campaign is "not valid", like any other unknown code. Joining from My Group also needs the code's campaign to be the person's current campaign (unchanged).
 
-**Reminder target.** The person's `view` campaign. The same campaign also anchors the account's Bible choice and Scripture language (§4f), so it is not cleared when a campaign closes; refusing reminder changes and sends for a closed campaign is #179.
+**Reminder target.** The person's `view` campaign. The same campaign also anchors the account's Bible choice, Scripture language (§4f) and screen language (#159), so it is not cleared when a campaign closes; refusing reminder changes and sends for a closed campaign is #179.
 
 **The 2026–27 timeline under this rule** (one person enrolled in both, America/Los_Angeles):
 
