@@ -6,6 +6,22 @@ Related: [ADR 0001](adr/0001-multi-deployment-tenant-domain-architecture.md), [d
 
 This document authorizes no refactoring, deployment change, new repository or production change. The December 20, 2026 LATOC launch comes first.
 
+## Decision register
+
+| Decision | Status | Authority |
+|---|---|---|
+| Independent J-Life deployments | Accepted | [ADR 0001](adr/0001-multi-deployment-tenant-domain-architecture.md) |
+| Contact created on ministry relationship | Proposed | ADR 0002 pending ([#168](https://github.com/i12know/jlife-platform/issues/168)) |
+| Multisite-first for new installs | Provisional | ADR 0003 pending, after the §8 experiment ([#168](https://github.com/i12know/jlife-platform/issues/168)) |
+| Generic deployment with site profiles | Proposed | ADR 0004 pending ([#168](https://github.com/i12know/jlife-platform/issues/168)) |
+
+**What each status means:**
+- **Accepted:** follow it.
+- **Proposed:** a direction, not settled. Don't build on it as if it were decided.
+- **Provisional:** proposed, and also waiting for evidence.
+
+Only an owner-approved ADR changes a status, and it updates this table in the same PR. The authority order is in `CLAUDE.md`, "Architecture decisions".
+
 ## 1. Two frameworks, one rule
 
 J-Life grows as two separate frameworks:

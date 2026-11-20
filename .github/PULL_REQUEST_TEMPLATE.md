@@ -10,6 +10,14 @@
 
 <!-- e.g. `npm run env:verify` output, spike write-up path, manual steps -->
 
+## Architecture basis
+
+<!-- For topology, identity/contacts, deployment tooling, cross-site data or ChMeetings work. Keep one line:
+Follows accepted decision: ADR 000N / <decision>
+Depends on pending decision: ADR 000N (#168)
+None: not architecture-related
+See CLAUDE.md, "Architecture decisions". -->
+
 ## Public-repo safety checklist (PRD §21 — required)
 
 - [ ] No partner-identifying information (names, locations, relationship maps, ministry affiliations)

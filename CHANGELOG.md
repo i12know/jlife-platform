@@ -52,6 +52,11 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ### Added
 
+- **Architecture decision gate for agent sessions** (documentation only):
+  - `CLAUDE.md` gains an "Architecture decisions" section: what to read before architecture work, the authority order (accepted ADRs and approved requirements over proposals, with spikes and drafts as evidence only), flagging conflicts instead of resolving them, and stating each architecture PR's basis.
+  - A new `AGENTS.md` points Codex and other agents to the same rules without copying them.
+  - `docs/framework-direction.md` gets a decision register, and the PR template an "Architecture basis" line.
+  - Pending ADRs 0002–0004 are tracked in #168, for review in January 2027.
 - **Framework direction note** (`docs/framework-direction.md`, documentation only). Records the 2026-11-20 architecture consultation:
   - two frameworks (deployment infrastructure and modular J-Life capabilities) that share code, never data
   - one-site Multisite per independent ministry as the provisional default, pending a comparison test
