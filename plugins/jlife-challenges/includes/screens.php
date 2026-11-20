@@ -73,7 +73,8 @@ function jlife_challenges_send_page( $title, $body, $active = '', $script = '' )
  *
  * The active item 'public' is the signed-out shell of a public page (#106, the
  * /reading/ day pages): the same document, stylesheet and body as Today, but no
- * navigation, sign-out, dialog or footer, and its language is the page's.
+ * navigation, sign-out or dialog, only the pilot feedback link as its footer
+ * (#171), and its language is the page's.
  *
  * @param string          $title  Page title.
  * @param string          $body   Escaped HTML.
@@ -118,7 +119,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 		. '<title>' . esc_html( $title ) . '</title>'
 		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=16' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
-		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . $body . '</main>' . ( $public ? '' : jlife_challenges_help_footer() ) . $dialog
+		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. $scripts
 		. '</body></html>';
