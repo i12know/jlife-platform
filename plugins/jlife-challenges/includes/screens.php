@@ -116,11 +116,20 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '' )
 		}
 	}
 
+	// The standalone page has no wp_head: print the Scripture reader's stylesheet when the body used it.
+	$reader_css = '';
+	if ( wp_style_is( 'jlife-scripture', 'enqueued' ) ) {
+		ob_start();
+		wp_print_styles( 'jlife-scripture' );
+		$reader_css = (string) ob_get_clean();
+	}
+
 	$dialog = 'signout' === $active ? '' : '<dialog class="jl-dialog" id="jl-signout-dialog" aria-labelledby="jl-signout-title"><div class="jl-dialog-body">' . jlife_challenges_signout_prompt( $here, true ) . '</div></dialog>';
 	$html   = '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
 		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=14' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. $reader_css
 		. '</head><body><nav class="jl-nav">' . $nav . '</nav><main>' . $body . '</main>' . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
 		. $scripts
@@ -177,10 +186,29 @@ function jlife_challenges_screen_signout() {
 }
 
 /**
+ * Will the day's Scripture show on the page itself? True when the Scripture
+ * plugin is active, its on-page reader is turned on for this site
+ * (jlife_scripture_native_reader) and the day has passages; then
+ * jlife_challenges_render_reader() shows the participant's own Bible instead
+ * of the framed Bible Gateway reader.
+ *
+ * @param array $view Day view.
+ * @return bool
+ */
+function jlife_challenges_native_reader_active( $view ) {
+	return function_exists( 'jlife_scripture_maybe_render_day' )
+		&& function_exists( 'jlife_scripture_reader_enabled' )
+		&& jlife_scripture_reader_enabled()
+		&& ! empty( $view['reading']['day']['passages'] );
+}
+
+/**
  * The reading block: the day's title and reference list (plain text), then the
  * optional parallels collapsed (their note and the Harmony sections, no passage
  * list). It has no Bible links of its own (#103): the Bible text is read in
- * the "Read today's passages" reader (jlife_challenges_render_reader()).
+ * the reader (jlife_challenges_render_reader()), which also lists each
+ * reference when it shows the text on the page, so the plain list is left out
+ * then.
  *
  * @param array $view Day view.
  * @return string
@@ -191,11 +219,14 @@ function jlife_challenges_render_reading( $view ) {
 		return '<p>' . esc_html__( 'The reading for this day is not loaded yet.', 'jlife-challenges' ) . '</p>';
 	}
 	$day = $reading['day'];
-	$out = '<section class="jl-reading"><h2>' . esc_html( (string) $day['title'] ) . '</h2><ul class="jl-passages">';
-	foreach ( (array) $day['passages'] as $p ) {
-		$out .= '<li>' . esc_html( (string) $p['display'] ) . '</li>';
+	$out = '<section class="jl-reading"><h2>' . esc_html( (string) $day['title'] ) . '</h2>';
+	if ( ! jlife_challenges_native_reader_active( $view ) ) {
+		$out .= '<ul class="jl-passages">';
+		foreach ( (array) $day['passages'] as $p ) {
+			$out .= '<li>' . esc_html( (string) $p['display'] ) . '</li>';
+		}
+		$out .= '</ul>';
 	}
-	$out .= '</ul>';
 	if ( ! empty( $reading['supplemental']['day'] ) ) {
 		$out .= '<details class="jl-optional"><summary>' . esc_html__( 'Optional: parallel readings for deeper study', 'jlife-challenges' ) . '</summary><p>'
 			. esc_html__( 'Optional. Reading these does not change your points.', 'jlife-challenges' ) . '</p>'
@@ -280,6 +311,10 @@ function jlife_challenges_is_embeddable_passage_url( $url ) {
  * Without JavaScript no frame loads and only the first pane shows, so the
  * <noscript> block lists a link for every language.
  *
+ * When the on-page Scripture reader is turned on (jlife_scripture_native_reader,
+ * #139) it replaces all of the above: the day's passages in the signed-in
+ * participant's own Bible(s), no frame (jlife_scripture_maybe_render_day()).
+ *
  * @param array $view Day view.
  * @return string Empty when no language has a link.
  */
@@ -288,6 +323,13 @@ function jlife_challenges_render_reader( $view ) {
 	$config = $view['reading']['plan']['links_config'] ?? array();
 	if ( ! is_array( $day ) ) {
 		return '';
+	}
+	if ( jlife_challenges_native_reader_active( $view ) ) {
+		// The viewer is the participant: these screens only ever show their own day.
+		$native = jlife_scripture_maybe_render_day( $day, get_current_user_id() );
+		if ( null !== $native ) {
+			return $native;
+		}
 	}
 	$tabs  = '';
 	$panes = '';

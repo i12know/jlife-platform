@@ -188,6 +188,7 @@ No participant data is stored by the reader. It reads the participant's language
 | Bible text (`jlife_scripture_verses`, network-wide) | Anyone the screen is shown to | Only `wp jlife scripture import` (public-domain datasets, checksum-verified) | Not personal data |
 | Passage cache (`jlife_scripture_cache`, network-wide) | The reader, server-side | The reader, one shared row per source + version + passage | Holds licensed text only within each version's cache rule; no user ID, no request data |
 | Logs | Host | The cache layer on a failed fetch | Source, version, passage key and a known error code only; never Bible text, API keys or a source's own error message |
+| Today and `/soap` (#139 part 3) | The signed-in participant, for their own day | Nobody (display only) | With `jlife_scripture_native_reader` on, `jlife_challenges_render_reader()` shows the day's passages from `jlife_scripture_maybe_render_day( $day, get_current_user_id() )`: the viewer's own My Bible choice (§4d), never a user ID from a request, and no way to see anyone else's. The framed Bible Gateway reader is the flag-off path. The page reads no new participant data; Bible text is not stored with the participant, the entry or the audit log |
 
 ### 4e. Daily reminder sends (#63 Phase B, part 2)
 
