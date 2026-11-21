@@ -1,7 +1,7 @@
 /* SOAP form enhancements (M6, #61; one textbox, #98): debounced server
  * autosave of the single text, a local backup if the network drops (an older
- * four-field backup is joined under the headings, not lost), reference chips,
- * no double submit. The form works fully without this script. */
+ * four-field backup is joined under the headings, not lost), no double
+ * submit. (The reference chips are gone, #188: the reference is typed under S.) The form works fully without this script. */
 (function () {
 	'use strict';
 	var form = document.querySelector('form.jl-soap');
@@ -82,27 +82,6 @@
 		backup();
 		clearTimeout(timer);
 		timer = setTimeout(save, 1500);
-	});
-
-	// A reference chip goes on its own line under the S heading (or at the end if the heading is gone).
-	form.querySelectorAll('[data-insert]').forEach(function (chip) {
-		chip.addEventListener('click', function () {
-			var text = chip.getAttribute('data-insert');
-			var value = box.value;
-			var heading = /^[ \t]*S[ \t]*[:\u2014\u2013-]+.*$/im.exec(value);
-			var pos;
-			if (heading) {
-				pos = heading.index + heading[0].length;
-				box.value = value.slice(0, pos) + '\n' + text + value.slice(pos);
-				pos += text.length + 1;
-			} else {
-				box.value = value ? value.replace(/\s*$/, '') + '\n' + text : text;
-				pos = box.value.length;
-			}
-			box.focus();
-			box.setSelectionRange(pos, pos);
-			box.dispatchEvent(new Event('input', { bubbles: true }));
-		});
 	});
 
 	// "More" beside the SOAP one-liner opens the "What goes under each heading?" box it jumps to.

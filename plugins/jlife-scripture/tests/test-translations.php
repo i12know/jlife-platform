@@ -78,6 +78,6 @@ class Test_Translations extends Jlife_Scripture_TestCase {
 		$html = jlife_scripture_render_day( $this->day( 'John 1:1-18', array( 'Giăng 1:1-18' ) ), $this->participant( 'vi' ) );
 		$this->assertStringContainsString( 'aria-label="Bài đọc Kinh Thánh"', $html );
 		$this->assertStringContainsString( 'Mở trên Bible Gateway (BPT)', $html );
-		$this->assertStringContainsString( '<summary>Giăng 1:1-18</summary>', $html );
+		$this->assertStringContainsString( '<h3 class="jls-ref">Giăng 1:1-18</h3>', $html );
 	}
 }

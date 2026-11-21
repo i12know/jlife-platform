@@ -172,7 +172,8 @@ class Jlife_Scripture_Apibible_Source implements Jlife_Scripture_Source, Jlife_S
 	}
 
 	/**
-	 * Under the text: the notice the API returned, the Starter plan's visible
+	 * For the reader's attribution footer (once per distinct notice, after the
+	 * whole reading, #188): the notice the API returned, the Starter plan's visible
 	 * link to API.Bible, and (when the site has one) the link to the full
 	 * copyright information (terms 7.1 and 7.2).
 	 *

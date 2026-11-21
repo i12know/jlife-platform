@@ -94,7 +94,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 
 	$scripts  = '';
 	$versions = array(
-		'soap'     => 4,
+		'soap'     => 5,
 		'share'    => 4,
 		'reminder' => 2,
 		'bible'    => 1,
@@ -117,7 +117,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 	$html = '<!doctype html><html lang="' . esc_attr( '' !== $lang ? $lang : str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=17' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=18' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
 		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -282,7 +282,7 @@ function jlife_challenges_render_optional_readings( $reading ) {
 	if ( empty( $reading['supplemental']['day'] ) ) {
 		return '';
 	}
-	return '<details class="jl-optional"><summary>' . esc_html__( 'Optional: parallel readings for deeper study', 'jlife-challenges' ) . '</summary><p>'
+	return '<details class="jl-optional"><summary>' . esc_html__( 'Optional: parallel Harmony readings for deeper study', 'jlife-challenges' ) . '</summary><p>'
 		. esc_html__( 'Optional. Reading these does not change your points.', 'jlife-challenges' ) . '</p>'
 		. jlife_challenges_render_harmony_sections( $reading['supplemental']['day'] ) . '</details>';
 }
@@ -896,12 +896,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$submitted = jlife_challenges_is_submitted( $view );
 	$headings  = jlife_challenges_soap_headings();
 	$groups    = (array) ( $view['share_groups'] ?? array() );
-	$chips     = '';
-	foreach ( (array) ( $view['reading']['day']['passages'] ?? array() ) as $p ) {
-		/* translators: %s: a Bible reference, e.g. "John 1:29-34". */
-		$chips .= '<button type="button" class="jl-chip" data-insert="' . esc_attr( (string) $p['display'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Add %s to my SOAP', 'jlife-challenges' ), (string) $p['display'] ) ) . '">' . esc_html( (string) $p['display'] ) . '</button>';
-	}
-	$out = jlife_challenges_render_reader( $view )
+	$out       = jlife_challenges_render_reader( $view )
 		. '<form method="post" class="jl-soap" data-status="' . esc_attr( $submitted ? 'submitted' : 'draft' ) . '"'
 		. ' data-rest="' . esc_url( rest_url( 'jlife/v1/soap/draft' ) ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'wp_rest' ) ) . '"'
 		. ' data-template="' . esc_attr( jlife_challenges_soap_template() ) . '" data-headings="' . esc_attr( (string) wp_json_encode( array_values( $headings ) ) ) . '"'
@@ -926,10 +921,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		$out .= '<li><strong>' . esc_html( $headings[ $letter ] ) . '</strong> ' . esc_html( $guidance ) . '</li>';
 	}
 	$out .= '</ul></details>';
-	if ( '' !== $chips ) {
-		$out .= '<p class="jl-chips-label" id="jl-chips-label">' . esc_html__( 'Tap a reference to add it under S:', 'jlife-challenges' ) . '</p>'
-			. '<div class="jl-chips" role="group" aria-labelledby="jl-chips-label">' . $chips . '</div>';
-	}
+	// No reference chips here (#188): the reference is typed under S.
 	$out .= '<textarea id="jl-text" name="jl_text" rows="16" maxlength="' . esc_attr( (string) JLIFE_CHALLENGES_BODY_MAX ) . '">' . esc_textarea( $text ) . '</textarea>'
 		. '<p class="jl-saved" aria-live="polite"></p>'
 		. jlife_challenges_render_share_boxes( $groups, (array) $state['share_groups'] );

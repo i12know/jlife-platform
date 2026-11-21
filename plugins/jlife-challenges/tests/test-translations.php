@@ -151,6 +151,40 @@ class Test_Translations extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * #188: the optional box is labelled "parallel Harmony readings" in English
+	 * and Vietnamese, still expandable, with its no-points note and Harmony links.
+	 */
+	public function test_the_harmony_label_in_english_and_vietnamese() {
+		$catalog = include dirname( __DIR__ ) . '/languages/jlife-challenges-vi.l10n.php';
+		$this->assertArrayHasKey( 'Optional: parallel Harmony readings for deeper study', $catalog['messages'] );
+		$this->assertArrayNotHasKey( 'Optional: parallel readings for deeper study', $catalog['messages'], 'the old label is gone' );
+		$this->assertArrayNotHasKey( 'Tap a reference to add it under S:', $catalog['messages'], 'the chip prompt is gone' );
+		$reading = array(
+			'supplemental' => array(
+				'day' => array(
+					'harmony_sections' => array(
+						array(
+							'number' => '20',
+							'title'  => 'The Time',
+							'url'    => 'https://harmony-bible.com/sections/20/',
+						),
+					),
+				),
+			),
+		);
+		$vi      = jlife_challenges_render_optional_readings( $reading );
+		$this->assertStringStartsWith( '<details class="jl-optional"><summary>Không bắt buộc: các đoạn song song trong Harmony để học sâu hơn</summary>', $vi );
+		$this->assertStringContainsString( 'harmony-bible.com/sections/20/', $vi );
+		$this->assertStringContainsString( '</details>', $vi );
+
+		remove_filter( 'determine_locale', $this->force, 99 );
+		unload_textdomain( 'jlife-challenges', true );
+		$en = jlife_challenges_render_optional_readings( $reading );
+		$this->assertStringStartsWith( '<details class="jl-optional"><summary>Optional: parallel Harmony readings for deeper study</summary><p>Optional. Reading these does not change your points.</p>', $en );
+		$this->assertStringContainsString( 'harmony-bible.com/sections/20/', $en );
+	}
+
+	/**
 	 * English keeps the site's own date format.
 	 */
 	public function test_english_dates_keep_the_site_format() {

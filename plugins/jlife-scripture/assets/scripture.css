@@ -10,25 +10,30 @@
 	margin: 1rem 0;
 }
 
-.jls-passage {
+/* All of the day's passages, open, one after another (#188). */
+.jls-passage + .jls-passage {
 	border-top: 1px solid var(--jls-rule);
-	padding: 0.25rem 0;
 }
 
-.jls-passage:last-child {
-	border-bottom: 1px solid var(--jls-rule);
-}
-
-.jls-passage > summary {
-	cursor: pointer;
+.jls-ref {
+	font-size: 1.0625rem;
 	font-weight: 600;
-	min-height: 44px; /* touch target */
-	display: list-item;
-	padding: 0.6rem 0;
+	margin: 0;
+	padding: 0.75rem 0 0.25rem;
 }
 
 .jls-body {
-	padding: 0 0 0.75rem;
+	padding: 0 0 0.5rem;
+}
+
+/* One footer with each Bible notice once, after the whole reading (#188). */
+.jls-attribution {
+	border-top: 1px solid var(--jls-rule);
+	padding-top: 0.5rem;
+}
+
+.jls-attribution .jls-version {
+	overflow-wrap: anywhere;
 }
 
 .jls-edition + .jls-edition {
