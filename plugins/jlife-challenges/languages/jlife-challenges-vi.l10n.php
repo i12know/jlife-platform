@@ -393,5 +393,13 @@ return array(
 		"Practice week: Dec 5–13. Points don't count for prizes. The Marathon starts Dec 20." => 'Tuần thực hành: 5–13 tháng 12. Điểm không được tính cho giải thưởng. Marathon bắt đầu ngày 20 tháng 12.',
 		// Closed campaign (#179). DRAFT, like the rest: for the Vietnamese reviewers.
 		'This reading period has closed. You can still read what you wrote, but it can no longer be changed or shared.' => 'Đợt đọc này đã kết thúc. Bạn vẫn đọc được những gì mình đã viết, nhưng không thể sửa hay chia sẻ nữa.',
+		// Earlier reading periods (#174, D4-A). DRAFT, like the rest: for the Vietnamese reviewers.
+		'Earlier reading' => 'Các đợt đọc trước',
+		'Your SOAP from an earlier reading period. Only you can see it here.' => 'Bài SOAP của bạn trong một đợt đọc trước. Chỉ mình bạn thấy được ở đây.',
+		'%1$s to %2$s' => '%1$s đến %2$s',
+		'Back to My Marathon' => 'Trở về Marathon của tôi',
+		'This reading period has ended. Your SOAP is kept here for you to read; it can no longer be changed. You can still remove anything you shared with a group.' => 'Đợt đọc này đã kết thúc. Bài SOAP của bạn được giữ ở đây để bạn đọc lại, nhưng không thể sửa nữa. Bạn vẫn có thể gỡ những gì đã chia sẻ với nhóm.',
+		'You did not write any SOAP in this reading period.' => 'Bạn chưa viết bài SOAP nào trong đợt đọc này.',
+		'Shared with %s' => 'Đã chia sẻ với %s',
 	),
 );

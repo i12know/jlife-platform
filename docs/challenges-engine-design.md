@@ -123,7 +123,7 @@ The Dec 5–13 pilot is frozen on Dec 14 (owner decision D4-A on #174): its priv
 - **How:** `wp jlife campaign close <id> [--dry-run]`, on the site that holds the campaign, run by the owner. The dry run prints counts only (active enrollments, active groups, entries, ledger rows, live shares, queued reminders) and changes nothing. A real run sets `campaigns.status = 'closed'` and cancels the campaign's queued `reminder_sends` rows (`cancelled`, class `campaign_closed`). It writes one `campaign_closed` audit row with the same counts. Only an `active` campaign can be closed. Running it again changes nothing and writes no second audit row.
 - **Writes refused** (`jlife_campaign_closed`, "This reading period has closed. You can still read what you wrote, but it can no longer be changed or shared."), each checked by `jlife_challenges_campaign_accepts_writes()` in `gate.php` **after** the caller's own gate, so an outsider still gets the plain denial:
   - SOAP save draft, submit and save changes (also through save-and-share and the REST routes);
-  - creating, re-posting (editing) or removing a share;
+  - creating or re-posting (editing) a share. **Removing one's own share stays allowed** (owner decision 2026-11-20): it only reduces what others see;
   - group joins (code, organizer add, a new enrollment), moves, starts, new groups and invite resets. A code for a closed campaign is "not valid" (§3b);
   - new `score_ledger` rows, refused again inside the ledger writer itself;
   - opting in to reminder emails. Opting out still works, and so does the unsubscribe link.
@@ -135,6 +135,7 @@ The Dec 5–13 pilot is frozen on Dec 14 (owner decision D4-A on #174): its priv
   - The day screen of a closed campaign shows the reading and the person's own text read-only, with the notice above: no form, no share boxes.
   - Organizer actions that only reduce visibility (hiding a share, revoking an invite code, removing a member, a person leaving a group) stay available.
 - **Still the anchor:** a closed campaign stays the person's reminder target (§3b) for the account's Bible choice and language settings.
+- **Earlier reading (#174, D4-A):** once a closed or ended campaign is no longer the person's current one (for LATOC, from their Marathon enrollment), My Marathon lists it under **Earlier reading**, linking `/marathon/?past=<id>`. That page shows only the person's own entries, read-only, and their own live or hidden shares with **Remove my post**. It is offered only for campaigns of the person's active enrollments in phase `ended` or `closed` that are not current; any other ID shows "Not found or not allowed." Nothing there writes entries, shares, points or memberships (`includes/past-campaigns.php`).
 - **Not here:** purging after the retention period (#186); moving people to the next campaign (#180).
 
 ## 4. Privacy matrix: new rows for the engine
@@ -223,6 +224,7 @@ An adult can make a group and hold its invite code. Holding the code is the **on
 | Group name seen by | Its active members and organizers only. Another participant asking for the group by ID gets "Not found or not allowed" with no name; `/join` never prints a group name; the audit log holds IDs |
 | Leave a group | Feed access ends and the slot frees; the person's past shares stay with the group (D18) until they remove them from "Groups you left" on `/share`; audited (`group_left`). A starter who leaves stops holding the code (organizers can still reset or disable) |
 | Author removes an old share in a group they left (or one an organizer closed) | ✅ only their own; others get denied; audited (`share_removed`) |
+| Earlier reading page (`/marathon/?past=<id>`, §3c): a person's own entries and shares in an ended or closed campaign that is not their current one | ✅ the person only: their own entries (read-only) and their own live or hidden shares, which they may remove (audited `share_removed`, also in a closed campaign). Anyone else, another campaign ID, or the current campaign: "Not found or not allowed."; nobody else's entry, share or name is shown |
 
 ### 4d. Daily reading reminder preferences (#63 Phase B, part 1)
 

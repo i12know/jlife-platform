@@ -1087,6 +1087,9 @@ function jlife_challenges_screen_soap() {
  */
 function jlife_challenges_screen_marathon() {
 	$user_id = jlife_challenges_require_participant();
+	if ( isset( $_GET['past'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only selector; past-campaigns.php checks ownership.
+		jlife_challenges_screen_past( $user_id, absint( wp_unslash( $_GET['past'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- as above.
+	}
 	$view    = jlife_challenges_marathon_view( $user_id );
 	$cid     = jlife_challenges_reminder_campaign_id( $user_id );
 	if ( $view && '' !== jlife_challenges_handle_reminder_post( $user_id, $cid ) ) {
@@ -1133,7 +1136,8 @@ function jlife_challenges_screen_marathon() {
 		. '<p class="jl-score">' . esc_html( sprintf( __( '%1$d of %2$d', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>'
 		. '<p>' . esc_html__( 'Every day is a fresh start. Tap any day to read it or write your SOAP.', 'jlife-challenges' ) . '</p>'
 		. '<div class="jl-grid">' . $grid . '</div><ul class="jl-legend">' . $legend . '</ul>'
-		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ), isset( $_GET['bible'] ), isset( $_GET['language'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flags after a redirect.
+		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ), isset( $_GET['bible'] ), isset( $_GET['language'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flags after a redirect.
+		. jlife_challenges_render_past_section( $user_id ); // Earlier reading periods (#174, D4-A).
 	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon', array( 'language', 'reminder', 'bible' ) );
 }
 

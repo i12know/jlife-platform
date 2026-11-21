@@ -194,18 +194,22 @@ class Test_Campaign_Close extends JLife_Challenges_TestCase {
 	}
 
 	/**
-	 * Creating, editing and removing a share are refused; the existing share stays exactly as it was.
+	 * Creating and editing a share are refused; the author may still remove their own
+	 * share, which only reduces what others see (owner decision 2026-11-20).
 	 */
 	public function test_share_writes_are_refused() {
 		$entry_b = jlife_challenges_submit( $this->u['b'], $this->campaign, null, $this->soap( 'b1' ) )['entry_id'];
 		$this->close();
 		$this->assert_closed( jlife_challenges_share( $this->u['b'], $entry_b, $this->g['g1'] ), 'create' );
 		$this->assert_closed( jlife_challenges_share( $this->u['a'], $this->written['entry_id'], $this->g['g1'] ), 'edit (share again)' );
-		$this->assert_closed( jlife_challenges_unshare( $this->u['a'], $this->written['share_id'] ), 'remove' );
 		$this->assertSame( 'shared', jlife_challenges_find_share( $this->written['share_id'] )['status'] );
 		$this->assertSame( 1, $this->rows( 'group_shares' ) );
 		// Someone else's share is still the plain denial.
 		$this->assertSame( 'jlife_denied', jlife_challenges_unshare( $this->u['b'], $this->written['share_id'] )->get_error_code() );
+		$ledger = $this->rows( 'score_ledger' );
+		$this->assertTrue( jlife_challenges_unshare( $this->u['a'], $this->written['share_id'] ), 'the author removes their own share' );
+		$this->assertSame( 'removed', jlife_challenges_find_share( $this->written['share_id'] )['status'] );
+		$this->assertSame( $ledger, $this->rows( 'score_ledger' ), 'points unchanged' );
 	}
 
 	/**

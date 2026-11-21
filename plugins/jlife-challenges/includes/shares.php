@@ -184,7 +184,9 @@ function jlife_challenges_save_and_share( $user_id, $campaign_id, $day_key, $tex
 }
 
 /**
- * Remove one's own share (the text is cleared; points are untouched).
+ * Remove one's own share (the text is cleared; points are untouched). Allowed
+ * in a closed campaign too: removing only reduces what others can see (owner
+ * decision 2026-11-20, docs/challenges-engine-design.md §3c).
  *
  * @param int $user_id  Author.
  * @param int $share_id Share.
@@ -194,9 +196,6 @@ function jlife_challenges_unshare( $user_id, $share_id ) {
 	$share = jlife_challenges_find_share( $share_id );
 	if ( ! $share || $user_id < 1 || (int) $share['user_id'] !== (int) $user_id ) {
 		return jlife_challenges_denied();
-	}
-	if ( ! jlife_challenges_campaign_accepts_writes( (int) $share['campaign_id'] ) ) {
-		return jlife_challenges_campaign_closed_error();
 	}
 	global $wpdb;
 	// An organizer-hidden post stays hidden (D17): the author's text is cleared,
