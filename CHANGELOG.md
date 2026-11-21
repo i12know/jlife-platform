@@ -171,6 +171,13 @@ Initial pre-release baseline covering repository work from 2026-07-03 through 20
 
 ### Added
 
+- **Official Marathon campaign and rollover, part 1** (#180, part of #174). Site-scoped, with explicit IDs (ADR 0001).
+  - **`wp jlife official create|status`** makes `marathon-2026` (Dec 20, 2026 to Apr 2, 2027, Pacific, active, the pilot's reading plan). Running it again changes nothing. It refuses when the site has no pilot campaign (new sign-ups would go straight to Dec 20) unless `--force` is given. `status` also shows which campaign new sign-ups join now.
+  - **`wp jlife campaign rollover --from=<id> --to=<id> --preview|--execute|--verify`** enrolls every active source participant, plus everyone on this site who chose "I'll start Dec 20". Each keeps the same user ID, age band and consent record. Nothing else carries over: no entries, points, shares, groups (#182), reminder choices (#181) or guardian consent.
+  - **Safety:** it fails closed on an unknown, equal, test, draft, started or non-empty campaign. Reruns and interrupted runs add nothing twice. The source is only read. Output and one audit row per execute are counts only. Verify checks that everyone expected is enrolled once, the destination has no entries, points or shares, and the run left the source unchanged.
+  - **"I'll start Dec 20" now keeps the age band** given on the join form, per site (a user option), because the rollover has no enrollment to read it from. Choices recorded before this change have no band: they are skipped and counted, and those people can still join from `/join`.
+  - **Docs and tests:** design §3d with a §4b matrix row, runbook steps in `docs/staging-latoc.md`, and tests in the new `Test_Rollover` plus a jlife-auth wait-choice assertion.
+
 - Created the initial repository README, product requirements draft, technical analysis, architecture notes, roadmap, content-rights register, integration-boundary guidance, and development-environment documentation.
 - Added repository structure for planning docs, portable content, design/prototype artifacts, local tooling, and custom WordPress plugin work.
 - Added scaffold plugins for `jlife-studies`, `jlife-huddles`, and `jlife-bridge`.

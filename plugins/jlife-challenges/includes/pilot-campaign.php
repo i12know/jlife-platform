@@ -25,6 +25,13 @@ const JLIFE_CHALLENGES_PILOT_PREFIX = 'pilot-';
 const JLIFE_CHALLENGES_WAIT_META = 'jlife_start_official';
 
 /**
+ * User option (per site, so a choice made on one site of a network never
+ * counts on another): the age band given with "I'll start Dec 20", for the
+ * rollover (#180), which has no enrollment to read it from.
+ */
+const JLIFE_CHALLENGES_WAIT_BAND_OPTION = 'jlife_start_official_band';
+
+/**
  * Is this the pilot (key starts with `pilot-`)?
  *
  * @param array $campaign Campaign row.
@@ -125,15 +132,31 @@ function jlife_challenges_practice_banner( $user_id, $active ) {
 
 /**
  * Record that the person will join the official Marathon (Dec 20) rather than
- * the pilot. Idempotent (the first time it was chosen is kept). It enrolls no
- * one and records no consent.
+ * the pilot, with the age band they gave, on this site. Idempotent (the first
+ * time and the first band are kept). It enrolls no one and records no consent.
  *
- * @param int $user_id Participant.
+ * @param int    $user_id  Participant.
+ * @param string $age_band adult|minor, as given on the join form ('' = not given).
  */
-function jlife_challenges_set_waiting_for_official( $user_id ) {
+function jlife_challenges_set_waiting_for_official( $user_id, $age_band = '' ) {
 	if ( ! jlife_challenges_is_waiting_for_official( $user_id ) ) {
 		update_user_meta( $user_id, JLIFE_CHALLENGES_WAIT_META, current_time( 'mysql', true ) );
 	}
+	if ( in_array( $age_band, JLIFE_CHALLENGES_AGE_BANDS, true ) && '' === jlife_challenges_waiting_age_band( $user_id ) ) {
+		update_user_option( $user_id, JLIFE_CHALLENGES_WAIT_BAND_OPTION, $age_band );
+	}
+}
+
+/**
+ * The age band given with "I'll start Dec 20" on this site, or '' (no choice
+ * here, or one recorded before the band was kept).
+ *
+ * @param int $user_id Participant.
+ * @return string adult|minor|''
+ */
+function jlife_challenges_waiting_age_band( $user_id ) {
+	$band = (string) get_user_option( JLIFE_CHALLENGES_WAIT_BAND_OPTION, (int) $user_id );
+	return in_array( $band, JLIFE_CHALLENGES_AGE_BANDS, true ) ? $band : '';
 }
 
 /**

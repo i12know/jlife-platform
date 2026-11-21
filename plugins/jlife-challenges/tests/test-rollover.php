@@ -403,7 +403,9 @@ class Test_Rollover extends JLife_Challenges_TestCase {
 		$this->assertSame( 0, $v['destination_ledger_rows'] );
 		$this->assertSame( 0, $v['destination_entries'] );
 		$this->assertSame( 0, $v['destination_shares'] );
-		$this->assertSame( 0, $v['source_changed'] );
+		$this->assertSame( 1, $v['executed'] );
+		$this->assertSame( 0, $v['source_changed_by_run'] );
+		$this->assertSame( 0, $v['source_changed_since_run'] );
 
 		global $wpdb;
 		$wpdb->delete( jlife_challenges_table( 'enrollments' ), array( 'campaign_id' => $this->official, 'user_id' => $this->p['minor'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound
@@ -412,13 +414,14 @@ class Test_Rollover extends JLife_Challenges_TestCase {
 		$this->assertSame( 1, $v['missing'] );
 		$this->assertWPError( jlife_challenges_rollover_verify( $this->p['adult'], $this->pilot, $this->official ), 'organizers only' );
 
-		// Pilot data changing after the run is reported too.
+		// A later, legitimate change in the pilot (here an organizer removal) is reported, but it is not the rollover's doing.
 		jlife_challenges_rollover_execute( $this->u['organizer'], $this->pilot, $this->official );
 		$this->assertTrue( jlife_challenges_rollover_verify( $this->u['organizer'], $this->pilot, $this->official )['ok'] );
-		$wpdb->update( jlife_challenges_table( 'enrollments' ), array( 'status' => 'removed' ), array( 'campaign_id' => $this->pilot, 'user_id' => $this->p['minor'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound
+		$this->assertTrue( jlife_challenges_remove_member( $this->u['organizer'], $this->pilot, $this->p['adult'] ) );
 		$v = jlife_challenges_rollover_verify( $this->u['organizer'], $this->pilot, $this->official );
-		$this->assertSame( 1, $v['source_changed'] );
-		$this->assertFalse( $v['ok'] );
+		$this->assertSame( 1, $v['source_changed_since_run'] );
+		$this->assertSame( 0, $v['source_changed_by_run'] );
+		$this->assertTrue( $v['ok'] );
 	}
 
 	/**

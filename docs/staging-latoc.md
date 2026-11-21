@@ -501,9 +501,13 @@ refuses when no pilot campaign exists, unless `--force` is given.
 
    Execute adds `enrolled_now` and ends with "Enrolled N; M were already
    enrolled." Verify prints `expected`, `enrolled_once`, `missing`,
-   `duplicate_enrollments`, `destination_ledger_rows`, `destination_entries`,
-   `destination_shares` and `source_changed`, and ends with "Verified" or an
-   error (non-zero exit) naming what is wrong.
+   `duplicate_enrollments`, `destination_enrollments`,
+   `destination_ledger_rows`, `destination_entries`, `destination_shares`,
+   `executed`, `source_changed_by_run` and `source_changed_since_run`, and ends
+   with "Verified" or an error (non-zero exit) naming what is wrong.
+   `source_changed_since_run` only reports pilot changes made after the run
+   (for example someone removing a pilot post under Earlier reading); it does
+   not fail the check.
 5. **If execute stops part-way** (timeout, lost connection): run execute
    again. Each enrollment is written once; nothing is duplicated.
 6. **If someone joins the pilot or chooses to wait after the run** (before the
