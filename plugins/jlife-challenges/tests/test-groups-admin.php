@@ -1147,4 +1147,213 @@ class Test_Groups_Admin extends Jlife_Challenges_TestCase {
 		jlife_challenges_groups_admin_load();
 		$this->assertSame( $before, $this->snapshot(), 'nothing changed' );
 	}
+
+	/**
+	 * #158: the group's detail view shows only the button that applies, and
+	 * Disable carries a one-line explanation and a required "I understand" box.
+	 */
+	public function test_the_detail_view_shows_disable_or_enable() {
+		$g1   = (int) $this->g['g1'];
+		$html = $this->page_html( $this->campaign, $g1 );
+		$this->assertStringContainsString( '<h3>Disable this group</h3>', $html );
+		$this->assertStringContainsString( 'Disabling stops the invite code and closes the group feed to its members. Nothing is deleted, and you can enable it again.', $html );
+		$this->assertStringContainsString( '<input type="checkbox" name="jl_confirm" value="1" required>', $html, 'confirmation without JavaScript' );
+		$this->assertStringContainsString( 'name="jl_op" value="disable"', $html );
+		$this->assertStringContainsString( '>Disable group</button>', $html );
+		$this->assertStringNotContainsString( 'Enable group', $html );
+		$this->assertStringContainsString( 'value="' . wp_create_nonce( jlife_challenges_groups_admin_nonce_action( 'disable', $g1 ) ) . '"', $html, 'a nonce for this operation and group' );
+		$this->assertStringNotContainsString( 'Disable group', $this->page_html( $this->campaign ), 'only on a group\'s detail view' );
+
+		jlife_challenges_disable_group( $this->u['organizer'], $g1 );
+		$html = $this->page_html( $this->campaign, $g1 );
+		$this->assertStringContainsString( '<h3>Enable this group</h3>', $html );
+		$this->assertStringContainsString( 'name="jl_op" value="enable"', $html );
+		$this->assertStringContainsString( '>Enable group</button>', $html );
+		$this->assertStringNotContainsString( 'Disable group', $html );
+		$this->assertStringNotContainsString( 'jl_confirm', $html, 'enable needs no confirmation' );
+	}
+
+	/**
+	 * #158: an organizer disables a group from the screen (with the box ticked):
+	 * audited, its code refused, its feed closed, nothing deleted. Enabling
+	 * restores the code and the feed, audited too. Each shows a success notice.
+	 */
+	public function test_an_organizer_disables_and_enables_a_group() {
+		$g1   = (int) $this->g['g1'];
+		$code = jlife_challenges_reset_invite( $this->u['organizer'], $g1 );
+		$this->assertIsString( $code );
+		$this->post( 'a', array( $g1 ), 'feed-before' );
+		$this->assertStringContainsString( 'feed-before', $this->feed_text( 'b', $g1 ) );
+		global $wpdb;
+		$members = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'group_members' ) . " WHERE group_id = %d AND status = 'active'", $g1 ) );
+		$shares  = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND status = 'shared'", $g1 ) );
+
+		// Without the box: nothing changes.
+		$before = $this->snapshot();
+		$this->assertSame( 'confirm_needed', $this->apply( 'disable', $this->fields( $g1 ) )['code'] );
+		$this->assertSame( $before, $this->snapshot(), 'unconfirmed: nothing changed' );
+
+		$disabled = $this->audit_count( 'group_disabled' );
+		$r        = $this->apply( 'disable', $this->fields( $g1 ) + array( 'confirm' => true ) );
+		$this->assertSame( 'group_disabled', $r['code'] );
+		$this->assertSame( $g1, $r['group_id'] );
+		$this->assertSame( 'disabled', jlife_challenges_get_group( $g1 )['status'] );
+		$this->assertSame( $disabled + 1, $this->audit_count( 'group_disabled' ), 'one audit row' );
+		$rows = $this->audits( 'group_disabled' );
+		$this->assertSame( $this->u['organizer'], (int) end( $rows )['actor_user_id'] );
+		$this->assertSame( $g1, (int) end( $rows )['object_id'] );
+
+		$this->assertNull( jlife_challenges_group_for_invite( $code ), 'the code is refused' );
+		$this->assertSame( 'jlife_invite_invalid', jlife_challenges_join_with_code( $this->u['d'], $code, 'adult' )->get_error_code() );
+		$this->assertFalse( jlife_challenges_can_read_feed( $this->u['a'], $g1 ), 'the feed is closed' );
+		$this->assertWPError( jlife_challenges_group_feed( $this->u['b'], $g1 ) );
+		$this->assertSame( $shares, (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND status = 'shared'", $g1 ) ), 'no post deleted' );
+		$this->assertStringContainsString( 'notice-success"><p>Group disabled. Its invite code no longer works and its members cannot read its feed. Nothing was deleted.</p>', $this->page_html( $this->campaign, $g1, 'group_disabled' ) );
+		$this->assertStringContainsString( 'Disabled', $this->page_html( $this->campaign ), 'the Status column' );
+
+		$enabled = $this->audit_count( 'group_enabled' );
+		$r       = $this->apply( 'enable', $this->fields( $g1 ) );
+		$this->assertSame( 'group_enabled', $r['code'] );
+		$this->assertSame( 'active', jlife_challenges_get_group( $g1 )['status'] );
+		$this->assertSame( $enabled + 1, $this->audit_count( 'group_enabled' ), 'one audit row' );
+		$rows = $this->audits( 'group_enabled' );
+		$this->assertSame( $this->u['organizer'], (int) end( $rows )['actor_user_id'] );
+		$this->assertSame( $members, (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'group_members' ) . " WHERE group_id = %d AND status = 'active'", $g1 ) ), 'the members are back' );
+		$this->assertStringContainsString( 'feed-before', $this->feed_text( 'b', $g1 ), 'the feed is restored with its posts' );
+		$this->assertNotNull( jlife_challenges_group_for_invite( $code ), 'the code works again' );
+		$this->assertIsInt( jlife_challenges_join_with_code( $this->u['d'], $code, 'adult' ), 'and someone new can join with it' );
+		$this->assertStringContainsString( 'notice-success"><p>Group enabled.', $this->page_html( $this->campaign, $g1, 'group_enabled' ) );
+	}
+
+	/**
+	 * #158: Disable and Enable are refused for a non-organizer, a wrong, missing
+	 * or borrowed nonce, and a GET; nothing changes and nothing is audited.
+	 */
+	public function test_disable_and_enable_are_refused_without_rights_nonce_or_post() {
+		$g1 = (int) $this->g['g1'];
+		$g2 = (int) $this->g['g2'];
+		jlife_challenges_disable_group( $this->u['organizer'], $g2 );
+		$before = $this->snapshot();
+		$cases  = array(
+			array( 'disable', $this->fields( $g1 ) + array( 'confirm' => true ) ),
+			array( 'enable', $this->fields( $g2 ) ),
+		);
+		foreach ( $cases as $c ) {
+			list( $op, $base ) = $c;
+			$group_id          = (int) $base['group_id'];
+			foreach ( array( 'a', 'starter', 'editor', 'outsider' ) as $who ) {
+				$this->assertSame( 'forbidden', $this->apply( $op, $base, $who )['code'], "{$op}: {$who}" );
+			}
+			$this->assertSame( 'bad_nonce', $this->apply( $op, $base + array( 'nonce' => '' ) )['code'], "{$op}: none" );
+			$this->assertSame( 'bad_nonce', $this->apply( $op, $base + array( 'nonce' => 'nope123456' ) )['code'], "{$op}: junk" );
+			$other = 'disable' === $op ? 'enable' : 'disable';
+			$this->assertSame( 'bad_nonce', $this->apply( $op, $base + array( 'nonce' => wp_create_nonce( jlife_challenges_groups_admin_nonce_action( $other, $group_id ) ) ) )['code'], "{$op}: the other operation's nonce" );
+			$this->assertSame( 'bad_nonce', $this->apply( $op, $base + array( 'nonce' => wp_create_nonce( jlife_challenges_groups_admin_nonce_action( $op, $group_id + 1 ) ) ) )['code'], "{$op}: another group's nonce" );
+			$this->assertSame( 'bad_method', $this->apply( $op, $base, 'organizer', 'GET' )['code'], "{$op}: GET" );
+		}
+		$this->assertSame( $before, $this->snapshot(), 'nothing changed, nothing audited' );
+	}
+
+	/**
+	 * #158: enabling a group that would put a member over the group limit is
+	 * refused, as with the CLI, with a message that says why; the group stays
+	 * disabled and nothing is audited.
+	 */
+	public function test_enabling_over_the_group_limit_is_refused_with_its_message() {
+		$g1 = (int) $this->g['g1'];
+		$this->assertSame( 'group_disabled', $this->apply( 'disable', $this->fields( $g1 ) + array( 'confirm' => true ) )['code'] );
+		foreach ( array( 'X', 'Y', 'Z' ) as $name ) {
+			$g = jlife_challenges_create_group( $this->u['organizer'], $this->campaign, 'Limit ' . $name );
+			$this->assertIsInt( jlife_challenges_join_with_code( $this->u['a'], $g['invite_code'], 'adult' ) );
+		}
+		$this->assertCount( JLIFE_CHALLENGES_MAX_GROUPS, $this->groups_of( 'a' ) );
+		$this->assertWPError( jlife_challenges_enable_group( $this->u['organizer'], $g1 ), 'the CLI function refuses too' );
+		$enabled = $this->audit_count( 'group_enabled' );
+
+		$r = $this->apply( 'enable', $this->fields( $g1 ) );
+		$this->assertSame( 'enable_limit', $r['code'] );
+		$this->assertSame( 'disabled', jlife_challenges_get_group( $g1 )['status'] );
+		$this->assertSame( $enabled, $this->audit_count( 'group_enabled' ) );
+		$this->assertStringContainsString( 'notice-error"><p>Not enabled: someone in this group is already in the most groups they can join (3). Move or remove them first.</p>', $this->page_html( $this->campaign, $g1, 'enable_limit' ) );
+	}
+
+	/**
+	 * #158 through the real POST handler: a disable with the box ticked redirects
+	 * with a success code; without it, with confirm_needed and no change. A GET
+	 * does nothing.
+	 */
+	public function test_the_post_handler_disables_only_when_confirmed() {
+		$g1       = (int) $this->g['g1'];
+		$location = '';
+		$catch    = static function ( $url ) use ( &$location ) {
+			$location = (string) $url;
+			throw new RuntimeException( 'redirected' );
+		};
+		add_filter( 'wp_redirect', $catch );
+		foreach ( array(
+			array( array( 'jl_group_id' => $g1 ), 'confirm_needed', 'active' ),
+			array(
+				array(
+					'jl_group_id' => $g1,
+					'jl_confirm'  => '1',
+				),
+				'group_disabled',
+				'disabled',
+			),
+		) as $case ) {
+			try {
+				$this->post_form( 'organizer', 'disable', $case[0] );
+				$this->fail( 'a write redirects' );
+			} catch ( RuntimeException $e ) {
+				$this->assertSame( 'redirected', $e->getMessage() );
+			}
+			parse_str( (string) wp_parse_url( $location, PHP_URL_QUERY ), $query );
+			$this->assertSame( $case[1], $query['jl_result'] ?? '' );
+			$this->assertSame( (string) $g1, $query['group'] ?? '' );
+			$this->assertSame( $case[2], jlife_challenges_get_group( $g1 )['status'] );
+		}
+		try {
+			$this->post_form( 'organizer', 'enable', array( 'jl_group_id' => $g1 ) );
+			$this->fail( 'a write redirects' );
+		} catch ( RuntimeException $e ) {
+			$this->assertSame( 'redirected', $e->getMessage() );
+		}
+		remove_filter( 'wp_redirect', $catch );
+		$this->assertSame( 'active', jlife_challenges_get_group( $g1 )['status'] );
+
+		$before = $this->snapshot();
+		wp_set_current_user( $this->u['organizer'] );
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		$_POST                     = array(
+			'jl_op'       => 'disable',
+			'jl_group_id' => $g1,
+			'jl_confirm'  => '1',
+		);
+		jlife_challenges_groups_admin_load();
+		$this->assertSame( $before, $this->snapshot(), 'a GET changes nothing' );
+	}
+
+	/**
+	 * #158 in a closed campaign (#179): disabling still works (it only reduces
+	 * what members see), and enabling follows the existing function: it restores
+	 * the members' read access to the feed, but opens no write. The code still
+	 * cannot be used to join and nobody can share to the group.
+	 */
+	public function test_in_a_closed_campaign_disable_works_and_enable_opens_no_writes() {
+		$g1   = (int) $this->g['g1'];
+		$code = jlife_challenges_reset_invite( $this->u['organizer'], $g1 );
+		$this->post( 'a', array( $g1 ), 'before-close' );
+		$this->assertIsArray( jlife_challenges_close_campaign( $this->u['organizer'], $this->campaign ) );
+
+		$this->assertSame( 'group_disabled', $this->apply( 'disable', $this->fields( $g1 ) + array( 'confirm' => true ) )['code'] );
+		$this->assertFalse( jlife_challenges_can_read_feed( $this->u['b'], $g1 ) );
+
+		$this->assertSame( 'group_enabled', $this->apply( 'enable', $this->fields( $g1 ) )['code'] );
+		$this->assertStringContainsString( 'before-close', $this->feed_text( 'b', $g1 ), 'members can read what was shared' );
+		$this->assertWPError( jlife_challenges_join_with_code( $this->u['d'], $code, 'adult' ), 'nobody joins a closed campaign\'s group' );
+		$this->assertNotContains( $g1, $this->groups_of( 'd' ) );
+		$shared = jlife_challenges_save_and_share( $this->u['b'], $this->campaign, 'd001', $this->soap( 'after-close' ), array( $g1 ) );
+		$this->assertWPError( $shared, 'no new share in a closed campaign' );
+		$this->assertStringNotContainsString( 'after-close', $this->feed_text( 'a', $g1 ) );
+	}
 }
