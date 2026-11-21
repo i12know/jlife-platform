@@ -184,24 +184,30 @@ function jlife_challenges_save_and_share( $user_id, $campaign_id, $day_key, $tex
 }
 
 /**
- * Remove one's own share (the text is cleared; points are untouched).
+ * Remove one's own share (the text is cleared; points are untouched). Allowed
+ * in a closed campaign too: removing only reduces what others can see (owner
+ * decision 2026-11-20, docs/challenges-engine-design.md §3c). Removing a share
+ * that is already gone is a no-op (true, no second audit row); a failed
+ * database write is an error and is not audited.
  *
  * @param int $user_id  Author.
  * @param int $share_id Share.
- * @return true|WP_Error
+ * @return true|WP_Error `jlife_denied`, or `jlife_unshare_failed` when the write failed.
  */
 function jlife_challenges_unshare( $user_id, $share_id ) {
 	$share = jlife_challenges_find_share( $share_id );
 	if ( ! $share || $user_id < 1 || (int) $share['user_id'] !== (int) $user_id ) {
 		return jlife_challenges_denied();
 	}
-	if ( ! jlife_challenges_campaign_accepts_writes( (int) $share['campaign_id'] ) ) {
-		return jlife_challenges_campaign_closed_error();
+	// Already gone from the group (removed, or hidden with its text cleared):
+	// nothing left to clear, so no second write and no second audit row.
+	if ( 'removed' === $share['status'] || ( 'hidden' === $share['status'] && null === $share['body'] ) ) {
+		return true;
 	}
 	global $wpdb;
 	// An organizer-hidden post stays hidden (D17): the author's text is cleared,
 	// but removing it must not let them post again by sidestepping the hide.
-	$wpdb->update(
+	$updated = $wpdb->update(
 		jlife_challenges_table( 'group_shares' ),
 		array(
 			'status'  => 'hidden' === $share['status'] ? 'hidden' : 'removed',
@@ -210,6 +216,10 @@ function jlife_challenges_unshare( $user_id, $share_id ) {
 		),
 		array( 'id' => (int) $share_id )
 	);
+	if ( false === $updated ) {
+		// The snapshot may still be visible: never audit or report it as removed.
+		return new WP_Error( 'jlife_unshare_failed', __( 'Your post could not be removed. Please try again.', 'jlife-challenges' ) );
+	}
 	jlife_challenges_audit( $user_id, 'share_removed', 'group_share', (int) $share_id, (int) $share['campaign_id'], array( 'group_id' => (int) $share['group_id'] ) );
 	return true;
 }
