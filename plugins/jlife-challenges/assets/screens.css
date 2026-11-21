@@ -104,7 +104,7 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-hint{margin:.25rem 0 0;color:var(--muted);font-size:.875rem}
 /* Help, Rules and Privacy links at the foot of every participant screen (#65). */
 .jl-help-links{max-width:34rem;margin:0 auto;padding:0 1rem 2rem;text-align:center;font-size:.875rem;color:var(--muted)}
-.jl-help-links a{display:inline-block;padding:.5rem .4rem}
+.jl-help-links a{display:inline-flex;align-items:center;min-height:2.75rem;padding:0 .5rem;margin:.25rem 0}
 /* The public /reading/ day pages (#106): Today's look without the navigation. */
 .jl-reading-lang{margin:.5rem 0;font-size:.9375rem;color:var(--muted)}.jl-reading-lang a{display:inline-block;padding:.5rem .3rem;min-height:2.75rem;box-sizing:border-box}
 .jl-public-reader{margin:1rem 0}.jl-public-reader ul{list-style:none;margin:0;padding:0}.jl-public-reader li{margin:.25rem 0;overflow-wrap:anywhere}.jl-public-reader li>a{display:inline-block;padding:.5rem 0;min-height:2.75rem;box-sizing:border-box}

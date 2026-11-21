@@ -9,6 +9,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 ## Unreleased
 
 ### Fixed
+- **Footer links are easier to tap on phones** (QA 2026-11-20, round 2). Help, Rules, Privacy and Pilot Feedback in the participant footer are now at least 44 px tall, and wrapped rows are separated, so a link on the second row no longer touches the first. `screens.css` is now `?v=17`.
 
 - **One rule decides "the current campaign"** (#177, part of #174). With the Dec 5–13 pilot and the Dec 20 Marathon both active, two functions used to disagree: Today and My Marathon showed the campaign with the latest start, so a future Marathon enrollment hid the running pilot, and "Read on my own" preferred a real campaign even before it started.
   - **The rule** (`includes/current-campaign.php`, design §3b): running, then upcoming (nearest start), then the most recently ended, in America/Los_Angeles dates. Running or upcoming `test-*` campaigns rank after every running or upcoming real one. Draft campaigns are never current; closed (#179) ones are view-only.
