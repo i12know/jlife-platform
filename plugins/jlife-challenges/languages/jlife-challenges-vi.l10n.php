@@ -123,6 +123,7 @@ return array(
 		'Yes' => 'Có',
 		'Daily reading email' => 'Email bài đọc hằng ngày',
 		'Bible' => 'Kinh Thánh',
+		'Email me each morning\'s Marathon reading starting %s?' => 'Gửi email bài đọc Marathon cho tôi mỗi sáng, bắt đầu từ %s?',
 		'Saved.' => 'Đã lưu.',
 		'Language' => 'Ngôn ngữ',
 		'Language for screens and emails' => 'Ngôn ngữ cho màn hình và email',

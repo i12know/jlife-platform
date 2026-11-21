@@ -380,12 +380,45 @@ function jlife_challenges_reminder_optin_offered() {
 }
 
 /**
+ * Can a reminder choice be made for this campaign now (#181)? The opt-in is
+ * offered (saved Live, #189) and the campaign is running or upcoming. An
+ * upcoming campaign (for example the official Marathon during Dec 14–19
+ * onboarding) takes the choice ahead of Day 1; nothing is sent before Day 1.
+ * An ended or closed campaign (the pilot after Dec 13) offers none.
+ *
+ * @param int $campaign_id Campaign.
+ * @return bool
+ */
+function jlife_challenges_reminder_choice_open( $campaign_id ) {
+	$campaign = (int) $campaign_id > 0 ? jlife_challenges_get_campaign( (int) $campaign_id ) : null;
+	return $campaign && jlife_challenges_reminder_optin_offered() && jlife_challenges_campaign_is_open( $campaign );
+}
+
+/**
+ * The checkbox's wording. Before Day 1 of a campaign that is not the pilot,
+ * the start date is named (#181): "Email me each morning's Marathon reading
+ * starting December 20, 2026?". Otherwise the everyday wording.
+ *
+ * @param int $campaign_id Campaign.
+ * @return string Translated, unescaped.
+ */
+function jlife_challenges_reminder_label( $campaign_id ) {
+	$campaign = jlife_challenges_get_campaign( (int) $campaign_id );
+	if ( $campaign && 'upcoming' === jlife_challenges_campaign_phase( $campaign ) && ! jlife_challenges_is_pilot_campaign( $campaign ) ) {
+		/* translators: %s: the Marathon's first day, e.g. "December 20, 2026". */
+		return sprintf( __( 'Email me each morning\'s Marathon reading starting %s?', 'jlife-challenges' ), jlife_challenges_format_date( (string) $campaign['start_date'] ) );
+	}
+	return __( 'Email me each morning\'s reading.', 'jlife-challenges' );
+}
+
+/**
  * Handle a reminder form POST (the checkbox without JavaScript, on Today or My
  * Marathon). The choice always applies to the signed-in person, never to a user
  * ID from the form. The form sends a hidden "off" before the checkbox's "on",
  * so an unticked box posts "off". A post without the field (another form, such
  * as Language or My Bible) changes nothing. An "on" while the opt-in is not
- * offered (#189) changes nothing either; an "off" is always honored.
+ * offered (#189), or for a campaign that has ended or closed (#181), changes
+ * nothing either; an "off" is always honored.
  *
  * @param int $user_id     Signed-in participant.
  * @param int $campaign_id Their campaign.
@@ -399,7 +432,7 @@ function jlife_challenges_handle_reminder_post( $user_id, $campaign_id ) {
 	if ( ! in_array( $choice, array( 'on', 'off' ), true ) ) {
 		return '';
 	}
-	if ( 'on' === $choice && ! jlife_challenges_reminder_optin_offered() ) {
+	if ( 'on' === $choice && ! jlife_challenges_reminder_choice_open( $campaign_id ) ) {
 		return '';
 	}
 	// The language is not this form's: the Language setting owns it (#159).
@@ -428,7 +461,7 @@ function jlife_challenges_rest_save_reminder( WP_REST_Request $request ) {
 		$r = jlife_challenges_denied();
 	} elseif ( null === $request['on'] ) {
 		$r = true;
-	} elseif ( $request['on'] && ! jlife_challenges_reminder_optin_offered() ) {
+	} elseif ( $request['on'] && ! jlife_challenges_reminder_choice_open( $campaign_id ) ) {
 		$r = new WP_Error( 'jlife_reminders_not_offered', 'Daily reading emails are not offered right now.' );
 	} else {
 		$locale = jlife_challenges_reminder_request_locale( $user_id, $campaign_id, '' );
@@ -466,16 +499,18 @@ function jlife_challenges_reminder_campaign_id( $user_id ) {
  * JavaScript a change saves at once through the REST route and says "Saved."
  * or, on failure, puts the box back and asks to try again; without it, the Save
  * button posts the form. Shown only while the opt-in is offered (saved mode
- * Live, #189); hiding it changes nothing that is saved.
+ * Live, #189) and the campaign is running or upcoming (#181); hiding it changes
+ * nothing that is saved. The choice is always this campaign's own row: no other
+ * campaign's choice is read, copied or pre-ticked.
  *
  * @param int  $user_id     Participant.
  * @param int  $campaign_id Campaign.
  * @param bool $marathon    On My Marathon (its own element ID).
  * @param bool $saved       Show "Saved." (after a no-JavaScript save).
- * @return string Escaped HTML, or '' without a campaign or outside Live mode.
+ * @return string Escaped HTML, or '' without a campaign, outside Live mode, or for an ended or closed campaign.
  */
 function jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, $marathon = false, $saved = false ) {
-	if ( $user_id < 1 || $campaign_id < 1 || ! jlife_challenges_reminder_optin_offered() ) {
+	if ( $user_id < 1 || $campaign_id < 1 || ! jlife_challenges_reminder_choice_open( $campaign_id ) ) {
 		return '';
 	}
 	$pref = jlife_challenges_reminder_pref( $user_id, $campaign_id );
@@ -493,7 +528,7 @@ function jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, $marat
 		. wp_nonce_field( JLIFE_CHALLENGES_REMINDER_NONCE, '_jlife_reminder', false, false )
 		. '<input type="hidden" name="jl_reminder" value="off">'
 		. '<label class="jl-check" for="' . esc_attr( $id ) . '"><input type="checkbox" id="' . esc_attr( $id ) . '" name="jl_reminder" value="on"' . checked( $on, true, false ) . '> '
-		. esc_html__( 'Email me each morning\'s reading.', 'jlife-challenges' ) . '</label>';
+		. esc_html( jlife_challenges_reminder_label( $campaign_id ) ) . '</label>';
 	return $out . '<noscript><button type="submit" class="jl-button jl-small">' . esc_html__( 'Save', 'jlife-challenges' ) . '</button></noscript>'
 		. '<p class="jl-reminder-status" role="status" aria-live="polite">' . ( $saved ? esc_html__( 'Saved.', 'jlife-challenges' ) : '' ) . '</p></form>';
 }
