@@ -1054,9 +1054,30 @@ function jlife_challenges_screen_today() {
 	$view = jlife_challenges_day_view( $user_id, jlife_challenges_posted_day_key() );
 	$none = jlife_challenges_render_no_day( $view );
 	if ( null !== $none ) {
-		jlife_challenges_send_page( __( 'Today', 'jlife-challenges' ), $none, 'today' );
+		$saved = isset( $_GET['reminders'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flag after a redirect.
+		$body  = jlife_challenges_today_no_day_body( $view, $none, $user_id, $saved );
+		jlife_challenges_send_page( __( 'Today', 'jlife-challenges' ), $body, 'today', $body !== $none ? 'reminder' : '' );
 	}
 	jlife_challenges_run_soap_screen( 'today', __( 'Today', 'jlife-challenges' ), $view, $user_id );
+}
+
+/**
+ * Today with no reading day. Before Day 1 ("Almost time"), the reminder
+ * choice for that upcoming campaign sits under the message (#181: the official
+ * Marathon's choice during Dec 14–19 onboarding). It shows only when
+ * jlife_challenges_render_reminder_toggle() does (saved Live mode, #189).
+ *
+ * @param array  $view    Day view.
+ * @param string $none    jlife_challenges_render_no_day() for the view.
+ * @param int    $user_id Participant.
+ * @param bool   $saved   Show "Saved." (after a no-JavaScript save).
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_today_no_day_body( $view, $none, $user_id, $saved = false ) {
+	if ( 'before' !== ( $view['state'] ?? '' ) ) {
+		return $none;
+	}
+	return $none . jlife_challenges_render_reminder_toggle( $user_id, (int) $view['campaign']['id'], false, $saved );
 }
 
 /**

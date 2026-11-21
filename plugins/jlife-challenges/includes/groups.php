@@ -415,7 +415,9 @@ function jlife_challenges_get_enrollment( $campaign_id, $user_id ) {
  * Open (create or reactivate) a person's enrollment in a campaign, with no
  * group. Groups are separate membership rows. An enrollment that is already
  * active is returned unchanged: its age band and consent are never rewritten by
- * a later join.
+ * a later join. A new or reactivated enrollment carries the consent record the
+ * account already has (jlife_challenges_rollover_consent(); #181), so a person
+ * who agreed once is not left without consent in the next campaign they join.
  *
  * @param int    $user_id     Participant.
  * @param int    $campaign_id Campaign.
@@ -446,6 +448,14 @@ function jlife_challenges_open_enrollment( $user_id, $campaign_id, $age_band ) {
 		'joined'      => current_time( 'mysql', true ),
 		'left_at'     => null,
 	);
+	// The consent record (#181; PR #197 decision 4): someone who already accepted the participation
+	// consent carries the account's record into a new enrollment, exactly as the rollover does. A
+	// re-joined enrollment keeps its own. No record on the account: none here (asked at sign-in).
+	$consent = jlife_challenges_rollover_consent( (int) $user_id, $existing );
+	if ( '' !== $consent['consented'] ) {
+		$data['consent_version'] = $consent['consent_version'];
+		$data['consented']       = $consent['consented'];
+	}
 	if ( $existing ) {
 		$wpdb->update( jlife_challenges_table( 'enrollments' ), $data, array( 'id' => (int) $existing['id'] ) );
 	} else {
