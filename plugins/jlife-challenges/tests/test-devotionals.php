@@ -47,6 +47,7 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 	public function set_up() {
 		parent::set_up();
 		jlife_studies_register_reading_day();
+		jlife_challenges_register_devotional(); // The suite resets post types for each test.
 		jlife_studies_import_reading_plan( $this->plan_fixture() );
 		wp_set_current_user( $this->u['organizer'] );
 		$this->reset_request();

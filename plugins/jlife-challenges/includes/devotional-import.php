@@ -395,8 +395,8 @@ function jlife_challenges_devotional_write( $item, $plan_id, $post_id ) {
 		);
 		$result  = wp_insert_post( wp_slash( $postarr ), true );
 	}
-	if ( is_wp_error( $result ) || (int) $result < 1 ) {
-		return is_wp_error( $result ) ? $result : new WP_Error( 'jlife_devotional_write', __( 'The devotional could not be saved.', 'jlife-challenges' ) );
+	if ( is_wp_error( $result ) ) {
+		return $result;
 	}
 	$id = (int) $result;
 	update_post_meta( $id, '_jlife_dev_plan', (string) $plan_id );
@@ -475,7 +475,7 @@ function jlife_challenges_devotional_set_ready( $actor, $post_id, $ready ) {
 		),
 		true
 	);
-	if ( is_wp_error( $result ) || (int) $result < 1 ) {
+	if ( is_wp_error( $result ) ) {
 		return false;
 	}
 	jlife_challenges_audit(

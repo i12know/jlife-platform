@@ -48,11 +48,15 @@ unset( $jlife_devotional_divi_filter );
  * denied), so posts come only from the Markdown import.
  */
 function jlife_challenges_register_devotional() {
-	$caps = array();
+	// The three meta capabilities keep names of their own: giving one the name
+	// `manage_options` would make WordPress treat `manage_options` itself as a
+	// per-post capability, and nobody (administrators included) would hold it.
+	$caps = array(
+		'edit_post'   => 'edit_jlife_devotional',
+		'read_post'   => 'read_jlife_devotional',
+		'delete_post' => 'delete_jlife_devotional',
+	);
 	foreach ( array(
-		'edit_post',
-		'read_post',
-		'delete_post',
 		'edit_posts',
 		'edit_others_posts',
 		'delete_posts',
