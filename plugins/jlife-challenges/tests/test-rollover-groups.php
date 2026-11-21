@@ -78,7 +78,13 @@ class Test_Rollover_Groups extends JLife_Challenges_TestCase {
 			'id'          => (int) $started['id'],
 			'invite_code' => (string) $started['invite_code'],
 		);
-		foreach ( array( 'youth' => 'Youth Group', 'evening' => 'Evening', 'disabled' => 'Old Group' ) as $key => $name ) {
+
+		$made = array(
+			'youth'    => 'Youth Group',
+			'evening'  => 'Evening',
+			'disabled' => 'Old Group',
+		);
+		foreach ( $made as $key => $name ) {
 			$g                = jlife_challenges_create_group( $org, $this->pilot, $name );
 			$this->pg[ $key ] = array(
 				'id'          => (int) $g['id'],

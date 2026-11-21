@@ -1,7 +1,8 @@
 <?php
 /**
  * WP-CLI: `wp jlife campaign close <id> [--dry-run]` (#179) and
- * `wp jlife campaign rollover --from=<id> --to=<id> --preview|--execute|--verify` (#180).
+ * `wp jlife campaign rollover --from=<id> --to=<id> --preview|--execute|--verify` (#180) and
+ * `wp jlife campaign rollover-groups --from=<id> --to=<id> --plan=<file> --preview|--validate|--execute|--verify` (#182).
  *
  * Prints counts only, never people: deploy logs may be public.
  *
@@ -117,6 +118,88 @@ class Jlife_Campaign_Command {
 			WP_CLI::success( 'Verified: every expected person is enrolled once, the destination has no entries, points or shares, and the run left the source unchanged.' );
 		} else {
 			WP_CLI::error( 'Verify failed: ' . implode( ', ', $this->verify_problems( $r ) ) . '.' );
+		}
+	}
+
+	/**
+	 * Prepare the destination's groups from the source's through a plan file
+	 * the organizer reviews (#182). The plan (display names and user IDs) and
+	 * the new invite codes are written only to owner-only files (mode 0600),
+	 * never to the screen. Prints counts and error classes only.
+	 *
+	 * ## OPTIONS
+	 *
+	 * --from=<id>
+	 * : Source campaign ID on this site (the pilot).
+	 *
+	 * --to=<id>
+	 * : Destination campaign ID on this site (the official campaign, after rollover part 1).
+	 *
+	 * --plan=<file>
+	 * : The plan file. --preview creates it (never overwrites); the others read it.
+	 *
+	 * [--preview]
+	 * : Write the plan for review. Changes nothing in the database.
+	 *
+	 * [--validate]
+	 * : Check the edited plan. Writes nothing.
+	 *
+	 * [--execute]
+	 * : Make the planned groups and memberships. New invite codes go to "<file>.codes.csv". Safe to run again.
+	 *
+	 * [--verify]
+	 * : Compare the plan with the database. Exits with an error if anything planned is missing.
+	 *
+	 * @subcommand rollover-groups
+	 *
+	 * @param array $args       Positional args.
+	 * @param array $assoc_args Options.
+	 */
+	public function rollover_groups( $args, $assoc_args ) {
+		unset( $args ); // WP-CLI always passes it; rollover-groups takes no positional arguments.
+		$modes = array_values( array_intersect( array( 'preview', 'validate', 'execute', 'verify' ), array_keys( array_filter( (array) $assoc_args ) ) ) );
+		if ( 1 !== count( $modes ) ) {
+			WP_CLI::error( 'Give exactly one of --preview, --validate, --execute or --verify.' );
+		}
+		$actor = jlife_challenges_cli_organizer();
+		$from  = (int) ( $assoc_args['from'] ?? 0 );
+		$to    = (int) ( $assoc_args['to'] ?? 0 );
+		$file  = (string) ( $assoc_args['plan'] ?? '' );
+		$mode  = $modes[0];
+		if ( 'preview' === $mode ) {
+			$r = jlife_challenges_rollover_groups_write_plan( $actor, $from, $to, $file );
+		} elseif ( 'validate' === $mode ) {
+			$r = jlife_challenges_rollover_groups_validate( $actor, $from, $to, $file );
+		} elseif ( 'execute' === $mode ) {
+			$r = jlife_challenges_rollover_groups_execute( $actor, $from, $to, $file );
+		} else {
+			$r = jlife_challenges_rollover_groups_verify( $actor, $from, $to, $file );
+		}
+		if ( is_wp_error( $r ) ) {
+			WP_CLI::error( $r->get_error_message() );
+		}
+		$this->print_campaigns( $from, $to );
+		foreach ( $r as $what => $n ) {
+			if ( is_int( $n ) ) {
+				WP_CLI::log( sprintf( '  %-24s %d', $what, $n ) );
+			}
+		}
+		foreach ( (array) ( $r['errors'] ?? array() ) as $class => $n ) {
+			WP_CLI::log( sprintf( '  error: %-17s %d', $class, $n ) );
+		}
+		if ( 'preview' === $mode ) {
+			WP_CLI::success( 'Plan written (mode 0600; not shown here). Review and edit it, then run --validate.' );
+		} elseif ( 'validate' === $mode ) {
+			if ( ! $r['ok'] ) {
+				WP_CLI::error( 'The plan has errors (classes above). Nothing was written.' );
+			}
+			WP_CLI::success( 'The plan is valid. Nothing was written.' );
+		} elseif ( 'execute' === $mode ) {
+			WP_CLI::success( sprintf( 'Created %d group(s); added %d membership(s). New invite codes are in the .codes.csv file next to the plan (mode 0600; not shown here).', $r['groups_created'], $r['memberships_added'] ) );
+		} elseif ( $r['ok'] ) {
+			WP_CLI::success( 'Verified: every planned group and membership is in place.' );
+		} else {
+			WP_CLI::error( 'Verify failed: planned groups or memberships are missing or have another role, or the plan has errors (counts above).' );
 		}
 	}
 

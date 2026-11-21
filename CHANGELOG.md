@@ -171,6 +171,16 @@ Initial pre-release baseline covering repository work from 2026-07-03 through 20
 
 ### Added
 
+- **Rollover, part 2: official groups with organizer review** (#182, part of #174; D2-A). Site-scoped, with explicit IDs (ADR 0001).
+  - **`wp jlife campaign rollover-groups --from=<id> --to=<id> --plan=<file> --preview|--validate|--execute|--verify`.**
+  - **`--preview`** writes a plan CSV (mode 0600, never printed, never overwritten) with one row per person per active pilot group: plan key, group name, role, user ID, and the age band and display name for review, never an email. The organizer renames, merges, drops or moves people by editing it.
+  - **`--validate`** writes nothing. It reports counts and error classes: bad rows and roles, invalid or inconsistent names, duplicates, a minor as starter, the 3-group and 2-started limits. People not enrolled in the Marathon are counted, never added.
+  - **`--execute`** refuses a plan with errors. Otherwise it makes the groups and memberships through the normal, audited functions, with new hashed invite codes valid until the campaign's last day. The codes go only to `<plan>.codes.csv` (mode 0600). Solo readers stay solo, and pilot codes never open an official group.
+  - **Reruns** find the groups they made by plan key (an option per destination), never by name, so a second run adds nothing and an interrupted run finishes on the next one.
+  - **`--verify`** reports differences between the plan and the database as counts.
+  - **Never copied:** shares, entries and points.
+  - **Docs and tests:** design §3d part 2 with a §4b matrix row, runbook steps in `docs/staging-latoc.md`, and the new `Test_Rollover_Groups`.
+
 - **Official Marathon campaign and rollover, part 1** (#180, part of #174). Site-scoped, with explicit IDs (ADR 0001).
   - **`wp jlife official create|status`** makes `marathon-2026` (Dec 20, 2026 to Apr 2, 2027, Pacific, active, the pilot's reading plan). Running it again changes nothing. It refuses when the site has no pilot campaign (new sign-ups would go straight to Dec 20) unless `--force` is given. `status` also shows which campaign new sign-ups join now.
   - **`wp jlife campaign rollover --from=<id> --to=<id> --preview|--execute|--verify`** enrolls every active source participant, plus everyone on this site who chose "I'll start Dec 20". Each keeps the same user ID, age band and consent record. Nothing else carries over: no entries, points, shares, groups (#182), reminder choices (#181) or guardian consent.
