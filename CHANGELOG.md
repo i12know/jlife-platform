@@ -8,6 +8,9 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ## Unreleased
 
+### Changed
+- **My Group groups shared messages by reading day** (#203). One collapsible section per Marathon reading day, newest first; only the newest day that has messages is open, and each group you switch to applies that default on its own. Grouping uses the reading-day key, so a late share stays under its own day. Native `details`/`summary` (works without JavaScript, keyboard and screen-reader friendly, visible focus, 44 px tap target). Message order, content, references and "Yours — change or remove" are unchanged; access, visibility and points are untouched. No new strings. `screens.css` is now `?v=19` (another PR may bump it too).
+
 ### Fixed
 - **Footer links are easier to tap on phones** (QA 2026-11-20, round 2). Help, Rules, Privacy and Pilot Feedback in the participant footer are now at least 44 px tall, and wrapped rows are separated, so a link on the second row no longer touches the first. `screens.css` is now `?v=17`.
 
