@@ -545,6 +545,115 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * Clearing the second Bible (#204), by REST and by the no-JavaScript form,
+	 * clears only that slot: My Bible, Language and the reminder consent stay.
+	 */
+	public function test_clearing_the_second_bible_leaves_the_other_preferences_alone() {
+		update_option( 'jlife_reminders_mode', 'live' );
+		$a = $this->u['a'];
+		jlife_challenges_set_reminder( $a, $a, $this->campaign, true, 'en_US' );
+		$language = jlife_challenges_account_language( $a );
+		$pref     = jlife_challenges_reminder_pref( $a, $this->campaign );
+
+		// REST (the immediate save): pick a second Bible, then None.
+		$this->rest_as(
+			$a,
+			array(
+				'bible_version'   => 'kt1925',
+				'bible_version_2' => 'erv',
+			)
+		);
+		$r = $this->rest_as( $a, array( 'bible_version_2' => null ) );
+		$this->assertSame( 200, $r->get_status() );
+		$this->assertSame( array( 'kt1925', null ), $this->keys( $a ) );
+		$this->assertSame( '', (string) get_user_meta( $a, 'jlife_bible_version_2', true ), 'nothing stored' );
+		$this->assertSame( 'kt1925', get_user_meta( $a, 'jlife_bible_version', true ), 'My Bible unchanged' );
+
+		// Without JavaScript: both selects post; "None" posts an empty value.
+		$this->rest_as( $a, array( 'bible_version_2' => 'erv' ) );
+		$this->post_as(
+			$a,
+			array(
+				'jl_bible_version'   => 'kt1925',
+				'jl_bible_version_2' => '',
+			)
+		);
+		$this->assertTrue( jlife_challenges_handle_bible_post( $a ) );
+		$this->assertSame( array( 'kt1925', null ), $this->keys( $a ), 'cleared after the reload too' );
+		$this->assertSame( '', $this->selected_value( $this->section( $a ), 'jl_bible_version_2' ) );
+
+		// The reminder form does not see this post, and Language and consent are as before.
+		$this->assertSame( '', jlife_challenges_handle_reminder_post( $a, $this->campaign ) );
+		$this->assertSame( $language, jlife_challenges_account_language( $a ) );
+		$this->assertEquals( $pref, jlife_challenges_reminder_pref( $a, $this->campaign ), 'reminder consent unchanged' );
+		$this->assertTrue( jlife_challenges_reminder_is_on( jlife_challenges_reminder_pref( $a, $this->campaign ) ) );
+	}
+
+	/**
+	 * Today and the SOAP reader resolve the same pair, so after clearing they
+	 * show the primary Bible only (#204).
+	 */
+	public function test_cleared_second_bible_leaves_one_bible_for_the_readers() {
+		$a = $this->u['a'];
+		$this->rest_as(
+			$a,
+			array(
+				'bible_version'   => 'kt1925',
+				'bible_version_2' => 'erv',
+			)
+		);
+		$this->assertSame( 'erv', $this->keys( $a )[1] );
+		$this->rest_as( $a, array( 'bible_version_2' => null ) );
+		$pair = jlife_scripture_versions_for_user( $a );
+		$this->assertSame( 'kt1925', $pair[0]['key'] );
+		$this->assertNull( $pair[1], 'no second Bible for Today or the SOAP reader' );
+	}
+
+	/**
+	 * My Marathon prints the settings before the score and the grid, one copy of
+	 * each control; the reminder checkbox is only in saved Live mode (#189, #204).
+	 */
+	public function test_settings_come_before_the_grid_and_the_reminder_follows_live_mode() {
+		$src = (string) file_get_contents( dirname( __DIR__ ) . '/includes/screens.php' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading the plugin's own source.
+		$fn  = substr( $src, (int) strpos( $src, 'function jlife_challenges_screen_marathon' ) );
+		$fn  = substr( $fn, 0, (int) strpos( $fn, "\n}\n" ) );
+		$this->assertSame( 1, substr_count( $fn, 'jlife_challenges_render_reminder_settings(' ), 'one copy of the settings' );
+		$h1       = strpos( $fn, "'<h1>'" );
+		$settings = strpos( $fn, 'jlife_challenges_render_reminder_settings(' );
+		$this->assertNotFalse( $h1 );
+		$this->assertGreaterThan( $h1, $settings, 'under the heading' );
+		$this->assertLessThan( (int) strpos( $fn, 'jl-score' ), $settings, 'before the score' );
+		$this->assertLessThan( (int) strpos( $fn, 'jl-grid' ), $settings, 'before the grid' );
+
+		foreach ( array( 'off', 'dry_run', 'test' ) as $mode ) {
+			update_option( 'jlife_reminders_mode', $mode );
+			$html = $this->section( $this->u['a'] );
+			$this->assertStringNotContainsString( 'name="jl_reminder"', $html, $mode );
+			$this->assertSame( 1, substr_count( $html, 'class="jl-bible-picker"' ), $mode );
+			$this->assertSame( 1, substr_count( $html, 'id="jl-language"' ), $mode );
+		}
+		update_option( 'jlife_reminders_mode', 'live' );
+		$html = $this->section( $this->u['a'] );
+		$this->assertSame( 2, substr_count( $html, 'name="jl_reminder"' ), 'hidden off + checkbox, once' );
+		$this->assertStringContainsString( 'To show only one Bible, choose None', $html );
+	}
+
+	/**
+	 * A hidden reminder checkbox is never an opt-out: the Bible and Language
+	 * posts carry no reminder field, so a saved opt-in survives them (#189, #204).
+	 */
+	public function test_saving_bible_outside_live_mode_keeps_the_reminder_opt_in() {
+		update_option( 'jlife_reminders_mode', 'live' );
+		$a = $this->u['a'];
+		jlife_challenges_set_reminder( $a, $a, $this->campaign, true, 'en_US' );
+		update_option( 'jlife_reminders_mode', 'off' );
+		$this->post_as( $a, array( 'jl_bible_version_2' => '' ) );
+		$this->assertTrue( jlife_challenges_handle_bible_post( $a ) );
+		$this->assertSame( '', jlife_challenges_handle_reminder_post( $a, $this->campaign ) );
+		$this->assertTrue( jlife_challenges_reminder_is_on( jlife_challenges_reminder_pref( $a, $this->campaign ) ) );
+	}
+
+	/**
 	 * The picker's script and the new stylesheet version load on My Marathon.
 	 */
 	public function test_my_marathon_loads_the_script_and_stylesheet_version() {
