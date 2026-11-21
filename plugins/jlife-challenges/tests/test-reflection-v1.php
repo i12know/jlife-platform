@@ -286,7 +286,7 @@ class Test_Reflection_V1 extends Jlife_Challenges_TestCase {
 	 */
 	private function post_form( $user_id, $action, $text ) {
 		wp_set_current_user( $user_id );
-		$data = array(
+		$data     = array(
 			'jl_text'     => $text,
 			'jl_action'   => $action,
 			'jl_day'      => 'd001',

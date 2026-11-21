@@ -360,7 +360,7 @@ function jlife_challenges_engine_reflection_v1( $text, $context = array() ) {
 			continue;
 		}
 		++$total;
-		$word = (string) preg_replace( '/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/u', '', $token );
+		$word                             = (string) preg_replace( '/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/u', '', $token );
 		$unique[ mb_strtolower( $word ) ] = true;
 	}
 	$passes = $total >= JLIFE_CHALLENGES_REFLECTION_WORDS && count( $unique ) >= JLIFE_CHALLENGES_REFLECTION_UNIQUE;
