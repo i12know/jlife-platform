@@ -1090,8 +1090,8 @@ function jlife_challenges_screen_marathon() {
 	if ( isset( $_GET['past'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only selector; past-campaigns.php checks ownership.
 		jlife_challenges_screen_past( $user_id, absint( wp_unslash( $_GET['past'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- as above.
 	}
-	$view    = jlife_challenges_marathon_view( $user_id );
-	$cid     = jlife_challenges_reminder_campaign_id( $user_id );
+	$view = jlife_challenges_marathon_view( $user_id );
+	$cid  = jlife_challenges_reminder_campaign_id( $user_id );
 	if ( $view && '' !== jlife_challenges_handle_reminder_post( $user_id, $cid ) ) {
 		wp_safe_redirect( add_query_arg( 'reminders', 'saved', jlife_challenges_screen_url( 'marathon' ) ) );
 		exit;
