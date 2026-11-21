@@ -352,7 +352,7 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 		. '<label><input type="radio" name="age_band" value="minor"' . checked( $in['age_band'], 'minor', false ) . '> ' . esc_html__( '13 to 17', 'jlife-auth' ) . '</label>'
 		. '<small>' . esc_html__( 'J-Life is for ages 13 and up.', 'jlife-auth' ) . '</small></fieldset>'
 		. '<label for="jl-lang">' . esc_html__( 'Language', 'jlife-auth' ) . '</label><select id="jl-lang" name="locale">' . $langs . '</select>'
-		. ( 'wait' === $mode ? '' : '<label><input type="checkbox" name="reminders" value="1"' . checked( '' !== (string) $in['reminders'], true, false ) . '> ' . esc_html__( 'Email me each morning\'s reading', 'jlife-auth' ) . '</label>'
+		. ( 'wait' === $mode || ! jlife_auth_reminder_optin_offered() ? '' : '<label><input type="checkbox" name="reminders" value="1"' . checked( '' !== (string) $in['reminders'], true, false ) . '> ' . esc_html__( 'Email me each morning\'s reading', 'jlife-auth' ) . '</label>'
 		. '<small>' . esc_html__( 'Optional. We write in the language you chose above. You can turn it off at any time.', 'jlife-auth' ) . '</small>' )
 		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
 		. $swap

@@ -135,10 +135,21 @@ function jlife_auth_start_join( $input, $ip = '' ) {
 			'campaign_id' => $campaign_id,
 			'age_band'    => $band,
 			'locale'      => $loc,
-			'reminders'   => ( 'wait' !== $mode && ! empty( $input['reminders'] ) ) ? 1 : 0,
+			// The box is only offered in saved Live mode (#189); a crafted post outside it opts in nobody.
+			'reminders'   => ( 'wait' !== $mode && jlife_auth_reminder_optin_offered() && ! empty( $input['reminders'] ) ) ? 1 : 0,
 		),
 		$ip
 	);
+}
+
+/**
+ * Is the join form's "Email me each morning's reading" box offered? Only while
+ * the site's saved reminder mode is Live (#189; jlife-challenges decides).
+ *
+ * @return bool
+ */
+function jlife_auth_reminder_optin_offered() {
+	return function_exists( 'jlife_challenges_reminder_optin_offered' ) && jlife_challenges_reminder_optin_offered();
 }
 
 /**

@@ -244,6 +244,19 @@ A reminder is a message the person asked for. The table holds the choice and the
 
 Recipients require **recorded consent** (`enrollments.consented`): the join form's box is saved before the `/consent` step, so a ticked box alone never makes someone a recipient.
 
+**The opt-in is offered only in saved Live mode (#189, part 1).** The source of truth is the site's saved sending mode (`jlife_reminders_mode`, saved on J-Life → Reminders or by `wp jlife reminders mode`; `jlife_challenges_reminder_optin_offered()`). Ticking Live's confirmation without saving changes nothing.
+
+| Saved mode | Today and My Marathon checkbox | Join form box (`/join`, every way in) | New opt-in accepted | Opt-out (checkbox "off", unsubscribe link) |
+|---|---|---|---|---|
+| Off (default), Dry run, Test | Hidden (My Marathon keeps Language and My Bible; that section is headed "Bible") | Hidden | ❌ REST `on: true` → 403 `jlife_reminders_not_offered`; a form "on" or a crafted join field saves nothing | ✅ |
+| Live | Shown | Shown (unticked) | ✅ | ✅ |
+
+- Hiding changes no data: existing rows (on or off) stay exactly as they are, nobody is turned on, and no consent or consent version is recorded. Switching modes (Off → Live → Off → Live) keeps every campaign-specific choice.
+- An absent field is no change: a Language or My Bible save never touches the reminder choice, and `POST /jlife/v1/reminder` without `on` only answers the saved state (it no longer rewrites the row, which used to refresh its consent version).
+- A join code requested while Live carries the ticked box; completing it after a switch away from Live still records that choice (it was made while offered).
+- The consent page has no opt-in control; its "If you choose daily reminders…" line is versioned wording and is unchanged.
+- **#181 coordination:** the Dec 14–19 official-Marathon consent offer must follow this rule: it shows only while the saved mode is Live (the plan is that the owner has reminders Live by then). It must not be shown in Off, Dry run or Test to satisfy #181's older wording, and Live must not be turned on early just to collect consent. #181 is not implemented here.
+
 **My Bible choice (#140).** Which Bible a participant reads in is a low-sensitivity preference, kept as two user-meta values on the participant's own account, not in `reminder_prefs`: `jlife_bible_version` (a registry key, or absent = follow My language) and `jlife_bible_version_2` (an optional second Bible, or absent = none). It holds only registry keys such as `kt1925` or `nirv`: no email address, no reading content, no Bible text. Stored as ordinary user meta like `locale` (network-wide on multisite: the same person reads in the same Bible on every site they belong to). The owner is `plugins/jlife-scripture` (`jlife_scripture_set_user_choice()` writes, `jlife_scripture_versions_for_user()` resolves); `jlife-challenges` only draws the My Marathon picker and the `POST /jlife/v1/bible` route.
 
 | Actor / case | Read the choice | Change the choice | Notes |

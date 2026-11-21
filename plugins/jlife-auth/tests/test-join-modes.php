@@ -45,6 +45,7 @@ class Test_Join_Modes extends WP_UnitTestCase {
 	 */
 	public function set_up() {
 		parent::set_up();
+		update_option( 'jlife_reminders_mode', 'live' ); // The join form's reminder box is offered only in saved Live mode (#189).
 		reset_phpmailer_instance();
 		add_filter( 'wp_mail_from', static fn() => 'jlife@example.test' );
 		$this->organizer = self::factory()->user->create( array( 'role' => 'administrator' ) );
@@ -261,6 +262,55 @@ class Test_Join_Modes extends WP_UnitTestCase {
 			$this->assertStringContainsString( 'each morning', $html );
 		}
 		$this->assertMatchesRegularExpression( '/name="reminders" value="1" checked/', jlife_auth_join_form( 'solo', array( 'reminders' => '1' ) ), 'kept ticked after an error' );
+	}
+
+	/**
+	 * #189: the join form's box is offered only in saved Live mode. In Off, Dry
+	 * run and Test it is gone from every way in (EN and VI), a crafted "reminders"
+	 * field opts in nobody, and joining records no reminder row; the consent
+	 * page has no opt-in control in any mode.
+	 */
+	public function test_join_reminder_box_only_in_saved_live_mode() {
+		$n = 0;
+		foreach ( array( 'off', 'dry_run', 'test', 'live' ) as $mode ) {
+			$this->assertTrue( jlife_challenges_reminders_set_mode( $mode, $this->organizer ) );
+			$live = 'live' === $mode;
+			foreach ( array( 'en_US', 'vi' ) as $locale ) {
+				$force = static fn() => $locale;
+				add_filter( 'determine_locale', $force, 99 );
+				jlife_auth_refresh_translations();
+				foreach ( array( 'invite', 'solo', 'start' ) as $way ) {
+					$html = jlife_auth_join_form( $way, array( 'reminders' => '1' ) );
+					$this->assertSame( $live, str_contains( $html, 'name="reminders"' ), "{$mode}, {$locale}, {$way}" );
+				}
+				$this->assertStringNotContainsString( 'name="reminders"', jlife_auth_join_form( 'wait', array() ), "{$mode}: never on the wait form" );
+				$consent = jlife_auth_consent_body();
+				$this->assertStringNotContainsString( 'name="reminders"', $consent, "{$mode}: no opt-in on the consent page" );
+				$this->assertStringNotContainsString( 'name="jl_reminder"', $consent );
+				remove_filter( 'determine_locale', $force, 99 );
+				jlife_auth_refresh_translations();
+			}
+
+			$email = 'crafted' . ( ++$n ) . '@example.test';
+			jlife_auth_start_join(
+				$this->input(
+					array(
+						'email'     => $email,
+						'mode'      => 'solo',
+						'reminders' => '1',
+					)
+				)
+			);
+			$id = jlife_auth_complete( $email, $this->last_code() )['user_id'];
+			jlife_auth_record_consent( $id );
+			$pref = jlife_challenges_reminder_pref( $id, $this->campaign );
+			if ( $live ) {
+				$this->assertTrue( jlife_challenges_reminder_is_on( $pref ), 'Live: the ticked box opts in' );
+			} else {
+				$this->assertNull( $pref, "{$mode}: a crafted field opts in nobody and writes no row" );
+				$this->assertNotContains( $id, jlife_challenges_reminder_recipients( $this->campaign ) );
+			}
+		}
 	}
 
 	/**

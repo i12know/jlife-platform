@@ -122,6 +122,7 @@ return array(
 		// Daily reading email choice and one-click unsubscribe (#63 Phase B, part 1). DRAFT, like the rest.
 		'Yes' => 'Có',
 		'Daily reading email' => 'Email bài đọc hằng ngày',
+		'Bible' => 'Kinh Thánh',
 		'Saved.' => 'Đã lưu.',
 		'Language' => 'Ngôn ngữ',
 		'Language for screens and emails' => 'Ngôn ngữ cho màn hình và email',

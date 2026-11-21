@@ -20,6 +20,7 @@ class Test_Reminders extends Jlife_Challenges_TestCase {
 	 */
 	public function set_up() {
 		parent::set_up();
+		update_option( 'jlife_reminders_mode', 'live' ); // The opt-in is offered only in saved Live mode (#189; Test_Reminder_Visibility covers the others).
 		foreach ( array( 'a', 'b', 'c' ) as $n ) {
 			jlife_challenges_record_consent( $this->u[ $n ], $this->campaign, 'test-version' );
 		}
