@@ -400,5 +400,17 @@ return array(
 		'You did not write any SOAP in this reading period.' => 'Bạn chưa viết bài SOAP nào trong đợt đọc này.',
 		'Shared with %s' => 'Đã chia sẻ với %s',
 		'Your post could not be removed. Please try again.' => 'Không gỡ được bài chia sẻ của bạn. Xin thử lại.',
+		// Disable and Enable on J-Life → Groups (#158). DRAFT, like the rest: for the organizer, to be reviewed by the Vietnamese reviewers.
+		'Group disabled. Its invite code no longer works and its members cannot read its feed. Nothing was deleted.' => 'Đã tắt nhóm. Mã mời của nhóm không còn dùng được và các thành viên không đọc được bảng tin của nhóm. Không có gì bị xóa.',
+		'Group enabled. Its members can read its feed again, and its invite code works again if it has not expired or been revoked.' => 'Đã bật lại nhóm. Các thành viên đọc được bảng tin của nhóm trở lại, và mã mời dùng lại được nếu chưa hết hạn hoặc chưa bị thu hồi.',
+		'Tick the box to confirm, then disable the group. Nothing was changed.' => 'Hãy đánh dấu ô để xác nhận, rồi tắt nhóm. Chưa có gì thay đổi.',
+		'Not enabled: someone in this group is already in the most groups they can join (%d). Move or remove them first.' => 'Chưa bật lại: có người trong nhóm này đã ở trong số nhóm tối đa họ được tham gia (%d). Hãy chuyển hoặc xóa họ khỏi nhóm trước.',
+		'Disable this group' => 'Tắt nhóm này',
+		'Disabling stops the invite code and closes the group feed to its members. Nothing is deleted, and you can enable it again.' => 'Tắt nhóm sẽ làm mã mời ngừng hoạt động và đóng bảng tin của nhóm đối với các thành viên. Không có gì bị xóa, và bạn có thể bật lại.',
+		'I understand: the invite code stops working and members lose this group\'s feed.' => 'Tôi hiểu: mã mời sẽ ngừng hoạt động và các thành viên không còn đọc được bảng tin của nhóm này.',
+		'Disable group' => 'Tắt nhóm',
+		'Enable this group' => 'Bật lại nhóm này',
+		'Enabling restores the group as it was: its members, its feed and its invite code (if it has not expired or been revoked).' => 'Bật lại sẽ khôi phục nhóm như trước: các thành viên, bảng tin và mã mời của nhóm (nếu chưa hết hạn hoặc chưa bị thu hồi).',
+		'Enable group' => 'Bật lại nhóm',
 	),
 );

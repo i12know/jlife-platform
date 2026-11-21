@@ -2,8 +2,10 @@
 /**
  * J-Life → Groups (#64 part 1): the organizer's plain WordPress screen for the
  * pilot's small groups. List groups with member counts, create and rename one,
- * make, replace or revoke its invite code (with an expiry), and add, move or
- * remove a member. Design and access rules: docs/challenges-engine-design.md §4g.
+ * make, replace or revoke its invite code (with an expiry), add, move or
+ * remove a member, and disable or enable a group (#158, the same functions as
+ * `wp jlife group disable|enable`; Disable needs a ticked "I understand" box).
+ * Design and access rules: docs/challenges-engine-design.md §4g.
  *
  * - `manage_options` only (organizers and site admins; there is no other organizer
  *   role). Anyone else gets no menu entry and a 403.
@@ -23,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  * Page slug, and the operations the page's forms can post.
  */
 const JLIFE_CHALLENGES_GROUPS_PAGE = 'jlife-groups';
-const JLIFE_CHALLENGES_GROUPS_OPS  = array( 'create', 'rename', 'regenerate', 'revoke', 'add', 'move', 'remove' );
+const JLIFE_CHALLENGES_GROUPS_OPS  = array( 'create', 'rename', 'regenerate', 'revoke', 'add', 'move', 'remove', 'disable', 'enable' );
 
 add_action( 'admin_menu', 'jlife_challenges_groups_admin_menu', 20 );
 
@@ -132,11 +134,12 @@ function jlife_challenges_groups_admin_error_code( WP_Error $error ) {
  * capability, POST, known operation, nonce for that operation and group.
  *
  * Fields: op, nonce, group_id (the group the form belongs to), user_id,
- * to_group_id, name, days, campaign_id, token (a one-use form token).
+ * to_group_id, name, days, campaign_id, token (a one-use form token), confirm
+ * (Disable only: the ticked "I understand" box).
  *
  * @param string $method 'GET' or 'POST' (only POST changes anything).
  * @param array  $fields Request fields.
- * @return array { code, group_id, reveal } where code is forbidden|bad_method|bad_op|bad_nonce|duplicate|bad_days|not_allowed|name_invalid|limit|already|same_group|failed or the success code created|renamed|invite_reset|invite_revoked|member_added|member_removed|member_moved.
+ * @return array { code, group_id, reveal } where code is forbidden|bad_method|bad_op|bad_nonce|duplicate|bad_days|not_allowed|name_invalid|limit|already|same_group|confirm_needed|enable_limit|failed or the success code created|renamed|invite_reset|invite_revoked|member_added|member_removed|member_moved|group_disabled|group_enabled.
  */
 function jlife_challenges_groups_admin_apply( $method, array $fields ) {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -198,8 +201,21 @@ function jlife_challenges_groups_admin_apply( $method, array $fields ) {
 		'remove'     => 'member_removed',
 		'move'       => 'member_moved',
 		'regenerate' => 'invite_reset',
+		'disable'    => 'group_disabled',
+		'enable'     => 'group_enabled',
 	);
-	if ( 'rename' === $op ) {
+	if ( 'disable' === $op ) {
+		// Disabling needs the "I understand" box: checked here too, so a form without it changes nothing.
+		if ( empty( $fields['confirm'] ) ) {
+			return jlife_challenges_groups_admin_result( 'confirm_needed', $group_id );
+		}
+		$r = jlife_challenges_disable_group( $actor, $group_id );
+	} elseif ( 'enable' === $op ) {
+		$r = jlife_challenges_enable_group( $actor, $group_id );
+		if ( is_wp_error( $r ) && 'jlife_group_limit' === $r->get_error_code() ) {
+			return jlife_challenges_groups_admin_result( 'enable_limit', $group_id );
+		}
+	} elseif ( 'rename' === $op ) {
 		$r = jlife_challenges_rename_group( $actor, $group_id, $name );
 	} elseif ( 'revoke' === $op ) {
 		$r = jlife_challenges_revoke_invite( $actor, $group_id );
@@ -268,6 +284,7 @@ function jlife_challenges_groups_admin_load() {
 			'days'        => isset( $_POST['jl_days'] ) ? absint( $_POST['jl_days'] ) : 60,
 			'campaign_id' => isset( $_POST['jl_campaign_id'] ) ? absint( $_POST['jl_campaign_id'] ) : 0,
 			'token'       => isset( $_POST['jl_token'] ) ? sanitize_key( wp_unslash( $_POST['jl_token'] ) ) : '',
+			'confirm'     => isset( $_POST['jl_confirm'] ) && '1' === sanitize_key( wp_unslash( $_POST['jl_confirm'] ) ),
 		)
 	);
 	// phpcs:enable
@@ -354,17 +371,22 @@ function jlife_challenges_groups_admin_notice_text( $code ) {
 		'member_added'   => __( 'Member added.', 'jlife-challenges' ),
 		'member_removed' => __( 'Member removed from this group. Their entries, points and other groups are unchanged.', 'jlife-challenges' ),
 		'member_moved'   => __( 'Member moved. What they shared before stays with their old group.', 'jlife-challenges' ),
+		'group_disabled' => __( 'Group disabled. Its invite code no longer works and its members cannot read its feed. Nothing was deleted.', 'jlife-challenges' ),
+		'group_enabled'  => __( 'Group enabled. Its members can read its feed again, and its invite code works again if it has not expired or been revoked.', 'jlife-challenges' ),
 	);
 	$errors = array(
-		'name_invalid' => jlife_challenges_clean_group_name( '' )->get_error_message(),
-		'bad_days'     => __( 'Choose one of the expiry times in the list.', 'jlife-challenges' ),
-		'not_allowed'  => __( 'Not found or not allowed.', 'jlife-challenges' ),
+		'name_invalid'   => jlife_challenges_clean_group_name( '' )->get_error_message(),
+		'bad_days'       => __( 'Choose one of the expiry times in the list.', 'jlife-challenges' ),
+		'not_allowed'    => __( 'Not found or not allowed.', 'jlife-challenges' ),
 		/* translators: %d: the most groups one person can be in. */
-		'limit'        => sprintf( __( 'That person is already in the most groups they can join (%d).', 'jlife-challenges' ), JLIFE_CHALLENGES_MAX_GROUPS ),
-		'already'      => __( 'That person is already in that group.', 'jlife-challenges' ),
-		'same_group'   => __( 'Choose a different group to move them to.', 'jlife-challenges' ),
-		'duplicate'    => __( 'That request was already handled. Nothing was changed.', 'jlife-challenges' ),
-		'failed'       => __( 'Something went wrong. Nothing was changed.', 'jlife-challenges' ),
+		'limit'          => sprintf( __( 'That person is already in the most groups they can join (%d).', 'jlife-challenges' ), JLIFE_CHALLENGES_MAX_GROUPS ),
+		'already'        => __( 'That person is already in that group.', 'jlife-challenges' ),
+		'same_group'     => __( 'Choose a different group to move them to.', 'jlife-challenges' ),
+		'duplicate'      => __( 'That request was already handled. Nothing was changed.', 'jlife-challenges' ),
+		'confirm_needed' => __( 'Tick the box to confirm, then disable the group. Nothing was changed.', 'jlife-challenges' ),
+		/* translators: %d: the most groups one person can be in. */
+		'enable_limit'   => sprintf( __( 'Not enabled: someone in this group is already in the most groups they can join (%d). Move or remove them first.', 'jlife-challenges' ), JLIFE_CHALLENGES_MAX_GROUPS ),
+		'failed'         => __( 'Something went wrong. Nothing was changed.', 'jlife-challenges' ),
 	);
 	if ( isset( $ok[ $code ] ) ) {
 		return array(
@@ -616,7 +638,35 @@ function jlife_challenges_groups_admin_group_html( array $detail, $base ) {
 				. '<button type="submit" class="button button-primary">' . esc_html__( 'Add to this group', 'jlife-challenges' ) . '</button></p>'
 			);
 	}
-	return $html;
+	return $html . jlife_challenges_groups_admin_status_html( $group, $base );
+}
+
+/**
+ * Disable or enable a group (#158): only the button that applies. Disable
+ * explains itself in one line and needs a ticked "I understand" box, so it
+ * works without JavaScript (the browser asks for the box, and the server checks
+ * it again). Enable needs no confirmation.
+ *
+ * @param array  $group Group row.
+ * @param string $base  The page address on this group.
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_groups_admin_status_html( array $group, $base ) {
+	$gid = (int) $group['id'];
+	if ( 'active' === $group['status'] ) {
+		return '<h3>' . esc_html__( 'Disable this group', 'jlife-challenges' ) . '</h3>'
+			. '<p>' . esc_html__( 'Disabling stops the invite code and closes the group feed to its members. Nothing is deleted, and you can enable it again.', 'jlife-challenges' ) . '</p>'
+			. jlife_challenges_groups_admin_form(
+				$base,
+				'disable',
+				$gid,
+				'<p><label><input type="checkbox" name="jl_confirm" value="1" required> ' . esc_html__( 'I understand: the invite code stops working and members lose this group\'s feed.', 'jlife-challenges' ) . '</label></p>'
+				. '<p><button type="submit" class="button button-secondary">' . esc_html__( 'Disable group', 'jlife-challenges' ) . '</button></p>'
+			);
+	}
+	return '<h3>' . esc_html__( 'Enable this group', 'jlife-challenges' ) . '</h3>'
+		. '<p>' . esc_html__( 'Enabling restores the group as it was: its members, its feed and its invite code (if it has not expired or been revoked).', 'jlife-challenges' ) . '</p>'
+		. jlife_challenges_groups_admin_form( $base, 'enable', $gid, '<p><button type="submit" class="button button-primary">' . esc_html__( 'Enable group', 'jlife-challenges' ) . '</button></p>' );
 }
 
 /**
