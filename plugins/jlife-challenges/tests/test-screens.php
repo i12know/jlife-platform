@@ -19,6 +19,55 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * The Welcome screen offers the sign-in recovery prompt (#202): signed out it
+	 * links to the code sign-in that returns to Today; signed in without an
+	 * enrollment it offers an explained, nonce-protected switch. Rendering never
+	 * signs anyone out, and the three join options stay.
+	 */
+	public function test_welcome_shows_signin_recovery_for_signed_out_and_unenrolled() {
+		$today = jlife_challenges_screen_url( 'today' );
+		wp_set_current_user( 0 );
+		$html = jlife_challenges_render_no_day( array( 'state' => 'not_enrolled' ) );
+		$this->assertStringContainsString( 'Already joined the Marathon?', $html );
+		$this->assertStringContainsString( 'href="' . esc_url( add_query_arg( 'redirect_to', rawurlencode( $today ), home_url( '/signin/' ) ) ) . '"', $html );
+		$this->assertStringNotContainsString( 'action=logout', $html, 'a signed-out visitor is offered a plain sign-in' );
+		foreach ( array( '/join/', 'mode=solo', 'mode=start' ) as $join ) {
+			$this->assertStringContainsString( $join, $html, 'the three join options stay' );
+		}
+
+		// Signed in, not enrolled (an administrator after a wp-admin login).
+		wp_set_current_user( $this->u['organizer'] );
+		$html = jlife_challenges_render_no_day( array( 'state' => 'not_enrolled' ) );
+		$this->assertStringContainsString( 'Already joined the Marathon?', $html );
+		$this->assertStringContainsString( 'Sign out and sign in with my Marathon account', $html );
+		$this->assertStringContainsString( 'action=logout', $html );
+		$this->assertStringContainsString( '_wpnonce=', $html, 'the switch is nonce-protected' );
+		$this->assertStringContainsString( 'Nothing is moved or changed on either account.', $html );
+		$this->assertSame( $this->u['organizer'], get_current_user_id(), 'rendering the prompt does not sign anyone out' );
+		$this->assertSame( array( 'state' => 'not_enrolled' ), jlife_challenges_day_view( $this->u['organizer'] ), 'and enrolls nobody' );
+	}
+
+	/**
+	 * The switch link signs out only through WordPress's logout and lands on the
+	 * sign-in form for Today, with a validated local redirect (no loop, no open redirect).
+	 */
+	public function test_switch_link_lands_on_signin_with_a_local_return_to_today() {
+		wp_set_current_user( $this->u['organizer'] );
+		$html = jlife_challenges_signin_recovery_html();
+		$this->assertSame( 1, preg_match( '/href="([^"]*action=logout[^"]*)"/', $html, $m ) );
+		parse_str( (string) wp_parse_url( html_entity_decode( $m[1] ), PHP_URL_QUERY ), $q );
+		$this->assertSame( add_query_arg( 'redirect_to', rawurlencode( home_url( '/today/' ) ), home_url( '/signin/' ) ), $q['redirect_to'] );
+		$this->assertSame( $this->u['organizer'], get_current_user_id(), 'building the link does not log out' );
+		if ( function_exists( 'jlife_auth_redirect_target' ) ) {
+			$_REQUEST['redirect_to'] = home_url( '/today/' );
+			$this->assertSame( home_url( '/today/' ), jlife_auth_redirect_target() );
+			$_REQUEST['redirect_to'] = 'https://evil.test/steal';
+			$this->assertSame( home_url( '/' ), jlife_auth_redirect_target(), 'off-site targets are refused' );
+			unset( $_REQUEST['redirect_to'] );
+		}
+	}
+
+	/**
 	 * Before Day 1 and after the last day, Today shows a calm message.
 	 */
 	public function test_before_and_after_campaign() {
@@ -1205,7 +1254,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$html = jlife_challenges_page_html( 'Today', $body, 'today', array( 'soap', 'reminder' ) );
 		$this->assertStringContainsString( 'assets/soap.js?v=5', $html );
 		$this->assertStringContainsString( 'assets/reminder.js?v=2', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=19', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=20', $html );
 		$this->assertStringNotContainsString( 'reminder.js', jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' ) );
 	}
 }

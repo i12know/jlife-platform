@@ -117,7 +117,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 	$html = '<!doctype html><html lang="' . esc_attr( '' !== $lang ? $lang : str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=19' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=20' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
 		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -553,6 +553,30 @@ function jlife_challenges_require_participant() {
 }
 
 /**
+ * The "Already joined?" recovery prompt of the Welcome screen (#202).
+ *
+ * Signed out: a link to the passwordless sign-in that returns to Today. Signed in
+ * as an account with no enrollment (often staff, after a wp-admin login replaced
+ * the participant session): says so and offers a deliberate switch, a
+ * nonce-protected sign-out that lands on the sign-in form. Nobody is signed out
+ * by opening Today, and nothing is moved between accounts.
+ *
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_signin_recovery_html() {
+	$today  = jlife_challenges_screen_url( 'today' );
+	$signin = add_query_arg( 'redirect_to', rawurlencode( $today ), home_url( '/signin/' ) );
+	if ( ! is_user_logged_in() ) {
+		return '<section class="jl-recover"><h2>' . esc_html__( 'Already joined the Marathon?', 'jlife-challenges' ) . '</h2>'
+			. '<p>' . esc_html__( 'Sign in with your Marathon account to see your reading, group and points.', 'jlife-challenges' ) . '</p>'
+			. '<p><a class="jl-button" href="' . esc_url( $signin ) . '">' . esc_html__( 'Sign in with my Marathon account', 'jlife-challenges' ) . '</a></p></section>';
+	}
+	return '<section class="jl-recover"><h2>' . esc_html__( 'Already joined the Marathon?', 'jlife-challenges' ) . '</h2>'
+		. '<p>' . esc_html__( 'You are signed in with an account that has not joined. If you joined with a different account, switch to it: this signs out of the current account and opens the sign-in page. Nothing is moved or changed on either account.', 'jlife-challenges' ) . '</p>'
+		. '<p><a class="jl-button" href="' . esc_url( wp_logout_url( $signin ) ) . '">' . esc_html__( 'Sign out and sign in with my Marathon account', 'jlife-challenges' ) . '</a></p></section>';
+}
+
+/**
  * Pages that do not have a day to show.
  *
  * @param array $view Day view.
@@ -565,7 +589,8 @@ function jlife_challenges_render_no_day( $view ) {
 				. esc_html__( 'You have not joined the Marathon yet. Open the invite link your group shared with you, or read on your own.', 'jlife-challenges' ) . '</p>'
 				. '<p><a class="jl-button jl-primary" href="' . esc_url( home_url( '/join/' ) ) . '">' . esc_html__( 'I have an invite code', 'jlife-challenges' ) . '</a> '
 				. '<a class="jl-button" href="' . esc_url( add_query_arg( 'mode', 'solo', home_url( '/join/' ) ) ) . '">' . esc_html__( 'Read on my own', 'jlife-challenges' ) . '</a> '
-				. '<a class="jl-button" href="' . esc_url( add_query_arg( 'mode', 'start', home_url( '/join/' ) ) ) . '">' . esc_html__( 'Start a group', 'jlife-challenges' ) . '</a></p>';
+				. '<a class="jl-button" href="' . esc_url( add_query_arg( 'mode', 'start', home_url( '/join/' ) ) ) . '">' . esc_html__( 'Start a group', 'jlife-challenges' ) . '</a></p>'
+					. jlife_challenges_signin_recovery_html();
 		case 'before':
 			/* translators: %s: start date. */
 			return '<h1>' . esc_html__( 'Almost time', 'jlife-challenges' ) . '</h1><p>' . esc_html( sprintf( __( 'The Marathon starts on %s. See you on Day 1!', 'jlife-challenges' ), jlife_challenges_format_date( $view['start_date'] ) ) ) . '</p>';
