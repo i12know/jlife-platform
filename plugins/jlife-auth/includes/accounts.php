@@ -261,7 +261,7 @@ function jlife_auth_do_join( $user_id, $payload ) {
 		// The person chose to start on Dec 20 (#178). Only that choice is kept here,
 		// with no enrollment, consent or reminder; the rollover (#180) enrolls them later.
 		if ( function_exists( 'jlife_challenges_set_waiting_for_official' ) ) {
-			jlife_challenges_set_waiting_for_official( $user_id );
+			jlife_challenges_set_waiting_for_official( $user_id, (string) ( $payload['age_band'] ?? '' ) );
 			$out['waiting'] = true;
 		}
 		return $out;

@@ -154,6 +154,7 @@ class Test_Wait_Choice extends WP_UnitTestCase {
 		$r = jlife_auth_complete( 'reader@example.test', $this->last_code() );
 		$this->assertIsArray( $r );
 		$this->assertTrue( jlife_challenges_is_waiting_for_official( $r['user_id'] ) );
+		$this->assertSame( 'adult', jlife_challenges_waiting_age_band( $r['user_id'] ), 'the age band is kept for the rollover (#180)' );
 		$this->assertSame( array(), jlife_challenges_user_enrollments( $r['user_id'] ), 'no enrollment of any kind' );
 		$this->assertSame( 'vi', get_user_meta( $r['user_id'], 'locale', true ) );
 		$this->assertSame( 'Linh', get_userdata( $r['user_id'] )->first_name );

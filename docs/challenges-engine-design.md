@@ -136,7 +136,30 @@ The Dec 5–13 pilot is frozen on Dec 14 (owner decision D4-A on #174): its priv
   - Organizer actions that only reduce visibility (hiding a share, revoking an invite code, removing a member, a person leaving a group) stay available.
 - **Still the anchor:** a closed campaign stays the person's reminder target (§3b) for the account's Bible choice and language settings.
 - **Earlier reading (#174, D4-A):** once a closed or ended campaign is no longer the person's current one (for LATOC, from their Marathon enrollment), My Marathon lists it under **Earlier reading**, linking `/marathon/?past=<id>`. That page shows only the person's own entries, read-only, and their own shares that still show text (live, or hidden with text not yet cleared) with **Remove my post**, listed from `group_shares` itself so a share stays removable even if its SOAP was cleared after sharing. Removing is idempotent (no second audit row) and a failed write is an error, never reported as removed. It is offered only for campaigns of the person's active enrollments in phase `ended` or `closed` that are not current; any other ID shows "Not found or not allowed." Nothing there writes entries, shares, points or memberships (`includes/past-campaigns.php`).
-- **Not here:** purging after the retention period (#186); moving people to the next campaign (#180).
+- **Not here:** purging after the retention period (#186); moving people to the next campaign (§3d, #180).
+
+## 3d. Rollover, part 1: the official campaign and its enrollments (#180)
+
+The owner wants the official Marathon and its enrollments **prepared and verified by Dec 18**, so Dec 20 is an activation, not a migration (#174). Part 1 creates the campaign and carries enrollments; groups are part 2 (#182); reminder consent is asked again (D3-B modified, #181). Everything is site-scoped, with explicit source and destination IDs (ADR 0001); nothing reads or writes another site or another installation.
+
+**Creating the official campaign.** `wp jlife official create [--key=<key>] [--force]` makes `marathon-2026`: Day 1 = 2026-12-20, Day 104 = 2027-04-02, `America/Los_Angeles`, `active`, the same reading plan as the pilot. Running it again changes nothing; `wp jlife official status` prints its key, dates, phase, counts, and which campaign new sign-ups join right now. A key starting with `test-` or `pilot-` is refused.
+- **Timing risk.** Under §3b an `active` campaign that is upcoming takes new sign-ups whenever nothing nearer is open. With the pilot on the site (upcoming, running, ended or closed) that is harmless: new sign-ups join the pilot until Dec 13 and the Marathon from Dec 14, which is the plan. With **no** pilot campaign, creating the Marathon early sends every new sign-up straight to Dec 20 and hides "I'll start Dec 20". So `create` refuses (`jlife_official_no_pilot`) unless a non-draft `pilot-` campaign exists, or `--force` is given for a site that deliberately has no pilot.
+
+**The rollover.** `wp jlife campaign rollover --from=<source id> --to=<destination id> --preview|--execute|--verify`, run by the owner (as an organizer) on the site that holds both campaigns, normally after the pilot is closed (§3c) and before Dec 18. Output, the audit row and logs are **counts only**, plus the two campaigns' keys and phases so the operator can see they picked the right ones.
+
+| Who carries over | How |
+|---|---|
+| Every person with an **active** enrollment in the source | Same WordPress user ID and `age_band` as the source enrollment. `consent_version` and `consented` as recorded on the source enrollment; if that is empty, as recorded on the account (`jlife_consent_version`, `jlife_consent_at`, written by the consent step) |
+| Every person on this site who chose **"I'll start Dec 20"** (#178) | The age band they gave when choosing (stored per site with the choice, `jlife_start_official_band` as a user option). Consent as recorded on the account. A choice recorded before this change, or on another site, has no band here: skipped and counted (`skipped_wait_details_missing`); they can still join from `/join` |
+| Someone whose source enrollment was removed or left | Not carried (`skipped_left_source`), even if they also chose to wait |
+| Someone already enrolled in the destination (e.g. joined directly after Dec 14) | Left exactly as they are (`already_enrolled`) |
+| Someone removed from the destination | Not put back (`skipped_removed_in_destination`) |
+
+- **What never carries over:** SOAP entries and revisions, `score_ledger` rows, shares, group memberships and groups (#182), reminder choices and queued sends (#181: consent is asked again), and guardian consent (`guardian_consent` is per campaign and recorded again by an organizer where the D19 option is on). The new enrollment is solo, with `joined` = the run time. Official points start at 0.
+- **Fails closed** (nothing written) when: the actor is not an organizer on this site; either ID is not a campaign on this site (`jlife_rollover_not_found`); the IDs are equal (`jlife_rollover_same`); the source is a `test-` campaign or a draft (`jlife_rollover_source_invalid`); the destination's key starts with `test-` or `pilot-`, it is not `active`, or it is not still upcoming (`jlife_rollover_destination_invalid`); the destination already has SOAP entries, ledger rows or shares (`jlife_rollover_destination_not_empty`). Preview and execute both check all of these.
+- **Safe to rerun:** each enrollment is one `INSERT IGNORE` on the UNIQUE (`campaign_id`, `user_id`) key, so a second run adds nothing, two runs at once cannot duplicate, and a run that stops part-way is finished by running it again. Each execute writes one `campaign_rollover` audit row (counts and a source snapshot, no user IDs). The source campaign is only read.
+- **Verify** recomputes the expected people and reports: `expected`, `enrolled_once` (expected people with exactly one active destination enrollment), `missing`, `duplicate_enrollments`, `destination_enrollments`, destination ledger rows, entries and shares (must be 0), `executed`, `source_changed_by_run` (the source's row counts before and after the last execute differ, which would mean the rollover touched it) and `source_changed_since_run` (the source changed after the last execute, e.g. someone removed a pilot post under Earlier reading: reported, not a failure). It passes only when an execute has run, `missing`, duplicates, the three destination counts and `source_changed_by_run` are all 0, and exits non-zero otherwise.
+- **After the rollover:** the official campaign is each carried person's current campaign (§3b: upcoming beats ended or closed), so Today shows "Almost time" from Dec 14 and Day 1 on Dec 20, and the closed pilot moves to My Marathon → Earlier reading (§3c).
 
 ## 4. Privacy matrix: new rows for the engine
 
@@ -200,6 +223,7 @@ Unchecking later never removes a post; removal stays with the per-group "Remove 
 | Enrollment removed by an organizer | All the person's memberships end with it |
 | Feed read or membership list of group G | Only active members of G (through an active enrollment); the gate never answers from `enrollments.group_id` |
 | Account deletion, test-campaign removal | Memberships are deleted with the enrollment (no orphan rows) |
+| Rollover, part 1 (#180, §3d): an organizer carries source enrollments and "I'll start Dec 20" choices into an upcoming destination on the same site | Writes only new destination enrollments (same user, age band and consent record; no group, no guardian consent, no reminder row); never reads or writes another site; never touches source rows; refused for non-organizers and for a test, draft, started or non-empty campaign. Output and audit are counts only |
 
 ### 4c. Start a group (#112 part 2)
 

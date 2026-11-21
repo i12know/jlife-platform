@@ -436,6 +436,94 @@ with `pilot-`, never `test-`, so the test-campaign removal cannot delete it.
   join. It creates the account and a flag; the person is not enrolled and gets
   no email until the rollover (#180) and their reminder choice (#181).
 
+## Official Marathon and rollover, part 1 (#180)
+
+Server commands only for now (cPanel → Terminal or SSH; `wp` means the WP-CLI
+call from the restore section, with `--url=https://latoc.vayhub.org`). A deploy
+choice comes with #183. Every command prints counts, dates and campaign keys
+only, so the output is safe to paste into an issue. Design: §3d of
+[challenges-engine-design.md](challenges-engine-design.md).
+
+**Timing risk.** An active, upcoming campaign takes new sign-ups whenever
+nothing nearer is open (design §3b). With the pilot on the site that is the
+plan: sign-ups join the pilot until Dec 13 and the Marathon from Dec 14. With
+**no** pilot campaign, creating the Marathon sends every new sign-up straight
+to Dec 20 and hides "I'll start Dec 20". `wp jlife official create` therefore
+refuses when no pilot campaign exists, unless `--force` is given.
+
+1. **By Dec 14: create the official campaign** (any time after the pilot
+   exists; it is not current for anyone, and takes no sign-ups, until the pilot
+   ends):
+
+   ```bash
+   wp jlife official create
+   wp jlife official status
+   ```
+
+   `create` makes `marathon-2026` (2026-12-20 to 2027-04-02, Pacific, active,
+   104 days, the pilot's reading plan) or reports that it exists; nothing
+   changes the second time. `status` prints, for example:
+
+   ```text
+   marathon-2026 (id 14): 2026-12-20 to 2027-04-02, status active, phase upcoming, 104 days.
+     enrollments          0
+     entries              0
+     ledger_rows          0
+     shares               0
+   New sign-ups join now: pilot-2026-12 (id 13).
+   ```
+
+2. **Dec 14: close the pilot** (design §3c): `wp jlife campaign close <pilot id> --dry-run`,
+   then without `--dry-run`.
+3. **Take a backup** (run the deploy, or `wp db export` into `~/.latoc/backups/`).
+4. **Preview, then execute, then verify** (IDs from `wp jlife pilot status`
+   and `wp jlife official status`):
+
+   ```bash
+   wp jlife campaign rollover --from=<pilot id> --to=<official id> --preview
+   wp jlife campaign rollover --from=<pilot id> --to=<official id> --execute
+   wp jlife campaign rollover --from=<pilot id> --to=<official id> --verify
+   ```
+
+   Preview and execute print the two campaigns, then one count per line:
+
+   ```text
+   From: pilot-2026-12 (id 13), closed.
+   To:   marathon-2026 (id 14), upcoming, 2026-12-20 to 2027-04-02.
+     source_enrollments                 41
+     waiting_flags                       6
+     already_enrolled                    2
+     to_enroll                          44
+     skipped_left_source                 1
+     skipped_removed_in_destination      0
+     skipped_wait_details_missing        0
+   ```
+
+   Execute adds `enrolled_now` and ends with "Enrolled N; M were already
+   enrolled." Verify prints `expected`, `enrolled_once`, `missing`,
+   `duplicate_enrollments`, `destination_enrollments`,
+   `destination_ledger_rows`, `destination_entries`, `destination_shares`,
+   `executed`, `source_changed_by_run` and `source_changed_since_run`, and ends
+   with "Verified" or an error (non-zero exit) naming what is wrong.
+   `source_changed_since_run` only reports pilot changes made after the run
+   (for example someone removing a pilot post under Earlier reading); it does
+   not fail the check.
+5. **If execute stops part-way** (timeout, lost connection): run execute
+   again. Each enrollment is written once; nothing is duplicated.
+6. **If someone joins the pilot or chooses to wait after the run** (before the
+   pilot is closed), run execute again; only the newcomers are added.
+7. **Rehearse first** on a restored copy or with a throwaway pilot and official
+   campaign, and record the preview, execute and verify counts on #180 by
+   Dec 18.
+
+What it does not do: groups (#182), reminder consent (#181: nobody gets an
+official reminder until they choose it), guardian consent (recorded again by an
+organizer where that option is on), and nothing in the pilot changes.
+
+**Rollback:** before Dec 20 nobody can write in the official campaign, so a
+wrong run is undone by restoring the backup from step 3. Do not delete
+enrollment rows by hand.
+
 ## Backups and restore
 
 - Every deploy writes `~/.latoc/backups/<UTC timestamp>.sql.gz`; the 10 most recent are kept.
