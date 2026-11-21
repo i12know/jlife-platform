@@ -1169,12 +1169,13 @@ function jlife_challenges_screen_marathon() {
 	foreach ( array( 'earned', 'late', 'draft', 'today', 'open' ) as $s ) {
 		$legend .= '<li><span class="jl-cell jl-' . esc_attr( $s ) . '"></span> ' . esc_html( $labels[ $s ] ) . '</li>';
 	}
+	// Settings first (#204): Language, Bible and, in Live mode only (#189), the reminder checkbox.
 	$body = '<h1>' . esc_html__( 'My Marathon', 'jlife-challenges' ) . '</h1>'
+		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ), isset( $_GET['bible'] ), isset( $_GET['language'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flags after a redirect.
 		/* translators: 1: points, 2: number of days. */
 		. '<p class="jl-score">' . esc_html( sprintf( __( '%1$d of %2$d', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>'
 		. '<p>' . esc_html__( 'Every day is a fresh start. Tap any day to read it or write your SOAP.', 'jlife-challenges' ) . '</p>'
 		. '<div class="jl-grid">' . $grid . '</div><ul class="jl-legend">' . $legend . '</ul>'
-		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ), isset( $_GET['bible'] ), isset( $_GET['language'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flags after a redirect.
 		. jlife_challenges_render_past_section( $user_id ); // Earlier reading periods (#174, D4-A).
 	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon', array( 'language', 'reminder', 'bible' ) );
 }

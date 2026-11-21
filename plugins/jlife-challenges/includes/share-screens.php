@@ -352,6 +352,60 @@ function jlife_challenges_group_confirm( $view, $what ) {
 }
 
 /**
+ * The group feed as one collapsible section per Marathon reading day (#203).
+ * Posts are grouped by their reading-day key (never the posting date), in the
+ * order the feed already has: newest day first, then newest message first. Only
+ * the first (newest) day is open. Native details/summary, so it works without
+ * JavaScript and for screen readers.
+ *
+ * @param array $posts Feed rows from jlife_challenges_group_view() (day_key, index, refs, author, body, mine).
+ * @return string Escaped HTML ('' for an empty feed).
+ */
+function jlife_challenges_group_days_html( $posts ) {
+	$days = array();
+	foreach ( $posts as $p ) {
+		$days[ (string) $p['day_key'] ][] = $p;
+	}
+	$out  = '';
+	$open = true;
+	foreach ( $days as $day_posts ) {
+		$first = $day_posts[0];
+		if ( '' !== (string) $first['refs'] ) {
+			/* translators: 1: day number, 2: Bible references. */
+			$label = sprintf( __( 'Day %1$d · %2$s', 'jlife-challenges' ), (int) $first['index'], $first['refs'] );
+		} else {
+			/* translators: %d: day number. */
+			$label = sprintf( __( 'Day %d', 'jlife-challenges' ), (int) $first['index'] );
+		}
+		$out .= '<details class="jl-day-group"' . ( $open ? ' open' : '' ) . '><summary>' . esc_html( $label ) . '</summary>';
+		foreach ( $day_posts as $p ) {
+			$out .= jlife_challenges_group_post_html( $p );
+		}
+		$out .= '</details>';
+		$open = false;
+	}
+	return $out;
+}
+
+/**
+ * One shared message card.
+ *
+ * @param array $p Feed row.
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_group_post_html( $p ) {
+	/* translators: 1: first name, 2: day number. */
+	$meta = sprintf( __( '%1$s · Day %2$d', 'jlife-challenges' ), $p['author'], (int) $p['index'] );
+	$out  = '<article class="jl-post' . ( $p['mine'] ? ' jl-mine' : '' ) . '"><p class="jl-post-meta"><strong>' . esc_html( $meta ) . '</strong>'
+		. ( '' !== $p['refs'] ? ' · ' . esc_html( $p['refs'] ) : '' ) . '</p>'
+		. '<p class="jl-excerpt">' . esc_html( $p['body'] ) . '</p>';
+	if ( $p['mine'] ) {
+		$out .= '<p><a href="' . esc_url( add_query_arg( 'day', $p['day_key'], home_url( '/share/' ) ) ) . '">' . esc_html__( 'Yours — change or remove', 'jlife-challenges' ) . '</a></p>';
+	}
+	return $out . '</article>';
+}
+
+/**
  * The /group page body: the group picker when the person is in more than one
  * group, one group's feed at a time, "Have a code? Join a group" for a solo
  * reader (and for a member with a free slot), and for an adult with a free slot
@@ -405,17 +459,7 @@ function jlife_challenges_group_body( $view, $error = '', $joined = '', $more = 
 	if ( ! $view['posts'] ) {
 		$body .= '<p class="jl-empty">' . esc_html__( 'Nothing shared with this group yet. When you save your SOAP, tick this group\'s box to post it here.', 'jlife-challenges' ) . '</p>';
 	}
-	foreach ( $view['posts'] as $p ) {
-		/* translators: 1: first name, 2: day number. */
-		$meta  = sprintf( __( '%1$s · Day %2$d', 'jlife-challenges' ), $p['author'], (int) $p['index'] );
-		$body .= '<article class="jl-post' . ( $p['mine'] ? ' jl-mine' : '' ) . '"><p class="jl-post-meta"><strong>' . esc_html( $meta ) . '</strong>'
-			. ( '' !== $p['refs'] ? ' · ' . esc_html( $p['refs'] ) : '' ) . '</p>'
-			. '<p class="jl-excerpt">' . esc_html( $p['body'] ) . '</p>';
-		if ( $p['mine'] ) {
-			$body .= '<p><a href="' . esc_url( add_query_arg( 'day', $p['day_key'], home_url( '/share/' ) ) ) . '">' . esc_html__( 'Yours — change or remove', 'jlife-challenges' ) . '</a></p>';
-		}
-		$body .= '</article>';
-	}
+	$body .= jlife_challenges_group_days_html( (array) $view['posts'] );
 	$body .= jlife_challenges_group_controls( $view );
 	if ( count( $groups ) < JLIFE_CHALLENGES_MAX_GROUPS ) {
 		$body .= jlife_challenges_join_prompt( $error ) . $start;
