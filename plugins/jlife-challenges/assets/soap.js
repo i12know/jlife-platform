@@ -84,6 +84,28 @@
 		timer = setTimeout(save, 1500);
 	});
 
+	// "Use SOAP template" (#210): insert the four headings at the cursor, or at the end if the
+	// box was never focused. Never replaces or removes typed text, even a selection. Without
+	// this script the button is a submit that appends the headings (same result, server side).
+	var cursorSet = false;
+	box.addEventListener('focus', function () { cursorSet = true; });
+	form.querySelectorAll('button[value=template]').forEach(function (tplButton) {
+		tplButton.addEventListener('click', function (e) {
+			e.preventDefault();
+			var text = box.value;
+			var at = cursorSet ? Math.max(box.selectionStart || 0, box.selectionEnd || 0) : text.length;
+			var before = text.slice(0, at);
+			var after = text.slice(at);
+			var lead = before.trim() === '' ? '' : (/\n\n$/.test(before) ? '' : (/\n$/.test(before) ? '\n' : '\n\n'));
+			var tail = after.trim() === '' ? '' : (/^\n\n/.test(after) ? '' : (/^\n/.test(after) ? '\n' : '\n\n'));
+			var caret = before.length + lead.length + headings[0].length + 1;
+			box.value = before + lead + template + tail + after;
+			box.focus();
+			box.setSelectionRange(caret, caret);
+			box.dispatchEvent(new Event('input', { bubbles: true }));
+		});
+	});
+
 	// "More" beside the SOAP one-liner opens the "What goes under each heading?" box it jumps to.
 	form.querySelectorAll('a[href="#jlife-soap-help"]').forEach(function (link) {
 		link.addEventListener('click', function () {

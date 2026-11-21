@@ -2,7 +2,8 @@
 /**
  * WP-CLI: `wp jlife campaign close <id> [--dry-run]` (#179) and
  * `wp jlife campaign rollover --from=<id> --to=<id> --preview|--execute|--verify` (#180) and
- * `wp jlife campaign rollover-groups --from=<id> --to=<id> --plan=<file> --preview|--validate|--execute|--verify` (#182).
+ * `wp jlife campaign rollover-groups --from=<id> --to=<id> --plan=<file> --preview|--validate|--execute|--verify` (#182) and
+ * `wp jlife campaign set-engine <campaign> <engine>` (#210).
  *
  * Prints counts only, never people: deploy logs may be public.
  *
@@ -54,6 +55,37 @@ class Jlife_Campaign_Command {
 			$r['changed']
 				? sprintf( 'Closed campaign %d; cancelled %d queued reminder(s).', $campaign_id, $r['reminders_cancelled'] )
 				: sprintf( 'Campaign %d was already closed; cancelled %d queued reminder(s).', $campaign_id, $r['reminders_cancelled'] )
+		);
+	}
+
+	/**
+	 * Change a campaign's scoring engine (soap-regex or reflection-v1). Refused
+	 * once Day 1 has started or any entry exists, so no entry is scored under a
+	 * rule that later changes. The rollover never changes an engine. Prints the
+	 * campaign ID and engine ids only.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <campaign>
+	 * : The campaign ID on this site.
+	 *
+	 * <engine>
+	 * : The engine id, for example reflection-v1.
+	 *
+	 * @param array $args       Positional args.
+	 * @param array $assoc_args Options.
+	 */
+	public function set_engine( $args, $assoc_args ) {
+		unset( $assoc_args ); // WP-CLI always passes it; set-engine takes no options.
+		$campaign_id = (int) ( $args[0] ?? 0 );
+		$r           = jlife_challenges_set_campaign_engine( jlife_challenges_cli_organizer(), $campaign_id, (string) ( $args[1] ?? '' ) );
+		if ( is_wp_error( $r ) ) {
+			WP_CLI::error( $r->get_error_message() );
+		}
+		WP_CLI::success(
+			$r['changed']
+				? sprintf( 'Campaign %d now uses the %s scoring engine (was %s).', $campaign_id, $r['engine'], $r['previous'] )
+				: sprintf( 'Campaign %d already uses the %s scoring engine; nothing changed.', $campaign_id, $r['engine'] )
 		);
 	}
 

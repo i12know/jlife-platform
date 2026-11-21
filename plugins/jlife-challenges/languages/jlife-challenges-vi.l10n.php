@@ -420,5 +420,14 @@ return array(
 		'Enable this group' => 'Bật lại nhóm này',
 		'Enabling restores the group as it was: its members, its feed and its invite code (if it has not expired or been revoked).' => 'Bật lại sẽ khôi phục nhóm như trước: các thành viên, bảng tin và mã mời của nhóm (nếu chưa hết hạn hoặc chưa bị thu hồi).',
 		'Enable group' => 'Bật lại nhóm',
+		// #210: reflection-v1 (free-form or SOAP, 20 own words).
+		'Write a few more words of your own.' => 'Hãy viết thêm vài từ của chính bạn.',
+		'My reflection' => 'Suy ngẫm của tôi',
+		'Submit' => 'Gửi',
+		'Use SOAP template' => 'Dùng khung SOAP',
+		'Adds the four SOAP headings. Nothing you wrote is removed.' => 'Thêm bốn tiêu đề SOAP. Không có chữ nào bạn đã viết bị xóa.',
+		'Write about what you read, in your own words. You can use SOAP = Scripture, Observation, Application, Prayer.' => 'Hãy viết về điều bạn đã đọc, bằng lời của chính bạn. Bạn có thể dùng SOAP = Kinh Thánh, Quan sát, Áp dụng, Cầu nguyện.',
+		'A few sentences in your own words earn the point for the day. SOAP headings are optional, and they do not count as your words.' => 'Vài câu bằng lời của chính bạn là đủ để được điểm của ngày. Các tiêu đề SOAP là tùy chọn và không được tính là từ của bạn.',
+		'Draft saved. When you are ready, tap Submit.' => 'Đã lưu bản nháp. Khi sẵn sàng, hãy nhấn Gửi.',
 	),
 );

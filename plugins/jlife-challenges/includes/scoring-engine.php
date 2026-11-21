@@ -5,7 +5,9 @@
  * An entry is one free text. Whether it earns the day's point is decided by a
  * separate, pluggable engine, so writing and saving never depend on the text's
  * structure. The first engine, "soap-regex", only checks that the S, O, A and P
- * parts are there, in order, and not empty. It never judges wording.
+ * parts are there, in order, and not empty. It never judges wording. The second,
+ * "reflection-v1" (#210), accepts any reflection or SOAP entry with enough of the
+ * person's own words (see jlife_challenges_engine_reflection_v1()).
  *
  * Engine contract: jlife_challenges_score_entry( $text, $context ) returns
  * { passes: bool, reasons: string[], engine: id, version: string }. It is
@@ -20,7 +22,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const JLIFE_CHALLENGES_DEFAULT_ENGINE = 'soap-regex';
+const JLIFE_CHALLENGES_DEFAULT_ENGINE    = 'soap-regex';
+const JLIFE_CHALLENGES_REFLECTION_ENGINE = 'reflection-v1';
+const JLIFE_CHALLENGES_REFLECTION_WORDS  = 20;
+const JLIFE_CHALLENGES_REFLECTION_UNIQUE = 8;
 
 /**
  * The four headings in SOAP order, translated for the current locale. Also the
@@ -95,34 +100,57 @@ function jlife_challenges_join_sections( $sections, $headings ) {
 }
 
 /**
+ * The built-in engines, before the filter. The default is always among them.
+ *
+ * @return array<string,array{label:string,version:string,callback:string,starts_blank:bool}>
+ */
+function jlife_challenges_builtin_engines() {
+	return array(
+		JLIFE_CHALLENGES_DEFAULT_ENGINE    => array(
+			'label'        => 'SOAP regex',
+			'version'      => '1',
+			'callback'     => 'jlife_challenges_engine_soap_regex',
+			'starts_blank' => false,
+		),
+		JLIFE_CHALLENGES_REFLECTION_ENGINE => array(
+			'label'        => 'Reflection (20 own words)',
+			'version'      => '1',
+			'callback'     => 'jlife_challenges_engine_reflection_v1',
+			'starts_blank' => true,
+		),
+	);
+}
+
+/**
  * The registered scoring engines.
  *
  * Each engine: label, version, callback( string $text, array $context ): array
- * with 'passes' (bool) and 'reasons' (string[]). Add engines with the
- * jlife_challenges_scoring_engines filter; a callback that isn't callable is
+ * with 'passes' (bool) and 'reasons' (string[]); optional 'starts_blank' (bool):
+ * new entries start empty instead of with the SOAP headings. Add engines with
+ * the jlife_challenges_scoring_engines filter; a callback that isn't callable is
  * ignored and the default is used. The default always exists.
  *
- * @return array<string,array{label:string,version:string,callback:mixed}>
+ * @return array<string,array{label:string,version:string,callback:mixed,starts_blank?:bool}>
  */
 function jlife_challenges_scoring_engines() {
-	$engines = (array) apply_filters(
-		'jlife_challenges_scoring_engines',
-		array(
-			JLIFE_CHALLENGES_DEFAULT_ENGINE => array(
-				'label'    => 'SOAP regex',
-				'version'  => '1',
-				'callback' => 'jlife_challenges_engine_soap_regex',
-			),
-		)
-	);
+	$builtin = jlife_challenges_builtin_engines();
+	$engines = (array) apply_filters( 'jlife_challenges_scoring_engines', $builtin );
 	if ( ! isset( $engines[ JLIFE_CHALLENGES_DEFAULT_ENGINE ] ) ) {
-		$engines[ JLIFE_CHALLENGES_DEFAULT_ENGINE ] = array(
-			'label'    => 'SOAP regex',
-			'version'  => '1',
-			'callback' => 'jlife_challenges_engine_soap_regex',
-		);
+		$engines[ JLIFE_CHALLENGES_DEFAULT_ENGINE ] = $builtin[ JLIFE_CHALLENGES_DEFAULT_ENGINE ];
 	}
 	return $engines;
+}
+
+/**
+ * Do new entries in this campaign start blank (the engine takes free-form
+ * reflections and SOAP alike) rather than with the SOAP headings?
+ *
+ * @param array|null $campaign Campaign row, or null (personal entries).
+ * @return bool
+ */
+function jlife_challenges_campaign_starts_blank( $campaign ) {
+	$engines = jlife_challenges_scoring_engines();
+	return ! empty( $engines[ jlife_challenges_campaign_engine( $campaign ) ]['starts_blank'] );
 }
 
 /**
@@ -266,5 +294,144 @@ function jlife_challenges_engine_soap_regex( $text, $context = array() ) {
 	return array(
 		'passes'  => array() === $reasons,
 		'reasons' => $reasons,
+	);
+}
+
+/**
+ * The text the "reflection-v1" engine counts: the entry without SOAP headings
+ * and without any text the filter excludes. Everything else is the person's own.
+ *
+ * Headings: the translated and the English set, as whole lines or as the
+ * "S —", "O:" prefix of a line (the words after it still count). Excluded
+ * text: filter jlife_challenges_reflection_excluded_text returns strings
+ * (for #211, the day's printed devotional questions); each is removed wherever
+ * it appears, ignoring case and line breaks.
+ *
+ * @param string $text    Entry text.
+ * @param array  $context { campaign?: array, day_key?: string, index?: int }.
+ * @return string
+ */
+function jlife_challenges_reflection_own_text( $text, $context = array() ) {
+	$text = str_replace( array( "\r\n", "\r" ), "\n", (string) $text );
+	foreach ( array_merge( jlife_challenges_soap_headings(), jlife_challenges_soap_headings_en() ) as $heading ) {
+		$text = str_ireplace( $heading, "\n", $text );
+	}
+	$own = array();
+	foreach ( explode( "\n", $text ) as $line ) {
+		$h     = jlife_challenges_parse_heading( $line );
+		$own[] = $h ? $h['rest'] : $line;
+	}
+	$own = trim( (string) preg_replace( '/\s+/u', ' ', implode( "\n", $own ) ) );
+
+	/**
+	 * Text that is not the person's own and must not count toward the entry.
+	 *
+	 * @param string[] $excluded Strings to remove (default none).
+	 * @param array    $context  { campaign?: array, day_key?: string, index?: int }.
+	 */
+	$excluded = (array) apply_filters( 'jlife_challenges_reflection_excluded_text', array(), (array) $context );
+	foreach ( $excluded as $phrase ) {
+		$phrase = trim( (string) preg_replace( '/\s+/u', ' ', (string) $phrase ) );
+		if ( '' !== $phrase ) {
+			$own = str_ireplace( $phrase, ' ', $own );
+		}
+	}
+	return trim( (string) preg_replace( '/\s+/u', ' ', $own ) );
+}
+
+/**
+ * The "reflection-v1" engine (#210): free-form reflections and SOAP entries
+ * under one rule. The entry earns the point with at least 20 words of the
+ * person's own, at least 8 of them different. A word is a whitespace-separated
+ * token with a letter or digit in it (a Vietnamese syllable is a word);
+ * "different" ignores case and punctuation at the ends. SOAP headings and
+ * excluded text (see jlife_challenges_reflection_own_text()) do not count. It
+ * checks length and variety only, never meaning, and sends nothing anywhere.
+ *
+ * @param string $text    Entry text.
+ * @param array  $context { campaign?: array, day_key?: string, index?: int }.
+ * @return array { passes: bool, reasons: string[] }
+ */
+function jlife_challenges_engine_reflection_v1( $text, $context = array() ) {
+	$total  = 0;
+	$unique = array();
+	foreach ( preg_split( '/\s+/u', jlife_challenges_reflection_own_text( $text, $context ), -1, PREG_SPLIT_NO_EMPTY ) as $token ) {
+		if ( ! preg_match( '/[\p{L}\p{N}]/u', $token ) ) {
+			continue;
+		}
+		++$total;
+		$word = (string) preg_replace( '/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/u', '', $token );
+		$unique[ mb_strtolower( $word ) ] = true;
+	}
+	$passes = $total >= JLIFE_CHALLENGES_REFLECTION_WORDS && count( $unique ) >= JLIFE_CHALLENGES_REFLECTION_UNIQUE;
+	return array(
+		'passes'  => $passes,
+		'reasons' => $passes ? array() : array( __( 'Write a few more words of your own.', 'jlife-challenges' ) ),
+	);
+}
+
+/**
+ * Change a campaign's scoring engine (#210). Only before anything is scored:
+ * refused once Day 1 has started or any entry exists, so no entry is ever
+ * scored under a rule that later changes. Closed campaigns are refused too.
+ * Setting the engine it already has changes nothing and is allowed.
+ *
+ * @param int    $actor       Organizer.
+ * @param int    $campaign_id Campaign.
+ * @param string $engine      Engine id (a key of jlife_challenges_scoring_engines()).
+ * @return array|WP_Error { changed: bool, engine: string, previous: string }
+ */
+function jlife_challenges_set_campaign_engine( $actor, $campaign_id, $engine ) {
+	$campaign = jlife_challenges_get_campaign( (int) $campaign_id );
+	if ( ! jlife_challenges_is_organizer( $actor ) || ! $campaign ) {
+		return jlife_challenges_denied();
+	}
+	$engine = (string) $engine;
+	if ( ! isset( jlife_challenges_scoring_engines()[ $engine ] ) ) {
+		return new WP_Error( 'jlife_campaign_invalid', 'Unknown scoring engine.' );
+	}
+	$previous = (string) $campaign['scoring_engine'];
+	if ( $previous === $engine ) {
+		return array(
+			'changed'  => false,
+			'engine'   => $engine,
+			'previous' => $previous,
+		);
+	}
+	if ( 'closed' === $campaign['status'] ) {
+		return new WP_Error( 'jlife_engine_locked', 'This campaign is closed; its scoring engine cannot change.' );
+	}
+	if ( jlife_challenges_local_date( $campaign, jlife_challenges_now() ) >= (string) $campaign['start_date'] ) {
+		return new WP_Error( 'jlife_engine_locked', 'Day 1 has already started; the scoring engine can no longer change.' );
+	}
+	if ( jlife_challenges_close_count( 'soap_entries', (int) $campaign_id ) > 0 || jlife_challenges_close_count( 'score_ledger', (int) $campaign_id ) > 0 ) {
+		return new WP_Error( 'jlife_engine_locked', 'This campaign already has entries; the scoring engine can no longer change.' );
+	}
+	global $wpdb;
+	$ok = $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
+		jlife_challenges_table( 'campaigns' ),
+		array( 'scoring_engine' => $engine ),
+		array( 'id' => (int) $campaign_id ),
+		array( '%s' ),
+		array( '%d' )
+	);
+	if ( false === $ok ) {
+		return new WP_Error( 'jlife_db', 'Could not change the scoring engine.' );
+	}
+	jlife_challenges_audit(
+		$actor,
+		'campaign_engine_set',
+		'campaign',
+		(int) $campaign_id,
+		(int) $campaign_id,
+		array(
+			'from' => $previous,
+			'to'   => $engine,
+		)
+	);
+	return array(
+		'changed'  => true,
+		'engine'   => $engine,
+		'previous' => $previous,
 	);
 }
