@@ -29,6 +29,7 @@ require_once __DIR__ . '/includes/pilot-campaign.php';
 require_once __DIR__ . '/includes/campaign-close.php';
 require_once __DIR__ . '/includes/official-campaign.php';
 require_once __DIR__ . '/includes/rollover.php';
+require_once __DIR__ . '/includes/rollover-groups.php';
 require_once __DIR__ . '/includes/past-campaigns.php';
 require_once __DIR__ . '/includes/group-admin.php';
 require_once __DIR__ . '/includes/soap.php';
