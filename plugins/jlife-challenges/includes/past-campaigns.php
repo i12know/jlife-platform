@@ -75,13 +75,43 @@ function jlife_challenges_past_campaign_for( $user_id, $campaign_id ) {
 }
 
 /**
- * The person's own written entries in an earlier reading period, by day, each
- * with their own live or hidden shares (group name included: they were in
- * those groups). Author only; denied for anyone else's or a non-past campaign.
+ * The person's own shares in a campaign that still show text to their group:
+ * live ones, and organizer-hidden ones whose text has not been cleared yet.
+ * Read straight from group_shares, independent of the SOAP entry: a share is
+ * a snapshot, so it stays removable even if the entry was later cleared.
+ * Group name included: the person was in those groups.
  *
  * @param int $user_id     Participant.
  * @param int $campaign_id Campaign.
- * @return array[]|WP_Error Rows of { day_key, index, date, status, body, shares: [ { id, group_name, status } ] }.
+ * @return array[] Rows of { id, day_key, group_name, status }.
+ */
+function jlife_challenges_past_removable_shares( $user_id, $campaign_id ) {
+	if ( $user_id < 1 ) {
+		return array();
+	}
+	global $wpdb;
+	$rows = (array) $wpdb->get_results( $wpdb->prepare( 'SELECT id, group_id, day_key, status FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE user_id = %d AND campaign_id = %d AND ( status = 'shared' OR ( status = 'hidden' AND body IS NOT NULL ) ) ORDER BY day_key ASC, id ASC", (int) $user_id, (int) $campaign_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix.
+	$out  = array();
+	foreach ( $rows as $s ) {
+		$group = jlife_challenges_get_group( (int) $s['group_id'] );
+		$out[] = array(
+			'id'         => (int) $s['id'],
+			'day_key'    => (string) $s['day_key'],
+			'group_name' => $group ? (string) $group['name'] : '',
+			'status'     => (string) $s['status'],
+		);
+	}
+	return $out;
+}
+
+/**
+ * The person's own days in an earlier reading period: every day with SOAP text
+ * or with a share that still shows text (even if the SOAP was cleared since).
+ * Author only; denied for anyone else's or a non-past campaign.
+ *
+ * @param int $user_id     Participant.
+ * @param int $campaign_id Campaign.
+ * @return array[]|WP_Error Rows of { day_key, index, date, status, body, shares: [ { id, day_key, group_name, status } ] }.
  */
 function jlife_challenges_past_entries( $user_id, $campaign_id ) {
 	$campaign = jlife_challenges_past_campaign_for( $user_id, $campaign_id );
@@ -89,32 +119,39 @@ function jlife_challenges_past_entries( $user_id, $campaign_id ) {
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
-	$rows   = (array) $wpdb->get_results( $wpdb->prepare( 'SELECT id, user_id, day_key, status, body FROM ' . jlife_challenges_table( 'soap_entries' ) . ' WHERE user_id = %d AND campaign_id = %d ORDER BY day_key ASC', (int) $user_id, (int) $campaign_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix.
-	$shares = jlife_challenges_my_shares( (int) $user_id, (int) $campaign_id );
-	$by_day = array();
-	foreach ( is_wp_error( $shares ) ? array() : $shares as $s ) {
-		$group = jlife_challenges_get_group( (int) $s['group_id'] );
-		$share = array(
-			'id'         => (int) $s['id'],
-			'group_name' => $group ? (string) $group['name'] : '',
-			'status'     => (string) $s['status'],
-		);
-
-		$by_day[ (string) $s['day_key'] ][] = $share;
-	}
-	$out = array();
+	$rows = (array) $wpdb->get_results( $wpdb->prepare( 'SELECT id, user_id, day_key, status, body FROM ' . jlife_challenges_table( 'soap_entries' ) . ' WHERE user_id = %d AND campaign_id = %d', (int) $user_id, (int) $campaign_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix.
+	$days = array();
 	foreach ( $rows as $r ) {
-		if ( ! jlife_challenges_can_read_entry( $user_id, $r ) || '' === trim( (string) $r['body'] ) ) {
-			continue;
+		if ( jlife_challenges_can_read_entry( $user_id, $r ) && '' !== trim( (string) $r['body'] ) ) {
+			$days[ (string) $r['day_key'] ] = array(
+				'status' => (string) $r['status'],
+				'body'   => (string) $r['body'],
+				'shares' => array(),
+			);
 		}
-		$index = jlife_challenges_day_index( $campaign, (string) $r['day_key'] );
+	}
+	foreach ( jlife_challenges_past_removable_shares( $user_id, $campaign_id ) as $share ) {
+		$key = $share['day_key'];
+		if ( ! isset( $days[ $key ] ) ) {
+			$days[ $key ] = array(
+				'status' => '',
+				'body'   => '',
+				'shares' => array(),
+			);
+		}
+		$days[ $key ]['shares'][] = $share;
+	}
+	ksort( $days );
+	$out = array();
+	foreach ( $days as $key => $d ) {
+		$index = jlife_challenges_day_index( $campaign, (string) $key );
 		$out[] = array(
-			'day_key' => (string) $r['day_key'],
+			'day_key' => (string) $key,
 			'index'   => (int) $index,
 			'date'    => $index ? (string) jlife_challenges_day_date( $campaign, (int) $index ) : '',
-			'status'  => (string) $r['status'],
-			'body'    => (string) $r['body'],
-			'shares'  => $by_day[ (string) $r['day_key'] ] ?? array(),
+			'status'  => $d['status'],
+			'body'    => $d['body'],
+			'shares'  => $d['shares'],
 		);
 	}
 	return $out;
@@ -236,14 +273,9 @@ function jlife_challenges_screen_past( $user_id, $campaign_id ) {
 		/* translators: 1: day number, 2: date. */
 		$head  = sprintf( __( 'Day %1$d · %2$s', 'jlife-challenges' ), $e['index'], '' !== $e['date'] ? jlife_challenges_format_date( $e['date'] ) : '' );
 		$body .= '<section class="jl-left jl-past-day"><h2>' . esc_html( $head ) . '</h2>'
-			. ( 'submitted' === $e['status'] ? '' : '<p class="jl-hint">' . esc_html__( 'draft', 'jlife-challenges' ) . '</p>' )
-			. '<div class="jl-preview">' . esc_html( trim( $e['body'] ) ) . '</div>';
-		$live  = array_filter(
-			$e['shares'],
-			static function ( $s ) {
-				return in_array( $s['status'], array( 'shared', 'hidden' ), true );
-			}
-		);
+			. ( 'draft' === $e['status'] ? '<p class="jl-hint">' . esc_html__( 'draft', 'jlife-challenges' ) . '</p>' : '' )
+			. ( '' !== trim( $e['body'] ) ? '<div class="jl-preview">' . esc_html( trim( $e['body'] ) ) . '</div>' : '' );
+		$live  = $e['shares'];
 		if ( $live ) {
 			$body .= '<form method="post">' . wp_nonce_field( JLIFE_CHALLENGES_PAST_UNSHARE_NONCE, '_jlife_unshare_past', true, false ) . '<ul>';
 			foreach ( $live as $s ) {

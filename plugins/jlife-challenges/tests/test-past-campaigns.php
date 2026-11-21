@@ -137,6 +137,84 @@ class Test_Past_Campaigns extends JLife_Challenges_TestCase {
 	}
 
 	/**
+	 * How many share_removed audit rows a share has.
+	 *
+	 * @param int $share_id Share.
+	 * @return int
+	 */
+	private function removals( $share_id ) {
+		global $wpdb;
+		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'audit_log' ) . " WHERE action = 'share_removed' AND object_id = %d", (int) $share_id ) ); // phpcs:ignore WordPress.DB
+	}
+
+	/**
+	 * A shared draft whose SOAP was cleared later is still listed and removable
+	 * (review finding 1): the share is a snapshot, independent of the entry.
+	 */
+	public function test_share_of_a_cleared_draft_stays_removable() {
+		$this->set_now( '2026-12-07 18:00:00' ); // Practice Day 3.
+		$entry = jlife_challenges_save_draft( $this->u['b'], $this->pilot, null, $this->soap( 'b-draft' ) );
+		$this->assertIsInt( $entry );
+		$share = jlife_challenges_share( $this->u['b'], $entry, $this->pg );
+		$this->assertIsInt( $share );
+		$this->assertIsInt( jlife_challenges_save_draft( $this->u['b'], $this->pilot, null, '' ), 'the private draft is cleared' );
+		$this->close_pilot();
+
+		$this->assertContains( $share, jlife_challenges_past_share_ids( $this->u['b'], $this->pilot ) );
+		$days = jlife_challenges_past_entries( $this->u['b'], $this->pilot );
+		$day3 = array_values( array_filter( $days, static fn( $d ) => 3 === $d['index'] ) );
+		$this->assertCount( 1, $day3, 'the day is listed for its share' );
+		$this->assertSame( '', $day3[0]['body'] );
+		$this->assertSame( array( $share ), array_column( $day3[0]['shares'], 'id' ) );
+		$this->assertTrue( jlife_challenges_unshare( $this->u['b'], $share ) );
+		$this->assertNotContains( $share, jlife_challenges_past_share_ids( $this->u['b'], $this->pilot ) );
+	}
+
+	/**
+	 * An organizer-hidden share is offered once; after the author removes it, its
+	 * text is cleared, the button is gone, and a repeat writes no second audit row
+	 * (review finding 2).
+	 */
+	public function test_hidden_share_is_offered_until_removed() {
+		$this->assertTrue( jlife_challenges_hide_share( $this->u['organizer'], $this->share_a, 'test' ) );
+		$this->close_pilot();
+		$this->assertSame( array( $this->share_a ), jlife_challenges_past_share_ids( $this->u['a'], $this->pilot ) );
+
+		$this->assertTrue( jlife_challenges_unshare( $this->u['a'], $this->share_a ) );
+		$row = jlife_challenges_find_share( $this->share_a );
+		$this->assertSame( 'hidden', $row['status'], 'a hidden post stays hidden' );
+		$this->assertNull( $row['body'] );
+		$this->assertSame( array(), jlife_challenges_past_share_ids( $this->u['a'], $this->pilot ), 'no Remove button any more' );
+		$this->assertSame( 1, $this->removals( $this->share_a ) );
+
+		$this->assertTrue( jlife_challenges_unshare( $this->u['a'], $this->share_a ), 'a repeat is a harmless no-op' );
+		$this->assertSame( 1, $this->removals( $this->share_a ), 'no second audit row' );
+	}
+
+	/**
+	 * A failed database write is reported as an error, is not audited, and leaves
+	 * the share offered for removal (review finding 3).
+	 */
+	public function test_failed_write_is_not_reported_as_removed() {
+		global $wpdb;
+		$this->close_pilot();
+		$break = static function ( $query ) {
+			return ( 0 === stripos( ltrim( $query ), 'UPDATE' ) && false !== strpos( $query, 'group_shares' ) ) ? 'UPDATE jlife_no_such_table SET x = 1' : $query;
+		};
+		add_filter( 'query', $break );
+		$suppress = $wpdb->suppress_errors( true );
+		$r        = jlife_challenges_unshare( $this->u['a'], $this->share_a );
+		$wpdb->suppress_errors( $suppress );
+		remove_filter( 'query', $break );
+
+		$this->assertWPError( $r );
+		$this->assertSame( 'jlife_unshare_failed', $r->get_error_code() );
+		$this->assertSame( 'shared', jlife_challenges_find_share( $this->share_a )['status'] );
+		$this->assertSame( 0, $this->removals( $this->share_a ) );
+		$this->assertSame( array( $this->share_a ), jlife_challenges_past_share_ids( $this->u['a'], $this->pilot ) );
+	}
+
+	/**
 	 * My Marathon's section links each earlier period, and is empty for others.
 	 */
 	public function test_my_marathon_section() {

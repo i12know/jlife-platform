@@ -401,5 +401,6 @@ return array(
 		'This reading period has ended. Your SOAP is kept here for you to read; it can no longer be changed. You can still remove anything you shared with a group.' => 'Đợt đọc này đã kết thúc. Bài SOAP của bạn được giữ ở đây để bạn đọc lại, nhưng không thể sửa nữa. Bạn vẫn có thể gỡ những gì đã chia sẻ với nhóm.',
 		'You did not write any SOAP in this reading period.' => 'Bạn chưa viết bài SOAP nào trong đợt đọc này.',
 		'Shared with %s' => 'Đã chia sẻ với %s',
+		'Your post could not be removed. Please try again.' => 'Không gỡ được bài chia sẻ của bạn. Xin thử lại.',
 	),
 );
