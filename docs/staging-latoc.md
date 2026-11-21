@@ -291,15 +291,34 @@ hand on 2026-11-19 (not by the deploy):
 
   ```text
   MAILTO=""
-  */5 * * * * <home directory>/.latoc/cron.sh >/dev/null 2>&1
+  */16 * * * * <home directory>/.latoc/cron.sh >/dev/null 2>&1
   ```
+
+- **The interval is 16 minutes, set by the host, not by us.** It was installed
+  as `*/5`. On 2026-11-20 between 10:05 and 10:16 UTC it changed to `*/16`
+  (found in `cron.log` during the 2026-11-21 admin QA). The owner didn't make
+  the change and the deploy never touches the crontab. Bluehost's help article
+  [Cron Job Basics](https://www.bluehost.com/help/article/cron-job-basics)
+  (updated 2026-07-07) says shared servers may not run a cron job more often
+  than every 15 minutes. It doesn't say the host rewrites jobs that break the
+  rule, but the timing fits that. **Keep `*/16`:** never set it below 15
+  minutes. `*/16` fires at :00, :16, :32 and :48, so the gaps are 16 or
+  12 minutes.
+- **Effect on reminders.** The WP-Cron event stays every 5 minutes, but it can
+  only run when the server cron fires it. So a check can run up to about
+  16 minutes late, and the first reminder emails can go out up to about
+  16 minutes after 06:00 campaign time. The 06:00–12:00 send window leaves
+  plenty of room.
 
 - `wp-config.php` has `DISABLE_WP_CRON` true (set with `wp config set`; the
   deploy leaves an existing `wp-config.php` alone, so it survives redeploys).
 
-Health check: `tail ~/.latoc/cron.log` should show a line from the last 5
-minutes, and `wp cron event list` should show no event overdue by more than
-that. To go back to visit-triggered WP-Cron: `wp config delete DISABLE_WP_CRON`,
+Health check: `tail ~/.latoc/cron.log` should show a line from the last
+16 minutes, and `wp cron event list` should show no event more than about
+12 minutes overdue. With `*/16`, the event is overdue by at most 11 minutes
+just before a run. The Reminders page warns when the check has not run for
+more than 15 minutes, so with `*/16` that warning means at least one server
+cron run was missed: check `cron.log` and cPanel → Cron Jobs. To go back to visit-triggered WP-Cron: `wp config delete DISABLE_WP_CRON`,
 then remove the line with `crontab -e` (or cPanel → Cron Jobs).
 
 **Use the dashboard page to switch modes.** A site admin opens **J-Life →
