@@ -524,6 +524,87 @@ organizer where that option is on), and nothing in the pilot changes.
 wrong run is undone by restoring the backup from step 3. Do not delete
 enrollment rows by hand.
 
+## Rollover, part 2: official groups (#182)
+
+Run after part 1 has executed and verified (people must be enrolled in the
+Marathon before they can be put in its groups), and by Dec 18. Design: §3d,
+"Part 2". The plan file holds display names and user IDs: keep it in a private
+folder on the server (for example `~/.latoc/`), never in the web root, never
+attached to an issue or pasted into chat, and delete it after Dec 20.
+
+1. **Write the plan** (counts only on screen):
+
+   ```bash
+   wp jlife campaign rollover-groups --from=<pilot id> --to=<official id> --plan=$HOME/.latoc/groups-plan.csv --preview
+   ```
+
+   It refuses to overwrite an existing plan file; pick a new name or delete the
+   old one first.
+2. **Review and edit it** (File Manager → download, or a text editor on the
+   server). One row per person per group; the first line and the header stay
+   as they are:
+
+   ```text
+   # jlife rollover-groups plan; from=13; to=14
+   group_key,group_name,role,user_id,age_band,name_for_review
+   g21,Friday Friends,starter,105,adult,Anh Starter
+   g21,Friday Friends,member,108,minor,Bao Youth
+   g22,Youth Group,member,108,minor,Bao Youth
+   ```
+
+   - **Rename a group:** change `group_name` on every row of that group.
+   - **Merge two groups:** give one group's rows the other group's
+     `group_key` and `group_name` (delete a row if that person is already in
+     the other group).
+   - **Drop a group:** delete its rows. Its people stay in the Marathon, solo
+     unless they are in another group.
+   - **Move a person:** change the `group_key` and `group_name` on their row.
+   - **A new group:** use a new key such as `new-1` on its rows.
+   - `role` is `member` or `starter` (adults only; a starter can reset the
+     group's code). `age_band` and `name_for_review` are for reading only.
+   - Don't change a key after step 4 has run.
+3. **Validate** (writes nothing; repeat until there are no errors):
+
+   ```bash
+   wp jlife campaign rollover-groups --from=<pilot id> --to=<official id> --plan=$HOME/.latoc/groups-plan.csv --validate
+   ```
+
+   It prints `groups`, `rows`, `memberships_to_add` and `not_enrolled`, and
+   one line per error class: `bad_row`, `unknown_role`,
+   `group_name_invalid`, `group_name_mismatch`, `duplicate_membership`,
+   `minor_starter`, `group_limit`, `start_limit`. `not_enrolled` counts rows
+   for people who are not in the Marathon (never added; not an error).
+4. **Back up, then execute:**
+
+   ```bash
+   wp jlife campaign rollover-groups --from=<pilot id> --to=<official id> --plan=$HOME/.latoc/groups-plan.csv --execute
+   ```
+
+   It prints `groups_created`, `groups_existing`, `memberships_added`,
+   `memberships_existing`, `not_enrolled` and `membership_errors`. Each new
+   group gets a new invite code, valid until Apr 2, written **only** to
+   `groups-plan.csv.codes.csv` next to the plan (mode 0600), never to the
+   screen. Send each leader their group's code or link from that file, then
+   delete the file. A lost code: J-Life → Groups → reset the group's code.
+   Running execute again adds nothing; if it stopped part-way, running it
+   again finishes it.
+5. **Verify:**
+
+   ```bash
+   wp jlife campaign rollover-groups --from=<pilot id> --to=<official id> --plan=$HOME/.latoc/groups-plan.csv --verify
+   ```
+
+   It prints `groups_planned`, `groups_found`, `groups_missing`,
+   `memberships_planned`, `memberships_found`, `memberships_missing`,
+   `role_mismatch`, `extra_members`, `unplanned_groups`, `not_enrolled` and
+   `plan_errors`, and ends with "Verified" or an error. `extra_members` (people
+   who joined with a new code) and `unplanned_groups` (groups made by hand)
+   are reported, not failures; an empty unplanned group left by a crash during
+   execute can be disabled in J-Life → Groups.
+
+Old pilot codes never open an official group: the pilot is closed, so its
+codes open nothing at all.
+
 ## Backups and restore
 
 - Every deploy writes `~/.latoc/backups/<UTC timestamp>.sql.gz`; the 10 most recent are kept.
