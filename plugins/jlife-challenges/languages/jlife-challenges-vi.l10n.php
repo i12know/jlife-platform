@@ -291,6 +291,7 @@ return array(
 		'Default for my language' => 'Mặc định theo ngôn ngữ của tôi',
 		'%s (opens Bible Gateway)' => '%s (mở trên Bible Gateway)',
 		'Your Bible follows the language above until you choose one.' => 'Bản Kinh Thánh của bạn theo ngôn ngữ ở trên cho đến khi bạn tự chọn.',
+		'To show only one Bible, choose None under Also show…' => 'Để chỉ hiện một bản Kinh Thánh, hãy chọn “Không” ở mục “Hiển thị thêm…”.',
 		// Help, Rules and Privacy links (#65). DRAFT, like the rest.
 		'Help' => 'Trợ giúp',
 		'Rules' => 'Quy định',
