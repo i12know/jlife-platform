@@ -1,11 +1,14 @@
 <?php
 /**
  * The on-page Scripture reader (#139). Given a plan day and a participant,
- * shows each of the day's references in the participant's Bible: the first
- * open, the others collapsed (<details>), with verse numbers and the version
- * name and copyright line under the text. A version that may not render text
- * (link-only, not yet licensed), or any failure, shows an "Open in Bible
- * Gateway" link instead, so reading and SOAP are never blocked.
+ * shows all of the day's references in the participant's Bible, in order and
+ * open (#188): each under a plain reference heading, with verse numbers. The
+ * version names and copyright lines are not repeated under every passage:
+ * each distinct notice for the text actually shown is listed once, in one
+ * attribution footer after the last passage. A version that may not render
+ * text (link-only, not yet licensed), or any failure, shows an "Open in Bible
+ * Gateway" link in that passage's place, so reading and SOAP are never
+ * blocked; the link version's notice goes to the footer too.
  *
  * Which Bible(s) a participant reads comes from
  * jlife_scripture_versions_for_user() (#140): their own choice, else the
@@ -96,21 +99,47 @@ function jlife_scripture_render_day( $day, $user_id = 0, $args = array() ) {
 	if ( null !== $pair[1] ) {
 		$choices[] = jlife_scripture_reader_choice_for( $pair[1], $lang );
 	}
-	$reader = $lang; // The language the participant reads in (My language, or the page's), for translated links.
-	$lang   = $choices[0]['language'];
-	$labels = (array) ( $day['i18n'][ $lang ]['passages'] ?? array() );
-	$out    = '';
+	$reader  = $lang; // The language the participant reads in (My language, or the page's), for translated links.
+	$lang    = $choices[0]['language'];
+	$labels  = (array) ( $day['i18n'][ $lang ]['passages'] ?? array() );
+	$out     = '';
+	$notices = array();
 	foreach ( array_values( $passages ) as $i => $passage ) {
 		$display  = (string) ( is_array( $passage ) ? ( $passage['display'] ?? '' ) : $passage );
 		$label    = is_string( $labels[ $i ] ?? null ) && '' !== $labels[ $i ] ? $labels[ $i ] : $display;
 		$segments = jlife_scripture_parse_reference( $display );
-		$out     .= '<details class="jls-passage"' . ( 0 === $i ? ' open' : '' ) . '>'
-			. '<summary>' . esc_html( $label ) . '</summary>'
-			. '<div class="jls-body">' . jlife_scripture_render_editions( $choices, $segments, $day, $reader ) . '</div>'
-			. '</details>';
+		$out     .= '<section class="jls-passage">'
+			. '<h3 class="jls-ref">' . esc_html( $label ) . '</h3>'
+			. '<div class="jls-body">' . jlife_scripture_render_editions( $choices, $segments, $day, $reader, $notices ) . '</div>'
+			. '</section>';
 	}
 	jlife_scripture_enqueue_style();
-	return '<section class="jls-reader" lang="' . esc_attr( $lang ) . '" aria-label="' . esc_attr__( 'Scripture reading', 'jlife-scripture' ) . '">' . $out . '</section>';
+	return '<section class="jls-reader" lang="' . esc_attr( $lang ) . '" aria-label="' . esc_attr__( 'Scripture reading', 'jlife-scripture' ) . '">'
+		. $out . jlife_scripture_render_attribution_footer( $notices ) . '</section>';
+}
+
+/**
+ * The one attribution footer after the whole reading (#188): each distinct
+ * notice for the text shown (or linked) once, in the order first met. Empty
+ * when there is none.
+ *
+ * @param string[] $notices Escaped notice paragraphs (<p class="jls-version">).
+ * @return string
+ */
+function jlife_scripture_render_attribution_footer( $notices ) {
+	return array() === $notices ? '' : '<footer class="jls-attribution">' . implode( '', $notices ) . '</footer>';
+}
+
+/**
+ * Add a notice to the footer's list unless it is already there.
+ *
+ * @param string[] $notices Notices so far (changed in place).
+ * @param string   $notice  Escaped notice paragraph; '' adds nothing.
+ */
+function jlife_scripture_add_notice( &$notices, $notice ) {
+	if ( '' !== $notice && ! in_array( $notice, $notices, true ) ) {
+		$notices[] = $notice;
+	}
 }
 
 /**
@@ -122,17 +151,22 @@ function jlife_scripture_render_day( $day, $user_id = 0, $args = array() ) {
  * @param array|WP_Error $segments Parsed reference, or the parse error.
  * @param array          $day      Plan day.
  * @param string         $reader   The reader's language ("en" or "vi").
+ * @param string[]       $notices  The footer's notices so far; each shown edition's are added (changed in place).
  * @return string
  */
-function jlife_scripture_render_editions( $choices, $segments, $day, $reader ) {
+function jlife_scripture_render_editions( $choices, $segments, $day, $reader, &$notices ) {
 	$editions = array();
 	foreach ( $choices as $choice ) {
-		$html = jlife_scripture_render_edition( $choice, $segments, $day, $reader );
+		$edition = jlife_scripture_render_edition( $choice, $segments, $day, $reader );
+		$html    = $edition['html'];
 		if ( '' !== $html && ! in_array( $html, array_column( $editions, 'html' ), true ) ) {
 			$editions[] = array(
 				'lang' => $choice['language'],
 				'html' => $html,
 			);
+			foreach ( $edition['notices'] as $notice ) {
+				jlife_scripture_add_notice( $notices, $notice );
+			}
 		}
 	}
 	if ( count( $editions ) < 2 ) {
@@ -146,29 +180,41 @@ function jlife_scripture_render_editions( $choices, $segments, $day, $reader ) {
 }
 
 /**
- * One passage in one Bible: the text with its copyright line, or the Bible
- * Gateway link when the version cannot show text or the text is unavailable.
+ * One passage in one Bible: the text, or the Bible Gateway link when the
+ * version cannot show text or the text is unavailable; and the notice that
+ * text or link needs, for the footer.
  *
  * @param array          $choice   jlife_scripture_reader_choice_for() result.
  * @param array|WP_Error $segments Parsed reference, or the parse error.
  * @param array          $day      Plan day.
  * @param string         $reader   The reader's language ("en" or "vi").
- * @return string
+ * @return array{html: string, notices: string[]}
  */
 function jlife_scripture_render_edition( $choice, $segments, $day, $reader ) {
-	$body  = '';
-	$shown = false;
+	$body    = '';
+	$notices = array();
+	$shown   = false;
 	if ( ! is_wp_error( $segments ) && $choice['native'] ) {
 		$result = jlife_scripture_get_passage_entry( $choice['version'], $segments );
 		$shown  = ! is_wp_error( $result );
-		$body   = $shown
-			? jlife_scripture_render_verses( $result['segments'] ) . jlife_scripture_render_attribution( $choice['version'], $result['meta'], $reader )
-			: '<p class="jls-note">' . esc_html__( 'The Bible text could not be loaded.', 'jlife-scripture' ) . '</p>';
+		if ( $shown ) {
+			$body      = jlife_scripture_render_verses( $result['segments'] );
+			$notices[] = jlife_scripture_render_attribution( $choice['version'], $result['meta'], $reader );
+		} else {
+			$body = '<p class="jls-note">' . esc_html__( 'The Bible text could not be loaded.', 'jlife-scripture' ) . '</p>';
+		}
 	}
 	if ( ! $shown ) {
-		$body .= jlife_scripture_render_link( is_wp_error( $segments ) ? null : $segments, $choice['fallback'], $day, $choice['language'] );
+		$link  = jlife_scripture_render_link( is_wp_error( $segments ) ? null : $segments, $choice['fallback'], $day, $choice['language'] );
+		$body .= $link['html'];
+		if ( '' !== $link['notice'] ) {
+			$notices[] = $link['notice'];
+		}
 	}
-	return $body;
+	return array(
+		'html'    => $body,
+		'notices' => $notices,
+	);
 }
 
 /**
@@ -203,7 +249,7 @@ function jlife_scripture_render_verses( $result ) {
 }
 
 /**
- * The version name and its copyright line, under the text. A source that
+ * The version name and its copyright line, for the footer. A source that
  * needs more under its text than the registry's line (the notice the API
  * returned, a required link: Jlife_Scripture_Source_Attribution) prints that
  * instead.
@@ -228,14 +274,14 @@ function jlife_scripture_render_attribution( $version, $meta = array(), $languag
 
 /**
  * The "Open in Bible Gateway" link for a passage in the language's link
- * version, with that version's notice. Without a parsed reference, the
- * plan's own link for the day is used.
+ * version, and that version's notice (for the footer). Without a parsed
+ * reference, the plan's own link for the day is used.
  *
  * @param array|null $segments Segments, or null when the reference did not parse.
  * @param array|null $fallback Link version.
  * @param array      $day      Plan day (for its pre-built links).
  * @param string     $lang     Language code.
- * @return string
+ * @return array{html: string, notice: string} Both '' when there is no link.
  */
 function jlife_scripture_render_link( $segments, $fallback, $day, $lang ) {
 	$code = $fallback ? (string) $fallback['source_id'] : (string) ( $day['links'][ $lang ]['version'] ?? '' );
@@ -245,20 +291,22 @@ function jlife_scripture_render_link( $segments, $fallback, $day, $lang ) {
 		$url = (string) ( $day['links'][ $lang ]['combined']['url'] ?? '' );
 	}
 	if ( '' === $url || '' === $code ) {
-		return '';
+		return array(
+			'html'   => '',
+			'notice' => '',
+		);
 	}
 	/* translators: %s: Bible version code, e.g. "ERV". */
 	$text = sprintf( __( 'Open in Bible Gateway (%s)', 'jlife-scripture' ), $code );
-	$out  = '<p class="jls-link"><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . esc_html( $text ) . '</a></p>';
-	if ( $fallback ) {
-		$out .= '<p class="jls-version"><small>' . esc_html( (string) $fallback['copyright']['text'] ) . '</small></p>';
-	}
-	return $out;
+	return array(
+		'html'   => '<p class="jls-link"><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . esc_html( $text ) . '</a></p>',
+		'notice' => $fallback ? '<p class="jls-version"><small>' . esc_html( (string) $fallback['copyright']['text'] ) . '</small></p>' : '',
+	);
 }
 
 /**
  * The reader's stylesheet (phone-first, no inner scroll box, dark mode).
  */
 function jlife_scripture_enqueue_style() {
-	wp_enqueue_style( 'jlife-scripture', plugins_url( 'assets/scripture.css', JLIFE_SCRIPTURE_FILE ), array(), '0.2.0' );
+	wp_enqueue_style( 'jlife-scripture', plugins_url( 'assets/scripture.css', JLIFE_SCRIPTURE_FILE ), array(), '0.3.0' );
 }

@@ -356,6 +356,24 @@ class Test_Apibible_Source extends Jlife_Scripture_TestCase {
 	}
 
 	/**
+	 * Several NLT passages (#188): all shown, the API's notice, the API.Bible
+	 * link and the version name once, in the footer after the last passage, and
+	 * every displayed passage still reported to FUMS once, as before.
+	 */
+	public function test_several_passages_share_one_footer_and_each_is_reported() {
+		$user = $this->participant( 'en_US' );
+		jlife_scripture_set_user_choice( $user, array( 'primary' => 'nlt' ) );
+		$html = jlife_scripture_render_day( $this->day( 'John 1:1-2; Luke 3:1-2; Mark 1:1-2' ), $user );
+		$this->assertSame( 3, substr_count( $html, '<section class="jls-passage">' ) );
+		$this->assertSame( 3, substr_count( $html, 'FAKE-VERSE-1 for tests only.' ), 'every passage shows its text' );
+		$this->assertSame( 1, substr_count( $html, self::COPYRIGHT ), 'the API notice once' );
+		$this->assertSame( 1, substr_count( $html, 'Scripture text provided by API.Bible' ), 'the API.Bible link once' );
+		$this->assertSame( 1, substr_count( $html, '<span class="jls-version-name">New Living Translation</span>' ) );
+		$this->assertGreaterThan( strrpos( $html, 'FAKE-VERSE-2' ), strpos( $html, self::COPYRIGHT ), 'after the last passage' );
+		$this->assertCount( 3, $this->fums_requests(), 'each displayed passage reported once' );
+	}
+
+	/**
 	 * The request carries the key only in the api-key header, asks for plain
 	 * text with verse numbers and no titles or notes.
 	 */

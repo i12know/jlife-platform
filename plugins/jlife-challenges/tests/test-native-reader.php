@@ -236,8 +236,8 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 	/**
 	 * On: a Vietnamese reader (My language: since #159 the account language,
 	 * set by the Language setting) reads Kinh Thánh 1925 on Today with no frame;
-	 * the reader sits above the SOAP form, the reference chips and the form are
-	 * as before, and typed text is untouched.
+	 * the reader sits above the SOAP form (which has no reference chips since
+	 * #188), and typed text is untouched.
 	 */
 	public function test_flag_on_shows_the_vietnamese_default_on_the_page() {
 		$this->reader_on();
@@ -246,7 +246,8 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 		$body = jlife_challenges_today_body( $this->view( $this->u['a'] ), array( 'text' => 'My own words (kept).' ) );
 
 		$this->assertStringContainsString( '<section class="jls-reader" lang="vi"', $body );
-		$this->assertStringContainsString( '<details class="jls-passage" open><summary>Luke 3:1-6</summary>', $body );
+		$this->assertStringContainsString( '<section class="jls-passage"><h3 class="jls-ref">Luke 3:1-6</h3>', $body );
+		$this->assertStringNotContainsString( 'class="jls-passage" open', $body );
 		$this->assertStringContainsString( 'class="jls-text"', $body );
 		$this->assertStringContainsString( '<sup class="jls-num">1</sup>', $body );
 		$this->assertStringContainsString( '<span class="jls-version-name">Kinh Thánh 1925 (Bản Truyền Thống)</span>', $body );
@@ -257,7 +258,7 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 		// The title and everything else stay; only the plain list the reader repeats is gone.
 		$this->assertStringContainsString( '<h2>John the Baptizer Prepares the Way</h2>', $body );
 		$this->assertStringNotContainsString( 'class="jl-passages"', $body );
-		$this->assertStringContainsString( 'data-insert="Luke 3:1-6"', $body, 'the reference chip is still there' );
+		$this->assertStringNotContainsString( 'data-insert', $body, 'no reference chips (#188)' );
 		$this->assertStringContainsString( 'My own words (kept).</textarea>', $body );
 		$this->assertSame( 1, substr_count( $body, '<form method="post" class="jl-soap"' ), 'one SOAP form' );
 		$reader = strpos( $body, 'class="jls-reader"' );
@@ -343,6 +344,100 @@ class Test_Native_Reader extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'class="jls-text"', $body );
 		$this->assertStringNotContainsString( '<iframe', $body );
 		$this->assertSame( 1, substr_count( $body, '<form method="post" class="jl-soap"' ) );
+	}
+
+	/**
+	 * The whole reading of the reader part of a page body: from the reader to
+	 * the start of the SOAP form (or the end).
+	 *
+	 * @param string $body Page body.
+	 * @return string
+	 */
+	private function reader_of( $body ) {
+		$start = (int) strpos( $body, '<section class="jls-reader"' );
+		$end   = strpos( $body, '<form method="post" class="jl-soap"' );
+		return false === $end ? substr( $body, $start ) : substr( $body, $start, $end - $start );
+	}
+
+	/**
+	 * #188: on Today and /soap, every passage of a several-passage day is open
+	 * at once, in order, under its reference heading with its verse numbers; no
+	 * <details> box around a passage or the reading; one footer after the last
+	 * passage with the NLT notice, the API.Bible link and the version name each
+	 * once; FUMS still reports each displayed passage once; then the SOAP form.
+	 */
+	public function test_several_passages_are_all_open_with_one_footer() {
+		$this->reader_on();
+		wp_set_current_user( $this->u['a'] );
+		$refs = array( 'Matthew 4:13-17', 'Mark 1:15', 'Luke 4:14-15', 'Luke 4:16-30' );
+		foreach ( array( 'today', 'soap' ) as $screen ) {
+			delete_site_option( JLIFE_CHALLENGES_APIBIBLE_USAGE_OPTION );
+			jlife_scripture_cache_purge( true );
+			$view   = $this->view( $this->u['a'], $refs );
+			$body   = 'today' === $screen ? jlife_challenges_today_body( $view ) : jlife_challenges_soap_body( $view );
+			$reader = $this->reader_of( $body );
+
+			$this->assertSame( 4, substr_count( $reader, '<section class="jls-passage">' ), $screen );
+			$this->assertStringNotContainsString( '<details', $reader, "{$screen}: no box to open" );
+			$this->assertStringNotContainsString( '<summary', $reader, $screen );
+			$last = -1;
+			foreach ( $refs as $ref ) {
+				$at = strpos( $reader, '<h3 class="jls-ref">' . $ref . '</h3>' );
+				$this->assertIsInt( $at, "{$screen}: heading {$ref}" );
+				$this->assertGreaterThan( $last, $at, "{$screen}: {$ref} in order" );
+				$last = $at;
+			}
+			$this->assertSame( 4, substr_count( $reader, 'class="jls-text"' ), "{$screen}: every passage's text is on the page" );
+			$this->assertStringContainsString( '<sup class="jls-num">30</sup>', $reader, "{$screen}: verse numbers" );
+
+			$this->assertSame( 1, substr_count( $body, '<footer class="jls-attribution">' ), "{$screen}: one footer" );
+			$footer = strpos( $reader, '<footer class="jls-attribution">' );
+			$this->assertGreaterThan( strrpos( $reader, '<section class="jls-passage">' ), $footer, "{$screen}: after the last passage" );
+			foreach ( array( self::COPYRIGHT, 'Scripture text provided by API.Bible', '<span class="jls-version-name">New Living Translation</span>' ) as $notice ) {
+				$this->assertSame( 1, substr_count( $body, $notice ), "{$screen}: once: {$notice}" );
+				$this->assertGreaterThan( $footer, strpos( $reader, $notice ), "{$screen}: in the footer: {$notice}" );
+			}
+			$this->assertSame( 4, jlife_challenges_apibible_usage()['fums'], "{$screen}: each displayed passage reported once" );
+			$this->assertLessThan( strpos( $body, '<form method="post" class="jl-soap"' ), strpos( $body, '<footer class="jls-attribution">' ), "{$screen}: the footer is above the SOAP form" );
+		}
+	}
+
+	/**
+	 * One passage: the same layout with one heading and one footer.
+	 */
+	public function test_one_passage_has_one_heading_and_one_footer() {
+		$this->reader_on();
+		$this->assertTrue( jlife_challenges_set_language( $this->u['a'], $this->u['a'], 'vi' ) );
+		wp_set_current_user( $this->u['a'] );
+		$reader = $this->reader_of( jlife_challenges_today_body( $this->view( $this->u['a'] ) ) );
+		$this->assertSame( 1, substr_count( $reader, '<section class="jls-passage">' ) );
+		$this->assertSame( 1, substr_count( $reader, '<h3 class="jls-ref">' ) );
+		$this->assertSame( 1, substr_count( $reader, '<footer class="jls-attribution">' ) );
+		$this->assertSame( 1, substr_count( $reader, 'thuộc phạm vi công cộng' ), 'the 1925 notice once' );
+		$this->assertStringNotContainsString( '<details', $reader );
+	}
+
+	/**
+	 * A closed campaign's read-only day (#179) shows the reading in the new
+	 * layout too: every passage open and one footer, then the person's own words,
+	 * and no form.
+	 */
+	public function test_the_closed_day_view_shows_the_reading_in_the_new_layout() {
+		$this->reader_on();
+		$this->assertTrue( jlife_challenges_set_language( $this->u['a'], $this->u['a'], 'vi' ) );
+		wp_set_current_user( $this->u['a'] );
+		$view           = $this->view( $this->u['a'], array( 'John 1:1-5', 'John 1:6-8' ) );
+		$view['closed'] = true;
+		$view['entry']  = array( 'body' => $this->soap( 'closed' ) );
+		$panel          = jlife_challenges_render_soap_panel( $view );
+		$this->assertStringStartsWith( '<section class="jls-reader" lang="vi"', $panel );
+		$this->assertSame( 2, substr_count( $panel, '<section class="jls-passage">' ) );
+		$this->assertSame( 2, substr_count( $panel, 'class="jls-text"' ) );
+		$this->assertSame( 1, substr_count( $panel, '<footer class="jls-attribution">' ) );
+		$this->assertStringNotContainsString( '<details', $panel );
+		$this->assertStringNotContainsString( '<form', $panel );
+		$this->assertStringNotContainsString( 'data-insert', $panel );
+		$this->assertLessThan( strpos( $panel, 'class="jl-preview"' ), strpos( $panel, '<footer class="jls-attribution">' ), 'the reading, then their own words' );
 	}
 
 	/**

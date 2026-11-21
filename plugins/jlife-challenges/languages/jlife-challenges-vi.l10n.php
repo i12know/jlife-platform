@@ -149,7 +149,7 @@ return array(
 		'Sign out of J-Life?' => 'Đăng xuất khỏi J-Life?',
 		'You will need a new email code to sign back in.' => 'Bạn sẽ cần một mã mới qua email để đăng nhập lại.',
 		'The reading for this day is not loaded yet.' => 'Bài đọc của ngày này chưa được tải lên.',
-		'Optional: parallel readings for deeper study' => 'Không bắt buộc: các đoạn song song để học sâu hơn',
+		'Optional: parallel Harmony readings for deeper study' => 'Không bắt buộc: các đoạn song song trong Harmony để học sâu hơn', // #188. DRAFT.
 		'Optional. Reading these does not change your points.' => 'Không bắt buộc. Đọc các đoạn này không thay đổi điểm của bạn.',
 		'Harmony\'s section %1$s: %2$s' => 'Phần %1$s của Harmony: %2$s',
 		'Harmony Bible sections' => 'Các phần trong Harmony Bible',
@@ -282,8 +282,6 @@ return array(
 		// Today page fixes from pilot feedback (#142).
 		'SOAP = Scripture, Observation, Application, Prayer.' => 'SOAP = Kinh Thánh (Scripture), Quan sát (Observation), Áp dụng (Application), Cầu nguyện (Prayer).',
 		'More' => 'Xem thêm',
-		'Tap a reference to add it under S:' => 'Bấm vào một câu Kinh Thánh để thêm dưới phần S:',
-		'Add %s to my SOAP' => 'Thêm %s vào SOAP của tôi',
 		// My Bible on My Marathon (#140). DRAFT, like the rest.
 		'My Bible' => 'Bản Kinh Thánh của tôi',
 		'Also show…' => 'Hiển thị thêm…',

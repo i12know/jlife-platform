@@ -661,7 +661,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'data-day="d001"', $form );
 		$this->assertStringContainsString( 'data-status="draft"', $form, 'autosave stays on for an unsubmitted day' );
 		$this->assertStringContainsString( 'name="jl_day" value="d001"', $form );
-		$this->assertStringContainsString( 'data-insert="Luke 3:1-6"', $form, 'reference chips still work' );
+		$this->assertStringNotContainsString( 'data-insert', $form, 'no reference chips (#188)' );
 
 		// The share box: one per group (a is in Group One only), unchecked, after the textbox and before the submit button.
 		$this->assertSame( 1, substr_count( $form, 'type="checkbox"' ) );
@@ -683,11 +683,11 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Today (#136): the SOAP block reads My SOAP, the instruction, the heading
-	 * help (id jlife-soap-help), the reference chips, then the textbox, in
-	 * English and in Vietnamese.
+	 * Today (#136, #188): the SOAP block reads My SOAP, the instruction, the
+	 * heading help (id jlife-soap-help), then the textbox (no reference chips),
+	 * in English and in Vietnamese.
 	 */
-	public function test_today_soap_help_sits_between_the_instruction_and_the_reference_chips() {
+	public function test_today_soap_help_sits_between_the_instruction_and_the_textbox() {
 		$force = static fn() => 'vi';
 		$dir   = static fn( $path, $domain ) => 'jlife-challenges' === $domain ? dirname( __DIR__ ) . '/languages/' : $path;
 		$form  = '';
@@ -703,7 +703,6 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 					'<label for="jl-text">' . esc_html__( 'My SOAP', 'jlife-challenges' ),
 					esc_html__( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ),
 					'<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary>',
-					'data-insert="',
 					'<textarea id="jl-text"',
 				);
 				$last  = -1;
@@ -714,6 +713,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 					$last = $at;
 				}
 				$this->assertSame( 1, substr_count( $form, 'id="jlife-soap-help"' ), $lang . ': one help box' );
+				$this->assertStringNotContainsString( 'jl-chip', $form, $lang . ': no reference chips' );
 			} finally {
 				remove_filter( 'determine_locale', $force, 99 );
 				remove_filter( 'lang_dir_for_domain', $dir, 10 );
@@ -800,22 +800,28 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 
 	/**
 	 * The SOAP block explains itself (#142): a one-liner with a "More" link to the
-	 * heading help, a visible label over the reference chips, and an accessible
-	 * name on each chip. Insertion still uses data-insert.
+	 * heading help. The reference chips and their "Tap a reference" prompt are
+	 * gone (#188, replacing #142 section 2): the reference is typed under S.
 	 */
-	public function test_soap_one_liner_and_labelled_reference_chips() {
+	public function test_soap_one_liner_and_no_reference_chips() {
 		$form = $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
 
 		$this->assertStringContainsString( '<p class="jl-soap-def">SOAP = Scripture, Observation, Application, Prayer. <a href="#jlife-soap-help" class="jl-soap-more">More</a></p>', $form );
 		$this->assertMatchesRegularExpression( '#<details[^>]*\bid="jlife-soap-help"[^>]*>#', $form, 'the link targets the heading help box' );
 		$this->assertSame( 1, substr_count( $form, 'id="jlife-soap-help"' ) );
 
-		$this->assertStringContainsString( '<p class="jl-chips-label" id="jl-chips-label">Tap a reference to add it under S:</p>', $form );
-		$this->assertStringContainsString( '<div class="jl-chips" role="group" aria-labelledby="jl-chips-label">', $form );
-		$this->assertStringContainsString( '<button type="button" class="jl-chip" data-insert="Luke 3:1-6" aria-label="Add Luke 3:1-6 to my SOAP">Luke 3:1-6</button>', $form );
+		foreach ( array( 'Tap a reference', 'jl-chips-label', 'jl-chip', 'data-insert', 'to my SOAP' ) as $gone ) {
+			$this->assertStringNotContainsString( $gone, $form, $gone );
+		}
+		$this->assertStringContainsString( 'S — Scripture', $form, 'the S heading is where the reference goes' );
+		$js = (string) file_get_contents( dirname( __DIR__ ) . '/assets/soap.js' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
+		$this->assertStringNotContainsString( 'data-insert', $js, 'the chip script is gone' );
+		$this->assertStringContainsString( 'jlife-soap-help', $js, 'the More link still opens the help' );
+		$css = (string) file_get_contents( dirname( __DIR__ ) . '/assets/screens.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
+		$this->assertStringNotContainsString( 'jl-chips-label', $css );
 
-		// Order: heading, one-liner, chip label, chips, textbox.
-		$order = array( '>My SOAP</label>', 'class="jl-soap-def"', 'class="jl-chips-label"', 'class="jl-chip"', '<textarea' );
+		// Order: heading, one-liner, help, textbox.
+		$order = array( '>My SOAP</label>', 'class="jl-soap-def"', 'id="jlife-soap-help"', '<textarea' );
 		$last  = -1;
 		foreach ( $order as $needle ) {
 			$at = strpos( $form, $needle );
@@ -1196,9 +1202,9 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'jl-reminder-toggle', jlife_challenges_soap_body( $view ) );
 
 		$html = jlife_challenges_page_html( 'Today', $body, 'today', array( 'soap', 'reminder' ) );
-		$this->assertStringContainsString( 'assets/soap.js?v=4', $html );
+		$this->assertStringContainsString( 'assets/soap.js?v=5', $html );
 		$this->assertStringContainsString( 'assets/reminder.js?v=2', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=17', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=18', $html );
 		$this->assertStringNotContainsString( 'reminder.js', jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' ) );
 	}
 }

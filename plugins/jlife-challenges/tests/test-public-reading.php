@@ -268,7 +268,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$this->assertStringStartsWith( '<!doctype html>', $html );
 		$this->assertStringContainsString( '<meta name="viewport" content="width=device-width, initial-scale=1">', $html );
 		$this->assertStringContainsString( '<meta name="robots" content="noindex, nofollow">', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=17', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=18', $html );
 		$this->assertSame( 1, substr_count( $html, '<main>' ) );
 		foreach ( array(
 			'Written by',
@@ -315,7 +315,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 			$this->assertGreaterThan( $last, $at, "in order: {$needle}" );
 			$last = (int) $at;
 		}
-		$this->assertStringContainsString( '<summary>Optional: parallel readings for deeper study</summary><p>Optional. Reading these does not change your points.</p>', $main );
+		$this->assertStringContainsString( '<summary>Optional: parallel Harmony readings for deeper study</summary><p>Optional. Reading these does not change your points.</p>', $main );
 		$this->assertStringContainsString( 'href="https://harmony-bible.com/sections/1/" target="_blank" rel="noopener">Harmony&#039;s section 1:', $main, 'Harmony sections as on Today' );
 		$this->assertStringNotContainsString( 'harmony-bible.com', substr( $main, 0, (int) strpos( $main, '<details class="jl-optional">' ) ), 'only inside the optional box' );
 		$this->assertSame( 1, substr_count( $main, 'harmony-bible.com/sections/2/' ) );
@@ -701,7 +701,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		);
 
 		$list     = '<ul class="jl-passages"><li>Luke 3:1-6</li><li>Mark 1:1</li></ul>';
-		$optional = '<details class="jl-optional"><summary>Optional: parallel readings for deeper study</summary><p>Optional. Reading these does not change your points.</p><div class="jl-harmony"><h3>Harmony Bible sections</h3><ul><li><a href="https://harmony-bible.com/sections/20/" target="_blank" rel="noopener">Harmony&#039;s section 20: The Time</a></li></ul></div></details>';
+		$optional = '<details class="jl-optional"><summary>Optional: parallel Harmony readings for deeper study</summary><p>Optional. Reading these does not change your points.</p><div class="jl-harmony"><h3>Harmony Bible sections</h3><ul><li><a href="https://harmony-bible.com/sections/20/" target="_blank" rel="noopener">Harmony&#039;s section 20: The Time</a></li></ul></div></details>';
 		$this->assertSame( '<section class="jl-reading"><h2>A | B &lt;i&gt;</h2>' . $list . $optional . '</section>', jlife_challenges_render_reading( $full ) );
 		$this->assertSame( '<section class="jl-reading"><h2>A | B &lt;i&gt;</h2>' . $list . '</section>', jlife_challenges_render_reading( $single ) );
 		$this->assertSame( '<p>The reading for this day is not loaded yet.</p>', jlife_challenges_render_reading( $none ) );
@@ -731,17 +731,17 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * The stylesheet version is 17 everywhere it is linked, and the stylesheet
+	 * The stylesheet version is 18 everywhere it is linked (#188), and the stylesheet
 	 * has what the public page needs (and dark tokens, which the page reuses).
 	 */
-	public function test_the_stylesheet_is_version_17_everywhere() {
+	public function test_the_stylesheet_is_version_18_everywhere() {
 		$files = array_merge( glob( dirname( __DIR__ ) . '/includes/*.php' ), array( dirname( __DIR__ ) . '/jlife-challenges.php' ) );
 		$seen  = 0;
 		foreach ( $files as $file ) {
 			$src = (string) file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading the plugin's own source.
 			preg_match_all( '/screens\.css\?v=(\d+)/', $src, $m );
 			foreach ( $m[1] as $version ) {
-				$this->assertSame( '17', $version, basename( $file ) );
+				$this->assertSame( '18', $version, basename( $file ) );
 				++$seen;
 			}
 		}
@@ -818,7 +818,8 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$main = $this->main_of( $html );
 
 		$this->assertStringContainsString( '<section class="jls-reader" lang="vi"', $main );
-		$this->assertStringContainsString( '<details class="jls-passage" open><summary>John 1:1-18</summary>', $main );
+		$this->assertStringContainsString( '<section class="jls-passage"><h3 class="jls-ref">John 1:1-18</h3>', $main );
+		$this->assertStringNotContainsString( 'jls-passage" open', $main, 'no box to open (#188)' );
 		$this->assertStringContainsString( '<sup class="jls-num">1</sup>', $main );
 		$this->assertStringContainsString( '<sup class="jls-num">18</sup>', $main );
 		$this->assertStringContainsString( 'Ngôi Lời', $main );

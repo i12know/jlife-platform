@@ -1,7 +1,8 @@
 <?php
 /**
- * The reader: the participant's Bible on the page, first passage open, the
- * rest collapsed, verse numbers, version name and copyright line; link-only
+ * The reader: the participant's Bible on the page, every passage open in
+ * order under a reference heading (#188), verse numbers, one attribution
+ * footer with each notice once after the reading; link-only
  * versions and failures show the Bible Gateway link; off by default.
  *
  * @package jlife-scripture
@@ -30,13 +31,14 @@ class Test_Render extends Jlife_Scripture_TestCase {
 	public function test_vietnamese_participant_reads_kinh_thanh_1925() {
 		$html = jlife_scripture_render_day( $this->day10(), $this->participant( 'vi' ) );
 		$this->assertStringContainsString( '<section class="jls-reader" lang="vi"', $html );
-		$this->assertSame( 4, substr_count( $html, '<details class="jls-passage"' ) );
-		$this->assertSame( 1, substr_count( $html, '<details class="jls-passage" open>' ), 'only the first is open' );
-		$this->assertStringStartsWith( '<section class="jls-reader" lang="vi" aria-label="Scripture reading"><details class="jls-passage" open><summary>Ma-thi-ơ 3:13-17</summary>', $html );
-		$this->assertStringContainsString( '<summary>Lu-ca 3:23a</summary>', $html );
+		$this->assertSame( 4, substr_count( $html, '<section class="jls-passage">' ) );
+		$this->assertStringNotContainsString( '<details', $html, 'no box to open' );
+		$this->assertStringNotContainsString( '<summary', $html );
+		$this->assertStringStartsWith( '<section class="jls-reader" lang="vi" aria-label="Scripture reading"><section class="jls-passage"><h3 class="jls-ref">Ma-thi-ơ 3:13-17</h3>', $html );
+		$this->assertStringContainsString( '<h3 class="jls-ref">Lu-ca 3:23a</h3>', $html );
 		$this->assertStringContainsString( '<sup class="jls-num">13</sup>', $html, 'verse numbers' );
 		$this->assertSame( 4, substr_count( $html, 'jls-text' ), 'text for every passage' );
-		$this->assertSame( 4, substr_count( $html, '<span class="jls-version-name">Kinh Thánh 1925 (Bản Truyền Thống)</span>' ) );
+		$this->assertSame( 1, substr_count( $html, '<span class="jls-version-name">Kinh Thánh 1925 (Bản Truyền Thống)</span>' ), 'the notice once' );
 		$this->assertStringContainsString( 'thuộc phạm vi công cộng', $html );
 		$this->assertStringContainsString( 'Đức Chúa Jêsus', $html );
 		$this->assertStringNotContainsString( 'biblegateway.com', $html, 'no link needed when the text shows' );
@@ -71,8 +73,9 @@ class Test_Render extends Jlife_Scripture_TestCase {
 		$this->assertSame( 4, substr_count( $html, 'Open in Bible Gateway (ERV)' ) );
 		$this->assertStringContainsString( 'href="https://www.biblegateway.com/passage/?search=Luke+3:23&#038;version=ERV"', $html );
 		$this->assertStringContainsString( 'Easy-to-Read Version (ERV) Copyright © 2006 by Bible League International', $html );
-		$this->assertStringContainsString( '<summary>Matthew 3:13-17</summary>', $html );
-		$this->assertSame( 1, substr_count( $html, ' open>' ) );
+		$this->assertStringContainsString( '<h3 class="jls-ref">Matthew 3:13-17</h3>', $html );
+		$this->assertSame( 1, substr_count( $html, 'Bible League International' ), 'the link version\'s notice once, in the footer' );
+		$this->assertGreaterThan( strrpos( $html, 'Open in Bible Gateway (ERV)' ), strpos( $html, '<footer class="jls-attribution">' ) );
 	}
 
 	/**
@@ -149,6 +152,59 @@ class Test_Render extends Jlife_Scripture_TestCase {
 		);
 		$this->assertStringNotContainsString( '<script>', $html );
 		$this->assertStringContainsString( '&lt;script&gt;', $html );
+	}
+
+	/**
+	 * One passage: open under its heading, then the footer with the notice once.
+	 * Several: all open, in the plan's order, and still one footer, after the
+	 * last passage, with the notice once (#188).
+	 */
+	public function test_one_footer_after_one_or_several_passages() {
+		$one = jlife_scripture_render_day( $this->day( 'John 1:1-5', array( 'Giăng 1:1-5' ) ), $this->participant( 'vi' ) );
+		$this->assertSame( 1, substr_count( $one, '<section class="jls-passage">' ) );
+		$this->assertSame( 1, substr_count( $one, '<footer class="jls-attribution">' ) );
+		$this->assertSame( 1, substr_count( $one, 'thuộc phạm vi công cộng' ) );
+		$this->assertStringEndsWith( '</div></section><footer class="jls-attribution"><p class="jls-version"><small><span class="jls-version-name">Kinh Thánh 1925 (Bản Truyền Thống)</span> · <a href="https://ebible.org/find/details.php?id=vie1934" target="_blank" rel="noopener">Bản dịch William Cadman (Tân Ước 1923, Cựu Ước 1925), thuộc phạm vi công cộng. Văn bản: eBible.org.</a></small></p></footer></section>', $one );
+
+		$many = jlife_scripture_render_day( $this->day10(), $this->participant( 'vi' ) );
+		$this->assertSame( 1, substr_count( $many, '<footer class="jls-attribution">' ) );
+		$this->assertSame( 1, substr_count( $many, 'thuộc phạm vi công cộng' ), 'each notice exactly once' );
+		$this->assertSame( 1, substr_count( $many, 'class="jls-version"' ), 'no notice inside a passage' );
+		$this->assertGreaterThan( strrpos( $many, '<section class="jls-passage">' ), strpos( $many, '<footer class="jls-attribution">' ), 'after the last passage' );
+		$positions = array_map( static fn( $ref ) => strpos( $many, '<h3 class="jls-ref">' . $ref . '</h3>' ), array( 'Ma-thi-ơ 3:13-17', 'Lu-ca 3:23a', 'Ma-thi-ơ 4:1-11', 'Giăng 1:19-28' ) );
+		$this->assertNotContains( false, $positions, 'every reference is a heading' );
+		$sorted = $positions;
+		sort( $sorted );
+		$this->assertSame( $sorted, $positions, 'in the plan\'s order' );
+		foreach ( explode( '<section class="jls-passage">', $many ) as $i => $part ) {
+			if ( $i > 0 ) {
+				$this->assertStringContainsString( '<sup class="jls-num">', $part, "passage {$i} shows its verses" );
+			}
+		}
+	}
+
+	/**
+	 * A passage whose text cannot be shown keeps its note and link in place;
+	 * the footer then lists the shown Bible's notice and the link version's,
+	 * each once.
+	 */
+	public function test_a_failed_passage_keeps_its_link_and_the_footer_lists_both_notices() {
+		$fake       = $this->use_fake_nirv();
+		$fake->mode = 'error';
+		$html       = jlife_scripture_render_day( $this->day( 'John 1:1-5; John 1:6-8' ), $this->participant( 'en' ) );
+		$this->assertSame( 2, substr_count( $html, 'The Bible text could not be loaded.' ) );
+		$this->assertSame( 2, substr_count( $html, 'Open in Bible Gateway (ERV)' ), 'each passage keeps its link' );
+		$this->assertSame( 1, substr_count( $html, 'Bible League International' ), 'the link notice once' );
+
+		// Over the license's verse limit, the second passage falls back to its link.
+		$this->use_fake_nirv( 3600, 5 );
+		$mixed = jlife_scripture_render_day( $this->day( 'John 2:1-5; John 3:1-12' ), $this->participant( 'en' ) );
+		$this->assertStringContainsString( Jlife_Scripture_Fake_Source::TEXT, $mixed, 'the first shows text' );
+		$this->assertSame( 1, substr_count( $mixed, 'Open in Bible Gateway (ERV)' ), 'the second is a link' );
+		$this->assertLessThan( strpos( $mixed, '<footer' ), strpos( $mixed, 'Open in Bible Gateway (ERV)' ), 'the link stays in its passage' );
+		$footer = substr( $mixed, (int) strpos( $mixed, '<footer class="jls-attribution">' ) );
+		$this->assertStringContainsString( 'New International Reader&#039;s Version', $footer );
+		$this->assertSame( 2, substr_count( $footer, 'class="jls-version"' ), 'the shown Bible and the link version, once each' );
 	}
 
 	/**

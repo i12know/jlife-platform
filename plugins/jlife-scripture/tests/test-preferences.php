@@ -316,13 +316,14 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 		jlife_scripture_set_user_choice( $en, array( 'primary' => 'kt1925' ) );
 		$html = jlife_scripture_render_day( $this->day( 'John 1:1-5', array( 'Giăng 1:1-5' ) ), $en );
 		$this->assertStringContainsString( '<section class="jls-reader" lang="vi"', $html );
-		$this->assertStringContainsString( '<summary>Giăng 1:1-5</summary>', $html );
+		$this->assertStringContainsString( '<h3 class="jls-ref">Giăng 1:1-5</h3>', $html );
 		$this->assertStringContainsString( 'Ngôi Lời', $html );
 	}
 
 	/**
 	 * The second Bible renders under the first, for every passage, and
-	 * disappears when cleared; the first passage stays the only one open.
+	 * disappears when cleared; both passages are open, and the footer lists each
+	 * Bible's notice once (#188).
 	 */
 	public function test_second_bible_renders_under_the_first() {
 		$user = $this->participant( 'vi' );
@@ -333,8 +334,12 @@ class Test_Preferences extends Jlife_Scripture_TestCase {
 
 		jlife_scripture_set_user_choice( $user, array( 'secondary' => 'erv' ) );
 		$two = jlife_scripture_render_day( $day, $user );
-		$this->assertSame( 2, substr_count( $two, '<details class="jls-passage"' ) );
-		$this->assertSame( 1, substr_count( $two, '<details class="jls-passage" open>' ) );
+		$this->assertSame( 2, substr_count( $two, '<section class="jls-passage">' ) );
+		$this->assertStringNotContainsString( '<details', $two );
+		$this->assertSame( 1, substr_count( $two, 'Kinh Thánh 1925 (Bản Truyền Thống)' ), 'the 1925 notice once' );
+		$this->assertSame( 1, substr_count( $two, 'Bible League International' ), 'the ERV notice once' );
+		$this->assertLessThan( strpos( $two, 'Bible League International' ), strpos( $two, 'Kinh Thánh 1925' ), 'in the order the Bibles show' );
+		$this->assertGreaterThan( strrpos( $two, 'class="jls-edition"' ), strpos( $two, '<footer class="jls-attribution">' ), 'after the last passage' );
 		$this->assertSame( 2, substr_count( $two, 'class="jls-text"' ), 'the 1925 text for both passages' );
 		$this->assertSame( 2, substr_count( $two, 'Open in Bible Gateway (ERV)' ), 'the second Bible for both passages' );
 		$this->assertSame( 4, substr_count( $two, 'class="jls-edition"' ), 'two editions per passage' );
