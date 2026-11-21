@@ -10,6 +10,8 @@
 	<arg name="parallel" value="8"/>
 
 	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<!-- Vendored third-party library (MIT), unchanged: plugins/jlife-challenges/lib/parsedown/. -->
+	<exclude-pattern>*/lib/parsedown/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 
 	<rule ref="WordPress"/>

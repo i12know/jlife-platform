@@ -121,6 +121,7 @@ function jlife_challenges_render_public_reading( $view ) {
 	$out = jlife_challenges_render_day_head( $view )
 		. '<section class="jl-reading">' . jlife_challenges_render_reading_head( $view ) . '</section>'
 		. jlife_challenges_render_reader( $view )
+		. jlife_challenges_render_devotional( $view )
 		. jlife_challenges_render_optional_readings( $view['reading'] )
 		. jlife_challenges_render_public_invite( $view );
 
