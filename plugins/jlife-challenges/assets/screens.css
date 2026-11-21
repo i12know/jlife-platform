@@ -110,3 +110,4 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-public-reader{margin:1rem 0}.jl-public-reader ul{list-style:none;margin:0;padding:0}.jl-public-reader li{margin:.25rem 0;overflow-wrap:anywhere}.jl-public-reader li>a{display:inline-block;padding:.5rem 0;min-height:2.75rem;box-sizing:border-box}
 .jl-invite{margin:1.5rem 0 .5rem;padding-top:1rem;border-top:1px solid var(--line)}.jl-invite p{margin:0 0 .5rem;color:var(--muted)}
 .jl-source{margin:1.25rem 0 0;color:var(--muted);overflow-wrap:anywhere}
+.jl-recover{margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--line)}.jl-recover h2{font-size:1.1rem;margin:0 0 .4rem}.jl-recover .jl-button{white-space:normal;overflow-wrap:anywhere}

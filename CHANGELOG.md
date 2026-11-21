@@ -9,6 +9,10 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 ## Unreleased
 
 ### Fixed
+- **Today's Welcome screen now offers a way back to your Marathon account** (#202). People who joined but see "You have not joined the Marathon yet" (typically after signing in to wp-admin in the same browser, which replaces the participant session with the admin account) get an "Already joined the Marathon?" prompt under the three join options.
+  - **Signed out:** a button to the emailed-code sign-in that returns to Today (redirect target validated by `jlife_auth_redirect_target()` as before).
+  - **Signed in without an enrollment:** an explanation and a deliberate "Sign out and sign in with my Marathon account" link, using WordPress's nonce-protected logout, landing on the sign-in form. Opening Today never signs anyone out; nobody is enrolled; enrollments, groups, points, preferences and drafts stay on their own accounts.
+  - **Also:** My Marathon and My Group's not-joined screens share it. `screens.css` is now `?v=19`; five new strings have Vietnamese drafts. Staff still cannot use emailed codes, so a staff member who also takes part uses their separate participant address.
 - **Footer links are easier to tap on phones** (QA 2026-11-20, round 2). Help, Rules, Privacy and Pilot Feedback in the participant footer are now at least 44 px tall, and wrapped rows are separated, so a link on the second row no longer touches the first. `screens.css` is now `?v=17`.
 
 - **One rule decides "the current campaign"** (#177, part of #174). With the Dec 5–13 pilot and the Dec 20 Marathon both active, two functions used to disagree: Today and My Marathon showed the campaign with the latest start, so a future Marathon enrollment hid the running pilot, and "Read on my own" preferred a real campaign even before it started.

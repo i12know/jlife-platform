@@ -148,6 +148,11 @@ return array(
 		'My Marathon' => 'Marathon của tôi',
 		'Sign out' => 'Đăng xuất',
 		'Cancel' => 'Hủy',
+		'Already joined the Marathon?' => 'Bạn đã tham gia Marathon rồi?', // #202. DRAFT.
+		'Sign in with your Marathon account to see your reading, group and points.' => 'Hãy đăng nhập bằng tài khoản Marathon của bạn để xem bài đọc, nhóm và điểm của bạn.',
+		'Sign in with my Marathon account' => 'Đăng nhập bằng tài khoản Marathon của tôi',
+		'You are signed in with an account that has not joined. If you joined with a different account, switch to it: this signs out of the current account and opens the sign-in page. Nothing is moved or changed on either account.' => 'Bạn đang đăng nhập bằng một tài khoản chưa tham gia. Nếu bạn đã tham gia bằng tài khoản khác, hãy chuyển sang tài khoản đó: thao tác này đăng xuất khỏi tài khoản hiện tại và mở trang đăng nhập. Không có gì bị chuyển hay thay đổi trên cả hai tài khoản.',
+		'Sign out and sign in with my Marathon account' => 'Đăng xuất và đăng nhập bằng tài khoản Marathon của tôi',
 		'Sign out of J-Life?' => 'Đăng xuất khỏi J-Life?',
 		'You will need a new email code to sign back in.' => 'Bạn sẽ cần một mã mới qua email để đăng nhập lại.',
 		'The reading for this day is not loaded yet.' => 'Bài đọc của ngày này chưa được tải lên.',
