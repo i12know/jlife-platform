@@ -94,7 +94,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 
 	$scripts  = '';
 	$versions = array(
-		'soap'     => 5,
+		'soap'     => 6,
 		'share'    => 4,
 		'reminder' => 2,
 		'bible'    => 1,
@@ -501,7 +501,9 @@ function jlife_challenges_status_text( $view ) {
 		case 'draft':
 			// A draft row holding nothing but the headings is not a saved draft yet (#142).
 			if ( jlife_challenges_has_writing( (string) ( $view['entry']['body'] ?? '' ) ) ) {
-				return __( 'Draft saved. Write all four parts (S, O, A, P), then tap Submit SOAP.', 'jlife-challenges' );
+				return jlife_challenges_campaign_starts_blank( $view['campaign'] ?? null )
+					? __( 'Draft saved. When you are ready, tap Submit.', 'jlife-challenges' )
+					: __( 'Draft saved. Write all four parts (S, O, A, P), then tap Submit SOAP.', 'jlife-challenges' );
 			}
 			break;
 	}
@@ -625,14 +627,31 @@ function jlife_challenges_is_submitted( $view ) {
 }
 
 /**
- * The text for the textbox: the saved entry, or the heading template for a new one.
+ * The text for the textbox: the saved entry, or for a new one the heading
+ * template (a campaign whose engine takes free-form reflections starts blank, #210).
  *
  * @param array $view Day view.
  * @return string
  */
 function jlife_challenges_entry_text( $view ) {
 	$body = ! empty( $view['entry'] ) ? (string) $view['entry']['body'] : '';
-	return '' === trim( $body ) ? jlife_challenges_soap_template() : $body;
+	if ( '' !== trim( $body ) ) {
+		return $body;
+	}
+	return jlife_challenges_campaign_starts_blank( $view['campaign'] ?? null ) ? '' : jlife_challenges_soap_template();
+}
+
+/**
+ * Add the four SOAP headings after what is already typed. Nothing typed is
+ * changed or removed. (The no-JavaScript "Use SOAP template" button; the script
+ * inserts at the cursor instead.)
+ *
+ * @param string $text The typed text.
+ * @return string
+ */
+function jlife_challenges_append_soap_template( $text ) {
+	$text = rtrim( (string) $text );
+	return '' === $text ? jlife_challenges_soap_template() : $text . "\n\n" . jlife_challenges_soap_template();
 }
 
 /**
@@ -703,7 +722,13 @@ function jlife_challenges_process_soap_request( $user_id, $view, $screen ) {
 	$state['share_groups'] = isset( $_POST['jl_share_groups'] ) ? jlife_challenges_clean_group_ids( array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['jl_share_groups'] ) ) ) : array();
 	$return                = jlife_challenges_soap_return_url( $view, $screen );
 	$cid                   = (int) $view['campaign']['id'];
-	if ( 'draft' === sanitize_key( wp_unslash( $_POST['jl_action'] ) ) ) {
+	$action                = sanitize_key( wp_unslash( $_POST['jl_action'] ) );
+	if ( 'template' === $action ) {
+		// "Use SOAP template" without JavaScript: show the form again with the headings added. Nothing is saved, scored or shared.
+		$state['text'] = jlife_challenges_append_soap_template( $text );
+		return $state;
+	}
+	if ( 'draft' === $action ) {
 		$r = jlife_challenges_save_draft( $user_id, $cid, $view['day_key'], $text );
 		if ( is_wp_error( $r ) ) {
 			$state['error'] = $r->get_error_message();
@@ -920,6 +945,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$text      = null === $state['text'] ? jlife_challenges_entry_text( $view ) : (string) $state['text'];
 	$submitted = jlife_challenges_is_submitted( $view );
 	$headings  = jlife_challenges_soap_headings();
+	$free      = jlife_challenges_campaign_starts_blank( $view['campaign'] );
 	$groups    = (array) ( $view['share_groups'] ?? array() );
 	$out       = jlife_challenges_render_reader( $view )
 		. '<form method="post" class="jl-soap" data-status="' . esc_attr( $submitted ? 'submitted' : 'draft' ) . '"'
@@ -938,9 +964,9 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		. ' data-campaign="' . esc_attr( (string) $view['campaign']['id'] ) . '" data-day="' . esc_attr( $view['day_key'] ) . '">'
 		. wp_nonce_field( 'jlife_soap_' . $view['day_key'], '_jlife_soap', true, false )
 		. '<input type="hidden" name="jl_day" value="' . esc_attr( $view['day_key'] ) . '">'
-		. '<label for="jl-text">' . esc_html__( 'My SOAP', 'jlife-challenges' ) . '</label>'
-		. '<p class="jl-soap-def">' . esc_html__( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) . ' <a href="#jlife-soap-help" class="jl-soap-more">' . esc_html__( 'More', 'jlife-challenges' ) . '</a>' . jlife_challenges_soap_help_page_link() . '</p>'
-		. '<small>' . esc_html__( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ) . '</small>'
+		. '<label for="jl-text">' . esc_html( $free ? __( 'My reflection', 'jlife-challenges' ) : __( 'My SOAP', 'jlife-challenges' ) ) . '</label>'
+		. '<p class="jl-soap-def">' . esc_html( $free ? __( 'Write about what you read, in your own words. You can use SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) : __( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) ) . ' <a href="#jlife-soap-help" class="jl-soap-more">' . esc_html__( 'More', 'jlife-challenges' ) . '</a>' . jlife_challenges_soap_help_page_link() . '</p>'
+		. '<small>' . esc_html( $free ? __( 'A few sentences in your own words earn the point for the day. SOAP headings are optional, and they do not count as your words.', 'jlife-challenges' ) : __( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ) ) . '</small>'
 		. '<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary><ul>';
 	foreach ( jlife_challenges_soap_guidance() as $letter => $guidance ) {
 		$out .= '<li><strong>' . esc_html( $headings[ $letter ] ) . '</strong> ' . esc_html( $guidance ) . '</li>';
@@ -948,10 +974,11 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$out .= '</ul></details>';
 	// No reference chips here (#188): the reference is typed under S.
 	$out .= '<textarea id="jl-text" name="jl_text" rows="16" maxlength="' . esc_attr( (string) JLIFE_CHALLENGES_BODY_MAX ) . '">' . esc_textarea( $text ) . '</textarea>'
+		. ( $free ? '<button type="submit" name="jl_action" value="template" class="jl-button jl-soap-template" formnovalidate>' . esc_html__( 'Use SOAP template', 'jlife-challenges' ) . '</button><small>' . esc_html__( 'Adds the four SOAP headings. Nothing you wrote is removed.', 'jlife-challenges' ) . '</small>' : '' )
 		. '<p class="jl-saved" aria-live="polite"></p>'
 		. jlife_challenges_render_share_boxes( $groups, (array) $state['share_groups'] );
 	return $out
-		. '<button type="submit" name="jl_action" value="submit" class="jl-button jl-primary">' . esc_html( $submitted ? __( 'Save changes', 'jlife-challenges' ) : __( 'Submit SOAP', 'jlife-challenges' ) ) . '</button>'
+		. '<button type="submit" name="jl_action" value="submit" class="jl-button jl-primary">' . esc_html( $submitted ? __( 'Save changes', 'jlife-challenges' ) : ( $free ? __( 'Submit', 'jlife-challenges' ) : __( 'Submit SOAP', 'jlife-challenges' ) ) ) . '</button>'
 		. ( $submitted ? '' : '<button type="submit" name="jl_action" value="draft" class="jl-button" formnovalidate>' . esc_html__( 'Save draft', 'jlife-challenges' ) . '</button>' )
 		. '</form>';
 }

@@ -29,6 +29,9 @@ class Jlife_Official_Command {
 	 * [--force]
 	 * : Create it even though the site has no pilot campaign.
 	 *
+	 * [--scoring-engine=<id>]
+	 * : Scoring engine for a NEW campaign: soap-regex (default; the four SOAP parts) or reflection-v1 (free-form or SOAP, 20 own words). An existing campaign keeps its engine; change it before Day 1 with `wp jlife campaign set-engine`.
+	 *
 	 * @param array $args       Positional args.
 	 * @param array $assoc_args Options.
 	 */
@@ -37,6 +40,9 @@ class Jlife_Official_Command {
 		$input = array();
 		if ( ! empty( $assoc_args['key'] ) ) {
 			$input['campaign_key'] = (string) $assoc_args['key'];
+		}
+		if ( ! empty( $assoc_args['scoring-engine'] ) ) {
+			$input['scoring_engine'] = (string) $assoc_args['scoring-engine'];
 		}
 		$r = jlife_challenges_create_official_campaign( jlife_challenges_cli_organizer(), $input, ! empty( $assoc_args['force'] ) );
 		if ( is_wp_error( $r ) ) {

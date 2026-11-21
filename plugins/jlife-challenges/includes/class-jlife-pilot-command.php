@@ -25,6 +25,9 @@ class Jlife_Pilot_Command {
 	 * [--key=<key>]
 	 * : Campaign key. Default: pilot-2026-12.
 	 *
+	 * [--scoring-engine=<id>]
+	 * : Scoring engine for a NEW pilot: soap-regex (default; the four SOAP parts) or reflection-v1 (free-form or SOAP, 20 own words). An existing pilot keeps its engine; change it before Day 1 with `wp jlife campaign set-engine`.
+	 *
 	 * @param array $args       Positional args.
 	 * @param array $assoc_args Options.
 	 */
@@ -32,6 +35,9 @@ class Jlife_Pilot_Command {
 		$input = array();
 		if ( ! empty( $assoc_args['key'] ) ) {
 			$input['campaign_key'] = (string) $assoc_args['key'];
+		}
+		if ( ! empty( $assoc_args['scoring-engine'] ) ) {
+			$input['scoring_engine'] = (string) $assoc_args['scoring-engine'];
 		}
 		$r = jlife_challenges_create_pilot_campaign( $this->organizer(), $input );
 		if ( is_wp_error( $r ) ) {

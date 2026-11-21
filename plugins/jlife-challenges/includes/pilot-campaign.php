@@ -47,7 +47,7 @@ function jlife_challenges_is_pilot_campaign( $campaign ) {
  * It creates no groups and enrolls no one.
  *
  * @param int   $actor Organizer.
- * @param array $args  Optional campaign_key, plan_id, title, start_date, end_date.
+ * @param array $args  Optional campaign_key, plan_id, title, start_date, end_date, scoring_engine (default soap-regex; new campaigns only).
  * @return array|WP_Error { campaign_id, campaign_key, created, start_date, end_date }
  */
 function jlife_challenges_create_pilot_campaign( $actor, $args = array() ) {
@@ -73,6 +73,10 @@ function jlife_challenges_create_pilot_campaign( $actor, $args = array() ) {
 	if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $start ) || ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $end ) || $start > $end ) {
 		return new WP_Error( 'jlife_campaign_invalid', 'The pilot dates must be YYYY-MM-DD, with the start on or before the end.' );
 	}
+	$engine = (string) ( $args['scoring_engine'] ?? JLIFE_CHALLENGES_DEFAULT_ENGINE );
+	if ( ! isset( jlife_challenges_scoring_engines()[ $engine ] ) ) {
+		return new WP_Error( 'jlife_campaign_invalid', 'Unknown scoring engine "' . $engine . '". Known: ' . implode( ', ', array_keys( jlife_challenges_scoring_engines() ) ) . '.' );
+	}
 	global $wpdb;
 	$t = jlife_challenges_table( 'campaigns' );
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table; name from $wpdb->prefix.
@@ -89,12 +93,13 @@ function jlife_challenges_create_pilot_campaign( $actor, $args = array() ) {
 	$id = jlife_challenges_create_campaign(
 		$actor,
 		array(
-			'campaign_key' => $key,
-			'plan_id'      => (string) $args['plan_id'],
-			'title'        => (string) $args['title'],
-			'start_date'   => (string) $args['start_date'],
-			'end_date'     => (string) $args['end_date'],
-			'status'       => 'active',
+			'campaign_key'   => $key,
+			'plan_id'        => (string) $args['plan_id'],
+			'title'          => (string) $args['title'],
+			'start_date'     => (string) $args['start_date'],
+			'end_date'       => (string) $args['end_date'],
+			'status'         => 'active',
+			'scoring_engine' => $engine,
 		)
 	);
 	if ( is_wp_error( $id ) ) {
