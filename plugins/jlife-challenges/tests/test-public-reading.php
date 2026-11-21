@@ -268,7 +268,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$this->assertStringStartsWith( '<!doctype html>', $html );
 		$this->assertStringContainsString( '<meta name="viewport" content="width=device-width, initial-scale=1">', $html );
 		$this->assertStringContainsString( '<meta name="robots" content="noindex, nofollow">', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=20', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=21', $html );
 		$this->assertSame( 1, substr_count( $html, '<main>' ) );
 		foreach ( array(
 			'Written by',

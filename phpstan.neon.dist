@@ -7,8 +7,11 @@ parameters:
 		- plugins
 	scanFiles:
 		- vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+		# Vendored Parsedown (MIT): known to the analysis, not analysed itself.
+		- plugins/jlife-challenges/lib/parsedown/Parsedown.php
 	excludePaths:
 		# Test files bootstrap against the WP test suite (WP_TESTS_DIR),
 		# which is not present at analysis time.
 		- plugins/*/tests/*
 		- plugins/*/vendor/*
+		- plugins/*/lib/parsedown/*

@@ -117,7 +117,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 	$html = '<!doctype html><html lang="' . esc_attr( '' !== $lang ? $lang : str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=20' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=21' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
 		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -937,6 +937,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		// A closed campaign (#179): the reading and the person's own words, read-only; no form, no share boxes.
 		$body = ! empty( $view['entry'] ) ? trim( (string) $view['entry']['body'] ) : '';
 		return jlife_challenges_render_reader( $view )
+			. jlife_challenges_render_devotional( $view )
 			. '<h2>' . esc_html__( 'My SOAP', 'jlife-challenges' ) . '</h2>'
 			. '<p class="jl-note" role="status">' . esc_html( jlife_challenges_campaign_closed_error()->get_error_message() ) . '</p>'
 			. ( '' !== $body ? '<div class="jl-preview">' . esc_html( $body ) . '</div>' : '' );
@@ -948,6 +949,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$free      = jlife_challenges_campaign_starts_blank( $view['campaign'] );
 	$groups    = (array) ( $view['share_groups'] ?? array() );
 	$out       = jlife_challenges_render_reader( $view )
+		. jlife_challenges_render_devotional( $view )
 		. '<form method="post" class="jl-soap" data-status="' . esc_attr( $submitted ? 'submitted' : 'draft' ) . '"'
 		. ' data-rest="' . esc_url( rest_url( 'jlife/v1/soap/draft' ) ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'wp_rest' ) ) . '"'
 		. ' data-template="' . esc_attr( jlife_challenges_soap_template() ) . '" data-headings="' . esc_attr( (string) wp_json_encode( array_values( $headings ) ) ) . '"'

@@ -55,6 +55,12 @@ require_once __DIR__ . '/includes/rest.php';
 require_once __DIR__ . '/includes/test-campaign.php';
 require_once __DIR__ . '/includes/bible-apibible.php';
 require_once __DIR__ . '/includes/bible-admin.php';
+require_once __DIR__ . '/includes/devotional.php';
+require_once __DIR__ . '/includes/devotional-import.php';
+require_once __DIR__ . '/includes/devotional-admin-page.php';
+require_once __DIR__ . '/includes/devotional.php';
+require_once __DIR__ . '/includes/devotional-import.php';
+require_once __DIR__ . '/includes/devotional-admin-page.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once __DIR__ . '/includes/class-jlife-group-command.php';

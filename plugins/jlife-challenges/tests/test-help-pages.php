@@ -284,7 +284,7 @@ class Test_Help_Pages extends Jlife_Challenges_TestCase {
 			$this->assertSame( 1, substr_count( $html, 'class="jl-help-links"' ), $screen );
 			$this->assertGreaterThan( strpos( $html, '</main>' ), strpos( $html, 'class="jl-help-links"' ), "{$screen}: after the page body" );
 		}
-		$this->assertStringContainsString( 'screens.css?v=20', jlife_challenges_page_html( 'X', '', 'today' ) );
+		$this->assertStringContainsString( 'screens.css?v=21', jlife_challenges_page_html( 'X', '', 'today' ) );
 		$this->assertStringContainsString( '.jl-help-links', (string) file_get_contents( dirname( __DIR__ ) . '/assets/screens.css' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
 	}
 

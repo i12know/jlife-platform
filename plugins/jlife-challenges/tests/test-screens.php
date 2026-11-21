@@ -1254,7 +1254,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$html = jlife_challenges_page_html( 'Today', $body, 'today', array( 'soap', 'reminder' ) );
 		$this->assertStringContainsString( 'assets/soap.js?v=6', $html );
 		$this->assertStringContainsString( 'assets/reminder.js?v=2', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=20', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=21', $html );
 		$this->assertStringNotContainsString( 'reminder.js', jlife_challenges_page_html( 'SOAP', '', 'today', 'soap' ) );
 	}
 }

@@ -624,6 +624,88 @@ attached to an issue or pasted into chat, and delete it after Dec 20.
 Old pilot codes never open an official group: the pilot is closed, so its
 codes open nothing at all.
 
+## Daily devotionals (#211)
+
+A bilingual devotional (lead-in, teaching and reflection questions in **one** rich body) shows above the writing box on Today, `/soap?day=` and earlier days, and on the public `/reading/` page. It is written outside WordPress, exported to Markdown, loaded in wp-admin, and fixed by hand in the block editor (Gutenberg). No deploy, SSH or WP-CLI step is needed. Fallback if this is not ready: daily lead-ins as normal blog posts, with links sent by SMS.
+
+**How it is stored.** One non-public `jlife_devotional` post per reading-plan day and language. Draft or Ready is the post's own status. It is **not** on the Reading Day post, so the deploy's reading-plan import (which re-imports every day and forces Reading Days to publish) cannot publish, change or create a devotional, and importing devotionals never touches a Reading Day.
+
+**When it shows.** Only a **Ready** (published) devotional, only for a day that has **opened in the reader's campaign**, and only in the reader's language (no fallback to the other language: a missing translation shows nothing). The pilot's Day 1 is Dec 5 and the Marathon's Day 1 is Dec 20; they share the same Reading Day, so release follows each campaign's calendar. The post's own date is never used, so marking something Ready on Dec 1 shows nothing until Dec 5 (pilot) or Dec 20 (Marathon).
+
+### 1. Write and export to Markdown
+
+File name: `D001-EN_Any-Title.md` and `D001-VI_Any-Title.md`. `D001` is the day number of the reading plan (`D104` is the last); `EN` or `VI` is the language; what follows the underscore is free. UTF-8, 200 KB at most.
+
+Structure (one body; nothing else is needed):
+
+```
+# The devotional's title
+
+## Luke 1:1-4
+
+Paragraphs, **bold**, *italic*, [links](https://example.org) and lists.
+
+### Reflection questions
+
+1. A question the reader may answer.
+2. Another question.
+```
+
+- `#` is the title (it becomes the post title). `##` is the Scripture line. A `###` heading containing *reflection*, *questions* or *discussion* (or the Vietnamese *suy ngẫm*, *câu hỏi*, *thảo luận*) starts the questions section. Those lines are recorded so that copied questions do not count toward a participant's own words (#210).
+- **Images are not supported yet** (#216): they are removed, and the preview says how many.
+- Raw HTML is shown as text, not run. Links to anything but http, https, mailto and tel are disabled.
+
+**From Google Docs:** File → Download → **Markdown (.md)**. Rename the file as above.
+
+**From Word:** upload the `.docx` to Google Drive, right-click → Open with → Google Docs, then File → Download → Markdown (.md). Check headings came across as headings (Format → Paragraph styles) before exporting.
+
+### 2. Upload and preview
+
+wp-admin → **J-Life → Devotionals**. Choose one or more `.md` files (hold Ctrl or Shift) and press **Preview (no changes)**. Many hosts accept about 20 files per upload, so send more in several rounds. The uploaded files are not kept.
+
+The preview writes nothing. Each file shows its day, language and one result:
+
+| Result | Meaning |
+|---|---|
+| New | Will be created as a **Draft** |
+| Changed | The file differs from the last import; the post will be updated |
+| Unchanged | Same as the last import; nothing will happen |
+| Skipped: edited in wp-admin since the last import | Someone changed it in the editor; kept unless you tick **Overwrite my edits** |
+| Skipped: it is in the Trash | Restore it from the Trash first |
+| Cannot be read | Bad file name, not `.md`, day not in the plan, not UTF-8, empty, over 200 KB, or the same day and language twice in one upload |
+
+Warnings (for example "Images are not supported yet; 1 removed", or no questions section) are listed beside the file.
+
+### 3. Import
+
+Press **Import**. New devotionals are **Drafts**. Import never changes Draft or Ready, and uploading the same file again changes nothing and creates no duplicate. The preview's converted text is kept for one hour for this button (the page says so if it has expired; just preview again). The audit log records counts only: never a file name or any text.
+
+### 4. Check, fix by hand, mark Ready
+
+The **Days** grid lists every day against English and Vietnamese with Draft / Ready, an **Edit** link and **Mark Ready** / **Back to Draft**.
+
+- **Edit** opens the standard **block editor** (Gutenberg). Fix wording, add a heading, tick **This is a SOAP practice day** in the side panel, then Update. Revisions are kept. The imported body opens as a Classic block; use "Convert to Blocks" if you like.
+- Publishing in the editor, or **Mark Ready** in the grid, makes it Ready. Ready still waits for the day to open in the reader's campaign (see above).
+- **SOAP practice day:** the reader sees a short suggestion that points to the "Use SOAP template" button below the writing box. Nothing they type is changed and scoring is unchanged.
+
+### 5. Re-uploading after hand edits
+
+A hand edit is detected by comparing the post with what the last import left. If a corrected file is uploaded, a hand-edited post is **skipped** (listed as such) so nothing is erased. Tick **Overwrite my edits** on the Import form only when the file should replace the hand edits. An unedited post that is Ready stays Ready when the file changes.
+
+### Divi
+
+The post type uses the standard editor only. The theme's page builder is switched off for it. **Verify on latoc after the first deploy:** open any devotional with Edit. It must open in the block editor with no "Use The Divi Builder" button. If Divi's builder appears, switch the devotional post type off in Divi → Theme Options → Builder → Post Type Integration, and tell us.
+
+### Checks after a deploy
+
+1. J-Life → Devotionals loads; the grid lists the plan's days.
+2. A devotional that was Ready before the deploy is still Ready and its text is unchanged (the deploy re-imports reading plans, not devotionals).
+3. Signed out, `https://latoc.vayhub.org/wp-json/wp/v2/jlife-devotionals` answers 401, and a Ready devotional's text is not readable anywhere before its day opens.
+
+### Acceptance demo (owner)
+
+Take one devotional drafted in Word or Google Docs, export it to Markdown, and upload the EN and VI files. Preview, import as Draft, mark Ready, and check it appears on the right campaign day (pilot Day 1 on Dec 5; or, before that, with a `test-` campaign). Run a routine deploy and check it survives. Upload the same files again and confirm nothing is created or erased; edit one in the block editor, upload again and confirm it is skipped.
+
 ## Backups and restore
 
 - Every deploy writes `~/.latoc/backups/<UTC timestamp>.sql.gz`; the 10 most recent are kept.
