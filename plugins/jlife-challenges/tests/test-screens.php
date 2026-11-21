@@ -1187,6 +1187,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	 * its own script. The /soap page has no checkbox.
 	 */
 	public function test_today_has_the_reminder_checkbox_after_save_draft() {
+		update_option( 'jlife_reminders_mode', 'live' ); // Shown only in saved Live mode (#189).
 		$view = $this->view_with_reading( $this->u['a'] );
 		$body = jlife_challenges_today_page_body( $view, array(), $this->u['a'] );
 		$this->assertStringNotContainsString( 'Get each morning', $body );

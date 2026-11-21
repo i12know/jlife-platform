@@ -367,10 +367,25 @@ function jlife_challenges_reminder_shown_locale( $user_id, $pref ) {
 }
 
 /**
+ * Is the participant reminder opt-in offered (#189)? Only while the site's saved
+ * sending mode (J-Life → Reminders, jlife_challenges_reminders_mode()) is Live.
+ * In Off, Dry run and Test every opt-in prompt is hidden and no new opt-in is
+ * accepted; existing choices are kept as they are, and opting out (the
+ * unsubscribe link, or an "off" from a page opened earlier) always works.
+ *
+ * @return bool
+ */
+function jlife_challenges_reminder_optin_offered() {
+	return function_exists( 'jlife_challenges_reminders_mode' ) && 'live' === jlife_challenges_reminders_mode();
+}
+
+/**
  * Handle a reminder form POST (the checkbox without JavaScript, on Today or My
  * Marathon). The choice always applies to the signed-in person, never to a user
  * ID from the form. The form sends a hidden "off" before the checkbox's "on",
- * so an unticked box posts "off".
+ * so an unticked box posts "off". A post without the field (another form, such
+ * as Language or My Bible) changes nothing. An "on" while the opt-in is not
+ * offered (#189) changes nothing either; an "off" is always honored.
  *
  * @param int $user_id     Signed-in participant.
  * @param int $campaign_id Their campaign.
@@ -384,6 +399,9 @@ function jlife_challenges_handle_reminder_post( $user_id, $campaign_id ) {
 	if ( ! in_array( $choice, array( 'on', 'off' ), true ) ) {
 		return '';
 	}
+	if ( 'on' === $choice && ! jlife_challenges_reminder_optin_offered() ) {
+		return '';
+	}
 	// The language is not this form's: the Language setting owns it (#159).
 	$locale = jlife_challenges_reminder_request_locale( $user_id, $campaign_id, '' );
 	$r      = jlife_challenges_set_reminder( $user_id, $user_id, $campaign_id, 'on' === $choice, $locale );
@@ -392,8 +410,10 @@ function jlife_challenges_handle_reminder_post( $user_id, $campaign_id ) {
 
 /**
  * REST: save the signed-in person's reminder checkbox at once (#135). Only ever
- * their own choice: no user ID is accepted. "on" left out keeps the current
- * on/off. A "locale" in the body is ignored: since #159 the email language is
+ * their own choice: no user ID is accepted. "on" left out changes nothing and
+ * just answers the saved state (#189: no rewrite, so no new consent version is
+ * recorded). "on": true while the opt-in is not offered (#189) is refused with
+ * `jlife_reminders_not_offered` (403); "on": false always works. A "locale" in the body is ignored: since #159 the email language is
  * the account's, changed only by the Language setting (language.php). Goes
  * through jlife_challenges_set_reminder(), so the enrollment check, consent
  * version and audit are the same as every other path.
@@ -404,9 +424,16 @@ function jlife_challenges_handle_reminder_post( $user_id, $campaign_id ) {
 function jlife_challenges_rest_save_reminder( WP_REST_Request $request ) {
 	$user_id     = get_current_user_id();
 	$campaign_id = jlife_challenges_reminder_campaign_id( $user_id );
-	$on          = null === $request['on'] ? jlife_challenges_reminder_is_on( jlife_challenges_reminder_pref( $user_id, $campaign_id ) ) : (bool) $request['on'];
-	$locale      = jlife_challenges_reminder_request_locale( $user_id, $campaign_id, '' );
-	$r           = jlife_challenges_set_reminder( $user_id, $user_id, $campaign_id, $on, $locale );
+	if ( null === jlife_challenges_active_enrollment( $campaign_id, $user_id ) ) {
+		$r = jlife_challenges_denied();
+	} elseif ( null === $request['on'] ) {
+		$r = true;
+	} elseif ( $request['on'] && ! jlife_challenges_reminder_optin_offered() ) {
+		$r = new WP_Error( 'jlife_reminders_not_offered', 'Daily reading emails are not offered right now.' );
+	} else {
+		$locale = jlife_challenges_reminder_request_locale( $user_id, $campaign_id, '' );
+		$r      = jlife_challenges_set_reminder( $user_id, $user_id, $campaign_id, (bool) $request['on'], $locale );
+	}
 	if ( is_wp_error( $r ) ) {
 		$r->add_data( array( 'status' => 403 ) );
 		return $r;
@@ -438,16 +465,17 @@ function jlife_challenges_reminder_campaign_id( $user_id ) {
  * and My Marathon. Ticked = the saved choice is on. With
  * JavaScript a change saves at once through the REST route and says "Saved."
  * or, on failure, puts the box back and asks to try again; without it, the Save
- * button posts the form.
+ * button posts the form. Shown only while the opt-in is offered (saved mode
+ * Live, #189); hiding it changes nothing that is saved.
  *
  * @param int  $user_id     Participant.
  * @param int  $campaign_id Campaign.
  * @param bool $marathon    On My Marathon (its own element ID).
  * @param bool $saved       Show "Saved." (after a no-JavaScript save).
- * @return string Escaped HTML, or '' without a campaign.
+ * @return string Escaped HTML, or '' without a campaign or outside Live mode.
  */
 function jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, $marathon = false, $saved = false ) {
-	if ( $user_id < 1 || $campaign_id < 1 ) {
+	if ( $user_id < 1 || $campaign_id < 1 || ! jlife_challenges_reminder_optin_offered() ) {
 		return '';
 	}
 	$pref = jlife_challenges_reminder_pref( $user_id, $campaign_id );
@@ -473,7 +501,9 @@ function jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, $marat
 /**
  * My Marathon's settings: the Language section (#159; language.php), then the
  * "Daily reading email" section with the checkbox and, under it, the My Bible
- * picker (#140; bible-choice.php).
+ * picker (#140; bible-choice.php). Outside Live mode (#189) the checkbox is
+ * hidden and the section is headed "Bible", holding only the picker; with no
+ * picker either, the section is left out.
  *
  * @param int  $user_id        Participant.
  * @param int  $campaign_id    Campaign.
@@ -483,9 +513,9 @@ function jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, $marat
  * @return string Escaped HTML.
  */
 function jlife_challenges_render_reminder_settings( $user_id, $campaign_id, $saved = false, $bible_saved = false, $language_saved = false ) {
-	return jlife_challenges_render_language_setting( $user_id, $campaign_id, $language_saved )
-		. '<section class="jl-reminders"><h2>' . esc_html__( 'Daily reading email', 'jlife-challenges' ) . '</h2>'
-		. jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, true, $saved )
-		. jlife_challenges_render_bible_picker( $user_id, $campaign_id, $bible_saved )
-		. '</section>';
+	$toggle  = jlife_challenges_render_reminder_toggle( $user_id, $campaign_id, true, $saved );
+	$picker  = jlife_challenges_render_bible_picker( $user_id, $campaign_id, $bible_saved );
+	$heading = '' !== $toggle ? __( 'Daily reading email', 'jlife-challenges' ) : __( 'Bible', 'jlife-challenges' );
+	$section = '' !== ( $toggle . $picker ) ? '<section class="jl-reminders"><h2>' . esc_html( $heading ) . '</h2>' . $toggle . $picker . '</section>' : '';
+	return jlife_challenges_render_language_setting( $user_id, $campaign_id, $language_saved ) . $section;
 }

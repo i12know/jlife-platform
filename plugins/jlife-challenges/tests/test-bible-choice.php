@@ -363,6 +363,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 	 * without JavaScript.
 	 */
 	public function test_picker_markup_is_in_the_reminder_section_under_the_language() {
+		update_option( 'jlife_reminders_mode', 'live' ); // The checkbox and its heading show only in saved Live mode (#189).
 		$html = $this->section( $this->u['a'] );
 		$this->assertStringStartsWith( '<section class="jl-reminders jl-language"><h2>Language</h2>', $html );
 		$this->assertStringEndsWith( '</section>', $html );
