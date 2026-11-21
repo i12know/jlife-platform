@@ -204,6 +204,7 @@ function jlife_challenges_render_bible_picker( $user_id, $campaign_id, $saved = 
 		. '<p class="jl-field"><label for="jl-bible-version-2">' . esc_html__( 'Also show…', 'jlife-challenges' ) . '</label> '
 		. '<select id="jl-bible-version-2" name="jl_bible_version_2">' . jlife_challenges_bible_options( $groups, $state['bible_version_2'], __( 'None', 'jlife-challenges' ) ) . '</select></p>'
 		. '<p class="jl-hint">' . esc_html__( 'Your Bible follows the language above until you choose one.', 'jlife-challenges' ) . '</p>'
+		. '<p class="jl-hint">' . esc_html__( 'To show only one Bible, choose None under Also show…', 'jlife-challenges' ) . '</p>'
 		. '<noscript><button type="submit" class="jl-button jl-small">' . esc_html__( 'Save', 'jlife-challenges' ) . '</button></noscript>'
 		. '<p class="jl-reminder-status jl-bible-status" role="status" aria-live="polite">' . ( $saved ? esc_html__( 'Saved.', 'jlife-challenges' ) : '' ) . '</p></form>';
 }
