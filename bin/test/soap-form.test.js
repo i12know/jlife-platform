@@ -54,7 +54,7 @@ function load({ serverText = TEMPLATE, backup, status = 'draft', storageThrows =
 			removeItem(k) { store.delete(k); }
 		};
 	const context = {
-		document: { querySelector(sel) { return sel === 'form.jl-soap' ? form : null; } },
+		document: { querySelector(sel) { return sel === 'form.jl-soap' ? form : null; }, querySelectorAll() { return []; } },
 		localStorage: storage,
 		fetch(url, opts) { fetches.push({ url, opts }); return Promise.resolve({ ok: true }); },
 		setTimeout(fn, ms) { timers.push({ fn, ms }); return timers.length; },

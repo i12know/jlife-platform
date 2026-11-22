@@ -660,7 +660,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 		$html = jlife_challenges_page_html( 'My Marathon', $this->section( $this->u['a'] ), 'marathon', array( 'reminder', 'bible' ) );
 		$this->assertStringContainsString( 'assets/bible.js?v=1', $html );
 		$this->assertStringContainsString( 'assets/reminder.js?v=2', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=21', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=22', $html );
 		$this->assertStringNotContainsString( 'bible.js', jlife_challenges_page_html( 'Today', '', 'today', array( 'soap', 'reminder' ) ) );
 		$css = (string) file_get_contents( dirname( __DIR__ ) . '/assets/screens.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
 		$this->assertStringContainsString( '.jl-bible-picker', $css );

@@ -96,6 +96,36 @@ function jlife_challenges_day_view( $user_id, $day_key = null ) {
 }
 
 /**
+ * The adjacent days this participant may read from an active day view (#225).
+ *
+ * The same rule as direct ?day= access: the day must exist in the campaign and
+ * jlife_challenges_day_is_open(). Reading is not scoring, so an earlier day stays
+ * linked after its deadline. A locked neighbor is 0, never skipped over.
+ *
+ * @param array $view Day view.
+ * @return int[] { prev, next }: the day index, or 0 for no link.
+ */
+function jlife_challenges_adjacent_days( $view ) {
+	$none = array(
+		'prev' => 0,
+		'next' => 0,
+	);
+	if ( 'active' !== ( $view['state'] ?? '' ) ) {
+		return $none;
+	}
+	$campaign = $view['campaign'];
+	$index    = (int) $view['index'];
+	$result   = array();
+	foreach ( array(
+		'prev' => $index - 1,
+		'next' => $index + 1,
+	) as $side => $other ) {
+		$result[ $side ] = ( $other >= 1 && $other <= jlife_challenges_day_count( $campaign ) && jlife_challenges_day_is_open( $campaign, $other ) ) ? $other : 0;
+	}
+	return $result;
+}
+
+/**
  * The 104-day grid for My Marathon.
  *
  * Cell states: earned, late (submitted after the window), draft, open (not
