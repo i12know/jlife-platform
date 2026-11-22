@@ -1000,8 +1000,8 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 					'saved'         => __( 'Draft saved', 'jlife-challenges' ),
 					'local'         => __( 'Saved on this device (offline)', 'jlife-challenges' ),
 					'restored'      => __( 'Restored your unsaved draft', 'jlife-challenges' ),
-					'leave_failed'  => __( 'Could not save your writing, so you stayed on this day. Nothing was lost. Try again, or use Save draft.', 'jlife-challenges' ),
-					'leave_unsaved' => __( 'You have unsaved changes. Press Save changes before you leave this day.', 'jlife-challenges' ),
+					'leave_failed'  => __( 'Could not save your writing, so you stayed on this day. Nothing was lost. Please try again.', 'jlife-challenges' ),
+					'leave_unsaved' => __( 'You have unsaved edits. Save them with the button below before you leave this day.', 'jlife-challenges' ),
 				)
 			)
 		) . '"'

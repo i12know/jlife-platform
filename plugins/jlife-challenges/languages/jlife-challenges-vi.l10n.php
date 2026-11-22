@@ -229,8 +229,8 @@ return array(
 		// Previous / next day arrows (#225).
 		'Previous day: Day %d' => 'Ngày trước: Ngày %d',
 		'Next day: Day %d' => 'Ngày sau: Ngày %d',
-		'Could not save your writing, so you stayed on this day. Nothing was lost. Try again, or use Save draft.' => 'Không lưu được bài viết của bạn nên bạn vẫn ở lại ngày này. Chưa mất gì cả. Hãy thử lại hoặc dùng Lưu bản nháp.',
-		'You have unsaved changes. Press Save changes before you leave this day.' => 'Bạn có thay đổi chưa lưu. Hãy bấm Lưu thay đổi trước khi rời ngày này.',
+		'Could not save your writing, so you stayed on this day. Nothing was lost. Please try again.' => 'Không lưu được bài viết của bạn nên bạn vẫn ở lại ngày này. Chưa mất gì cả. Vui lòng thử lại.',
+		'You have unsaved edits. Save them with the button below before you leave this day.' => 'Bạn có chỉnh sửa chưa lưu. Hãy lưu bằng nút bên dưới trước khi rời ngày này.',
 		'Open today\'s reading' => 'Mở bài đọc hôm nay',
 		'Open today\'s reading: %s' => 'Mở bài đọc hôm nay: %s',
 		'You get this email because you chose daily reading emails.' => 'Bạn nhận email này vì bạn đã chọn nhận email bài đọc mỗi ngày.',
