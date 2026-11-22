@@ -63,6 +63,8 @@ function jlife_auth_redirect_target() {
  * @param string $body  Escaped HTML body.
  */
 function jlife_auth_send_page( $title, $body ) {
+	// A seam for tests, which cannot survive the exit below: a callback may throw to stop here.
+	do_action( 'jlife_auth_page_will_send', $title, $body );
 	nocache_headers();
 	header( 'Content-Type: text/html; charset=utf-8' );
 	header( 'X-Robots-Tag: noindex, nofollow' );

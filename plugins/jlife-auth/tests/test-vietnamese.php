@@ -53,6 +53,7 @@ class Test_Vietnamese extends WP_UnitTestCase {
 		wp_set_current_user( 0 );
 		$_GET                      = array();
 		$_POST                     = array();
+		$_REQUEST                  = array();
 		$_SERVER['REQUEST_URI']    = '/';
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 		jlife_auth_refresh_translations();
@@ -530,6 +531,98 @@ class Test_Vietnamese extends WP_UnitTestCase {
 		wp_set_current_user( 0 );
 		$this->visit( '/join/' );
 		$this->assertStringNotContainsString( 'lang=vi', jlife_challenges_invite_reveal_html( 'Group', 'ABCDEFGH' ), 'an English starter shares the plain link' );
+	}
+
+	/**
+	 * Run a page handler that ends in jlife_auth_send_page(), and give back the page it would send.
+	 *
+	 * @param callable $handler Page function.
+	 * @return string The page's body HTML.
+	 */
+	private function run_page( $handler ) {
+		$stop = static function ( $title, $body ) {
+			throw new RuntimeException( $body ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- a test seam, never output.
+		};
+		add_action( 'jlife_auth_page_will_send', $stop, 10, 2 );
+		try {
+			$handler();
+			$this->fail( 'the page should have been sent' );
+		} catch ( RuntimeException $e ) {
+			return $e->getMessage();
+		} finally {
+			remove_action( 'jlife_auth_page_will_send', $stop, 10 );
+		}
+		return '';
+	}
+
+	/**
+	 * A language button rides on the sign-in POSTs but must do nothing except show the page again: no email, no account, no sign-in, and a code is not used up.
+	 */
+	public function test_a_language_button_never_sends_a_code_creates_an_account_or_uses_a_code() {
+		$admin    = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		$campaign = jlife_challenges_create_campaign(
+			$admin,
+			array(
+				'campaign_key' => 'vi4-' . wp_generate_password( 6, false ),
+				'plan_id'      => 'rpl-test',
+				'title'        => 'Test',
+				'start_date'   => '2026-12-20',
+				'end_date'     => '2027-04-02',
+				'status'       => 'active',
+			)
+		);
+		$this->assertIsInt( $campaign );
+
+		// 1. A complete, valid join request that carries the language button: nothing is sent, nobody is created.
+		$fields = array(
+			'step'        => 'request',
+			'mode'        => 'solo',
+			'email'       => 'relang@example.test',
+			'first_name'  => 'Linh',
+			'age_band'    => 'adult',
+			'locale'      => 'en_US',
+			'invite_code' => '',
+			'_jlife_auth' => wp_create_nonce( 'jlife_auth_join' ),
+			'jl_relang'   => 'vi',
+		);
+		$this->submit( '/join/', $fields, array( 'lang' => 'vi' ) );
+		$_REQUEST = $fields;
+		reset_phpmailer_instance();
+		$page = $this->run_page( 'jlife_auth_page_join' );
+		$this->assertSame( array(), tests_retrieve_phpmailer_instance()->mock_sent, 'no email' );
+		$this->assertFalse( get_user_by( 'email', 'relang@example.test' ), 'no account' );
+		$this->assertStringContainsString( 'value="relang@example.test"', $page, 'the form is shown again with what was typed' );
+		$this->assertStringContainsString( 'Độ tuổi của bạn', $page );
+
+		// 2. On the code page: a real code, a language button, then the same code on a normal verify.
+		$this->visit( '/join/' );
+		$this->assertTrue(
+			jlife_auth_start_join(
+				array(
+					'mode'       => 'solo',
+					'email'      => 'relang2@example.test',
+					'first_name' => 'Minh',
+					'age_band'   => 'adult',
+					'locale'     => 'en_US',
+				)
+			)
+		);
+		$sent = tests_retrieve_phpmailer_instance()->mock_sent;
+		preg_match( '/(\d{6})/', end( $sent )['body'], $m );
+		$verify = array(
+			'step'        => 'verify',
+			'email'       => 'relang2@example.test',
+			'code'        => $m[1],
+			'_jlife_auth' => wp_create_nonce( 'jlife_auth_verify' ),
+		);
+		$this->submit( '/join/', array_merge( $verify, array( 'jl_relang' => 'vi' ) ), array( 'lang' => 'vi' ) );
+		$_REQUEST = $_POST;
+		$page     = $this->run_page( 'jlife_auth_page_join' );
+		$this->assertSame( 0, get_current_user_id(), 'nobody is signed in' );
+		$this->assertStringContainsString( 'name="jl_lang" value="vi"', $page, 'the code page again, in Vietnamese' );
+		$this->assertStringNotContainsString( $m[1], $page, 'the code is not echoed back' );
+		$result = jlife_auth_complete( 'relang2@example.test', $m[1] );
+		$this->assertNotWPError( $result, 'the code was not used up by the language button' );
 	}
 
 	/**
