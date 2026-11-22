@@ -670,7 +670,7 @@ class Test_Vietnamese extends WP_UnitTestCase {
 			$page = $this->run_page( 'jlife_auth_page_join' );
 			$this->assertStringContainsString( $case['msg'], $page, $label );
 			$this->assertStringContainsString( $case['keep'], $page, $label );
-			$this->assertStringContainsString( 'Đọc một mình', $page, $label );
+			$this->assertStringContainsString( '<input type="hidden" name="mode" value="solo">', $page, $label );
 			$this->assertSame( array(), tests_retrieve_phpmailer_instance()->mock_sent, "no email: {$label}" );
 			$this->assertFalse( get_user_by( 'email', 'minh@example.test' ), "no account: {$label}" );
 			$this->assertFalse( get_transient( jlife_auth_code_key( 'minh@example.test' ) ), "no code: {$label}" );
