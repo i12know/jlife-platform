@@ -222,12 +222,12 @@ function jlife_auth_code_form( $email, $error = '' ) {
  */
 function jlife_auth_handle_verify() {
 	$email  = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by caller.
+	$code   = isset( $_POST['code'] ) ? sanitize_text_field( wp_unslash( $_POST['code'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by caller.
+	$result = jlife_auth_complete( $email, $code );
 	if ( jlife_auth_is_relang() ) {
 		// Only the language button: show the code page again, in the other language.
 		jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_code_form( $email ) );
 	}
-	$code   = isset( $_POST['code'] ) ? sanitize_text_field( wp_unslash( $_POST['code'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by caller.
-	$result = jlife_auth_complete( $email, $code );
 	if ( is_wp_error( $result ) ) {
 		jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_code_form( $email, $result->get_error_message() ) );
 	}
