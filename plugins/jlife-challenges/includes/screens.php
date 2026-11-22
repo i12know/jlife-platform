@@ -94,7 +94,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 
 	$scripts  = '';
 	$versions = array(
-		'soap'     => 6,
+		'soap'     => 7,
 		'share'    => 4,
 		'reminder' => 2,
 		'bible'    => 1,
@@ -617,6 +617,46 @@ function jlife_challenges_render_day_head( $view ) {
 }
 
 /**
+ * The day heading with the previous / next day arrows around it (#225).
+ *
+ * A link shows only for an adjacent day this participant may read now
+ * (jlife_challenges_adjacent_days()). Without one, an empty cell keeps the
+ * heading centered.
+ *
+ * @param array $view Day view.
+ * @return string
+ */
+function jlife_challenges_render_day_nav( $view ) {
+	$adjacent = jlife_challenges_adjacent_days( $view );
+	$gap      = '<span class="jl-daynav-gap"></span>';
+	$prev     = $gap;
+	$next     = $gap;
+	if ( $adjacent['prev'] ) {
+		/* translators: %d: day number. */
+		$label = sprintf( __( 'Previous day: Day %d', 'jlife-challenges' ), $adjacent['prev'] );
+		$prev  = jlife_challenges_day_nav_link( $adjacent['prev'], $label, '&larr;' );
+	}
+	if ( $adjacent['next'] ) {
+		/* translators: %d: day number. */
+		$label = sprintf( __( 'Next day: Day %d', 'jlife-challenges' ), $adjacent['next'] );
+		$next  = jlife_challenges_day_nav_link( $adjacent['next'], $label, '&rarr;' );
+	}
+	return '<div class="jl-daynav">' . $prev . jlife_challenges_render_day_head( $view ) . $next . '</div>';
+}
+
+/**
+ * One previous / next day link: a real link to that day's page; the arrow is decoration.
+ *
+ * @param int    $index Day index.
+ * @param string $label Accessible name, e.g. "Next day: Day 3".
+ * @param string $arrow Arrow entity (trusted markup).
+ * @return string
+ */
+function jlife_challenges_day_nav_link( $index, $label, $arrow ) {
+	return '<a class="jl-daynav-link" href="' . esc_url( jlife_challenges_screen_url( 'soap', jlife_challenges_day_key( $index ) ) ) . '" aria-label="' . esc_attr( $label ) . '"><span aria-hidden="true">' . $arrow . '</span></a>';
+}
+
+/**
  * Whether the day's SOAP is done (so the form offers "Save changes").
  *
  * @param array $view Day view.
@@ -962,10 +1002,12 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		. ' data-i18n="' . esc_attr(
 			(string) wp_json_encode(
 				array(
-					'saving'   => __( 'Saving…', 'jlife-challenges' ),
-					'saved'    => __( 'Draft saved', 'jlife-challenges' ),
-					'local'    => __( 'Saved on this device (offline)', 'jlife-challenges' ),
-					'restored' => __( 'Restored your unsaved draft', 'jlife-challenges' ),
+					'saving'        => __( 'Saving…', 'jlife-challenges' ),
+					'saved'         => __( 'Draft saved', 'jlife-challenges' ),
+					'local'         => __( 'Saved on this device (offline)', 'jlife-challenges' ),
+					'restored'      => __( 'Restored your unsaved draft', 'jlife-challenges' ),
+					'leave_failed'  => __( 'Could not save your writing, so you stayed on this day. Nothing was lost. Please try again.', 'jlife-challenges' ),
+					'leave_unsaved' => __( 'You have unsaved edits. Save them with the button below before you leave this day.', 'jlife-challenges' ),
 				)
 			)
 		) . '"'
@@ -1049,7 +1091,7 @@ function jlife_challenges_render_share_boxes( $groups, $ticked ) {
  */
 function jlife_challenges_today_body( $view, $state = array() ) {
 	$state = jlife_challenges_page_state( $state );
-	$body  = jlife_challenges_render_day_head( $view )
+	$body  = jlife_challenges_render_day_nav( $view )
 		. jlife_challenges_render_soap_feedback( $view, $state )
 		. jlife_challenges_render_reading( $view );
 	// After a save, the message above already says where things stand.
@@ -1068,7 +1110,7 @@ function jlife_challenges_today_body( $view, $state = array() ) {
  * @return string
  */
 function jlife_challenges_soap_body( $view, $state = array() ) {
-	return jlife_challenges_render_day_head( $view )
+	return jlife_challenges_render_day_nav( $view )
 		. jlife_challenges_render_soap_feedback( $view, $state )
 		. jlife_challenges_render_reading( $view )
 		. jlife_challenges_render_soap_panel( $view, $state );

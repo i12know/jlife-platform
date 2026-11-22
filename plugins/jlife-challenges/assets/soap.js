@@ -14,7 +14,8 @@
 	var headings = ['S \u2014 Scripture', 'O \u2014 Observation', 'A \u2014 Application', 'P \u2014 Prayer'];
 	var legacyKeys = ['scripture', 'observation', 'application', 'prayer'];
 	var timer = null;
-	var msg = { saving: '\u2026', saved: '\u2713', local: '\u2713', restored: '\u2713' };
+	var msg = { saving: '\u2026', saved: '\u2713', local: '\u2713', restored: '\u2713', leave_failed: '', leave_unsaved: '' };
+	var lastSaved = box.value; // what the server holds, as far as this page knows
 	try { msg = JSON.parse(form.dataset.i18n); } catch (e) { /* keep fallbacks */ }
 	try {
 		var h = JSON.parse(form.dataset.headings);
@@ -63,25 +64,56 @@
 
 	function save() {
 		backup();
-		if (form.dataset.status === 'submitted') { return; } // Edits to a submitted entry are saved with the button.
-		var written = hasWriting(box.value);
+		if (form.dataset.status === 'submitted') { return Promise.resolve(false); } // Edits to a submitted entry are saved with the button.
+		var sent = box.value;
+		var written = hasWriting(sent);
 		status.textContent = written ? msg.saving : '';
-		fetch(form.dataset.rest, {
+		return fetch(form.dataset.rest, {
 			method: 'POST',
 			credentials: 'same-origin',
 			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': form.dataset.nonce },
-			body: JSON.stringify({ campaign_id: Number(form.dataset.campaign), day_key: form.dataset.day, text: box.value })
+			body: JSON.stringify({ campaign_id: Number(form.dataset.campaign), day_key: form.dataset.day, text: sent })
 		}).then(function (r) {
 			if (!r.ok) { throw new Error(String(r.status)); }
 			status.textContent = written ? msg.saved : '';
+			lastSaved = sent;
 			clearBackup();
-		}).catch(function () { status.textContent = written ? msg.local : ''; });
+			return true;
+		}).catch(function () { status.textContent = written ? msg.local : ''; return false; });
 	}
 
 	box.addEventListener('input', function () {
 		backup();
 		clearTimeout(timer);
 		timer = setTimeout(save, 1500);
+	});
+
+	// Previous / next day arrows (#225): plain links that never lose writing. If the box holds
+	// text the server hasn't got, save it first and leave only when the save worked; otherwise
+	// stay on the page with a message (the local backup is kept too). Nothing is submitted or shared.
+	// Modified clicks (new tab) leave this page alone, so they need nothing. Without this script
+	// the links are plain links.
+	document.querySelectorAll('a.jl-daynav-link').forEach(function (link) {
+		link.addEventListener('click', function (e) {
+			if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) { return; }
+			if (box.value === lastSaved) { return; } // nothing unsaved: follow the link
+			e.preventDefault();
+			clearTimeout(timer);
+			if (form.dataset.status === 'submitted') {
+				backup();
+				status.textContent = msg.leave_unsaved;
+				box.focus();
+				return;
+			}
+			save().then(function (ok) {
+				if (ok) {
+					window.location.href = link.href;
+				} else {
+					status.textContent = msg.leave_failed;
+					box.focus();
+				}
+			});
+		});
 	});
 
 	// "Use SOAP template" (#210): insert the four headings at the cursor, or at the end if the
