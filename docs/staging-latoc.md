@@ -706,6 +706,19 @@ The post type uses the standard editor only. The theme's page builder is switche
 
 Take one devotional drafted in Word or Google Docs, export it to Markdown, and upload the EN and VI files. Preview, import as Draft, mark Ready, and check it appears on the right campaign day (pilot Day 1 on Dec 5; or, before that, with a `test-` campaign). Run a routine deploy and check it survives. Upload the same files again and confirm nothing is created or erased; edit one in the block editor, upload again and confirm it is skipped.
 
+## Day 1 reading is Luke 1:1-4; John 1:1-18 (#219)
+
+Primary-plan Day 1 (`d001`) was John 1:1-18 alone; it is now **Luke 1:1-4; John 1:1-18**, in that order, to match the Day 1 devotional. Days 2-104, day IDs, dates, scoring and the supplemental Harmony plan are unchanged.
+
+**No operator step is needed beyond the normal deploy.** The deploy workflow runs `wp jlife reading-plan import` on the shipped plan JSON every time. The importer upserts by `plan_id` + `day_id`: the existing `d001` Reading Day post is **updated in place** (same post ID, slug and URL), not skipped and not duplicated. Its Day 1 data (passages, links, Vietnamese references) is replaced; d002-d104 are re-written with identical data. SOAP entries and shares key on `day_key` (`d001`), which does not change, so nothing is orphaned. The on-page reader reads the day's passages on each view, and its passage cache is keyed per source, version and passage, so Luke 1:1-4 is fetched fresh and John 1:1-18 keeps its cached row; no cache needs clearing. If a host page cache or CDN is added later, purge `/reading/` and Today for Day 1.
+
+**Checks after the deploy** (any enabled Bible: KT1925, NLT/NKJV/CSB, link-only):
+
+1. `wp jlife reading-plan import` output ends with 104 days for the primary plan and no error; J-Life Reading Days still lists 104 days, one `d001`.
+2. `/reading/` for Day 1 (Dec 5 for the pilot) shows **Luke 1:1-4** above **John 1:1-18** in English and Vietnamese ("Lu-ca 1:1-4", "Giăng 1:1-18"), with the Bible Gateway link `Luke+1:1-4;John+1:1-18`.
+3. Today and `/soap?day=d001` show the same two passages, in the same order.
+4. A day 2 spot check is unchanged (Luke 1:5-25).
+
 ## Backups and restore
 
 - Every deploy writes `~/.latoc/backups/<UTC timestamp>.sql.gz`; the 10 most recent are kept.

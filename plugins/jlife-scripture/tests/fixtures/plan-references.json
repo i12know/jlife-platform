@@ -6,6 +6,21 @@
   ],
   "references": [
     {
+      "display": "Luke 1:1-4",
+      "refs": [
+        {
+          "book": "Luke",
+          "chapter_start": 1,
+          "verse_start": 1,
+          "verse_start_part": null,
+          "chapter_end": 1,
+          "verse_end": 4,
+          "verse_end_part": null,
+          "display": "Luke 1:1-4"
+        }
+      ]
+    },
+    {
       "display": "John 1:1-18",
       "refs": [
         {
@@ -5407,21 +5422,6 @@
           "verse_end": 31,
           "verse_end_part": null,
           "display": "John 20:31"
-        }
-      ]
-    },
-    {
-      "display": "Luke 1:1-4",
-      "refs": [
-        {
-          "book": "Luke",
-          "chapter_start": 1,
-          "verse_start": 1,
-          "verse_start_part": null,
-          "chapter_end": 1,
-          "verse_end": 4,
-          "verse_end_part": null,
-          "display": "Luke 1:1-4"
         }
       ]
     },

@@ -29,7 +29,7 @@ Checked: the CSV has 104 data rows; Day 1 is 2026-12-20 and Day 104 is 2027-04-0
 
 | Day | Date | Occasion | Scripture references in the CSV | Section(s) |
 |---|---|---|---|---|
-| 1 | Dec 20, 2026 | First day | John 1:1-18 | 1.1 "The Beginning" |
+| 1 | Dec 20, 2026 | First day | Luke 1:1-4; John 1:1-18 | 1.1 "The Beginning" |
 | 5 | Dec 24, 2026 | Christmas Eve, birth of Christ | Luke 1:67-80; Luke 2:1-7 | 1.7, 1.8 (1.8 "The Birth of Jesus" is Luke 2:1-7) |
 | 6 | Dec 25, 2026 | Christmas Day | Luke 2:8-21; Luke 2:22-38 | 1.9, 1.10 (shepherds; presentation in the temple) |
 | 97 | Mar 26, 2027 | Good Friday, the crucifixion | Luke 23:26-32; Matthew 27:33-34; Luke 23:33b-34a; John 19:23-24; John 19:19-22; Matthew 27:39-43; Luke 23:39-43; John 19:25-27 | 5.54 "Jesus Is Nailed to a Cross" |
