@@ -973,8 +973,8 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		. wp_nonce_field( 'jlife_soap_' . $view['day_key'], '_jlife_soap', true, false )
 		. '<input type="hidden" name="jl_day" value="' . esc_attr( $view['day_key'] ) . '">'
 		. '<label for="jl-text">' . esc_html( $guided ? __( 'My reflection', 'jlife-challenges' ) : __( 'My SOAP', 'jlife-challenges' ) ) . '</label>';
-	$soap_def = '<p class="jl-soap-def">' . esc_html__( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) . ' <a href="#jlife-soap-help" class="jl-soap-more">' . esc_html__( 'More', 'jlife-challenges' ) . '</a>' . jlife_challenges_soap_help_page_link() . '</p>';
-	$soap_how = '<ul>';
+	$soap_def  = '<p class="jl-soap-def">' . esc_html__( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) . ' <a href="#jlife-soap-help" class="jl-soap-more">' . esc_html__( 'More', 'jlife-challenges' ) . '</a>' . jlife_challenges_soap_help_page_link() . '</p>';
+	$soap_how  = '<ul>';
 	foreach ( jlife_challenges_soap_guidance() as $letter => $guidance ) {
 		$soap_how .= '<li><strong>' . esc_html( $headings[ $letter ] ) . '</strong> ' . esc_html( $guidance ) . '</li>';
 	}
