@@ -302,7 +302,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$order = array(
 			'class="jl-day"',
 			'<section class="jl-reading"><h2>The Beginning</h2>',
-			'<ul class="jl-passages"><li>John 1:1-18</li></ul>',
+			'<ul class="jl-passages"><li>Luke 1:1-4</li><li>John 1:1-18</li></ul>',
 			'<section class="jl-public-reader">',
 			'<details class="jl-optional">',
 			'<section class="jl-invite">',
@@ -386,7 +386,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		);
 		$main = $this->main_of( $this->page( 'd001' ) );
 		$this->assertStringNotContainsString( 'jl-public-reader', $main, 'no links at all: no empty reader block' );
-		$this->assertStringContainsString( '<ul class="jl-passages"><li>John 1:1-18</li></ul>', $main, 'the references stay' );
+		$this->assertStringContainsString( '<ul class="jl-passages"><li>Luke 1:1-4</li><li>John 1:1-18</li></ul>', $main, 'the references stay' );
 	}
 
 	/**
@@ -506,7 +506,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 				$day['i18n'] = array(
 					'vi' => array(
 						'title'    => 'Khởi đầu',
-						'passages' => array( 'Giăng 1:1-18' ),
+						'passages' => array( 'Lu-ca 1:1-4', 'Giăng 1:1-18' ),
 					),
 				);
 				return $day;
@@ -517,7 +517,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$main = $this->main_of( $vi );
 		$this->assertStringContainsString( '<p class="jl-day">Ngày 1 · 20 tháng 12, 2026</p>', $main );
 		$this->assertStringContainsString( '<h2>Khởi đầu</h2>', $main );
-		$this->assertStringContainsString( '<ul class="jl-passages"><li>Giăng 1:1-18</li></ul>', $main );
+		$this->assertStringContainsString( '<ul class="jl-passages"><li>Lu-ca 1:1-4</li><li>Giăng 1:1-18</li></ul>', $main );
 		$this->assertStringContainsString( '>Tham gia Marathon Kinh Thánh</a>', $main );
 		$this->assertStringContainsString( '>Đăng nhập</a>', $main );
 		foreach ( array( 'Join the Bible Marathon', 'Sign in', 'Optional: parallel', 'Harmony Bible sections', "Read today's passages", 'Day 1' ) as $english ) {
@@ -527,7 +527,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 
 		$en = $this->main_of( $this->page( 'd001', 'en' ) );
 		$this->assertStringContainsString( '<h2>The Beginning</h2>', $en );
-		$this->assertStringContainsString( '<ul class="jl-passages"><li>John 1:1-18</li></ul>', $en );
+		$this->assertStringContainsString( '<ul class="jl-passages"><li>Luke 1:1-4</li><li>John 1:1-18</li></ul>', $en );
 		$this->assertStringContainsString( 'Join the Bible Marathon', $en );
 
 		wp_set_current_user( $this->u['a'] );
@@ -818,7 +818,9 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$main = $this->main_of( $html );
 
 		$this->assertStringContainsString( '<section class="jls-reader" lang="vi"', $main );
+		$this->assertStringContainsString( '<section class="jls-passage"><h3 class="jls-ref">Luke 1:1-4</h3>', $main );
 		$this->assertStringContainsString( '<section class="jls-passage"><h3 class="jls-ref">John 1:1-18</h3>', $main );
+		$this->assertLessThan( strpos( $main, '>John 1:1-18</h3>' ), strpos( $main, '>Luke 1:1-4</h3>' ), 'Luke comes before John (#219)' );
 		$this->assertStringNotContainsString( 'jls-passage" open', $main, 'no box to open (#188)' );
 		$this->assertStringContainsString( '<sup class="jls-num">1</sup>', $main );
 		$this->assertStringContainsString( '<sup class="jls-num">18</sup>', $main );

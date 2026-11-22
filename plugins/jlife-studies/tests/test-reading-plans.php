@@ -54,7 +54,6 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		$day1['passages']                = array_slice( $day1['passages'], 1 );
 		$day1['notes']                   = 'John 1:1-18';
 		$day1['links']['en']['passages'] = array_slice( $day1['links']['en']['passages'], 1 );
-		$day1['i18n']['vi']['passages']  = array_slice( $day1['i18n']['vi']['passages'], 1 );
 		$old['days'][0]                  = $day1;
 		jlife_studies_import_reading_plan( $old );
 		$before = jlife_studies_get_reading_day( 'rpl-life-and-teachings-of-jesus-2026', 'd001' );
