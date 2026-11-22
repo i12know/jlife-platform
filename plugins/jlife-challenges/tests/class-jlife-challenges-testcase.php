@@ -151,4 +151,54 @@ abstract class Jlife_Challenges_TestCase extends WP_UnitTestCase {
 		global $wpdb;
 		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'score_ledger' ) . ' WHERE user_id = %d', $user_id ) ); // phpcs:ignore WordPress.DB
 	}
+
+	/**
+	 * Make a devotional post for the base campaign's plan (#225 guidance tests).
+	 *
+	 * @param string $status  Post status (publish = Ready).
+	 * @param string $content Post content.
+	 * @param string $day     Day ID.
+	 * @param string $lang    en or vi.
+	 * @param string $stored  Value for `_jlife_dev_questions` (one question per line), or ''.
+	 * @return int Post ID.
+	 */
+	protected function make_devotional( $status = 'publish', $content = '<p>Body</p>', $day = 'd001', $lang = 'en', $stored = '' ) {
+		jlife_challenges_register_devotional(); // The suite resets post types for each test.
+		$id = wp_insert_post(
+			array(
+				'post_type'    => JLIFE_DEVOTIONAL_CPT,
+				'post_status'  => $status,
+				'post_title'   => 'Devotional ' . $day . ' ' . $lang,
+				'post_content' => $content,
+			)
+		);
+		update_post_meta( $id, '_jlife_dev_plan', 'rpl-life-and-teachings-of-jesus-2026' );
+		update_post_meta( $id, '_jlife_dev_day', $day );
+		update_post_meta( $id, '_jlife_dev_lang', $lang );
+		if ( '' !== $stored ) {
+			update_post_meta( $id, '_jlife_dev_questions', $stored );
+		}
+		return (int) $id;
+	}
+
+	/**
+	 * Devotional content with a marked questions section (#225).
+	 *
+	 * @param string[] $questions Question lines.
+	 * @param string   $heading   Heading text.
+	 * @return string
+	 */
+	protected function marked_content( array $questions, $heading = 'Reflection questions' ) {
+		return '<p>Lead-in.</p><!-- wp:html --><section class="jl-reflection-questions" aria-labelledby="jl-rq-test"><h3 id="jl-rq-test">' . $heading . '</h3><p>' . implode( '</p><p>', $questions ) . '</p></section><!-- /wp:html -->';
+	}
+
+	/**
+	 * Set the base campaign's scoring engine (presentation follows guidance, not the engine).
+	 *
+	 * @param string $engine Engine ID.
+	 */
+	protected function use_engine( $engine ) {
+		global $wpdb;
+		$wpdb->update( jlife_challenges_table( 'campaigns' ), array( 'scoring_engine' => $engine ), array( 'id' => $this->campaign ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- test fixture.
+	}
 }

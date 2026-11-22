@@ -34,6 +34,11 @@ const JLIFE_DEVOTIONAL_MAX_BYTES = 204800;
 const JLIFE_DEVOTIONAL_MAX_FILES = 250;
 
 /**
+ * Words (English or Vietnamese) that make a `###` heading the questions heading.
+ */
+const JLIFE_DEVOTIONAL_QUESTIONS_HEADING = '/question|reflect|discussion|suy\s*ngẫm|suy\s*gẫm|câu\s*hỏi|thảo\s*luận/iu';
+
+/**
  * The reading plan devotionals belong to: the plan of the campaign an organizer
  * screen shows by default (the current one). Filterable.
  *
@@ -145,6 +150,35 @@ function jlife_challenges_devotional_plain_line( $parser, $line ) {
 }
 
 /**
+ * Turn the converter's two placeholder paragraphs into the marked questions
+ * section (#225): `<section class="jl-reflection-questions" aria-labelledby="ID">`
+ * around the heading and its lines, with a unique id on the heading. The section
+ * is wrapped in a Custom HTML block comment so the block editor keeps it as is.
+ * Placeholders that cannot be paired (a heading inside a code block) are removed
+ * and the content stays unmarked, which falls back to the stored questions.
+ *
+ * @param string   $html      Parsedown's HTML, holding the placeholder paragraphs.
+ * @param string   $tok_open  Opening placeholder.
+ * @param string   $tok_close Closing placeholder.
+ * @param string   $title     Devotional title (to make the id differ per devotional).
+ * @param string[] $questions Question lines found.
+ * @return string Filtered HTML.
+ */
+function jlife_challenges_devotional_mark_questions( $html, $tok_open, $tok_close, $title, array $questions ) {
+	$open  = '<p>' . $tok_open . '</p>';
+	$close = '<p>' . $tok_close . '</p>';
+	if ( $questions && 1 === substr_count( $html, $open ) && 1 === substr_count( $html, $close ) && strpos( $html, $open ) < strpos( $html, $close ) ) {
+		$id   = 'jl-rq-' . substr( hash( 'sha256', (string) $title . implode( '|', $questions ) ), 0, 10 );
+		$html = str_replace( $open, '<!-- wp:html --><section class="jl-reflection-questions" aria-labelledby="' . $id . '">', $html );
+		$html = str_replace( $close, '</section><!-- /wp:html -->', $html );
+		$html = (string) preg_replace( '/(<section class="jl-reflection-questions"[^>]*>\s*)<(h[1-6])>/', '$1<$2 id="' . $id . '">', $html, 1 );
+	} else {
+		$html = str_replace( array( $open, $close ), '', $html );
+	}
+	return trim( wp_kses_post( $html ) );
+}
+
+/**
  * Convert one Markdown document.
  *
  * @param string $markdown UTF-8 Markdown.
@@ -168,6 +202,10 @@ function jlife_challenges_devotional_convert( $markdown ) {
 	$body      = array();
 	$questions = array();
 	$in_q      = false;
+	$marked    = false;
+	$in_marked = false;
+	$tok_open  = 'JLRQOPEN' . wp_generate_password( 12, false );
+	$tok_close = 'JLRQCLOSE' . wp_generate_password( 12, false );
 	foreach ( explode( "\n", $text ) as $line ) {
 		if ( preg_match( '/^(#{1,6})[ \t]+(.+?)[ \t]*#*[ \t]*$/u', $line, $h ) ) {
 			$level = strlen( $h[1] );
@@ -176,7 +214,17 @@ function jlife_challenges_devotional_convert( $markdown ) {
 				continue;
 			}
 			if ( $level <= 3 ) {
-				$in_q = 3 === $level && (bool) preg_match( '/question|reflect|discussion|suy\s*ngẫm|suy\s*gẫm|câu\s*hỏi|thảo\s*luận/iu', $h[2] );
+				if ( $in_marked ) {
+					array_push( $body, '', $tok_close, '' );
+					$in_marked = false;
+				}
+				$in_q = 3 === $level && (bool) preg_match( JLIFE_DEVOTIONAL_QUESTIONS_HEADING, $h[2] );
+				if ( $in_q && ! $marked ) {
+					// The first questions heading is the marked section (#225).
+					$in_marked = true;
+					$marked    = true;
+					array_push( $body, '', $tok_open, '' );
+				}
 			}
 		} elseif ( $in_q && '' !== trim( $line ) ) {
 			$plain = jlife_challenges_devotional_plain_line( $parser, $line );
@@ -186,8 +234,11 @@ function jlife_challenges_devotional_convert( $markdown ) {
 		}
 		$body[] = $line;
 	}
+	if ( $in_marked ) {
+		array_push( $body, '', $tok_close, '' );
+	}
 
-	$html     = trim( wp_kses_post( $parser->text( implode( "\n", $body ) ) ) );
+	$html     = jlife_challenges_devotional_mark_questions( $parser->text( implode( "\n", $body ) ), $tok_open, $tok_close, $title, $questions );
 	$warnings = array();
 	if ( $images > 0 ) {
 		$warnings[] = array(

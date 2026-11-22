@@ -256,20 +256,19 @@ class Test_Reflection_V1 extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * A new entry starts blank on a reflection-v1 campaign, with the template button; a saved entry is shown as saved.
+	 * Without guidance a reflection-v1 campaign shows My SOAP with the starter headings (#225); a saved entry is shown as saved.
 	 */
-	public function test_reflection_campaign_starts_blank_with_the_template_button() {
+	public function test_reflection_campaign_without_guidance_shows_the_soap_scaffold() {
 		$this->use_reflection_engine();
 		$view = jlife_challenges_day_view( $this->u['a'] );
-		$this->assertSame( '', jlife_challenges_entry_text( $view ) );
+		$this->assertSame( jlife_challenges_soap_template(), jlife_challenges_entry_text( $view ) );
 		$form = jlife_challenges_render_soap_panel( $view );
-		$this->assertStringContainsString( '></textarea>', $form, 'the box is empty' );
-		$this->assertStringContainsString( '<button type="submit" name="jl_action" value="template" class="jl-button jl-soap-template" formnovalidate>Use SOAP template</button>', $form );
-		$this->assertStringContainsString( '>My reflection</label>', $form );
+		$this->assertStringContainsString( '>My SOAP</label>', $form );
+		$this->assertStringNotContainsString( 'value="template"', $form, 'the headings are already there' );
 		$this->assertStringContainsString( '>Submit</button>', $form );
 		$this->assertStringNotContainsString( 'Submit SOAP', $form );
+		$this->assertStringContainsString( 'SOAP headings are optional', $form, 'the engine accepts free writing, so the form says so' );
 		$this->assertStringContainsString( 'id="jlife-soap-help"', $form, 'the heading help is still there' );
-		$this->assertLessThan( strpos( $form, 'value="submit"' ), strpos( $form, 'value="template"' ), 'the template button sits above Submit' );
 
 		jlife_challenges_save_draft( $this->u['a'], $this->campaign, 'd001', 'half a thought' );
 		$this->assertSame( 'half a thought', jlife_challenges_entry_text( jlife_challenges_day_view( $this->u['a'] ) ) );
@@ -360,6 +359,8 @@ class Test_Reflection_V1 extends Jlife_Challenges_TestCase {
 		);
 		unload_textdomain( 'jlife-challenges', true );
 		$this->use_reflection_engine();
+		$this->make_devotional( 'publish', $this->marked_content( array( 'A question?' ) ) );
+		$this->make_devotional( 'publish', $this->marked_content( array( 'Một câu hỏi?' ), 'Câu hỏi suy ngẫm' ), 'd001', 'vi' );
 
 		$form = jlife_challenges_render_soap_panel( jlife_challenges_day_view( $this->u['a'] ) );
 		$this->assertStringContainsString( '>Dùng khung SOAP</button>', $form );

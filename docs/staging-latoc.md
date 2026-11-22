@@ -651,7 +651,11 @@ Paragraphs, **bold**, *italic*, [links](https://example.org) and lists.
 2. Another question.
 ```
 
-- `#` is the title (it becomes the post title). `##` is the Scripture line. A `###` heading containing *reflection*, *questions* or *discussion* (or the Vietnamese *suy ngẫm*, *câu hỏi*, *thảo luận*) starts the questions section. Those lines are recorded so that copied questions do not count toward a participant's own words (#210).
+- `#` is the title (it becomes the post title). `##` is the Scripture line. A `###` heading containing *reflection*, *questions* or *discussion* (or the Vietnamese *suy ngẫm*, *câu hỏi*, *thảo luận*) starts the questions section. The import wraps that heading and the lines under it (up to the next `#`, `##` or `###` heading) in a marked section, `<section class="jl-reflection-questions" aria-labelledby="…">`, inside a Custom HTML block (#225). The marker, not the heading's words, is what the app reads, so a reworded or translated heading still works. Those lines are the questions shown above the participant's writing box and the ones that do not count toward their own words (#210).
+- **Only the first** questions heading is marked. Keep the questions and any response instructions together under it. Put nothing else under that heading, because everything up to the next heading counts as a question line.
+- **Fixing by hand:** in the block editor keep the questions inside the **Custom HTML** block that holds the section (edit its HTML), or add the same `section` wrapper by hand. If you delete the wrapper, the app falls back to the lines recorded at the last import (so a later edit to the text will no longer show or be excluded until you re-import or restore the wrapper). Edits inside the section show up at once in the writing box and in the word-count exclusion.
+- **Older devotionals** imported before the marker have no section; they keep working through the recorded lines. Re-import them (tick **Overwrite my edits** if you hand-edited) to add the marker.
+- **What participants see:** a Ready devotional released for their day and language switches their writing box to **My reflection** (blank start, optional **Use SOAP**); without one it stays **My SOAP**. A Draft or an unreleased day changes nothing.
 - **Images are not supported yet** (#216): they are removed, and the preview says how many.
 - Raw HTML is shown as text, not run. Links to anything but http, https, mailto and tel are disabled.
 

@@ -242,10 +242,194 @@ function jlife_challenges_devotional_user_language( $user_id ) {
 }
 
 /**
- * The devotional's lines under its questions heading, for #210's engine, so
- * questions a person copies into their reflection do not count as their words.
- * Only Ready devotionals of days that have opened (what the person could see),
- * in both languages.
+ * The devotional body as readers see it: block-rendered and filtered with
+ * wp_kses_post() (so `section` and `aria-labelledby` must survive it, #225).
+ *
+ * @param WP_Post $post Devotional post.
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_devotional_body_html( $post ) {
+	return wp_kses_post( do_blocks( (string) $post->post_content ) );
+}
+
+/**
+ * The marked questions section of a devotional body (#225): the first
+ * `<section class="jl-reflection-questions" aria-labelledby="…">`, which the
+ * importer writes around the questions heading. The marker is the class, never
+ * the heading's words or its position, so it works in any language.
+ *
+ * @param string $html Body HTML.
+ * @return array|null { heading: string, html: string, lines: string[] }, or null when the body has no marked section.
+ */
+function jlife_challenges_devotional_marked_section( $html ) {
+	if ( ! preg_match( '/<section\b[^>]*\bclass="[^"]*\bjl-reflection-questions\b[^"]*"[^>]*>(.*?)<\/section>/is', (string) $html, $m ) ) {
+		return null;
+	}
+	$inner   = (string) $m[1];
+	$heading = '';
+	if ( preg_match( '/^\s*<h[1-6]\b[^>]*>(.*?)<\/h[1-6]>/is', $inner, $h ) ) {
+		$heading = trim( html_entity_decode( wp_strip_all_tags( $h[1] ), ENT_QUOTES, 'UTF-8' ) );
+		$inner   = (string) substr( $inner, strlen( $h[0] ) );
+	}
+	$text  = html_entity_decode( wp_strip_all_tags( (string) preg_replace( '/<\/(?:p|li|div|h[1-6])>|<br\s*\/?>/i', "\n", $inner ) ), ENT_QUOTES, 'UTF-8' );
+	$lines = array();
+	foreach ( explode( "\n", $text ) as $line ) {
+		$line = trim( (string) preg_replace( '/\s+/u', ' ', $line ) );
+		if ( '' !== $line ) {
+			$lines[] = $line;
+		}
+	}
+	return array(
+		'heading' => $heading,
+		'html'    => trim( $inner ),
+		'lines'   => $lines,
+	);
+}
+
+/**
+ * The printed questions of a devotional: the one place that decides what they
+ * are, so what the writing box shows and what #210 leaves out of the word count
+ * (jlife_challenges_reflection_excluded_text) always agree, also after the post
+ * is edited in wp-admin.
+ *
+ * A marked section (#225) is authoritative and is read from the post as it is now.
+ * Older content without the marker falls back to the lines recorded at import
+ * (`_jlife_dev_questions`). No heading wording, position or bold text is guessed.
+ *
+ * @param WP_Post $post Devotional post.
+ * @return array|null { heading: string, html: string, lines: string[] }, or null when there are no questions.
+ */
+function jlife_challenges_devotional_questions( $post ) {
+	$marked = jlife_challenges_devotional_marked_section( jlife_challenges_devotional_body_html( $post ) );
+	if ( null !== $marked ) {
+		return $marked['lines'] ? $marked : null;
+	}
+	$lines = array();
+	foreach ( explode( "\n", (string) get_post_meta( $post->ID, '_jlife_dev_questions', true ) ) as $line ) {
+		if ( '' !== trim( $line ) ) {
+			$lines[] = trim( $line );
+		}
+	}
+	if ( ! $lines ) {
+		return null;
+	}
+	return array(
+		'heading' => '',
+		'html'    => '<ul><li>' . implode( '</li><li>', array_map( 'esc_html', $lines ) ) . '</li></ul>',
+		'lines'   => $lines,
+	);
+}
+
+/**
+ * The guidance this participant has for a campaign day in their language (#225):
+ * a list of sources, each `{ id: string, attribution: string, questions: array|null }`
+ * where `questions` is { heading, html, lines } or null (guidance without marked
+ * questions). Today there is one source, the site-wide devotional (Ready, released
+ * for the campaign's day, in the reader's language). Group-leader guidance (#209)
+ * adds its own sources through the filter, each with its own attribution; it must
+ * apply the same membership, release and language rules itself.
+ *
+ * Whether a panel is open or collapsed plays no part: this reads content, not the
+ * page. A Draft, an unreleased day or a missing translation gives no source.
+ *
+ * @param array|null $campaign Campaign row.
+ * @param string     $day_key  Day key (d001).
+ * @param string     $lang     en or vi.
+ * @return array[]
+ */
+function jlife_challenges_guidance_sources( $campaign, $day_key, $lang ) {
+	$sources = array();
+	$post    = jlife_challenges_devotional_for_day( $campaign, $day_key, $lang );
+	if ( $post ) {
+		$sources[] = array(
+			'id'          => 'devotional-' . (int) $post->ID,
+			'attribution' => __( 'Devotional', 'jlife-challenges' ),
+			'questions'   => jlife_challenges_devotional_questions( $post ),
+		);
+	}
+	/**
+	 * Further guidance sources for this participant, campaign day and language.
+	 *
+	 * @param array[]    $sources  Sources: { id, attribution, questions }.
+	 * @param array|null $campaign Campaign row.
+	 * @param string     $day_key  Day key.
+	 * @param string     $lang     en or vi.
+	 */
+	$sources = (array) apply_filters( 'jlife_challenges_guidance_sources', $sources, $campaign, $day_key, $lang );
+	return array_values(
+		array_filter(
+			$sources,
+			static function ( $source ) {
+				return is_array( $source ) && isset( $source['id'], $source['attribution'] );
+			}
+		)
+	);
+}
+
+/**
+ * The guidance sources for the signed-in participant's day view.
+ *
+ * @param array $view Day view (needs campaign and day_key).
+ * @return array[] See jlife_challenges_guidance_sources().
+ */
+function jlife_challenges_view_guidance( $view ) {
+	$campaign = is_array( $view['campaign'] ?? null ) ? $view['campaign'] : null;
+	$day_key  = (string) ( $view['day_key'] ?? '' );
+	if ( null === $campaign || '' === $day_key ) {
+		return array();
+	}
+	return jlife_challenges_guidance_sources( $campaign, $day_key, jlife_challenges_devotional_user_language( get_current_user_id() ) );
+}
+
+/**
+ * Is the writing area in guided mode (My reflection) for this day? True exactly
+ * when the participant has guidance for it. The scoring engine plays no part:
+ * points are still decided by the campaign's engine on submission.
+ *
+ * @param array $view Day view.
+ * @return bool
+ */
+function jlife_challenges_is_guided( $view ) {
+	return (bool) jlife_challenges_view_guidance( $view );
+}
+
+/**
+ * The marked questions as read-only markup for the writing box, above the
+ * textarea. Separate from the participant's text: never saved, never a
+ * placeholder. Several sources each keep their attribution.
+ *
+ * @param array[] $sources Sources from jlife_challenges_guidance_sources().
+ * @param string  $lang    en or vi.
+ * @return string Escaped HTML, or '' when no source has questions.
+ */
+function jlife_challenges_render_response_questions( $sources, $lang ) {
+	$shown = array_values(
+		array_filter(
+			$sources,
+			static function ( $source ) {
+				return ! empty( $source['questions']['lines'] );
+			}
+		)
+	);
+	if ( ! $shown ) {
+		return '';
+	}
+	$out = '<div class="jl-response-questions" lang="' . esc_attr( $lang ) . '">';
+	foreach ( $shown as $i => $source ) {
+		$id      = 'jl-response-q-' . ( $i + 1 );
+		$heading = '' !== (string) $source['questions']['heading'] ? (string) $source['questions']['heading'] : __( 'Reflection questions', 'jlife-challenges' );
+		$out    .= '<section class="jl-response-q" aria-labelledby="' . esc_attr( $id ) . '"><h3 id="' . esc_attr( $id ) . '">' . esc_html( $heading ) . '</h3>'
+			. ( count( $shown ) > 1 ? '<p class="jl-response-q-from">' . esc_html( (string) $source['attribution'] ) . '</p>' : '' )
+			. wp_kses_post( (string) $source['questions']['html'] ) . '</section>';
+	}
+	return $out . '</div>';
+}
+
+/**
+ * The devotional's printed questions, for #210's engine, so questions a person
+ * copies into their reflection do not count as their words. Only Ready
+ * devotionals of days that have opened (what the person could see), in both
+ * languages. Same source as the writing box (jlife_challenges_devotional_questions()).
  *
  * @param string[] $excluded Strings already excluded.
  * @param array    $context  { campaign?: array, day_key?: string, index?: int }.
@@ -263,10 +447,9 @@ function jlife_challenges_devotional_excluded_text( $excluded, $context ) {
 		if ( ! $post ) {
 			continue;
 		}
-		foreach ( explode( "\n", (string) get_post_meta( $post->ID, '_jlife_dev_questions', true ) ) as $line ) {
-			if ( '' !== trim( $line ) ) {
-				$excluded[] = $line;
-			}
+		$questions = jlife_challenges_devotional_questions( $post );
+		if ( $questions ) {
+			$excluded = array_merge( $excluded, $questions['lines'] );
 		}
 	}
 	return $excluded;
@@ -350,11 +533,11 @@ function jlife_challenges_render_devotional( $view ) {
 	if ( ! $post ) {
 		return '';
 	}
-	$body = wp_kses_post( do_blocks( (string) $post->post_content ) );
+	$body = jlife_challenges_devotional_body_html( $post );
 	$out  = '<details class="jl-devotional" open><summary>' . esc_html__( 'Devotional', 'jlife-challenges' ) . '</summary>'
 		. '<div class="jl-devotional-body" lang="' . esc_attr( $lang ) . '">'
 		. '<h3 class="jl-devotional-title">' . esc_html( get_the_title( $post ) ) . '</h3>' . $body . '</div>';
-	if ( ! $public && '1' === (string) get_post_meta( $post->ID, '_jlife_dev_soap_practice', true ) && jlife_challenges_campaign_starts_blank( $campaign ) ) {
+	if ( ! $public && '1' === (string) get_post_meta( $post->ID, '_jlife_dev_soap_practice', true ) ) {
 		$out .= '<p class="jl-devotional-soap">' . esc_html__( 'Today is a SOAP practice day. If you like, tap "Use SOAP template" below the writing box to add the four SOAP headings. Nothing you write is changed.', 'jlife-challenges' ) . '</p>';
 	}
 	return $out . '</details>';
