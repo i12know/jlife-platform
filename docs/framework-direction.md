@@ -27,7 +27,7 @@ Only an owner-approved ADR changes a status, and it updates this table in the sa
 
 **Remaining conflicts after the 2026-11-21 amendments (not resolved here):**
 - [#209](https://github.com/i12know/jlife-platform/issues/209) (advance scoring for scheduled group shares) is still a proposed rule awaiting owner approval; nothing here records it as decided.
-- The live Rules and Help pages still describe SOAP-only steps ("Submit SOAP", all four parts) until the owner edits them in wp-admin; the Rules page must carry the `reflection-v1` rule before the official campaign starts.
+- The owner updated the live Help pages in wp-admin on 2026-11-21. The Rules page must carry the `reflection-v1` rule before the pilot uses it (Dec 5) and before the official campaign starts.
 - Existing campaigns keep `soap-regex`; no active campaign changes without an owner-reviewed plan.
 
 ## 1. Two frameworks, one rule
