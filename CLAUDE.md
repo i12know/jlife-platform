@@ -34,7 +34,7 @@ Authority, highest first:
   updates the register.
 - **Flag conflicts; never resolve them silently.** When sources disagree, say
   so in your reply or PR, follow the higher tier, and ask the owner. Known
-  conflicts are listed in `docs/framework-direction.md` §4.
+  conflicts are listed in `docs/framework-direction.md` under the decision register.
 - **Every architecture-related PR states its basis**: follows an accepted
   decision (name it), depends on a pending ADR (name it, #168), or none.
 

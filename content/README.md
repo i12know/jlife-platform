@@ -20,6 +20,10 @@ Study content lives here as portable, rights-aware files. The WordPress database
 - No partner-identifying information (PRD §21). Sample identities use `.test` domains.
 - Translation workflow states: `draft → translated → theology-reviewed → language-reviewed → approved → published`. A substantive edit returns the file to `draft`; `published` means the STUDY rendering may be generated from it.
 
+## Daily devotionals (exception)
+
+Daily devotionals for the Reading Days are **not** kept in this directory. The owner writes them in Word or Google Docs, which are the master copy, exports them to Markdown and uploads them in wp-admin (J-Life → Devotionals, #211). The database is a rendering of those files; a hand edit in Gutenberg is protected from re-import. This applies to devotionals only: lessons and the other sets above keep the repo-content rule. Basis: [#205 comment 7069225640](https://github.com/i12know/jlife-platform/issues/205#issuecomment-7069225640), 2026-11-21.
+
 ## Authoring & validation
 
 Series/lesson file formats, ID conventions, and a copyable example live in [`schemas/README.md`](schemas/README.md). Validate content files with:
