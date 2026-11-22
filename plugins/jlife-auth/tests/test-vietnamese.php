@@ -608,7 +608,7 @@ class Test_Vietnamese extends WP_UnitTestCase {
 			)
 		);
 		$sent = tests_retrieve_phpmailer_instance()->mock_sent;
-		preg_match( '/(\d{6})/', end( $sent )['body'], $m );
+		preg_match( '/(\d{6})/', end( $sent )['body'], $m );
 		$verify = array(
 			'step'        => 'verify',
 			'email'       => 'relang2@example.test',
