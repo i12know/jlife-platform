@@ -272,6 +272,10 @@ function jlife_challenges_screen_share() {
  */
 function jlife_challenges_invite_reveal_html( $group_name, $code ) {
 	$link = add_query_arg( 'code', $code, home_url( '/join/' ) );
+	if ( 0 === strpos( determine_locale(), 'vi' ) ) {
+		// A group started in Vietnamese shares a Vietnamese link: the join form opens in Vietnamese (#222).
+		$link = add_query_arg( 'lang', 'vi', $link );
+	}
 	$base = plugins_url( 'assets/', dirname( __DIR__ ) . '/jlife-challenges.php' );
 	return '<section class="jl-invite"><h2>' . esc_html( $group_name ) . '</h2>'
 		. '<p>' . esc_html__( 'Invite code', 'jlife-challenges' ) . '</p>'

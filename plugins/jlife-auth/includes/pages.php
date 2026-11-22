@@ -82,18 +82,22 @@ function jlife_auth_page_html( $title, $body ) {
 	$hint = jlife_auth_in_app_browser()
 		? '<p class="jl-hint">' . esc_html__( 'Tip: open this page in Safari or Chrome so you stay signed in. (Tap ••• then "Open in browser".)', 'jlife-auth' ) . '</p>'
 		: '';
-	$lang = jlife_auth_language_links();
+	$lang = jlife_auth_language_links( false !== strpos( $body, 'id="jl-form"' ) );
 	return '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:30rem;margin:0 auto;padding:1.25rem;line-height:1.5;color:#1d1d1f;background:#fff}'
+		. '<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:30rem;margin:0 auto;padding:1.25rem;line-height:1.5;color:#1d1d1f;background:#fff;display:flex;flex-direction:column}'
+		. 'h1{overflow-wrap:anywhere}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b45309;outline-offset:2px}'
 		. 'label{display:block;margin:1rem 0 .25rem;font-weight:600}input[type=text],input[type=email],select{width:100%;box-sizing:border-box;padding:.75rem;font-size:1.1rem;border:1px solid #888;border-radius:.5rem}'
 		. 'input[inputmode=numeric]{letter-spacing:.3em;font-size:1.4rem}button{margin-top:1.25rem;width:100%;padding:.9rem;font-size:1.1rem;border:0;border-radius:.5rem;background:#2b5cab;color:#fff}'
 		. '.jl-err{background:#fde8e8;padding:.75rem;border-radius:.5rem}.jl-ok{background:#e7f5ea;padding:.75rem;border-radius:.5rem}.jl-hint{background:#fff6dc;padding:.75rem;border-radius:.5rem}'
-		. 'fieldset{border:0;padding:0;margin:1rem 0 0}.jl-radio label{font-weight:400;margin:.4rem 0}.jl-lang{text-align:right;font-size:.9rem;margin:0}'
+		. 'fieldset{border:0;padding:0;margin:1rem 0 0}.jl-radio label{font-weight:400;margin:.4rem 0}'
+		. '.jl-lang{order:-1;text-align:right;font-size:.9rem;margin:0}.jl-lang button{display:inline-block;width:auto;min-width:44px;min-height:44px;margin:0;padding:.5rem .6rem;font-size:.9rem;background:none;color:#2b5cab;text-decoration:underline;cursor:pointer}'
+		. '.jl-lang a{display:inline-block;padding:.6rem .5rem}.jl-lang [aria-current]{font-weight:700;color:#1d1d1f;text-decoration:none}'
 		. 'a.jl-btn{display:block;margin-top:1.25rem;padding:.9rem;text-align:center;border-radius:.5rem;background:#2b5cab;color:#fff;text-decoration:none;font-size:1.1rem}'
 		. '.jl-help-links{margin-top:2rem;text-align:center;font-size:.875rem}.jl-help-links a{display:inline-block;padding:.5rem .4rem}</style></head><body>'
-		. $lang . $hint . $body . jlife_auth_help_footer() . '</body></html>';
+		// The language switch comes last in the markup so Enter in a field still presses the form's own button; CSS shows it first.
+		. $hint . $body . jlife_auth_help_footer() . $lang . '</body></html>';
 }
 
 /**
@@ -116,27 +120,60 @@ function jlife_auth_help_footer() {
  * @return string
  */
 function jlife_auth_keep_lang( $url ) {
-	if ( is_user_logged_in() || ! isset( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
+	if ( is_user_logged_in() ) {
 		return $url;
 	}
-	$lang = sanitize_key( wp_unslash( $_GET['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
-	return in_array( $lang, array( 'vi', 'en' ), true ) ? add_query_arg( 'lang', $lang, $url ) : $url;
+	$lang = jlife_auth_visitor_pick();
+	return '' === $lang ? $url : add_query_arg( 'lang', $lang, $url );
 }
 
 /**
- * "English | Tiếng Việt" links for a signed-out visitor, so someone who reads
- * Vietnamese can switch before signing up (`?lang=`). Signed-in people see their
- * own chosen language (D13), so they get none. Only on a plain page view: a
- * switch is a link, and a form that was just sent would lose what was typed.
+ * "English | Tiếng Việt" switch for a signed-out visitor, so someone who reads
+ * Vietnamese can change the page before signing up. Signed-in people see their own
+ * chosen language (D13), so they get none.
  *
+ * On a page with a form (`$in_form`) the two are buttons that send that form to
+ * itself (POST, `jl_relang`, no validation, nothing saved): the page comes back in
+ * the other language with everything typed still in place, and the email address
+ * never goes in the address bar. Without a form they are plain `?lang=` links, only
+ * on a page view.
+ *
+ * @param bool $in_form Does the page have the form `#jl-form`.
  * @return string Escaped HTML.
  */
-function jlife_auth_language_links() {
-	if ( is_user_logged_in() || ! isset( $_SERVER['REQUEST_METHOD'] ) || 'GET' !== $_SERVER['REQUEST_METHOD'] ) {
+function jlife_auth_language_links( $in_form = false ) {
+	if ( is_user_logged_in() ) {
 		return '';
 	}
-	return '<p class="jl-lang"><a href="' . esc_url( add_query_arg( 'lang', 'en' ) ) . '" hreflang="en" lang="en">English</a> | '
-		. '<a href="' . esc_url( add_query_arg( 'lang', 'vi' ) ) . '" hreflang="vi" lang="vi">Tiếng Việt</a></p>';
+	if ( ! $in_form && ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'GET' !== $_SERVER['REQUEST_METHOD'] ) ) {
+		return '';
+	}
+	$current = 0 === strpos( determine_locale(), 'vi' ) ? 'vi' : 'en';
+	$items   = array();
+	foreach ( array(
+		'en' => 'English',
+		'vi' => 'Tiếng Việt',
+	) as $code => $label ) {
+		$mark = $code === $current ? ' aria-current="true"' : '';
+		$url  = esc_url( add_query_arg( 'lang', $code ) );
+		if ( $in_form ) {
+			$items[] = '<button type="submit" form="jl-form" name="jl_relang" value="' . esc_attr( $code ) . '" formaction="' . $url . '" formnovalidate formmethod="post" lang="' . esc_attr( $code ) . '"' . $mark . '>' . esc_html( $label ) . '</button>';
+		} else {
+			$items[] = '<a href="' . $url . '" hreflang="' . esc_attr( $code ) . '" lang="' . esc_attr( $code ) . '"' . $mark . '>' . esc_html( $label ) . '</a>';
+		}
+	}
+	return '<p class="jl-lang" role="group" aria-label="' . esc_attr__( 'Language', 'jlife-auth' ) . '">' . implode( ' | ', $items ) . '</p>';
+}
+
+/**
+ * Is this POST only a language switch (the buttons above)? Nothing is processed or
+ * saved then: the page is shown again, in the other language, with the typed values.
+ *
+ * @return bool
+ */
+function jlife_auth_is_relang() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- shows the same page again; nothing is read beyond a display language or changed.
+	return isset( $_POST['jl_relang'] ) && '' !== jlife_auth_visitor_pick();
 }
 
 /**
@@ -171,8 +208,9 @@ function jlife_auth_code_form( $email, $error = '' ) {
 		/* translators: %s: email address. */
 		. '<p>' . esc_html( sprintf( __( 'If %s can sign in, we just sent it a 6-digit code.', 'jlife-auth' ), $email ) ) . '</p>'
 		. jlife_auth_box( $error )
-		. '<form method="post">' . wp_nonce_field( 'jlife_auth_verify', '_jlife_auth', true, false )
+		. '<form method="post" id="jl-form">' . wp_nonce_field( 'jlife_auth_verify', '_jlife_auth', true, false )
 		. '<input type="hidden" name="step" value="verify"><input type="hidden" name="email" value="' . esc_attr( $email ) . '">'
+		. '<input type="hidden" name="jl_lang" value="' . esc_attr( 0 === strpos( determine_locale(), 'vi' ) ? 'vi' : 'en' ) . '">'
 		. '<input type="hidden" name="redirect_to" value="' . esc_attr( jlife_auth_redirect_target() ) . '">'
 		. '<label for="jl-code">' . esc_html__( '6-digit code', 'jlife-auth' ) . '</label>'
 		. '<input id="jl-code" type="text" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]*" maxlength="7" required autofocus>'
@@ -184,6 +222,10 @@ function jlife_auth_code_form( $email, $error = '' ) {
  */
 function jlife_auth_handle_verify() {
 	$email  = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by caller.
+	if ( jlife_auth_is_relang() ) {
+		// Only the language button: show the code page again, in the other language.
+		jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_code_form( $email ) );
+	}
 	$code   = isset( $_POST['code'] ) ? sanitize_text_field( wp_unslash( $_POST['code'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by caller.
 	$result = jlife_auth_complete( $email, $code );
 	if ( is_wp_error( $result ) ) {
@@ -246,31 +288,37 @@ function jlife_auth_page_signin() {
 		jlife_auth_handle_verify();
 	}
 	$error = '';
+	$email = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- only echoed back into the form, escaped; a real request checks its nonce below.
+	if ( 'request' === $step && jlife_auth_is_relang() ) {
+		jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_signin_body( '', $email ) ); // A language button: same page, other language.
+	}
 	if ( 'request' === $step && check_admin_referer( 'jlife_auth_signin', '_jlife_auth' ) ) {
-		$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+		$email = sanitize_email( $email );
 		$sent  = jlife_auth_request_code( $email, 'signin', array(), jlife_auth_ip() );
 		if ( ! is_wp_error( $sent ) ) {
 			jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_code_form( jlife_auth_normalize_email( $email ) ) );
 		}
 		$error = $sent->get_error_message();
 	}
-	jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_signin_body( $error ) );
+	jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_signin_body( $error, '' !== $error ? $email : '' ) );
 }
 
 /**
  * The /signin page body.
  *
  * @param string $error Error message.
+ * @param string $email Email to keep in the field.
  * @return string Escaped HTML.
  */
-function jlife_auth_signin_body( $error = '' ) {
+function jlife_auth_signin_body( $error = '', $email = '' ) {
 	return '<h1>' . esc_html__( 'Sign in', 'jlife-auth' ) . '</h1>'
 		. '<p>' . esc_html__( 'Enter your email and we will send you a 6-digit code. No password needed.', 'jlife-auth' ) . '</p>'
 		. jlife_auth_box( $error )
-		. '<form method="post">' . wp_nonce_field( 'jlife_auth_signin', '_jlife_auth', true, false )
+		. '<form method="post" id="jl-form">' . wp_nonce_field( 'jlife_auth_signin', '_jlife_auth', true, false )
 		. '<input type="hidden" name="step" value="request"><input type="hidden" name="redirect_to" value="' . esc_attr( jlife_auth_redirect_target() ) . '">'
+		. '<input type="hidden" name="jl_lang" value="' . esc_attr( 0 === strpos( determine_locale(), 'vi' ) ? 'vi' : 'en' ) . '">'
 		. '<label for="jl-email">' . esc_html__( 'Email', 'jlife-auth' ) . '</label>'
-		. '<input id="jl-email" type="email" name="email" autocomplete="email" required autofocus>'
+		. '<input id="jl-email" type="email" name="email" value="' . esc_attr( $email ) . '" autocomplete="email" required autofocus>'
 		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
 		. '<p><a href="' . esc_url( jlife_auth_keep_lang( home_url( '/join/' ) ) ) . '">' . esc_html__( 'New here? Join with a group invite code, read on your own, or start a group.', 'jlife-auth' ) . '</a></p>';
 }
@@ -340,7 +388,7 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 	$swap = '<p>' . implode( ' · ', $links ) . '</p>';
 	return $head
 		. jlife_auth_box( $error )
-		. '<form method="post">' . wp_nonce_field( 'jlife_auth_join', '_jlife_auth', true, false ) . '<input type="hidden" name="step" value="request">'
+		. '<form method="post" id="jl-form">' . wp_nonce_field( 'jlife_auth_join', '_jlife_auth', true, false ) . '<input type="hidden" name="step" value="request">'
 		. '<input type="hidden" name="mode" value="' . esc_attr( $mode ) . '">'
 		. $code
 		. '<label for="jl-first">' . esc_html__( 'First name', 'jlife-auth' ) . '</label>'
@@ -351,10 +399,13 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 		. '<label><input type="radio" name="age_band" value="adult"' . checked( $in['age_band'], 'adult', false ) . ' required> ' . esc_html__( '18 or older', 'jlife-auth' ) . '</label>'
 		. '<label><input type="radio" name="age_band" value="minor"' . checked( $in['age_band'], 'minor', false ) . '> ' . esc_html__( '13 to 17', 'jlife-auth' ) . '</label>'
 		. '<small>' . esc_html__( 'J-Life is for ages 13 and up.', 'jlife-auth' ) . '</small></fieldset>'
-		. '<label for="jl-lang">' . esc_html__( 'Language', 'jlife-auth' ) . '</label><select id="jl-lang" name="locale">' . $langs . '</select>'
+		. '<label for="jl-lang">' . esc_html__( 'Language', 'jlife-auth' ) . '</label><select id="jl-lang" name="locale" aria-describedby="jl-lang-note">' . $langs . '</select>'
+		. '<small id="jl-lang-note">' . esc_html__( 'This is the language of this app and of your emails.', 'jlife-auth' ) . '</small>'
 		. ( 'wait' === $mode || ! jlife_auth_reminder_optin_offered() ? '' : '<label><input type="checkbox" name="reminders" value="1"' . checked( '' !== (string) $in['reminders'], true, false ) . '> ' . esc_html__( 'Email me each morning\'s reading', 'jlife-auth' ) . '</label>'
 		. '<small>' . esc_html__( 'Optional. We write in the language you chose above. You can turn it off at any time.', 'jlife-auth' ) . '</small>' )
 		. '<button type="submit">' . esc_html__( 'Send my code', 'jlife-auth' ) . '</button></form>'
+		// With JavaScript, choosing a language in the field also switches this page at once (it presses the language button); without it, the page follows after the next step.
+		. '<script>(function(){var s=document.getElementById("jl-lang");if(s){s.addEventListener("change",function(){var b=document.querySelector(\'button[name=jl_relang][value="\'+(s.value==="vi"?"vi":"en")+\'"]\');if(b){b.click();}});}})();</script>'
 		. $swap
 		. '<p><a href="' . esc_url( jlife_auth_keep_lang( home_url( '/signin/' ) ) ) . '">' . esc_html__( 'Already joined? Sign in.', 'jlife-auth' ) . '</a></p>';
 }
@@ -386,11 +437,16 @@ function jlife_auth_page_join() {
 		}
 		$mode       = jlife_auth_join_mode( isset( $_POST['mode'] ) ? sanitize_key( wp_unslash( $_POST['mode'] ) ) : '' );
 		$in['mode'] = $mode;
-		$sent       = jlife_auth_start_join( $in, jlife_auth_ip() );
-		if ( ! is_wp_error( $sent ) ) {
-			jlife_auth_send_page( __( 'Join', 'jlife-auth' ), jlife_auth_code_form( jlife_auth_normalize_email( $in['email'] ) ) );
+		if ( jlife_auth_is_relang() ) {
+			// Only a language button: show the form again as typed; the language field follows the page. Nothing is sent or saved.
+			$in['locale'] = jlife_auth_default_form_locale();
+		} else {
+			$sent = jlife_auth_start_join( $in, jlife_auth_ip() );
+			if ( ! is_wp_error( $sent ) ) {
+				jlife_auth_send_page( __( 'Join', 'jlife-auth' ), jlife_auth_code_form( jlife_auth_normalize_email( $in['email'] ) ) );
+			}
+			$error = $sent->get_error_message();
 		}
-		$error = $sent->get_error_message();
 	}
 	$titles = array(
 		'solo'   => __( 'Read on my own', 'jlife-auth' ),
