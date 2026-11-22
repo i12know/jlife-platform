@@ -360,7 +360,7 @@ function jlife_challenges_guidance_sources( $campaign, $day_key, $lang ) {
 		array_filter(
 			$sources,
 			static function ( $source ) {
-				return is_array( $source ) && isset( $source['id'], $source['attribution'] );
+				return isset( $source['id'], $source['attribution'] );
 			}
 		)
 	);
