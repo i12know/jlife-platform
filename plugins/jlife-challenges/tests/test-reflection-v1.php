@@ -343,7 +343,7 @@ class Test_Reflection_V1 extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'e.preventDefault()', $js );
 		$this->assertStringContainsString( "dispatchEvent(new Event('input'", $js, 'autosave sees the change' );
 		$html = jlife_challenges_page_html( 'Today', '', 'today', 'soap' );
-		$this->assertStringContainsString( 'assets/soap.js?v=6', $html );
+		$this->assertStringContainsString( 'assets/soap.js?v=7', $html );
 	}
 
 	/**
