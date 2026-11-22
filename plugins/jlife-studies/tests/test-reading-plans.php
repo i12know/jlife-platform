@@ -44,6 +44,46 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 	}
 
 	/**
+	 * An already-imported Day 1 that still holds John alone is updated in place
+	 * to Luke 1:1-4 then John 1:1-18 (#219): same post, no duplicate, other days untouched.
+	 */
+	public function test_day_one_reimport_updates_in_place_to_luke_then_john() {
+		$old = $this->fixture( 'primary' );
+		// Simulate the plan as imported before #219: Day 1 is John 1:1-18 alone.
+		$day1                            = $old['days'][0];
+		$day1['passages']                = array_slice( $day1['passages'], 1 );
+		$day1['notes']                   = 'John 1:1-18';
+		$day1['links']['en']['passages'] = array_slice( $day1['links']['en']['passages'], 1 );
+		$day1['i18n']['vi']['passages']  = array_slice( $day1['i18n']['vi']['passages'], 1 );
+		$old['days'][0]                  = $day1;
+		jlife_studies_import_reading_plan( $old );
+		$before = jlife_studies_get_reading_day( 'rpl-life-and-teachings-of-jesus-2026', 'd001' );
+		$this->assertCount( 1, $before['day']['passages'] );
+		$other_before = jlife_studies_get_reading_day( 'rpl-life-and-teachings-of-jesus-2026', 'd038' );
+
+		jlife_studies_import_reading_plan( $this->fixture( 'primary' ) );
+		$after = jlife_studies_get_reading_day( 'rpl-life-and-teachings-of-jesus-2026', 'd001' );
+		$this->assertSame( $before['post_id'], $after['post_id'], 'Day 1 is updated in place' );
+		$this->assertSame(
+			array( 'Luke 1:1-4', 'John 1:1-18' ),
+			array_column( $after['day']['passages'], 'display' )
+		);
+		$this->assertSame(
+			array( 'Luke 1:1-4', 'John 1:1-18' ),
+			array_column( $after['day']['links']['en']['passages'], 'label' )
+		);
+		$posts = get_posts(
+			array(
+				'post_type'      => JLIFE_READING_DAY_CPT,
+				'posts_per_page' => -1,
+				'post_status'    => 'any',
+			)
+		);
+		$this->assertCount( 3, $posts, 'no duplicate Reading Day' );
+		$this->assertSame( $other_before, jlife_studies_get_reading_day( 'rpl-life-and-teachings-of-jesus-2026', 'd038' ), 'other days are unchanged' );
+	}
+
+	/**
 	 * Section IDs keep trailing zeros ("4.40") and dates stay calendar dates.
 	 */
 	public function test_section_ids_survive_as_strings() {

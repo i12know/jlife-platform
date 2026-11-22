@@ -47,6 +47,21 @@
       ],
       "passages": [
         {
+          "display": "Luke 1:1-4",
+          "refs": [
+            {
+              "book": "Luke",
+              "chapter_start": 1,
+              "verse_start": 1,
+              "verse_start_part": null,
+              "chapter_end": 1,
+              "verse_end": 4,
+              "verse_end_part": null,
+              "display": "Luke 1:1-4"
+            }
+          ]
+        },
+        {
           "display": "John 1:1-18",
           "refs": [
             {
@@ -63,16 +78,20 @@
         }
       ],
       "word_count": 310,
-      "notes": "John 1:1-18",
+      "notes": "Luke 1:1-4; John 1:1-18",
       "links": {
         "en": {
           "provider": "bible_gateway",
           "version": "ERV",
           "combined": {
-            "label": "John 1:1-18",
-            "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=ERV"
+            "label": "Luke 1:1-4; John 1:1-18",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+1:1-4;John+1:1-18&version=ERV"
           },
           "passages": [
+            {
+              "label": "Luke 1:1-4",
+              "url": "https://www.biblegateway.com/passage/?search=Luke+1:1-4&version=ERV"
+            },
             {
               "label": "John 1:1-18",
               "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=ERV"
@@ -83,10 +102,14 @@
           "provider": "bible_gateway",
           "version": "BPT",
           "combined": {
-            "label": "John 1:1-18",
-            "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=BPT"
+            "label": "Luke 1:1-4; John 1:1-18",
+            "url": "https://www.biblegateway.com/passage/?search=Luke+1:1-4;John+1:1-18&version=BPT"
           },
           "passages": [
+            {
+              "label": "Luke 1:1-4",
+              "url": "https://www.biblegateway.com/passage/?search=Luke+1:1-4&version=BPT"
+            },
             {
               "label": "John 1:1-18",
               "url": "https://www.biblegateway.com/passage/?search=John+1:1-18&version=BPT"
@@ -98,6 +121,7 @@
         "vi": {
           "title": "Ban đầu",
           "passages": [
+            "Lu-ca 1:1-4",
             "Giăng 1:1-18"
           ]
         }

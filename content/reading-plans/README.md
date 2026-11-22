@@ -28,7 +28,7 @@ The CSV data are text exports retaining the column content returned by the authe
 ## Build implications
 
 - Update draft plan D11 in #49: **do not generate a fresh split of Robertson's 185 sections**. Import the existing primary 104-day curriculum and expose the supplemental parallels as optional enrichment.
-- For the Nov 20 demonstration, use the *actual* Day 1 primary passage (**John 1:1-18**) and optionally show Day 1 parallel references (**Luke 1:1-4; John 1:1-18**).
+- For the Nov 20 demonstration, use the *actual* Day 1 primary reading (**Luke 1:1-4; John 1:1-18**, changed from John 1:1-18 alone in #219; the supplemental Harmony plan lists the same two references as optional).
 - Keep all participants on one scoring calendar with one daily SOAP. Optional advanced commentary/pastor discussion does not increase points.
 - This change only supplies reference data for review, not app code. The reference-only reading schedule is approved for development use without seeking an arrangement license; verify rights separately if the app later includes third-party expressive content or Bible translation text, and confirm Bible deep-link targets.
 

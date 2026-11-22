@@ -208,3 +208,24 @@ test('Vietnamese titles and Protestant book names are built for every day (#119)
   assert.deepEqual(d14.i18n.vi, { title: 'Chúa Giê-xu nói chuyện với người đàn bà Sa-ma-ri', passages: ['Giăng 4:4-26'] });
   assert.equal(d14.title, 'Jesus Talks to a Samaritan Woman', 'English stays the default');
 });
+
+test('shipped primary plan: Day 1 is Luke 1:1-4 then John 1:1-18, with links in that order (#219)', () => {
+  const { buildAll } = require('../build-reading-plans');
+  const primary = buildAll().find((b) => b.doc.role === 'primary').doc;
+  const day1 = primary.days[0];
+  assert.equal(day1.day_id, 'd001');
+  assert.equal(day1.date, '2026-12-20');
+  assert.deepEqual(day1.passages.map((p) => p.display), ['Luke 1:1-4', 'John 1:1-18']);
+  assert.deepEqual(day1.plusnothing_sections, ['1.1'], 'section identifier is preserved');
+  assert.equal(day1.links.en.combined.label, 'Luke 1:1-4; John 1:1-18');
+  assert.equal(
+    day1.links.en.combined.url,
+    'https://www.biblegateway.com/passage/?search=Luke+1:1-4;John+1:1-18&version=ERV',
+  );
+  assert.deepEqual(day1.links.en.passages.map((p) => p.label), ['Luke 1:1-4', 'John 1:1-18']);
+  assert.deepEqual(day1.links.vi.passages.map((p) => p.label), ['Luke 1:1-4', 'John 1:1-18']);
+  assert.deepEqual(day1.i18n.vi.passages, ['Lu-ca 1:1-4', 'Giăng 1:1-18']);
+  assert.equal(primary.days.length, 104);
+  assert.equal(day1.day, 1);
+  assert.equal(primary.days[103].date, '2027-04-02');
+});
