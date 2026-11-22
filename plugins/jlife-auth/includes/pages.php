@@ -210,7 +210,7 @@ function jlife_auth_code_form( $email, $error = '' ) {
 		/* translators: %s: email address. */
 		. '<p>' . esc_html( sprintf( __( 'If %s can sign in, we just sent it a 6-digit code.', 'jlife-auth' ), $email ) ) . '</p>'
 		. jlife_auth_box( $error )
-		. '<form method="post" id="jl-form">' . wp_nonce_field( 'jlife_auth_verify', '_jlife_auth', true, false )
+		. '<form method="post" id="jl-form" novalidate>' . wp_nonce_field( 'jlife_auth_verify', '_jlife_auth', true, false )
 		. '<input type="hidden" name="step" value="verify"><input type="hidden" name="email" value="' . esc_attr( $email ) . '">'
 		. '<input type="hidden" name="jl_lang" value="' . esc_attr( 0 === strpos( determine_locale(), 'vi' ) ? 'vi' : 'en' ) . '">'
 		. '<input type="hidden" name="redirect_to" value="' . esc_attr( jlife_auth_redirect_target() ) . '">'
@@ -316,7 +316,7 @@ function jlife_auth_signin_body( $error = '', $email = '' ) {
 	return '<h1>' . esc_html__( 'Sign in', 'jlife-auth' ) . '</h1>'
 		. '<p>' . esc_html__( 'Enter your email and we will send you a 6-digit code. No password needed.', 'jlife-auth' ) . '</p>'
 		. jlife_auth_box( $error )
-		. '<form method="post" id="jl-form">' . wp_nonce_field( 'jlife_auth_signin', '_jlife_auth', true, false )
+		. '<form method="post" id="jl-form" novalidate>' . wp_nonce_field( 'jlife_auth_signin', '_jlife_auth', true, false )
 		. '<input type="hidden" name="step" value="request"><input type="hidden" name="redirect_to" value="' . esc_attr( jlife_auth_redirect_target() ) . '">'
 		. '<input type="hidden" name="jl_lang" value="' . esc_attr( 0 === strpos( determine_locale(), 'vi' ) ? 'vi' : 'en' ) . '">'
 		. '<label for="jl-email">' . esc_html__( 'Email', 'jlife-auth' ) . '</label>'
@@ -390,7 +390,7 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 	$swap = '<p>' . implode( ' · ', $links ) . '</p>';
 	return $head
 		. jlife_auth_box( $error )
-		. '<form method="post" id="jl-form">' . wp_nonce_field( 'jlife_auth_join', '_jlife_auth', true, false ) . '<input type="hidden" name="step" value="request">'
+		. '<form method="post" id="jl-form" novalidate>' . wp_nonce_field( 'jlife_auth_join', '_jlife_auth', true, false ) . '<input type="hidden" name="step" value="request">'
 		. '<input type="hidden" name="mode" value="' . esc_attr( $mode ) . '">'
 		. $code
 		. '<label for="jl-first">' . esc_html__( 'First name', 'jlife-auth' ) . '</label>'

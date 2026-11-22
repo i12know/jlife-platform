@@ -626,6 +626,58 @@ class Test_Vietnamese extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The forms leave checking to the server, so errors are LATOC's own words, not the browser's (#222, QA round 6).
+	 */
+	public function test_the_forms_are_novalidate() {
+		foreach ( array( 'invite', 'solo', 'start', 'wait' ) as $mode ) {
+			$this->assertMatchesRegularExpression( '#<form[^>]*id="jl-form"[^>]*\snovalidate#', jlife_auth_join_form( $mode, array(), '' ), $mode );
+		}
+		$this->assertMatchesRegularExpression( '#<form[^>]*id="jl-form"[^>]*\snovalidate#', jlife_auth_signin_body() );
+		$this->assertMatchesRegularExpression( '#<form[^>]*id="jl-form"[^>]*\snovalidate#', jlife_auth_code_form( 'a@example.test' ) );
+		$this->assertStringContainsString( 'required', jlife_auth_join_form( 'invite', array(), '' ), 'required stays for screen readers' );
+	}
+
+	/**
+	 * A Vietnamese join with no age, or no first name, answers in Vietnamese, keeps what was typed, and sends and creates nothing.
+	 */
+	public function test_a_vietnamese_join_missing_a_field_shows_the_vietnamese_message_and_keeps_values() {
+		$cases = array(
+			'age'  => array(
+				'fields' => array( 'first_name' => 'Linh' ),
+				'msg'    => 'Vui lòng chọn độ tuổi',
+				'keep'   => 'value="Linh"',
+			),
+			'name' => array(
+				'fields' => array( 'age_band' => 'adult' ),
+				'msg'    => 'Vui lòng nhập tên của bạn',
+				'keep'   => 'value="minh@example.test"',
+			),
+		);
+		foreach ( $cases as $label => $case ) {
+			$fields = array_merge(
+				array(
+					'step'        => 'request',
+					'mode'        => 'solo',
+					'email'       => 'minh@example.test',
+					'locale'      => 'vi',
+					'_jlife_auth' => wp_create_nonce( 'jlife_auth_join' ),
+				),
+				$case['fields']
+			);
+			$this->submit( '/join/', $fields, array( 'lang' => 'vi' ) );
+			$_REQUEST = $fields;
+			reset_phpmailer_instance();
+			$page = $this->run_page( 'jlife_auth_page_join' );
+			$this->assertStringContainsString( $case['msg'], $page, $label );
+			$this->assertStringContainsString( $case['keep'], $page, $label );
+			$this->assertStringContainsString( '<input type="hidden" name="mode" value="solo">', $page, $label );
+			$this->assertSame( array(), tests_retrieve_phpmailer_instance()->mock_sent, "no email: {$label}" );
+			$this->assertFalse( get_user_by( 'email', 'minh@example.test' ), "no account: {$label}" );
+			$this->assertFalse( get_transient( jlife_auth_code_key( 'minh@example.test' ) ), "no code: {$label}" );
+		}
+	}
+
+	/**
 	 * The emailed code is written in the language chosen on the form.
 	 */
 	public function test_the_code_email_uses_the_language_chosen_on_the_form() {
