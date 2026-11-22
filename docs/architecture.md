@@ -110,7 +110,8 @@ Workflow meta (per lesson):
   → language-reviewed → approved → published), rights_note, source_attribution
 ```
 
-- Content must round-trip to the portable JSON/Markdown schemas in `/content/schemas/` (export/import WP-CLI commands in the plugin). The WordPress database is a *rendering* of the content, not its only home.
+- **Exception: daily devotionals (Reading Days, #211).** These are not `jlife_lesson` posts and keep no structured question fields: each is one rich-text body per plan, day and language (`jlife_devotional`). The owner writes them in Word or Google Docs; **those files are the master copy**, exported to Markdown and loaded through the wp-admin importer (J-Life → Devotionals). The database is a rendering of those files. A hand edit in Gutenberg is protected: re-import skips an edited post unless overwrite is chosen. Owner decision 2026-11-21, [#205 comment 7069225640](https://github.com/i12know/jlife-platform/issues/205#issuecomment-7069225640). No full content-sync product is authorized.
+- Lessons (`jlife_series`, `jlife_lesson`) keep this rule: content must round-trip to the portable JSON/Markdown schemas in `/content/schemas/` (export/import WP-CLI commands in the plugin). The WordPress database is a *rendering* of the content, not its only home.
 - Bible text: MVP stores **references only** and links out (or renders via a licensed API) — see [content-rights.md](content-rights.md).
 
 ## 5. Huddle, Discussion, and Progress Model

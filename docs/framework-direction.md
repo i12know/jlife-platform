@@ -14,6 +14,9 @@ This document authorizes no refactoring, deployment change, new repository or pr
 | Contact created on ministry relationship | Proposed | ADR 0002 pending ([#168](https://github.com/i12know/jlife-platform/issues/168)) |
 | Multisite-first for new installs | Provisional | ADR 0003 pending, after the §8 experiment ([#168](https://github.com/i12know/jlife-platform/issues/168)) |
 | Generic deployment with site profiles | Proposed | ADR 0004 pending ([#168](https://github.com/i12know/jlife-platform/issues/168)) |
+| Scoring rule `reflection-v1` (free-form or SOAP, one rule per campaign) | Approved requirement (not an ADR) | Owner decision on [#205](https://github.com/i12know/jlife-platform/issues/205#issuecomment-7069225640), 2026-11-21; [challenges-engine-design.md §3a](challenges-engine-design.md) |
+| Daily devotionals: Word/Google Docs master, wp-admin importer | Approved requirement (not an ADR) | Same decision, 2026-11-21; [architecture.md §4](architecture.md), [content/README.md](../content/README.md) |
+| Public `/reading/` comments and participant devotional offers | Approved future capability; implementation deferred | Same decision, 2026-11-21; [PRD §7.2](PRD.md); [#213](https://github.com/i12know/jlife-platform/issues/213), [#214](https://github.com/i12know/jlife-platform/issues/214) |
 
 **What each status means:**
 - **Accepted:** follow it.
@@ -21,6 +24,11 @@ This document authorizes no refactoring, deployment change, new repository or pr
 - **Provisional:** proposed, and also waiting for evidence.
 
 Only an owner-approved ADR changes a status, and it updates this table in the same PR. The authority order is in `CLAUDE.md`, "Architecture decisions".
+
+**Remaining conflicts after the 2026-11-21 amendments (not resolved here):**
+- [#209](https://github.com/i12know/jlife-platform/issues/209) (advance scoring for scheduled group shares) is still a proposed rule awaiting owner approval; nothing here records it as decided.
+- The live Rules and Help pages still describe SOAP-only steps ("Submit SOAP", all four parts) until the owner edits them in wp-admin; the Rules page must carry the `reflection-v1` rule before the official campaign starts.
+- Existing campaigns keep `soap-regex`; no active campaign changes without an owner-reviewed plan.
 
 ## 1. Two frameworks, one rule
 

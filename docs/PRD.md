@@ -177,6 +177,15 @@ The MVP should validate whether Vietnamese partners actually need a custom syste
 - AI coaching or automated pastoral advice.
 - Multi-organization enterprise administration.
 
+**Owner-approved future capabilities (2026-11-21, basis: [#205 comment 7069225640](https://github.com/i12know/jlife-platform/issues/205#issuecomment-7069225640); implementation deferred, not part of the MVP or the LATOC launch).** Two items above stay excluded *now* but are approved as later capabilities, to be built only after the safeguards below are ready:
+
+- **Public comments on `/reading/` day pages**, sign-in required for now, leaving room for participants to share to `/reading/` later ([#214](https://github.com/i12know/jlife-platform/issues/214)).
+- **Site-wide participant devotional offers**: a few designated contributors, one selected devotional per day. It may start during the Marathon, is never a launch prerequisite, does not depend on public comments, and never touches private entries, scores or schedules ([#213](https://github.com/i12know/jlife-platform/issues/213)).
+
+Safeguards that must come first: new rows in the privacy matrix ([challenges-engine-design.md §4](challenges-engine-design.md)) with tests per cell; consent wording for public attribution (full name, first name or none); the owner's decision on **adults only** (minors take part in the campaigns); editorial selection by a named person; sign-in; and reads and writes through the `jlife-huddles` gate. Until then neither exists, and the MVP stays free of a public social feed and complex forum moderation.
+
+Keep three things apart: a **private journal** (author-only, the default), a **deliberately shared group snapshot** (a separate copy, read only through that one group), and a **future public contribution** (a separate, consented, selected copy). Sharing to a group never makes anything public.
+
 ## 8. Future Phases
 
 ### Phase 0: Review And Discernment
@@ -253,7 +262,7 @@ The MVP should validate whether Vietnamese partners actually need a custom syste
 - MVP may include only huddle discussion.
 - Future version may include broader community forums by cohort, region, ministry type, or leader group.
 - Forum spaces must support moderation and privacy boundaries.
-- Public visibility should be avoided unless intentionally approved.
+- Public visibility should be avoided unless intentionally approved. Sign-in public comments on `/reading/` and site-wide participant devotionals are the intentional approvals so far, as deferred future capabilities with preconditions (§7.2, 2026-11-21).
 
 ### 9.5 User Roles
 
