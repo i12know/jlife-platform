@@ -111,18 +111,54 @@ function jlife_auth_front_locale( $locale ) {
 
 /**
  * The language a signed-out visitor picked on one of the sign-in pages, if any.
+ * Display language only (no data is read or changed), so no nonce. First match wins:
+ *
+ * 1. the language button on a form (`jl_relang`, POST), which re-shows the form as typed;
+ * 2. the Language dropdown of the join form (`locale`, POST), so the answer to "Send my
+ *    code" (errors, the code page) comes in the language the person chose;
+ * 3. the language the code and sign-in forms carry on (`jl_lang`, POST);
+ * 4. `?lang=` in the address.
+ *
+ * @return string vi|en, or '' when nothing valid was picked or this is not a sign-in page.
+ */
+function jlife_auth_visitor_pick() {
+	$uri  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+	$path = (string) wp_parse_url( $uri, PHP_URL_PATH );
+	if ( 1 !== preg_match( '#/(join|signin|consent)/?$#', $path ) ) {
+		return '';
+	}
+	$sources = array();
+	// phpcs:disable WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput -- a display language only, sanitized below.
+	if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+		$sources[] = $_POST['jl_relang'] ?? '';
+		if ( 1 === preg_match( '#/join/?$#', $path ) && isset( $_POST['step'] ) && 'request' === $_POST['step'] ) {
+			$sources[] = $_POST['locale'] ?? '';
+		}
+		$sources[] = $_POST['jl_lang'] ?? '';
+	}
+	$sources[] = $_GET['lang'] ?? '';
+	// phpcs:enable WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
+	foreach ( $sources as $raw ) {
+		$lang = is_string( $raw ) ? sanitize_key( wp_unslash( $raw ) ) : '';
+		if ( 'vi' === $lang ) {
+			return 'vi';
+		}
+		if ( 'en' === $lang || 'en_us' === $lang ) {
+			return 'en';
+		}
+	}
+	return '';
+}
+
+/**
+ * The language a signed-out visitor picked on one of the sign-in pages, if any.
  *
  * @param string $locale Locale otherwise in effect.
  * @return string
  */
 function jlife_auth_visitor_locale( $locale ) {
-	$uri  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-	$path = (string) wp_parse_url( $uri, PHP_URL_PATH );
-	if ( 1 !== preg_match( '#/(join|signin|consent)/?$#', $path ) || ! isset( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
-		return $locale;
-	}
-	$lang = sanitize_key( wp_unslash( $_GET['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
-	return 'vi' === $lang ? 'vi' : ( 'en' === $lang ? 'en_US' : $locale );
+	$pick = jlife_auth_visitor_pick();
+	return 'vi' === $pick ? 'vi' : ( 'en' === $pick ? 'en_US' : $locale );
 }
 
 /**

@@ -52,6 +52,8 @@ class Test_Vietnamese extends WP_UnitTestCase {
 	public function tear_down() {
 		wp_set_current_user( 0 );
 		$_GET                      = array();
+		$_POST                     = array();
+		$_REQUEST                  = array();
 		$_SERVER['REQUEST_URI']    = '/';
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 		jlife_auth_refresh_translations();
@@ -154,7 +156,7 @@ class Test_Vietnamese extends WP_UnitTestCase {
 
 		$signin = jlife_auth_signin_body();
 		$this->assertStringContainsString( 'Đăng nhập', $signin );
-		$this->assertStringContainsString( 'Gửi mã cho tôi', $signin );
+		$this->assertStringContainsString( 'Gửi mã đăng nhập cho tôi', $signin );
 		$this->assertStringNotContainsString( 'No password needed', $signin );
 
 		$consent = jlife_auth_consent_body();
@@ -305,6 +307,322 @@ class Test_Vietnamese extends WP_UnitTestCase {
 
 		$this->visit( '/signin/' );
 		$this->assertSame( home_url( '/join/' ), jlife_auth_keep_lang( home_url( '/join/' ) ), 'nothing picked, nothing added' );
+	}
+
+	/**
+	 * Pretend the visitor sent a form on a sign-in page.
+	 *
+	 * @param string $path Path, e.g. /join/.
+	 * @param array  $post Form values.
+	 * @param array  $get  Query string values.
+	 */
+	private function submit( $path, $post, $get = array() ) {
+		$this->visit( $path, $get );
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+		$_POST                     = $post;
+		jlife_auth_refresh_translations();
+	}
+
+	/**
+	 * First render in Vietnamese from a Vietnamese link: the page, its `lang` and all three ways in (#222).
+	 */
+	public function test_join_opens_in_vietnamese_on_first_load_for_all_three_paths() {
+		foreach ( array( 'invite', 'solo', 'start' ) as $mode ) {
+			$this->visit(
+				'/join/',
+				array(
+					'mode' => $mode,
+					'lang' => 'vi',
+				)
+			);
+			$form = jlife_auth_join_form( $mode, array(), '' );
+			$page = jlife_auth_page_html( 'x', $form );
+			$this->assertStringContainsString( '<html lang="vi">', $page, $mode );
+			$this->assertStringContainsString( 'Ngôn ngữ', $form, $mode );
+			$this->assertStringContainsString( 'Độ tuổi của bạn', $form, $mode );
+			$this->assertStringContainsString( 'Gửi mã đăng nhập cho tôi', $form, $mode );
+			$this->assertStringContainsString( 'Đã tham gia rồi? Đăng nhập.', $form, $mode );
+			$this->assertStringNotContainsString( 'Your age', $form, $mode );
+			$this->assertStringNotContainsString( 'First name', $form, $mode );
+		}
+		$this->visit( '/join/' );
+		$this->assertStringContainsString( '<html lang="en-US">', jlife_auth_page_html( 'x', jlife_auth_join_form( 'invite', array(), '' ) ), 'English is unchanged' );
+	}
+
+	/**
+	 * The switch is a set of buttons that send the form to itself: no field is lost, and the email is never in an address.
+	 */
+	public function test_the_language_switch_keeps_what_was_typed_and_never_puts_the_email_in_the_url() {
+		$this->visit( '/join/', array( 'code' => 'ABCD2345' ) );
+		$in   = array(
+			'invite_code' => 'ABCD2345',
+			'first_name'  => 'Linh',
+			'email'       => 'linh@example.test',
+			'age_band'    => 'minor',
+		);
+		$page = jlife_auth_page_html( 'x', jlife_auth_join_form( 'invite', $in, '' ) );
+		$this->assertStringContainsString( 'id="jl-form"', $page );
+		$this->assertMatchesRegularExpression( '#<button type="submit" form="jl-form" name="jl_relang" value="vi" formaction="[^"]*lang=vi[^"]*" formnovalidate#', $page );
+		$this->assertStringNotContainsString( 'linh@example.test', (string) preg_replace( '#<input[^>]*>#', '', $page ), 'the email appears only inside its field' );
+
+		// The switch press arrives as a POST: the page is Vietnamese and the typed values come back.
+		$this->submit(
+			'/join/',
+			array_merge(
+				$in,
+				array(
+					'step'      => 'request',
+					'mode'      => 'invite',
+					'locale'    => 'en_US',
+					'jl_relang' => 'vi',
+				)
+			),
+			array( 'lang' => 'vi' )
+		);
+		$this->assertTrue( jlife_auth_is_relang() );
+		$this->assertSame( 'vi', determine_locale() );
+		$this->assertSame( 'vi', jlife_auth_default_form_locale(), 'the language field follows the page' );
+		$back = jlife_auth_join_form(
+			'invite',
+			array_merge( $in, array( 'locale' => jlife_auth_default_form_locale() ) ),
+			''
+		);
+		$this->assertStringContainsString( 'value="ABCD2345"', $back );
+		$this->assertStringContainsString( 'value="Linh"', $back );
+		$this->assertStringContainsString( 'value="linh@example.test"', $back );
+		$this->assertMatchesRegularExpression( '#value="minor" checked#', $back );
+		$this->assertStringContainsString( '<option value="vi" selected', $back );
+		$this->assertStringContainsString( '13 đến 17 tuổi', $back, 'the age choices are in Vietnamese' );
+
+		// And back to English the same way.
+		$this->submit(
+			'/join/',
+			array_merge(
+				$in,
+				array(
+					'step'      => 'request',
+					'jl_relang' => 'en',
+					'locale'    => 'vi',
+				)
+			),
+			array( 'lang' => 'en' )
+		);
+		$this->assertSame( 'en_US', determine_locale(), 'the button beats the field' );
+		$this->assertTrue( jlife_auth_is_relang() );
+	}
+
+	/**
+	 * Choosing Tiếng Việt in the Language field makes the answer (errors, the code page) Vietnamese too, and the saved account language equals it.
+	 */
+	public function test_the_language_field_switches_the_interface_and_is_what_is_saved() {
+		$this->submit(
+			'/join/',
+			array(
+				'step'   => 'request',
+				'mode'   => 'invite',
+				'locale' => 'vi',
+			)
+		);
+		$this->assertSame( 'vi', determine_locale(), 'a field of vi without ?lang= is still Vietnamese' );
+		$this->assertFalse( jlife_auth_is_relang(), 'it is a real request, not a switch' );
+		$err = jlife_auth_start_join(
+			array(
+				'mode'       => 'invite',
+				'first_name' => 'Linh',
+				'locale'     => 'vi',
+			)
+		);
+		$this->assertWPError( $err );
+		$this->assertStringContainsString( 'Vui lòng chọn độ tuổi', $err->get_error_message(), 'the age rule answers in Vietnamese' );
+		$this->assertStringContainsString( 'Vui lòng chọn độ tuổi', jlife_auth_join_form( 'invite', array(), $err->get_error_message() ), 'the error is shown on the form' );
+
+		// The code page and the sign-in form carry the language on, whatever the address says.
+		$this->assertStringContainsString( 'name="jl_lang" value="vi"', jlife_auth_code_form( 'a@example.test' ) );
+		$this->submit(
+			'/join/',
+			array(
+				'step'    => 'verify',
+				'jl_lang' => 'vi',
+			),
+			array( 'lang' => 'en' )
+		);
+		$this->assertSame( 'vi', determine_locale(), 'the form’s own language beats a stale ?lang=' );
+		$this->submit(
+			'/signin/',
+			array(
+				'step'    => 'request',
+				'jl_lang' => 'vi',
+			)
+		);
+		$this->assertSame( 'vi', determine_locale() );
+
+		// The dropdown only counts on the join request; a spoofed one elsewhere is ignored.
+		$this->submit(
+			'/signin/',
+			array(
+				'step'   => 'request',
+				'locale' => 'vi',
+			)
+		);
+		$this->assertSame( 'en_US', determine_locale() );
+
+		// A Vietnamese choice is saved as the account language.
+		$admin    = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		$campaign = jlife_challenges_create_campaign(
+			$admin,
+			array(
+				'campaign_key' => 'vi3-' . wp_generate_password( 6, false ),
+				'plan_id'      => 'rpl-test',
+				'title'        => 'Test',
+				'start_date'   => '2026-12-20',
+				'end_date'     => '2027-04-02',
+				'status'       => 'active',
+			)
+		);
+		$this->assertIsInt( $campaign );
+		$this->visit( '/join/' );
+		$this->assertTrue(
+			jlife_auth_start_join(
+				array(
+					'mode'       => 'solo',
+					'email'      => 'vi-saved@example.test',
+					'first_name' => 'Linh',
+					'age_band'   => 'adult',
+					'locale'     => 'vi',
+				)
+			)
+		);
+		$sent = tests_retrieve_phpmailer_instance()->mock_sent;
+		preg_match( '/\b(\d{6})\b/', end( $sent )['body'], $m );
+		$r = jlife_auth_complete( 'vi-saved@example.test', $m[1] );
+		$this->assertSame( 'vi', get_user_meta( $r['user_id'], 'locale', true ), 'the saved account language equals the choice' );
+	}
+
+	/**
+	 * Staying on /signin/ or /consent/ and the links between the pages keep a language chosen in a form.
+	 */
+	public function test_links_keep_a_language_chosen_in_a_form() {
+		$this->submit(
+			'/join/',
+			array(
+				'step'   => 'request',
+				'locale' => 'vi',
+			)
+		);
+		$this->assertMatchesRegularExpression( '#/signin/\?lang=vi#', jlife_auth_keep_lang( home_url( '/signin/' ) ) );
+		$this->vi_user();
+		$this->assertSame( home_url( '/signin/' ), jlife_auth_keep_lang( home_url( '/signin/' ) ), 'signed-in people get nothing added' );
+	}
+
+	/**
+	 * The switch is a set of buttons only where a form exists; the sign-in form keeps the email; a shared Vietnamese invite link is Vietnamese.
+	 */
+	public function test_sign_in_switch_and_the_shared_invite_link() {
+		$this->visit( '/signin/', array( 'lang' => 'vi' ) );
+		$body = jlife_auth_signin_body( 'Lỗi', 'linh@example.test' );
+		$this->assertStringContainsString( 'value="linh@example.test"', $body );
+		$this->assertStringContainsString( 'name="jl_relang"', jlife_auth_page_html( 'x', $body ) );
+		$this->assertStringContainsString( 'aria-current="true"', jlife_auth_language_links( true ) );
+		$this->assertStringContainsString( 'role="group"', jlife_auth_language_links( true ) );
+		$this->assertStringNotContainsString( 'jl_relang', jlife_auth_page_html( 'x', '<p>no form</p>' ), 'plain links without a form' );
+
+		$this->vi_user();
+		$this->assertStringContainsString( 'lang=vi', jlife_challenges_invite_reveal_html( 'Nhóm', 'ABCDEFGH' ) );
+		wp_set_current_user( 0 );
+		$this->visit( '/join/' );
+		$this->assertStringNotContainsString( 'lang=vi', jlife_challenges_invite_reveal_html( 'Group', 'ABCDEFGH' ), 'an English starter shares the plain link' );
+	}
+
+	/**
+	 * Run a page handler that ends in jlife_auth_send_page(), and give back the page it would send.
+	 *
+	 * @param callable $handler Page function.
+	 * @return string The page's body HTML.
+	 */
+	private function run_page( $handler ) {
+		$stop = static function ( $title, $body ) {
+			throw new RuntimeException( $body ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- a test seam, never output.
+		};
+		add_action( 'jlife_auth_page_will_send', $stop, 10, 2 );
+		try {
+			$handler();
+			$this->fail( 'the page should have been sent' );
+		} catch ( RuntimeException $e ) {
+			return $e->getMessage();
+		} finally {
+			remove_action( 'jlife_auth_page_will_send', $stop, 10 );
+		}
+		return '';
+	}
+
+	/**
+	 * A language button rides on the sign-in POSTs but must do nothing except show the page again: no email, no account, no sign-in, and a code is not used up.
+	 */
+	public function test_a_language_button_never_sends_a_code_creates_an_account_or_uses_a_code() {
+		$admin    = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		$campaign = jlife_challenges_create_campaign(
+			$admin,
+			array(
+				'campaign_key' => 'vi4-' . wp_generate_password( 6, false ),
+				'plan_id'      => 'rpl-test',
+				'title'        => 'Test',
+				'start_date'   => '2026-12-20',
+				'end_date'     => '2027-04-02',
+				'status'       => 'active',
+			)
+		);
+		$this->assertIsInt( $campaign );
+
+		// 1. A complete, valid join request that carries the language button: nothing is sent, nobody is created.
+		$fields = array(
+			'step'        => 'request',
+			'mode'        => 'solo',
+			'email'       => 'relang@example.test',
+			'first_name'  => 'Linh',
+			'age_band'    => 'adult',
+			'locale'      => 'en_US',
+			'invite_code' => '',
+			'_jlife_auth' => wp_create_nonce( 'jlife_auth_join' ),
+			'jl_relang'   => 'vi',
+		);
+		$this->submit( '/join/', $fields, array( 'lang' => 'vi' ) );
+		$_REQUEST = $fields;
+		reset_phpmailer_instance();
+		$page = $this->run_page( 'jlife_auth_page_join' );
+		$this->assertSame( array(), tests_retrieve_phpmailer_instance()->mock_sent, 'no email' );
+		$this->assertFalse( get_user_by( 'email', 'relang@example.test' ), 'no account' );
+		$this->assertStringContainsString( 'value="relang@example.test"', $page, 'the form is shown again with what was typed' );
+		$this->assertStringContainsString( 'Độ tuổi của bạn', $page );
+
+		// 2. On the code page: a real code, a language button, then the same code on a normal verify.
+		$this->visit( '/join/' );
+		$this->assertTrue(
+			jlife_auth_start_join(
+				array(
+					'mode'       => 'solo',
+					'email'      => 'relang2@example.test',
+					'first_name' => 'Minh',
+					'age_band'   => 'adult',
+					'locale'     => 'en_US',
+				)
+			)
+		);
+		$sent = tests_retrieve_phpmailer_instance()->mock_sent;
+		preg_match( '/(\d{6})/', end( $sent )['body'], $m );
+		$verify = array(
+			'step'        => 'verify',
+			'email'       => 'relang2@example.test',
+			'code'        => $m[1],
+			'_jlife_auth' => wp_create_nonce( 'jlife_auth_verify' ),
+		);
+		$this->submit( '/join/', array_merge( $verify, array( 'jl_relang' => 'vi' ) ), array( 'lang' => 'vi' ) );
+		$_REQUEST = $_POST;
+		$page     = $this->run_page( 'jlife_auth_page_join' );
+		$this->assertSame( 0, get_current_user_id(), 'nobody is signed in' );
+		$this->assertStringContainsString( 'name="jl_lang" value="vi"', $page, 'the code page again, in Vietnamese' );
+		$this->assertStringNotContainsString( $m[1], $page, 'the code is not echoed back' );
+		$result = jlife_auth_complete( 'relang2@example.test', $m[1] );
+		$this->assertNotWPError( $result, 'the code was not used up by the language button' );
 	}
 
 	/**
