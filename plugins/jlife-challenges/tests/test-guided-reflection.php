@@ -106,7 +106,7 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 		$this->make_devotional( 'publish', '<p>Just a lead-in, no questions.</p>' );
 		$form = $this->panel();
 		$this->assertStringContainsString( '>My reflection</label>', $form );
-		$this->assertStringContainsString( "Write about today's reading in your own words. You can use SOAP if you wish.", $form );
+		$this->assertStringContainsString( esc_html( "Write about today's reading in your own words. You can use SOAP if you wish." ), $form );
 		$this->assertStringNotContainsString( 'reflection questions above', $form );
 		$this->assertStringNotContainsString( 'jl-response-questions', $form );
 	}
@@ -118,14 +118,9 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 		$id = $this->make_devotional( 'draft', $this->marked_content( array( self::QUESTION ) ) );
 		$this->assertFalse( jlife_challenges_is_guided( jlife_challenges_day_view( $this->u['a'] ) ), 'Draft' );
 
-		wp_update_post(
-			array(
-				'ID'            => $id,
-				'post_status'   => 'future',
-				'post_date'     => '2099-01-01 00:00:00',
-				'post_date_gmt' => '2099-01-01 00:00:00',
-			)
-		);
+		global $wpdb;
+		$wpdb->update( $wpdb->posts, array( 'post_status' => 'future' ), array( 'ID' => $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- test fixture: WordPress turns a past-dated scheduled post into a published one.
+		clean_post_cache( $id );
 		$this->assertSame( 'future', get_post_status( $id ) );
 		$this->assertFalse( jlife_challenges_is_guided( jlife_challenges_day_view( $this->u['a'] ) ), 'scheduled' );
 

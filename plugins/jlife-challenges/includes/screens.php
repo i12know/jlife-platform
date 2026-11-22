@@ -952,10 +952,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$sources   = jlife_challenges_view_guidance( $view );
 	$guided    = (bool) $sources;
 	$lang      = jlife_challenges_devotional_user_language( get_current_user_id() );
-	$has_q     = false;
-	foreach ( $sources as $source ) {
-		$has_q = $has_q || ! empty( $source['questions']['lines'] );
-	}
+	$has_q     = ! empty( array_filter( array_column( array_column( $sources, 'questions' ), 'lines' ) ) );
 	$groups    = (array) ( $view['share_groups'] ?? array() );
 	$out       = jlife_challenges_render_reader( $view )
 		. jlife_challenges_render_devotional( $view )
