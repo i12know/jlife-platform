@@ -276,7 +276,8 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( '<strong>know</strong>', $item['html'] );
 		$this->assertStringContainsString( '<a href="https://example.test/plan">the plan</a>', $item['html'] );
 		$this->assertStringContainsString( '<li>First point</li>', $item['html'] );
-		$this->assertStringContainsString( '<h3>Reflection questions</h3>', $item['html'] );
+		$this->assertStringContainsString( '>Reflection questions</h3>', $item['html'] );
+		$this->assertStringContainsString( '<section class="jl-reflection-questions" aria-labelledby="jl-rq-', $item['html'] );
 		$this->assertStringNotContainsString( '<img', $item['html'] );
 		$this->assertStringNotContainsString( 'map.png', $item['html'] );
 		$this->assertSame(
@@ -297,7 +298,8 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 		$this->assertSame( 'vi', $item['lang'] );
 		$this->assertSame( 'Trước Bê-lê-hem', $item['title'] );
 		$this->assertStringContainsString( 'Lu-ca viết để bạn biết chắc chắn', $item['html'] );
-		$this->assertStringContainsString( '<h3>Câu hỏi suy ngẫm</h3>', $item['html'] );
+		$this->assertStringContainsString( '>Câu hỏi suy ngẫm</h3>', $item['html'] );
+		$this->assertStringContainsString( 'class="jl-reflection-questions"', $item['html'], 'the Vietnamese heading is marked too' );
 		$this->assertSame( 'Tuần này bạn đã thấy Chúa giữ lời hứa ở đâu?', $item['questions'][0] );
 		$this->assertCount( 2, $item['questions'] );
 	}
@@ -655,8 +657,8 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * The SOAP-practice suggestion shows on a flagged day of a campaign that starts
-	 * blank, and nowhere else; the flag is the post's meta.
+	 * The SOAP-practice suggestion shows on a flagged day (the guided box has the template
+	 * button on every campaign), and nowhere else; the flag is the post meta.
 	 */
 	public function test_soap_practice_suggestion() {
 		$id       = $this->make_post( 'd001', 'en', 'publish' );
@@ -669,10 +671,7 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'jl-devotional-soap', jlife_challenges_render_devotional( $view ) );
 
 		jlife_challenges_devotional_set_soap_practice( $id, true );
-		$this->assertStringNotContainsString( 'jl-devotional-soap', jlife_challenges_render_devotional( $view ), 'a SOAP campaign needs no suggestion' );
-
-		$view['campaign']['scoring_engine'] = JLIFE_CHALLENGES_REFLECTION_ENGINE;
-		$this->assertStringContainsString( 'jl-devotional-soap', jlife_challenges_render_devotional( $view ) );
+		$this->assertStringContainsString( 'jl-devotional-soap', jlife_challenges_render_devotional( $view ), 'the Use SOAP template button now exists on every guided day' );
 
 		jlife_challenges_devotional_set_soap_practice( $id, false );
 		$this->assertStringNotContainsString( 'jl-devotional-soap', jlife_challenges_render_devotional( $view ) );
