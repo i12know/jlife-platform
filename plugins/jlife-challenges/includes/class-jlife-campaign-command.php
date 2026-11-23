@@ -72,6 +72,8 @@ class Jlife_Campaign_Command {
 	 * <engine>
 	 * : The engine id, for example reflection-v1.
 	 *
+	 * @subcommand set-engine
+	 *
 	 * @param array $args       Positional args.
 	 * @param array $assoc_args Options.
 	 */

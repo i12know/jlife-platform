@@ -69,7 +69,7 @@ class Jlife_Pilot_Command {
 		}
 		foreach ( $rows as $c ) {
 			$n = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$e} WHERE campaign_id = %d", (int) $c['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table; name from $wpdb->prefix.
-			WP_CLI::log( sprintf( '%s: %s to %s, status %s, phase %s, enrollments %d.', $c['campaign_key'], $c['start_date'], $c['end_date'], $c['status'], jlife_challenges_campaign_phase( $c ), $n ) );
+			WP_CLI::log( sprintf( '%s: %s to %s, status %s, phase %s, engine %s, enrollments %d.', $c['campaign_key'], $c['start_date'], $c['end_date'], $c['status'], jlife_challenges_campaign_phase( $c ), jlife_challenges_campaign_engine( $c ), $n ) );
 		}
 		WP_CLI::log( sprintf( 'Chose "I\'ll start Dec 20": %d.', count( jlife_challenges_waiting_for_official_ids() ) ) );
 	}
