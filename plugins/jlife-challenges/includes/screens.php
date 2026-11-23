@@ -1030,7 +1030,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$box = '<textarea id="jl-text" name="jl_text" rows="16" maxlength="' . esc_attr( (string) JLIFE_CHALLENGES_BODY_MAX ) . '">' . esc_textarea( $text ) . '</textarea>';
 	if ( $guided ) {
 		// Guided (#225): the printed questions sit read-only above the response, in the same box; SOAP is an optional extra and never replaces what is typed.
-		$out .= '<p class="jl-soap-def">' . esc_html( $has_q ? __( 'Respond to the reflection questions above in your own words. You can use SOAP if you wish.', 'jlife-challenges' ) : __( "Write about today's reading in your own words. You can use SOAP if you wish.", 'jlife-challenges' ) ) . '</p>'
+		$out .= '<p class="jl-soap-def">' . esc_html( $has_q ? __( 'Respond to the questions above in your own words.', 'jlife-challenges' ) : __( "Write about today's reading in your own words.", 'jlife-challenges' ) ) . '</p>'
 			. '<div class="jl-response-box">' . jlife_challenges_render_response_questions( $sources, $lang ) . $box . '</div>'
 			. '<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'Use SOAP', 'jlife-challenges' ) . '</summary>'
 			. $soap_def . $soap_how
