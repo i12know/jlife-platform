@@ -256,7 +256,7 @@ function jlife_challenges_devotional_user_language( $user_id ) {
  */
 function jlife_challenges_devotional_body_html( $post ) {
 	$content = (string) $post->post_content;
-	if ( ! has_blocks( $content ) ) {
+	if ( ! has_blocks( $content ) && false === stripos( $content, '<p' ) ) {
 		$content = wpautop( $content );
 	}
 	return wp_kses_post( do_blocks( $content ) );
