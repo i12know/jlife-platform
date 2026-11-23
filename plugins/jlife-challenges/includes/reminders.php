@@ -332,7 +332,7 @@ function jlife_challenges_screen_unsubscribe() {
 	echo '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', '' !== $req['locale'] ? $req['locale'] : determine_locale() ) ) . '"><head><meta charset="utf-8">' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every part is escaped.
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer">'
 		. '<title>' . esc_html( $page[0] ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=25' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=26' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><main>' . $page[1] . '</main></body></html>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts.
 	exit;
 }
@@ -552,5 +552,45 @@ function jlife_challenges_render_reminder_settings( $user_id, $campaign_id, $sav
 	$picker  = jlife_challenges_render_bible_picker( $user_id, $campaign_id, $bible_saved );
 	$heading = '' !== $toggle ? __( 'Daily reading email', 'jlife-challenges' ) : __( 'Bible', 'jlife-challenges' );
 	$section = '' !== ( $toggle . $picker ) ? '<section class="jl-reminders"><h2>' . esc_html( $heading ) . '</h2>' . $toggle . $picker . '</section>' : '';
-	return jlife_challenges_render_language_setting( $user_id, $campaign_id, $language_saved ) . $section;
+	$inner   = jlife_challenges_render_language_setting( $user_id, $campaign_id, $language_saved ) . $section;
+	if ( '' === $inner ) {
+		return '';
+	}
+	$open = $saved || $bible_saved || $language_saved;
+	return '<details class="jl-settings"' . ( $open ? ' open' : '' ) . '><summary>'
+		. esc_html( jlife_challenges_settings_summary( $user_id, $campaign_id, '' !== $toggle ) )
+		. '</summary>' . $inner . '</details>';
+}
+
+/**
+ * The closed settings row's text (#237), from the saved state only: "Settings:
+ * English · NLT", with " + code" for a second Bible and " · Email: On/Off" only
+ * while the reminder choice is offered (saved mode Live, #189).
+ *
+ * @param int  $user_id     Participant.
+ * @param int  $campaign_id Campaign.
+ * @param bool $show_email  Whether the reminder checkbox is shown.
+ * @return string Plain text (escape on output).
+ */
+function jlife_challenges_settings_summary( $user_id, $campaign_id, $show_email ) {
+	$locale = jlife_challenges_account_language( $user_id );
+	$parts  = array( JLIFE_CHALLENGES_REMINDER_LOCALES[ $locale ] ?? $locale );
+	if ( jlife_challenges_bible_choice_available() ) {
+		$pair  = jlife_scripture_versions_for_user( $user_id );
+		$codes = array();
+		foreach ( $pair as $version ) {
+			if ( is_array( $version ) && '' !== (string) ( $version['short_code'] ?? '' ) ) {
+				$codes[] = (string) $version['short_code'];
+			}
+		}
+		if ( array() !== $codes ) {
+			$parts[] = implode( ' + ', $codes );
+		}
+	}
+	if ( $show_email ) {
+		$on      = jlife_challenges_reminder_is_on( jlife_challenges_reminder_pref( $user_id, $campaign_id ) );
+		$parts[] = $on ? __( 'Email: On', 'jlife-challenges' ) : __( 'Email: Off', 'jlife-challenges' );
+	}
+	/* translators: %s: current choices, e.g. "English · NLT". */
+	return sprintf( __( 'Settings: %s', 'jlife-challenges' ), implode( ' · ', $parts ) );
 }
