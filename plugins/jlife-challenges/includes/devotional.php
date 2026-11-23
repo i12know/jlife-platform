@@ -407,42 +407,54 @@ function jlife_challenges_is_guided( $view ) {
 }
 
 /**
- * The marked questions as read-only markup for the writing box, above the
- * textarea. Separate from the participant's text: never saved, never a
- * placeholder. Several sources each keep their attribution.
+ * The actual question(s) among the lines of a questions section (#225): a line
+ * that, once Markdown and HTML formatting (tags, list markers, bold or italic
+ * marks) is stripped, ends with "?" (or the full-width "？"). Instructions such as
+ * "Write a few sentences…" or "Then press Submit." are left out, even when they
+ * contain a "?" mid-line. The one place that decides it: the writing box's prefill
+ * and the #210 word-count exclusion both use it, so they always agree.
+ *
+ * @param string[] $lines Lines of a questions section.
+ * @return string[] The question lines, formatting removed, in order, without repeats.
+ */
+function jlife_challenges_extract_questions( $lines ) {
+	$found = array();
+	foreach ( (array) $lines as $line ) {
+		$line = html_entity_decode( wp_strip_all_tags( (string) $line ), ENT_QUOTES, 'UTF-8' );
+		$line = (string) preg_replace( '/^\s*(?:>\s*)*(?:[-*+\x{2022}]\s+|\d+[.)]\s+)/u', '', $line );
+		$line = str_replace( array( '**', '__', '`' ), '', $line );
+		$line = trim( (string) preg_replace( '/\s+/u', ' ', $line ) );
+		$line = trim( $line, '*_ ' );
+		if ( '' !== $line && in_array( mb_substr( $line, -1, 1, 'UTF-8' ), array( '?', '？' ), true ) && ! in_array( $line, $found, true ) ) {
+			$found[] = $line;
+		}
+	}
+	return $found;
+}
+
+/**
+ * The text a new, empty guided entry starts with (#225): the actual questions of
+ * every guidance source, each on its own line, then blank lines for the answer.
+ * '' when no source has a question.
  *
  * @param array[] $sources Sources from jlife_challenges_guidance_sources().
- * @param string  $lang    en or vi.
- * @return string Escaped HTML, or '' when no source has questions.
+ * @return string
  */
-function jlife_challenges_render_response_questions( $sources, $lang ) {
-	$shown = array_values(
-		array_filter(
-			$sources,
-			static function ( $source ) {
-				return ! empty( $source['questions']['lines'] );
-			}
-		)
-	);
-	if ( ! $shown ) {
-		return '';
+function jlife_challenges_guidance_prefill( $sources ) {
+	$questions = array();
+	foreach ( (array) $sources as $source ) {
+		$questions = array_merge( $questions, jlife_challenges_extract_questions( (array) ( $source['questions']['lines'] ?? array() ) ) );
 	}
-	$out = '<div class="jl-response-questions" lang="' . esc_attr( $lang ) . '">';
-	foreach ( $shown as $i => $source ) {
-		$id      = 'jl-response-q-' . ( $i + 1 );
-		$heading = '' !== (string) $source['questions']['heading'] ? (string) $source['questions']['heading'] : __( 'Reflection questions', 'jlife-challenges' );
-		$out    .= '<section class="jl-response-q" aria-labelledby="' . esc_attr( $id ) . '"><h3 id="' . esc_attr( $id ) . '">' . esc_html( $heading ) . '</h3>'
-			. ( count( $shown ) > 1 ? '<p class="jl-response-q-from">' . esc_html( (string) $source['attribution'] ) . '</p>' : '' )
-			. wp_kses_post( (string) $source['questions']['html'] ) . '</section>';
-	}
-	return $out . '</div>';
+	$questions = array_values( array_unique( $questions ) );
+	return $questions ? implode( "\n", $questions ) . "\n\n\n" : '';
 }
 
 /**
  * The devotional's printed questions, for #210's engine, so questions a person
  * copies into their reflection do not count as their words. Only Ready
  * devotionals of days that have opened (what the person could see), in both
- * languages. Same source as the writing box (jlife_challenges_devotional_questions()).
+ * languages. Exactly the questions the writing box prefills
+ * (jlife_challenges_extract_questions() over jlife_challenges_devotional_questions()).
  *
  * @param string[] $excluded Strings already excluded.
  * @param array    $context  { campaign?: array, day_key?: string, index?: int }.
@@ -462,7 +474,7 @@ function jlife_challenges_devotional_excluded_text( $excluded, $context ) {
 		}
 		$questions = jlife_challenges_devotional_questions( $post );
 		if ( $questions ) {
-			$excluded = array_merge( $excluded, $questions['lines'] );
+			$excluded = array_merge( $excluded, jlife_challenges_extract_questions( $questions['lines'] ) );
 		}
 	}
 	return $excluded;
