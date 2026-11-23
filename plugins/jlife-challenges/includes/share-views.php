@@ -220,7 +220,7 @@ function jlife_challenges_group_view( $user_id, $group_id = 0 ) {
  * @return array[] Rows of { group_id, group_name, author, body }, in the order of the viewer's groups.
  */
 function jlife_challenges_leader_thoughts( $viewer_user_id, $campaign, $day_key ) {
-	$index = is_array( $campaign ) ? jlife_challenges_day_index( $campaign, (string) $day_key ) : 0;
+	$index = jlife_challenges_day_index( $campaign, (string) $day_key );
 	if ( (int) $viewer_user_id < 1 || $index < 1 || ! jlife_challenges_day_is_open( $campaign, $index ) ) {
 		return array();
 	}
