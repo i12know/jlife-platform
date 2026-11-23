@@ -245,11 +245,21 @@ function jlife_challenges_devotional_user_language( $user_id ) {
  * The devotional body as readers see it: block-rendered and filtered with
  * wp_kses_post() (so `section` and `aria-labelledby` must survive it, #225).
  *
+ * Classic-editor content (#228) has no block markup: the Classic editor stores
+ * paragraphs as bare blank-line-separated text and relies on wpautop() (what
+ * `the_content` applies) to add the `<p>` tags. Content with no blocks gets the
+ * same treatment here; block content is left to do_blocks(). The stored post is
+ * never changed.
+ *
  * @param WP_Post $post Devotional post.
  * @return string Escaped HTML.
  */
 function jlife_challenges_devotional_body_html( $post ) {
-	return wp_kses_post( do_blocks( (string) $post->post_content ) );
+	$content = (string) $post->post_content;
+	if ( ! has_blocks( $content ) && false === stripos( $content, '<p' ) ) {
+		$content = wpautop( $content );
+	}
+	return wp_kses_post( do_blocks( $content ) );
 }
 
 /**
