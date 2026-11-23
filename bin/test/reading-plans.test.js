@@ -229,3 +229,36 @@ test('shipped primary plan: Day 1 is Luke 1:1-4 then John 1:1-18, with links in 
   assert.equal(day1.day, 1);
   assert.equal(primary.days[103].date, '2027-04-02');
 });
+
+test('Harmony section titles and the source line are translated into Vietnamese (#119)', () => {
+  const { buildAll } = require('../build-reading-plans');
+  const built = buildAll().map((b) => b.doc);
+  const supp = built.find((d) => d.role === 'supplemental');
+  const sections = supp.days.flatMap((d) => d.harmony_sections);
+  assert.ok(sections.length > 100);
+  for (const s of sections) {
+    assert.ok(s.i18n && s.i18n.vi && s.i18n.vi.title.trim() !== '', s.gospel_event_id);
+  }
+  const first = supp.days[0].harmony_sections[0];
+  assert.equal(first.title, 'In the Dedication Luke Explains His Method of Research', 'English stays the default');
+  assert.equal(first.i18n.vi.title, 'Lu-ca giải thích cách ông tìm hiểu và viết sách');
+  const primary = built.find((d) => d.role === 'primary');
+  assert.match(primary.i18n.vi.source_attribution, /PlusNothing/);
+  assert.match(primary.i18n.vi.source_attribution, /Robertson \(1922\)/);
+  assert.match(supp.i18n.vi.source_attribution, /Robertson/);
+  assert.ok(primary.source_attribution.startsWith('Owner-created'), 'English source line is untouched');
+});
+
+test('the Vietnamese Harmony titles file has no empty or unknown entries (#119)', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const file = path.join(__dirname, '..', '..', 'content', 'reading-plans', 'i18n', 'rpl-harmony-parallel-2026.vi.json');
+  const t = JSON.parse(fs.readFileSync(file, 'utf8'));
+  assert.equal(t.status, 'DRAFT');
+  const entries = Object.entries(t.titles);
+  assert.ok(entries.length >= 180);
+  for (const [k, v] of entries) {
+    assert.match(k, /^r1922-\d{3}[a-z]?$/);
+    assert.ok(typeof v === 'string' && v.trim() !== '' && v === v.trim(), k);
+  }
+});

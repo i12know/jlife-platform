@@ -142,6 +142,7 @@ function jlife_studies_import_reading_plan( $doc ) {
 		'plan_id'            => $doc['plan_id'],
 		'title'              => (string) ( $doc['title'] ?? '' ),
 		'source_attribution' => (string) ( $doc['source_attribution'] ?? '' ),
+		'i18n'               => $doc['i18n'] ?? array(),
 		'links_config'       => $doc['links_config'] ?? array(),
 	);
 
@@ -232,6 +233,55 @@ function jlife_studies_localize_day( $day, $locale ) {
 }
 
 /**
+ * A plan's reading line in the reader's language (#119): the translated
+ * `source_attribution` from `i18n.<lang>`. English, or a plan without that
+ * language, stays as it is.
+ *
+ * @param array|null $plan   Plan data (plan_id, title, source_attribution, i18n).
+ * @param string     $locale WordPress locale.
+ * @return array|null
+ */
+function jlife_studies_localize_plan( $plan, $locale ) {
+	$lang = strtolower( substr( (string) $locale, 0, 2 ) );
+	if ( ! is_array( $plan ) || 'en' === $lang ) {
+		return $plan;
+	}
+	$line = $plan['i18n'][ $lang ]['source_attribution'] ?? '';
+	if ( is_string( $line ) && '' !== trim( $line ) ) {
+		$plan['source_attribution'] = $line;
+	}
+	return $plan;
+}
+
+/**
+ * The optional parallel readings in the reader's language (#119): each Harmony
+ * section's `title` becomes its `i18n.<lang>.title`, falling back to English
+ * for a section without one. Section numbers, links and references never change.
+ *
+ * @param array|null $supplemental { plan, day } as stored at import.
+ * @param string     $locale       WordPress locale.
+ * @return array|null
+ */
+function jlife_studies_localize_supplemental( $supplemental, $locale ) {
+	$lang = strtolower( substr( (string) $locale, 0, 2 ) );
+	if ( ! is_array( $supplemental ) || 'en' === $lang ) {
+		return $supplemental;
+	}
+	if ( isset( $supplemental['plan'] ) ) {
+		$supplemental['plan'] = jlife_studies_localize_plan( $supplemental['plan'], $locale );
+	}
+	if ( isset( $supplemental['day']['harmony_sections'] ) && is_array( $supplemental['day']['harmony_sections'] ) ) {
+		foreach ( $supplemental['day']['harmony_sections'] as $i => $section ) {
+			$title = is_array( $section ) ? ( $section['i18n'][ $lang ]['title'] ?? '' ) : '';
+			if ( is_string( $title ) && '' !== trim( $title ) ) {
+				$supplemental['day']['harmony_sections'][ $i ]['title'] = $title;
+			}
+		}
+	}
+	return $supplemental;
+}
+
+/**
  * A reading-day post as data, in a language (for the Today page, the public
  * day page and other surfaces).
  *
@@ -244,8 +294,8 @@ function jlife_studies_reading_day_for_post( $post, $locale ) {
 		'post_id'      => $post->ID,
 		'url'          => get_permalink( $post ),
 		'day'          => jlife_studies_localize_day( jlife_studies_get_json_meta( $post->ID, '_jlife_reading_day' ), $locale ),
-		'plan'         => jlife_studies_get_json_meta( $post->ID, '_jlife_plan' ),
-		'supplemental' => jlife_studies_get_json_meta( $post->ID, '_jlife_supplemental' ),
+		'plan'         => jlife_studies_localize_plan( jlife_studies_get_json_meta( $post->ID, '_jlife_plan' ), $locale ),
+		'supplemental' => jlife_studies_localize_supplemental( jlife_studies_get_json_meta( $post->ID, '_jlife_supplemental' ), $locale ),
 	);
 }
 

@@ -218,4 +218,48 @@ class Test_Reading_Plans extends WP_UnitTestCase {
 		$this->assertSame( get_permalink( $post ), $vi['url'] );
 		$this->assertSame( $vi['plan'], $en['plan'] );
 	}
+
+	/**
+	 * Harmony section titles and the source line follow the language; a
+	 * missing translation falls back to English (#119).
+	 */
+	public function test_supplemental_and_plan_are_localized_for_vietnamese() {
+		$supplemental = array(
+			'plan' => array(
+				'plan_id'            => 'rpl-harmony-parallel-2026',
+				'source_attribution' => 'English supplemental line',
+				'i18n'               => array( 'vi' => array( 'source_attribution' => 'Dòng nguồn tiếng Việt' ) ),
+			),
+			'day'  => array(
+				'harmony_sections' => array(
+					array(
+						'number' => '1',
+						'title'  => 'English one',
+						'url'    => 'https://harmony-bible.com/sections/1/',
+						'i18n'   => array( 'vi' => array( 'title' => 'Tiêu đề một' ) ),
+					),
+					array(
+						'number' => '2',
+						'title'  => 'English two',
+						'url'    => 'https://harmony-bible.com/sections/2/',
+					),
+				),
+			),
+		);
+
+		$vi = jlife_studies_localize_supplemental( $supplemental, 'vi' );
+		$this->assertSame( array( 'Tiêu đề một', 'English two' ), array_column( $vi['day']['harmony_sections'], 'title' ), 'fallback to English per section' );
+		$this->assertSame( 'https://harmony-bible.com/sections/1/', $vi['day']['harmony_sections'][0]['url'] );
+		$this->assertSame( 'Dòng nguồn tiếng Việt', $vi['plan']['source_attribution'] );
+		$this->assertSame( $supplemental, jlife_studies_localize_supplemental( $supplemental, 'en_US' ), 'English is unchanged' );
+		$this->assertSame( $supplemental, jlife_studies_localize_supplemental( $supplemental, 'fr_FR' ), 'no entry: English' );
+		$this->assertNull( jlife_studies_localize_supplemental( null, 'vi' ) );
+
+		$plan = array(
+			'source_attribution' => 'English line',
+			'i18n'               => array( 'vi' => array( 'source_attribution' => '  ' ) ),
+		);
+		$this->assertSame( 'English line', jlife_studies_localize_plan( $plan, 'vi' )['source_attribution'], 'a blank translation is ignored' );
+		$this->assertNull( jlife_studies_localize_plan( null, 'vi' ) );
+	}
 }

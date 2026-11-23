@@ -73,6 +73,13 @@ for (const { file, text, doc: fresh } of built) {
   ok = check(rel, 'plan_id matches rpl-<slug>', PLAN_ID.test(doc.plan_id), doc.plan_id) && ok;
   ok = check(rel, 'role is primary|supplemental', ['primary', 'supplemental'].includes(doc.role), doc.role) && ok;
   ok = check(rel, 'source_attribution present', typeof doc.source_attribution === 'string' && doc.source_attribution.length > 20) && ok;
+  // Translated source line (#119): every language in plans.json has a real one, and the required names survive.
+  for (const lang of Object.keys((planEntries.get(doc.plan_id) || {}).i18n || {})) {
+    const line = doc.i18n && doc.i18n[lang] && doc.i18n[lang].source_attribution;
+    ok = check(rel, `${lang} source_attribution present`, typeof line === 'string' && line.trim().length > 20) && ok;
+    const names = doc.role === 'primary' ? ['PlusNothing', 'Robertson (1922)'] : ['Robertson'];
+    ok = check(rel, `${lang} source_attribution keeps the required source names`, typeof line === 'string' && names.every((n) => line.includes(n)), String(line)) && ok;
+  }
   ok = check(rel, 'rights_note present', typeof doc.rights_note === 'string' && /reference-only/i.test(doc.rights_note)) && ok;
   ok = check(rel, `exactly ${doc.day_count} days`, Array.isArray(doc.days) && doc.days.length === doc.day_count, String(doc.days.length)) && ok;
   ok = check(rel, 'end_date = start_date + day_count - 1', addDays(doc.start_date, doc.day_count - 1) === doc.end_date) && ok;
@@ -107,7 +114,7 @@ for (const { file, text, doc: fresh } of built) {
     ok = check(where, 'date is the campaign date for this day', DATE.test(d.date) && d.date === addDays(doc.start_date, i), d.date) && ok;
     ok = check(where, 'title present', typeof d.title === 'string' && d.title.length > 0) && ok;
     // Translations (#119): a title with as many ' | ' parts as the English one, and one display per passage.
-    for (const lang of Object.keys((planEntries.get(doc.plan_id) || {}).i18n || {})) {
+    for (const lang of doc.role === 'supplemental' ? [] : Object.keys((planEntries.get(doc.plan_id) || {}).i18n || {})) {
       const tr = d.i18n && d.i18n[lang];
       const parts = (t) => String(t).split('|').map((x) => x.trim()).filter(Boolean).length;
       ok = check(where, `${lang} title present with the same number of parts`, Boolean(tr) && typeof tr.title === 'string' && parts(tr.title) === parts(d.title), tr && tr.title) && ok;
@@ -123,6 +130,12 @@ for (const { file, text, doc: fresh } of built) {
     }
     ok = check(where, 'Harmony event IDs exist', d.gospel_event_ids.every((id) => eventIds.has(id)), d.gospel_event_ids.join(',')) && ok;
     if (doc.role === 'supplemental') {
+      // Translated Harmony section titles (#119): one non-empty title per section, per language.
+      for (const lang of Object.keys((planEntries.get(doc.plan_id) || {}).i18n || {})) {
+        const secs = Array.isArray(d.harmony_sections) ? d.harmony_sections : [];
+        ok = check(where, `${lang} title for every Harmony section`, secs.length > 0 && secs.every((x) => x.i18n && x.i18n[lang]
+          && typeof x.i18n[lang].title === 'string' && x.i18n[lang].title.trim() !== '' && x.i18n[lang].title === x.i18n[lang].title.trim())) && ok;
+      }
       const hs = d.harmony_sections;
       const overrides = (planEntries.get(doc.plan_id) || {}).harmony_sections_overrides || {};
       const expected = [...new Set([...new Set(d.robertson_sections.map((l) => l.replace(/[a-z]+$/, '')))].flatMap((n) => harmonyTargets(n, overrides)))];

@@ -600,7 +600,7 @@ function jlife_challenges_render_no_day( $view ) {
 			return '<h1>' . esc_html__( 'The Marathon is complete', 'jlife-challenges' ) . '</h1><p>'
 				. esc_html__( 'Thank you for reading with us. Your SOAP entries stay here for you.', 'jlife-challenges' ) . '</p>';
 		case 'unavailable':
-			return '<h1>' . esc_html__( 'Not available', 'jlife-challenges' ) . '</h1><p>' . esc_html__( 'That day has not opened yet.', 'jlife-challenges' ) . '</p>';
+			return '<h1>' . esc_html__( "This day hasn't opened yet", 'jlife-challenges' ) . '</h1><p>' . esc_html__( 'Please come back when it opens.', 'jlife-challenges' ) . '</p>';
 	}
 	return null;
 }
