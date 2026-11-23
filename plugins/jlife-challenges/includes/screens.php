@@ -94,7 +94,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 
 	$scripts  = '';
 	$versions = array(
-		'soap'     => 7,
+		'soap'     => 8,
 		'share'    => 4,
 		'reminder' => 2,
 		'bible'    => 1,

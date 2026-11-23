@@ -474,7 +474,7 @@ function jlife_challenges_devotional_excluded_text( $excluded, $context ) {
 		}
 		$questions = jlife_challenges_devotional_questions( $post );
 		if ( $questions ) {
-			$excluded = array_merge( $excluded, $questions['lines'] );
+			$excluded = array_merge( $excluded, jlife_challenges_extract_questions( $questions['lines'] ) );
 		}
 	}
 	return $excluded;
