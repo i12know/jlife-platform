@@ -445,7 +445,7 @@ class Test_Language extends Jlife_Challenges_TestCase {
 		$page = jlife_challenges_page_html( 'My Marathon', $html, 'marathon', array( 'language', 'reminder', 'bible' ) );
 		$this->assertStringContainsString( 'assets/language.js?v=1', $page );
 		$this->assertStringContainsString( 'assets/reminder.js?v=2', $page );
-		$this->assertStringContainsString( 'assets/screens.css?v=26', $page );
+		$this->assertStringContainsString( 'assets/screens.css?v=27', $page );
 		$this->assertStringNotContainsString( 'language.js', jlife_challenges_page_html( 'Today', '', 'today', array( 'soap', 'reminder' ) ) );
 		$js = (string) file_get_contents( dirname( __DIR__ ) . '/assets/language.js' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
 		$this->assertStringContainsString( 'window.location.replace(form.dataset.done)', $js, 'reloads in the new language' );

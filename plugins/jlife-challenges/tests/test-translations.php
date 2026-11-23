@@ -185,6 +185,50 @@ class Test_Translations extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * #235: Vietnamese readers get an optional Google Translate link after each
+	 * Harmony link, and one notice per box; English readers see neither.
+	 */
+	public function test_harmony_translate_links_for_vietnamese_only() {
+		$reading = array(
+			'supplemental' => array(
+				'day' => array(
+					'harmony_sections' => array(
+						array(
+							'number' => '20',
+							'title'  => 'The Time',
+							'url'    => 'https://harmony-bible.com/sections/20/',
+						),
+						array(
+							'number' => '21',
+							'title'  => 'Override',
+							'url'    => 'https://harmony-bible.com/sections/21b/',
+						),
+					),
+				),
+			),
+		);
+		$vi      = jlife_challenges_render_optional_readings( $reading );
+		$this->assertSame( 1, substr_count( $vi, 'Bản dịch tự động bằng Google Translate, có thể không chính xác, kể cả phần Kinh Thánh.' ) );
+		$this->assertSame( 2, substr_count( $vi, '(Xem bản dịch tự động)' ) );
+		foreach ( array( 'https://harmony-bible.com/sections/20/', 'https://harmony-bible.com/sections/21b/' ) as $url ) {
+			$this->assertStringContainsString( '<a href="' . $url . '" target="_blank" rel="noopener">', $vi, 'the original link is unchanged' );
+			$this->assertStringContainsString( 'href="https://translate.google.com/translate?sl=en&#038;tl=vi&#038;u=' . rawurlencode( $url ) . '" target="_blank" rel="noopener noreferrer"', $vi );
+		}
+		preg_match_all( '#translate\?sl=en&\#038;tl=vi&\#038;u=([^"]+)"#', $vi, $m );
+		foreach ( $m[1] as $encoded ) {
+			$this->assertStringStartsWith( 'https://harmony-bible.com/', rawurldecode( $encoded ) );
+		}
+		$this->assertStringContainsString( 'aria-label="Xem bản dịch tiếng Việt tự động của Phần 20 của Harmony: The Time"', $vi );
+
+		remove_filter( 'determine_locale', $this->force, 99 );
+		unload_textdomain( 'jlife-challenges', true );
+		$en = jlife_challenges_render_optional_readings( $reading );
+		$this->assertStringNotContainsString( 'translate.google.com', $en );
+		$this->assertStringNotContainsString( 'Automatic Google translation', $en );
+		$this->assertStringNotContainsString( 'jl-harmony-note', $en );
+	}
+
+	/**
 	 * English keeps the site's own date format.
 	 */
 	public function test_english_dates_keep_the_site_format() {

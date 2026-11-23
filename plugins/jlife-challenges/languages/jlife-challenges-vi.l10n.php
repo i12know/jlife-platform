@@ -160,6 +160,9 @@ return array(
 		'Optional. Reading these does not change your points.' => 'Không bắt buộc. Đọc các đoạn này không thay đổi điểm của bạn.',
 		'Harmony\'s section %1$s: %2$s' => 'Phần %1$s của Harmony: %2$s',
 		'Harmony Bible sections' => 'Các phần trong Harmony Bible',
+		'(Automatic Vietnamese translation)' => '(Xem bản dịch tự động)', // #235. DRAFT.
+		'Automatic Vietnamese translation of %s' => 'Xem bản dịch tiếng Việt tự động của %s',
+		'Automatic Google translation; it may be inaccurate, including the Scripture on that page.' => 'Bản dịch tự động bằng Google Translate, có thể không chính xác, kể cả phần Kinh Thánh.',
 		'Open in Bible Gateway' => 'Mở trên Bible Gateway',
 		'Open today\'s passages' => 'Mở các đoạn Kinh Thánh hôm nay',
 		'%1$s (%2$s)' => '%1$s (%2$s)',
