@@ -825,14 +825,14 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 	 * The stylesheet version is 25 everywhere it is linked (#188, #211), and the stylesheet
 	 * has what the public page needs (and dark tokens, which the page reuses).
 	 */
-	public function test_the_stylesheet_is_version_25_everywhere() {
+	public function test_the_stylesheet_is_version_28_everywhere() {
 		$files = array_merge( glob( dirname( __DIR__ ) . '/includes/*.php' ), array( dirname( __DIR__ ) . '/jlife-challenges.php' ) );
 		$seen  = 0;
 		foreach ( $files as $file ) {
 			$src = (string) file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading the plugin's own source.
 			preg_match_all( '/screens\.css\?v=(\d+)/', $src, $m );
 			foreach ( $m[1] as $version ) {
-				$this->assertSame( '27', $version, basename( $file ) );
+				$this->assertSame( '28', $version, basename( $file ) );
 				++$seen;
 			}
 		}
