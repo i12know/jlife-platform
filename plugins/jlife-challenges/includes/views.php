@@ -1,3 +1,9 @@
+	$index = null === $day_key ? $today : jlife_challenges_day_index( $campaign, $day_key );
+	// A day that has not opened is readable only by an active starter of an active group (#209).
+	$ahead = $index >= 1 && ! jlife_challenges_day_is_open( $campaign, $index );
+	if ( $index < 1 || ( $ahead && ! jlife_challenges_can_read_ahead( (int) $user_id, $campaign ) ) ) {
+		return array_merge( $base, array( 'state' => 'unavailable' ) );
+	}
 <?php
 /**
  * View models for the participant screens (M6, #61). Pure data, no output,
@@ -57,6 +63,7 @@ function jlife_challenges_day_view( $user_id, $day_key = null ) {
 		'day_count' => jlife_challenges_day_count( $campaign ),
 		'points'    => (int) jlife_challenges_progress( $user_id, $user_id, (int) $campaign['id'] )['points'],
 		'closed'    => ! jlife_challenges_campaign_accepts_writes( $campaign ),
+		'can_ahead' => jlife_challenges_can_read_ahead( (int) $user_id, $campaign ),
 	);
 	if ( null === $day_key && 0 === $today ) {
 		$local = jlife_challenges_local_date( $campaign, jlife_challenges_now() );
@@ -69,28 +76,33 @@ function jlife_challenges_day_view( $user_id, $day_key = null ) {
 		);
 	}
 	$index = null === $day_key ? $today : jlife_challenges_day_index( $campaign, $day_key );
-	if ( $index < 1 || ! jlife_challenges_day_is_open( $campaign, $index ) ) {
+	// A day that has not opened is readable only by an active starter of an active group (#209).
+	$ahead = $index >= 1 && ! jlife_challenges_day_is_open( $campaign, $index );
+	if ( $index < 1 || ( $ahead && ! jlife_challenges_can_read_ahead( (int) $user_id, $campaign ) ) ) {
 		return array_merge( $base, array( 'state' => 'unavailable' ) );
 	}
-	$key     = jlife_challenges_day_key( $index );
+	$key     =jlife_challenges_day_key( $index );
 	$reading = function_exists( 'jlife_studies_get_reading_day' ) ? jlife_studies_get_reading_day( (string) $campaign['plan_id'], $key ) : null;
 	$entry   = jlife_challenges_find_entry( $user_id, (int) $campaign['id'], $key );
-	$groups  = jlife_challenges_share_groups( $user_id, (int) $campaign['id'], $entry ? (int) $entry['id'] : 0 );
+	$groups  = jlife_challenges_share_groups( $user_id, (int) $campaign['id'], $entry ? (int) $entry['id'] : 0, $ahead );
 	$ledger  = jlife_challenges_progress( $user_id, $user_id, (int) $campaign['id'] )['days'][ $key ] ?? '';
 	return array_merge(
 		$base,
 		array(
-			'state'        => 'active',
-			'index'        => $index,
-			'day_key'      => $key,
-			'date'         => jlife_challenges_day_date( $campaign, $index ),
-			'is_today'     => $index === $today,
-			'on_time'      => jlife_challenges_is_on_time( $campaign, $index ),
-			'reading'      => $reading,
-			'languages'    => $reading ? jlife_challenges_language_order( $user_id, $reading['plan']['links_config'] ?? array() ) : array(),
-			'entry'        => $entry,
-			'share_groups' => $groups,
-			'status'       => $entry ? ( 'submitted' === $entry['status'] ? ( $ledger ? $ledger : 'submitted' ) : 'draft' ) : 'not_started',
+			'state'           => 'active',
+			'index'           => $index,
+			'day_key'         => $key,
+			'date'            => jlife_challenges_day_date( $campaign, $index ),
+			'is_today'        => $index === $today,
+			'on_time'         => $ahead || jlife_challenges_is_on_time( $campaign, $index ),
+			'ahead'           => $ahead,
+			'release_label'   => $ahead ? jlife_challenges_release_label( $campaign, $index ) : '',
+			'leader_thoughts' => $ahead ? array() : jlife_challenges_leader_thoughts( $user_id, $campaign, $key ),
+			'reading'         => $reading,
+			'languages'       => $reading ? jlife_challenges_language_order( $user_id, $reading['plan']['links_config'] ?? array() ) : array(),
+			'entry'           => $entry,
+			'share_groups'    => $groups,
+			'status'          => $entry ? ( 'submitted' === $entry['status'] ? ( $ledger ? $ledger : 'submitted' ) : 'draft' ) : 'not_started',
 		)
 	);
 }
@@ -120,7 +132,7 @@ function jlife_challenges_adjacent_days( $view ) {
 		'prev' => $index - 1,
 		'next' => $index + 1,
 	) as $side => $other ) {
-		$result[ $side ] = ( $other >= 1 && $other <= jlife_challenges_day_count( $campaign ) && jlife_challenges_day_is_open( $campaign, $other ) ) ? $other : 0;
+		$result[ $side ] = ( $other >= 1 && $other <= jlife_challenges_day_count( $campaign ) && ( ! empty( $view['can_ahead'] ) || jlife_challenges_day_is_open( $campaign, $other ) ) ) ? $other : 0;
 	}
 	return $result;
 }
@@ -146,6 +158,7 @@ function jlife_challenges_marathon_view( $user_id ) {
 	$started  = jlife_challenges_local_date( $c, jlife_challenges_now() ) >= $c['start_date'];
 	$count    = jlife_challenges_day_count( $c );
 	$last     = $today ? $today : ( $started ? $count : 0 );
+	$ahead    = jlife_challenges_can_read_ahead( (int) $user_id, $c ); // #209: an active starter may open days that have not opened.
 	$cells    = array();
 	for ( $i = 1; $i <= $count; $i++ ) {
 		$key    = jlife_challenges_day_key( $i );
@@ -154,8 +167,8 @@ function jlife_challenges_marathon_view( $user_id ) {
 			$state = 'earned';
 		} elseif ( $ledger ) {
 			$state = 'late';
-		} elseif ( $i > $last ) {
-			$state = 'future';
+			} elseif ( $i > $last ) {
+			$state = $ahead && jlife_challenges_find_entry( $user_id, (int) $c['id'], $key ) ? 'draft' : 'future';
 		} elseif ( $i === $today ) {
 			$state = 'today';
 		} else {
@@ -171,6 +184,7 @@ function jlife_challenges_marathon_view( $user_id ) {
 			'day_key' => $key,
 			'date'    => jlife_challenges_day_date( $c, $i ),
 			'state'   => $state,
+			'ahead'   => $ahead && $i > $last,
 		);
 	}
 	return array(

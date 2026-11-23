@@ -64,6 +64,17 @@ function jlife_challenges_share( $user_id, $entry_id, $group_id ) {
 		return new WP_Error( 'jlife_share_empty', __( 'There is nothing to share yet.', 'jlife-challenges' ) );
 	}
 	$group_id = (int) $group_id;
+	$campaign = jlife_challenges_get_campaign( (int) $entry['campaign_id'] );
+	$index    = $campaign ? jlife_challenges_day_index( $campaign, (string) $entry['day_key'] ) : 0;
+	$ahead    = $index >= 1 && ! jlife_challenges_day_is_open( $campaign, $index );
+	if ( $ahead && ! jlife_challenges_can_schedule_share( $user_id, $campaign, $group_id ) ) {
+		// Before the day opens only the person who started THIS group may schedule for it (#209); membership alone is not enough.
+		return new WP_Error( 'jlife_schedule_starter_only', __( 'Only the person who started this group can schedule a share for it before the reading day.', 'jlife-challenges' ) );
+	}
+	if ( ! $ahead ) {
+		// A share scheduled earlier for a day that has now opened is released first, so this update is the one normal post.
+		jlife_challenges_release_due_shares( $group_id );
+	}
 	$existing = jlife_challenges_current_share( $user_id, (int) $entry_id, $group_id );
 	if ( $existing && 'hidden' === $existing['status'] ) {
 		return new WP_Error( 'jlife_share_hidden', __( 'An organizer hid your post for this day, so it was not posted again.', 'jlife-challenges' ) );
@@ -75,15 +86,17 @@ function jlife_challenges_share( $user_id, $entry_id, $group_id ) {
 	// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table; name from $wpdb->prefix; UNIQUE (entry_id, group_id) makes this an upsert.
 	$wpdb->query(
 		$wpdb->prepare(
-			"INSERT INTO {$t} (entry_id, user_id, group_id, campaign_id, day_key, body, status, hidden_reason, created, updated)
-			VALUES (%d, %d, %d, %d, %s, %s, 'shared', '', %s, %s)
-			ON DUPLICATE KEY UPDATE body = IF(status = 'hidden', body, VALUES(body)), status = IF(status = 'hidden', 'hidden', 'shared'), updated = VALUES(updated)",
+			"INSERT INTO {$t} (entry_id, user_id, group_id, campaign_id, day_key, body, status, advance, hidden_reason, created, updated)
+			VALUES (%d, %d, %d, %d, %s, %s, %s, %d, '', %s, %s)
+			ON DUPLICATE KEY UPDATE body = IF(status = 'hidden', body, VALUES(body)), advance = IF(status = 'hidden', advance, IF(VALUES(advance) = 1, 1, IF(status IN ('scheduled', 'shared'), advance, 0))), status = IF(status = 'hidden', 'hidden', VALUES(status)), updated = VALUES(updated)",
 			(int) $entry_id,
 			(int) $user_id,
 			$group_id,
 			(int) $entry['campaign_id'],
 			(string) $entry['day_key'],
 			(string) $entry['body'],
+			$ahead ? 'scheduled' : 'shared',
+			$ahead ? 1 : 0,
 			$now,
 			$now
 		)
@@ -220,7 +233,7 @@ function jlife_challenges_unshare( $user_id, $share_id ) {
 		// The snapshot may still be visible: never audit or report it as removed.
 		return new WP_Error( 'jlife_unshare_failed', __( 'Your post could not be removed. Please try again.', 'jlife-challenges' ) );
 	}
-	jlife_challenges_audit( $user_id, 'share_removed', 'group_share', (int) $share_id, (int) $share['campaign_id'], array( 'group_id' => (int) $share['group_id'] ) );
+	jlife_challenges_audit( $user_id, 'scheduled' === $share['status'] ? 'share_withdrawn' : 'share_removed', 'group_share', (int) $share_id, (int) $share['campaign_id'], array( 'group_id' => (int) $share['group_id'] ) );
 	return true;
 }
 
@@ -288,14 +301,16 @@ function jlife_challenges_feed_name( $user_id ) {
  * @param int $viewer_user_id Viewer.
  * @param int $group_id       Group.
  * @param int $limit          Max posts.
- * @return array|WP_Error rows of { id, author, day_key, body, updated, mine }
+ * @return array|WP_Error rows of { id, author, day_key, body, updated, mine, leader }
  */
 function jlife_challenges_group_feed( $viewer_user_id, $group_id, $limit = 50 ) {
 	if ( ! jlife_challenges_can_read_feed( $viewer_user_id, (int) $group_id ) ) {
 		return jlife_challenges_denied();
 	}
+	// A share whose day has opened is released on this read (no browser session or cron needed); one still scheduled is never selected below.
+	jlife_challenges_release_due_shares( (int) $group_id );
 	global $wpdb;
-	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND status = 'shared' ORDER BY day_key DESC, updated DESC LIMIT %d", (int) $group_id, max( 1, (int) $limit ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND status = 'shared' ORDER BY day_key DESC, advance DESC, updated DESC LIMIT %d", (int) $group_id, max( 1, (int) $limit ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	$out  = array();
 	foreach ( $rows as $r ) {
 		$out[] = array(
@@ -305,6 +320,7 @@ function jlife_challenges_group_feed( $viewer_user_id, $group_id, $limit = 50 ) 
 			'body'    => (string) $r['body'],
 			'updated' => $r['updated'],
 			'mine'    => (int) $r['user_id'] === (int) $viewer_user_id,
+			'leader'  => 1 === (int) $r['advance'],
 		);
 	}
 	return $out;
@@ -364,4 +380,116 @@ function jlife_challenges_left_group_shares( $user_id, $campaign_id ) {
 		);
 	}
 	return $out;
+}
+
+/**
+ * May this person schedule a share for this group before its day opens (#209)?
+ * They must be the active starter of THAT group, in a campaign that is running or
+ * upcoming. Being a member of the group, or a starter of a different group, is not
+ * enough, so a post is never copied into a group the person only belongs to.
+ *
+ * @param int   $user_id  Author.
+ * @param array $campaign Campaign row.
+ * @param int   $group_id Group.
+ * @return bool
+ */
+function jlife_challenges_can_schedule_share( $user_id, $campaign, $group_id ) {
+	$group = jlife_challenges_get_group( $group_id );
+	return $group
+		&& (int) $group['campaign_id'] === (int) $campaign['id']
+		&& jlife_challenges_can_read_ahead( $user_id, $campaign )
+		&& jlife_challenges_is_group_starter( $user_id, $group_id );
+}
+
+/**
+ * Withdraw one scheduled share: the text is cleared and the row is `removed`, so
+ * nothing can bring it back except the author scheduling again on purpose.
+ *
+ * @param int $share_id Share.
+ * @return bool Whether a row changed.
+ */
+function jlife_challenges_withdraw_share_row( $share_id ) {
+	global $wpdb;
+	$changed = $wpdb->query( $wpdb->prepare( 'UPDATE ' . jlife_challenges_table( 'group_shares' ) . " SET status = 'removed', body = NULL, updated = %s WHERE id = %d AND status = 'scheduled'", current_time( 'mysql', true ), (int) $share_id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	return (int) $changed > 0;
+}
+
+/**
+ * Release the scheduled shares whose reading day has opened, and withdraw any
+ * that are no longer allowed (#209). This is the single release function: it
+ * runs before every feed read, so release needs no timer and no browser session,
+ * and a deploy cannot release early because the day's opening is computed from
+ * the campaign calendar (jlife_challenges_day_is_open()), never stored.
+ *
+ * A share is released only if its day is open in ITS campaign AND its author is
+ * still the active starter of that active group in a campaign that still takes
+ * writes. If the author is no longer eligible the share is withdrawn instead.
+ * Releasing never scores anything.
+ *
+ * @param int $group_id Only this group (0 = every group).
+ * @return int Number of shares released.
+ */
+function jlife_challenges_release_due_shares( $group_id = 0 ) {
+	global $wpdb;
+	$t     = jlife_challenges_table( 'group_shares' );
+	$where = "status = 'scheduled'" . ( (int) $group_id > 0 ? $wpdb->prepare( ' AND group_id = %d', (int) $group_id ) : '' );
+	$rows  = (array) $wpdb->get_results( "SELECT id, user_id, group_id, campaign_id, day_key FROM {$t} WHERE {$where} ORDER BY id LIMIT 500", ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix; the group ID is prepared.
+	$cache = array();
+	$count = 0;
+	foreach ( $rows as $r ) {
+		$cid = (int) $r['campaign_id'];
+		if ( ! array_key_exists( $cid, $cache ) ) {
+			$cache[ $cid ] = jlife_challenges_get_campaign( $cid );
+		}
+		$campaign = $cache[ $cid ];
+		$index    = $campaign ? jlife_challenges_day_index( $campaign, (string) $r['day_key'] ) : 0;
+		$eligible = $campaign && $index >= 1 && jlife_challenges_campaign_accepts_writes( $campaign ) && 'active' === (string) $campaign['status'] && jlife_challenges_is_group_starter( (int) $r['user_id'], (int) $r['group_id'] );
+		if ( ! $eligible ) {
+			jlife_challenges_withdraw_share_row( (int) $r['id'] );
+			continue;
+		}
+		if ( jlife_challenges_day_is_open( $campaign, $index ) ) {
+			$count += (int) $wpdb->query( $wpdb->prepare( "UPDATE {$t} SET status = 'shared' WHERE id = %d AND status = 'scheduled'", (int) $r['id'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from $wpdb->prefix.
+		}
+	}
+	return $count;
+}
+
+/**
+ * Withdraw every share that has not been released yet for a person, a group or a
+ * campaign (any of them may be 0 = all). Call it right AFTER a membership,
+ * group or campaign change, and call jlife_challenges_release_due_shares() right
+ * BEFORE it, so a share whose day had already opened is released while its author
+ * was still eligible and only the genuinely unreleased ones are withdrawn. Audited
+ * with IDs and a count only, never text.
+ *
+ * @param int $user_id     Author (0 = any).
+ * @param int $group_id    Group (0 = any).
+ * @param int $campaign_id Campaign (0 = any).
+ * @return int Number withdrawn.
+ */
+function jlife_challenges_withdraw_unreleased_shares( $user_id = 0, $group_id = 0, $campaign_id = 0 ) {
+	global $wpdb;
+	$t     = jlife_challenges_table( 'group_shares' );
+	$where = "status = 'scheduled'";
+	foreach ( array(
+		'user_id'     => (int) $user_id,
+		'group_id'    => (int) $group_id,
+		'campaign_id' => (int) $campaign_id,
+	) as $column => $value ) {
+		$where .= $value > 0 ? $wpdb->prepare( " AND {$column} = %d", $value ) : ''; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- the column is one of three fixed names; the value is prepared.
+	}
+	$ids   = array_map( 'intval', (array) $wpdb->get_col( "SELECT id FROM {$t} WHERE {$where}" ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix; values prepared above.
+	$count = 0;
+	foreach ( $ids as $id ) {
+		$count += jlife_challenges_withdraw_share_row( $id ) ? 1 : 0;
+	}
+	if ( $count > 0 ) {
+		$detail = array(
+			'group_id' => (int) $group_id,
+			'count'    => $count,
+		);
+		jlife_challenges_audit( (int) $user_id, 'share_withdrawn', 'group_share', 0, (int) $campaign_id, $detail );
+	}
+	return $count;
 }

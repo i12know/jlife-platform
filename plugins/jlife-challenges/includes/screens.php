@@ -117,7 +117,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 	$html = '<!doctype html><html lang="' . esc_attr( '' !== $lang ? $lang : str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=23' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=24' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
 		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -871,6 +871,9 @@ function jlife_challenges_share_failed_message( $code, $group_name ) {
 		case 'jlife_guardian_consent_required':
 			/* translators: %s: group name. */
 			return sprintf( __( 'It was not shared with %s: sharing with a group starts once a parent or guardian has agreed. Your entry is saved.', 'jlife-challenges' ), $group_name );
+		case 'jlife_schedule_starter_only':
+			/* translators: %s: group name. */
+			return sprintf( __( 'It was not scheduled for %s: only the person who started that group can schedule before the reading day. Your entry is saved.', 'jlife-challenges' ), $group_name );
 		case 'jlife_share_hidden':
 			/* translators: %s: group name. */
 			return sprintf( __( 'It was not shared with %s: an organizer hid your post for this day, so it was not posted again. Your entry is saved.', 'jlife-challenges' ), $group_name );
@@ -906,6 +909,7 @@ function jlife_challenges_render_soap_feedback( $view, $state ) {
 				'campaign' => $view['campaign'],
 				'day_key'  => $view['day_key'],
 				'index'    => $view['index'],
+				'ahead'    => ! empty( $view['ahead'] ),
 			)
 		)['reasons'];
 		if ( $reasons ) {
@@ -929,7 +933,7 @@ function jlife_challenges_render_soap_feedback( $view, $state ) {
 	}
 	if ( $ok ) {
 		/* translators: %l: a list of group names, e.g. "Group One and Group Two". */
-		$out .= '<p class="jl-ok" role="status">' . esc_html( wp_sprintf( __( 'Shared with %l.', 'jlife-challenges' ), $ok ) ) . ' <a href="' . esc_url( home_url( '/group/' ) ) . '">' . esc_html__( 'See My Group', 'jlife-challenges' ) . '</a></p>';
+		$out .= '<p class="jl-ok" role="status">' . esc_html( wp_sprintf( ! empty( $view['ahead'] ) ? __( 'Scheduled for %l. Nothing shows until the reading day opens.', 'jlife-challenges' ) : __( 'Shared with %l.', 'jlife-challenges' ), $ok ) ) . ' <a href="' . esc_url( home_url( '/group/' ) ) . '">' . esc_html__( 'See My Group', 'jlife-challenges' ) . '</a></p>';
 	}
 	foreach ( (array) $flags['share_failed'] as $group_id => $code ) {
 		if ( isset( $names[ (int) $group_id ] ) ) {
@@ -996,6 +1000,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$groups    = (array) ( $view['share_groups'] ?? array() );
 	$out       = jlife_challenges_render_reader( $view )
 		. jlife_challenges_render_devotional( $view )
+		. jlife_challenges_render_leader_thoughts( $view )
 		. '<form method="post" class="jl-soap" data-status="' . esc_attr( $submitted ? 'submitted' : 'draft' ) . '"'
 		. ' data-rest="' . esc_url( rest_url( 'jlife/v1/soap/draft' ) ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'wp_rest' ) ) . '"'
 		. ' data-template="' . esc_attr( jlife_challenges_soap_template() ) . '" data-headings="' . esc_attr( (string) wp_json_encode( array_values( $headings ) ) ) . '"'
@@ -1038,7 +1043,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 			. $box;
 	}
 	$out .= '<p class="jl-saved" aria-live="polite"></p>'
-		. jlife_challenges_render_share_boxes( $groups, (array) $state['share_groups'] );
+		. jlife_challenges_render_share_boxes( $groups, (array) $state['share_groups'], ! empty( $view['ahead'] ) ? (string) $view['release_label'] : '' );
 	return $out
 		. '<button type="submit" name="jl_action" value="submit" class="jl-button jl-primary">' . esc_html( $submitted ? __( 'Save changes', 'jlife-challenges' ) : ( $guided || $free ? __( 'Submit', 'jlife-challenges' ) : __( 'Submit SOAP', 'jlife-challenges' ) ) ) . '</button>'
 		. ( $submitted ? '' : '<button type="submit" name="jl_action" value="draft" class="jl-button" formnovalidate>' . esc_html__( 'Save draft', 'jlife-challenges' ) . '</button>' )
@@ -1050,21 +1055,30 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
  * labelled with the group's name, unticked unless the person ticked it on the
  * last try. No "share with all". A solo reader (no groups) gets nothing at all.
  *
- * @param array[] $groups Rows of { id, name, status } (see jlife_challenges_share_groups()).
- * @param int[]   $ticked Group IDs to show ticked.
+ * For a day that has not opened (#209) the boxes are the groups the person
+ * starts, under the legend "Share with this group on the reading day": a
+ * separate, explicit choice that is never ticked for them.
+ *
+ * @param array[] $groups  Rows of { id, name, status } (see jlife_challenges_share_groups()).
+ * @param int[]   $ticked  Group IDs to show ticked.
+ * @param string  $release When the day opens ('' for a day that has opened).
  * @return string
  */
-function jlife_challenges_render_share_boxes( $groups, $ticked ) {
+function jlife_challenges_render_share_boxes( $groups, $ticked, $release = '' ) {
 	if ( ! $groups ) {
 		return '';
 	}
 	$ticked    = array_map( 'intval', $ticked );
 	$any_fresh = false;
-	$out       = '<fieldset class="jl-share-groups"><legend>' . esc_html__( 'Share this with', 'jlife-challenges' ) . '</legend>';
+	$legend    = '' !== $release ? __( 'Share with this group on the reading day', 'jlife-challenges' ) : __( 'Share this with', 'jlife-challenges' );
+	$out       = '<fieldset class="jl-share-groups"><legend>' . esc_html( $legend ) . '</legend>';
 	foreach ( $groups as $g ) {
-		$shared    = 'shared' === $g['status'];
+		$shared    = in_array( $g['status'], array( 'shared', 'scheduled' ), true );
 		$any_fresh = $any_fresh || ! $shared;
-		if ( $shared ) {
+		if ( 'scheduled' === $g['status'] ) {
+			/* translators: 1: group name, 2: date and time the day opens. */
+			$label = sprintf( __( 'Scheduled for %2$s in %1$s — tick and save to update', 'jlife-challenges' ), (string) $g['name'], $release );
+		} elseif ( $shared ) {
 			/* translators: %s: group name. */
 			$label = sprintf( __( 'Already shared with %s — tick and save to update', 'jlife-challenges' ), (string) $g['name'] );
 		} else {
@@ -1072,14 +1086,35 @@ function jlife_challenges_render_share_boxes( $groups, $ticked ) {
 		}
 		$out .= '<label class="jl-share-opt"><input type="checkbox" name="jl_share_groups[]" value="' . esc_attr( (string) (int) $g['id'] ) . '"' . checked( in_array( (int) $g['id'], $ticked, true ), true, false ) . '> <span>' . esc_html( $label ) . '</span></label>';
 		if ( $shared ) {
-			$out .= '<small class="jl-share-note"><a href="' . esc_url( home_url( '/share/' ) ) . '">' . esc_html__( 'Change or remove on the share page', 'jlife-challenges' ) . '</a></small>';
+			$out .= '<small class="jl-share-note"><a href="' . esc_url( '' !== $release ? add_query_arg( 'day', (string) ( $g['day_key'] ?? '' ), home_url( '/share/' ) ) : home_url( '/share/' ) ) . '">' . esc_html( '' !== $release ? __( 'Update or withdraw on the share page', 'jlife-challenges' ) : __( 'Change or remove on the share page', 'jlife-challenges' ) ) . '</a></small>';
 		}
 	}
-	$note = __( 'This shares the whole entry, including your Prayer, with each group you tick.', 'jlife-challenges' );
+	$note = '' !== $release
+		? __( 'Nothing shows in the group until the reading day opens, and only you can see it until then. This shares the whole entry, including your Prayer.', 'jlife-challenges' )
+		: __( 'This shares the whole entry, including your Prayer, with each group you tick.', 'jlife-challenges' );
 	if ( $any_fresh ) {
 		$note .= ' ' . __( "Groups you leave unticked don't see this entry.", 'jlife-challenges' );
 	}
 	return $out . '</fieldset><small class="jl-share-note">' . esc_html( $note ) . '</small>';
+}
+
+/**
+ * Under the day heading of a day that has not opened (#209): a clear marker with
+ * the release date and time in campaign time, and what a starter can and cannot
+ * do. Nothing for a day that has opened.
+ *
+ * @param array $view Day view.
+ * @return string Escaped HTML, or ''.
+ */
+function jlife_challenges_render_ahead_notice( $view ) {
+	if ( empty( $view['ahead'] ) ) {
+		return '';
+	}
+	/* translators: %s: date and time the day opens, in campaign time. */
+	$when = sprintf( __( 'This day opens for everyone on %s.', 'jlife-challenges' ), (string) $view['release_label'] );
+	return '<div class="jl-note jl-ahead-note" role="note"><p>' . esc_html__( 'Reading ahead', 'jlife-challenges' ) . '</p>'
+		. '<p class="jl-ahead-when">' . esc_html( $when ) . '</p>'
+		. '<p class="jl-ahead-help">' . esc_html__( 'Only group starters can see this day early. What you write stays private to you. Your group sees nothing unless you choose to share it below, and then only when the day opens.', 'jlife-challenges' ) . '</p></div>';
 }
 
 /**
@@ -1092,6 +1127,7 @@ function jlife_challenges_render_share_boxes( $groups, $ticked ) {
 function jlife_challenges_today_body( $view, $state = array() ) {
 	$state = jlife_challenges_page_state( $state );
 	$body  = jlife_challenges_render_day_nav( $view )
+		. jlife_challenges_render_ahead_notice( $view )
 		. jlife_challenges_render_soap_feedback( $view, $state )
 		. jlife_challenges_render_reading( $view );
 	// After a save, the message above already says where things stand.
@@ -1111,6 +1147,7 @@ function jlife_challenges_today_body( $view, $state = array() ) {
  */
 function jlife_challenges_soap_body( $view, $state = array() ) {
 	return jlife_challenges_render_day_nav( $view )
+		. jlife_challenges_render_ahead_notice( $view )
 		. jlife_challenges_render_soap_feedback( $view, $state )
 		. jlife_challenges_render_reading( $view )
 		. jlife_challenges_render_soap_panel( $view, $state );
@@ -1248,11 +1285,11 @@ function jlife_challenges_screen_marathon() {
 	$grid   = '';
 	foreach ( $view['cells'] as $c ) {
 		/* translators: 1: day number, 2: status. */
-		$title = sprintf( __( 'Day %1$d: %2$s', 'jlife-challenges' ), $c['index'], $labels[ $c['state'] ] );
+		$title = sprintf( __( 'Day %1$d: %2$s', 'jlife-challenges' ), $c['index'], ! empty( $c['ahead'] ) ? __( 'coming up — you can read ahead', 'jlife-challenges' ) : $labels[ $c['state'] ] );
 		$inner = esc_html( (string) $c['index'] );
-		$grid .= 'future' === $c['state']
+		$grid .= 'future' === $c['state'] && empty( $c['ahead'] )
 			? '<span class="jl-cell jl-' . esc_attr( $c['state'] ) . '" title="' . esc_attr( $title ) . '">' . $inner . '</span>'
-			: '<a class="jl-cell jl-' . esc_attr( $c['state'] ) . '" title="' . esc_attr( $title ) . '" aria-label="' . esc_attr( $title ) . '" href="' . esc_url( add_query_arg( 'day', $c['day_key'], home_url( '/soap/' ) ) ) . '">' . $inner . '</a>';
+			: '<a class="jl-cell jl-' . esc_attr( $c['state'] ) . ( ! empty( $c['ahead'] ) ? ' jl-ahead' : '' ) . '" title="' . esc_attr( $title ) . '" aria-label="' . esc_attr( $title ) . '" href="' . esc_url( add_query_arg( 'day', $c['day_key'], home_url( '/soap/' ) ) ) . '">' . $inner . '</a>';
 	}
 	$legend = '';
 	foreach ( array( 'earned', 'late', 'draft', 'today', 'open' ) as $s ) {

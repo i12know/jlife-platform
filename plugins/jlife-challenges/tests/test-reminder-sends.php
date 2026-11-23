@@ -828,7 +828,7 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 		$this->assertCount( 1, _get_cron_array() ? array_filter( _get_cron_array(), static fn( $e ) => isset( $e[ JLIFE_CHALLENGES_REMINDERS_HOOK ] ) ) : array(), 'one event' );
 		jlife_challenges_reminders_unschedule();
 		$this->assertFalse( wp_next_scheduled( JLIFE_CHALLENGES_REMINDERS_HOOK ) );
-		$this->assertSame( '6', JLIFE_CHALLENGES_DB_VERSION );
+		$this->assertSame( '7', JLIFE_CHALLENGES_DB_VERSION );
 		$this->assertTrue( has_action( JLIFE_CHALLENGES_REMINDERS_HOOK, 'jlife_challenges_reminders_cron' ) !== false );
 	}
 

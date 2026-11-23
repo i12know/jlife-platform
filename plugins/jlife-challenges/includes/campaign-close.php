@@ -75,6 +75,7 @@ function jlife_challenges_close_campaign( $actor, $campaign_id ) {
 	global $wpdb;
 	$changed = false;
 	if ( ! $plan['already_closed'] ) {
+		jlife_challenges_release_due_shares(); // #209: shares whose day had opened go out before the campaign closes.
 		// Only an active row flips, so two runs at once close it once.
 		$changed = (bool) $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.
 			jlife_challenges_table( 'campaigns' ),
@@ -93,6 +94,7 @@ function jlife_challenges_close_campaign( $actor, $campaign_id ) {
 	unset( $plan['already_closed'], $plan['reminders_to_cancel'] );
 	$counts = array_merge( $plan, array( 'reminders_cancelled' => $cancelled ) );
 	if ( $changed ) {
+		jlife_challenges_withdraw_unreleased_shares( 0, 0, (int) $campaign_id ); // #209: nothing still scheduled can come out in a closed campaign.
 		jlife_challenges_audit( $actor, 'campaign_closed', 'campaign', (int) $campaign_id, (int) $campaign_id, $counts );
 	}
 	return array_merge( array( 'changed' => $changed ), $counts );

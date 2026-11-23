@@ -95,14 +95,16 @@ function jlife_challenges_join_prompt( $error = '' ) {
 function jlife_challenges_share_body( $view, $error = '' ) {
 	/* translators: %d: day number. */
 	$body = '<h1>' . esc_html( sprintf( __( 'Share Day %d', 'jlife-challenges' ), $view['index'] ) ) . '</h1>'
-		. '<p>' . esc_html__( 'Sharing is optional and never changes your points. It shares your whole entry, including your prayer.', 'jlife-challenges' ) . '</p>';
+		. '<p>' . esc_html( ! empty( $view['ahead'] ) ? __( 'Scheduling is optional and never changes your points. Your group cannot see anything until the reading day opens. It shares your whole entry, including your prayer.', 'jlife-challenges' ) : __( 'Sharing is optional and never changes your points. It shares your whole entry, including your prayer.', 'jlife-challenges' ) ) . '</p>';
+
+	$ahead = ! empty( $view['ahead'] );
 
 	$dests = (array) ( $view['destinations'] ?? array() );
 	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- display flags after a redirect; names come only from the viewer's own groups.
 	$names = array_column( $dests, 'group_name', 'group_id' );
 	if ( '' === $error && isset( $_GET['posted'] ) && isset( $names[ (int) $_GET['posted'] ] ) ) {
 		/* translators: %s: group name. */
-		$body .= '<p class="jl-ok" role="status">' . esc_html( sprintf( __( 'Posted to %s.', 'jlife-challenges' ), $names[ (int) $_GET['posted'] ] ) ) . ' <a href="' . esc_url( add_query_arg( 'g', (int) $_GET['posted'], home_url( '/group/' ) ) ) . '">' . esc_html__( 'See My Group', 'jlife-challenges' ) . '</a></p>';
+		$body .= '<p class="jl-ok" role="status">' . esc_html( sprintf( $ahead ? __( 'Scheduled for %s.', 'jlife-challenges' ) : __( 'Posted to %s.', 'jlife-challenges' ), $names[ (int) $_GET['posted'] ] ) ) . ' <a href="' . esc_url( add_query_arg( 'g', (int) $_GET['posted'], home_url( '/group/' ) ) ) . '">' . esc_html__( 'See My Group', 'jlife-challenges' ) . '</a></p>';
 	} elseif ( '' === $error && isset( $_GET['removed'] ) && isset( $names[ (int) $_GET['removed'] ] ) ) {
 		/* translators: %s: group name. */
 		$body .= '<p class="jl-ok" role="status">' . esc_html( sprintf( __( 'Removed from %s. Your SOAP and points are unchanged.', 'jlife-challenges' ), $names[ (int) $_GET['removed'] ] ) ) . '</p>';
@@ -131,23 +133,20 @@ function jlife_challenges_share_body( $view, $error = '' ) {
 			$form .= '<p>' . esc_html( sprintf( __( 'An organizer hid this post from this group: %s', 'jlife-challenges' ), (string) $d['share']['hidden_reason'] ) ) . '</p>';
 		} else {
 			$form .= '<p>' . esc_html(
-				$d['share']
-					? __( 'This group can see this entry for this day. Posting again updates it with your latest text.', 'jlife-challenges' )
-					: __( 'This group will see the whole entry above, from your latest saved text.', 'jlife-challenges' )
+				jlife_challenges_share_dest_text( $d, $view )
 			) . '</p>'
 				. '<button type="submit" name="jl_share_action" value="post-' . esc_attr( (string) $gid ) . '" class="jl-button jl-primary">'
-				/* translators: %s: group name. */
-				. esc_html( sprintf( $d['share'] ? __( 'Update my post in %s', 'jlife-challenges' ) : __( 'Post to %s', 'jlife-challenges' ), $name ) ) . '</button>';
+				. esc_html( sprintf( jlife_challenges_share_button_text( $d, $ahead ), $name ) ) . '</button>';
 		}
 		if ( $d['share'] ) {
 			/* translators: %s: group name. */
-			$form .= '<button type="submit" name="jl_share_action" value="remove-' . esc_attr( (string) $gid ) . '" class="jl-button" formnovalidate>' . esc_html( sprintf( __( 'Remove from %s', 'jlife-challenges' ), $name ) ) . '</button>';
+			$form .= '<button type="submit" name="jl_share_action" value="remove-' . esc_attr( (string) $gid ) . '" class="jl-button" formnovalidate>' . esc_html( sprintf( $ahead ? __( 'Withdraw from %s', 'jlife-challenges' ) : __( 'Remove from %s', 'jlife-challenges' ), $name ) ) . '</button>';
 		}
 		$form .= '</section>';
 	}
 
-	// Destination 2: an existing chat (nothing is stored).
-	$form .= '<section class="jl-dest"><h3>' . esc_html__( 'Send to a chat', 'jlife-challenges' ) . '</h3>'
+	// Destination 2: an existing chat (nothing is stored). Not offered before the day opens (#209).
+	$form .= $ahead ? '</form>' : '<section class="jl-dest"><h3>' . esc_html__( 'Send to a chat', 'jlife-challenges' ) . '</h3>'
 		. '<p>' . esc_html__( 'Opens your phone\'s share menu (Messages, Messenger, Zalo…). The link only opens the day\'s reading.', 'jlife-challenges' ) . '</p>'
 		. '<button type="button" class="jl-button" id="jl-chat" hidden>' . esc_html__( 'Send to a chat…', 'jlife-challenges' ) . '</button>'
 		. '<button type="button" class="jl-button" id="jl-copy" hidden>' . esc_html__( 'Copy text', 'jlife-challenges' ) . '</button>'
@@ -399,8 +398,11 @@ function jlife_challenges_group_days_html( $posts ) {
  */
 function jlife_challenges_group_post_html( $p ) {
 	/* translators: 1: first name, 2: day number. */
-	$meta = sprintf( __( '%1$s · Day %2$d', 'jlife-challenges' ), $p['author'], (int) $p['index'] );
-	$out  = '<article class="jl-post' . ( $p['mine'] ? ' jl-mine' : '' ) . '"><p class="jl-post-meta"><strong>' . esc_html( $meta ) . '</strong>'
+	$meta   = sprintf( __( '%1$s · Day %2$d', 'jlife-challenges' ), $p['author'], (int) $p['index'] );
+	$leader = ! empty( $p['leader'] );
+	$out    = '<article class="jl-post' . ( $p['mine'] ? ' jl-mine' : '' ) . ( $leader ? ' jl-leader-post' : '' ) . '">'
+		. ( $leader ? '<p class="jl-leader-label">' . esc_html__( 'Group starter', 'jlife-challenges' ) . '</p>' : '' )
+		. '<p class="jl-post-meta"><strong>' . esc_html( $meta ) . '</strong>'
 		. ( '' !== $p['refs'] ? ' · ' . esc_html( $p['refs'] ) : '' ) . '</p>'
 		. '<p class="jl-excerpt">' . esc_html( $p['body'] ) . '</p>';
 	if ( $p['mine'] ) {
@@ -602,4 +604,62 @@ function jlife_challenges_screen_group() {
 		'start_name'  => $managed['start_name'],
 	);
 	jlife_challenges_send_page( __( 'My Group', 'jlife-challenges' ), jlife_challenges_group_body( $view, $error, $joined, $more ), 'group' );
+}
+
+/**
+ * The sentence above a group's button on /share: what that group will see, and
+ * for a day that has not opened (#209) when, and that nothing shows before then.
+ *
+ * @param array $dest Destination row (see jlife_challenges_share_view()).
+ * @param array $view Share view.
+ * @return string Plain text (escape on output).
+ */
+function jlife_challenges_share_dest_text( $dest, $view ) {
+	if ( ! empty( $view['ahead'] ) ) {
+		if ( $dest['share'] && 'scheduled' === $dest['share']['status'] ) {
+			/* translators: %s: date and time the day opens. */
+			return sprintf( __( 'Scheduled for %s. Only you can see it until then. Scheduling again updates it with your latest saved text.', 'jlife-challenges' ), (string) $view['release_label'] );
+		}
+		/* translators: %s: date and time the day opens. */
+		return sprintf( __( 'Nothing shows in this group until %s. Then the whole entry above, from your latest saved text, appears first in that day.', 'jlife-challenges' ), (string) $view['release_label'] );
+	}
+	return $dest['share']
+		? __( 'This group can see this entry for this day. Posting again updates it with your latest text.', 'jlife-challenges' )
+		: __( 'This group will see the whole entry above, from your latest saved text.', 'jlife-challenges' );
+}
+
+/**
+ * The /share button label for a group: post, update, schedule or update the schedule.
+ *
+ * @param array $dest  Destination row.
+ * @param bool  $ahead The day has not opened.
+ * @return string A sprintf format with the group name.
+ */
+function jlife_challenges_share_button_text( $dest, $ahead ) {
+	if ( $ahead ) {
+		return $dest['share'] ? __( 'Update scheduled post in %s', 'jlife-challenges' ) : __( 'Schedule for %s', 'jlife-challenges' );
+	}
+	return $dest['share'] ? __( 'Update my post in %s', 'jlife-challenges' ) : __( 'Post to %s', 'jlife-challenges' );
+}
+
+/**
+ * Today: the group starters' released thoughts, one collapsed disclosure per
+ * group, between the Scripture / devotional and the writing area (#209). It is
+ * the same post My Group shows first. Native details/summary: it opens with the
+ * keyboard (Tab, Enter or Space) and screen readers announce the state. Nothing
+ * is printed when no group has a released post, so the page is unchanged.
+ *
+ * @param array $view Day view (needs leader_thoughts).
+ * @return string Escaped HTML, or ''.
+ */
+function jlife_challenges_render_leader_thoughts( $view ) {
+	$out = '';
+	foreach ( (array) ( $view['leader_thoughts'] ?? array() ) as $t ) {
+		/* translators: %s: group name. */
+		$label = sprintf( __( '%s leader’s thoughts', 'jlife-challenges' ), (string) $t['group_name'] );
+		$out  .= '<details class="jl-leader-thoughts"><summary>' . esc_html( $label ) . '</summary>'
+			. '<div class="jl-leader-body"><p class="jl-post-meta">' . esc_html( (string) $t['author'] ) . '</p>'
+			. '<p class="jl-excerpt">' . esc_html( (string) $t['body'] ) . '</p></div></details>';
+	}
+	return $out;
 }
