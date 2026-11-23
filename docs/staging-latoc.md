@@ -441,9 +441,12 @@ with `pilot-`, never `test-`, so the test-campaign removal cannot delete it.
 - **Create it** with the deploy choice **pilot_campaign = create** (or
   `wp jlife pilot create` on the server). It makes `pilot-2026-12` (Dec 5–13,
   2026, Pacific time, active, same reading plan as the Marathon). Running it
-  again changes nothing. It creates no groups and enrolls no one.
+  again changes nothing. It creates no groups and enrolls no one. The deploy
+  creates the pilot with the `reflection-v1` scoring engine (an existing
+  pilot keeps its engine). If `status` shows another engine, run
+  `wp jlife campaign set-engine <id> reflection-v1` before Day 1.
 - **Check it** with **pilot_campaign = status** (`wp jlife pilot status`):
-  key, dates, phase, number of enrollments, and how many people chose
+  key, dates, phase, scoring engine, number of enrollments, and how many people chose
   "I'll start Dec 20". Counts only, safe in the public log.
 - **Do this after the test campaign is removed** and before the Nov 29
   announcement. Sign-ups from Nov 29 join the pilot by default (the join rule,

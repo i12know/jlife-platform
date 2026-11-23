@@ -9,6 +9,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 ## Unreleased
 
 ### Fixed
+- **The pilot is created on `reflection-v1`, and `wp jlife campaign set-engine` works.** The deploy's **pilot_campaign = create** now passes `--scoring-engine=reflection-v1` (an existing pilot keeps its engine), and `wp jlife pilot status` prints the engine id. `set-engine` was not registered because its method name had no `@subcommand set-engine` tag (the same bug as `group list`, #112).
 - **A devotional edited in the Classic editor shows its paragraphs again** (#228). On a phone the Vietnamese Day 1 devotional ran its bold Scripture line into the first paragraph and showed no paragraph breaks.
   - **Cause:** the Classic editor saves paragraphs as bare blank lines with no `<p>` tags and relies on WordPress to add them when the page is shown. The devotional renderer never did (the English devotional, converted to blocks, was fine). The importer was not at fault: it writes `<p>` tags.
   - **Now:** content without blocks gets WordPress's own `wpautop()` before it is shown; block content is shown exactly as before. Nothing stored changes, so no content repair is needed and the import's edited-post check is unaffected.

@@ -288,8 +288,8 @@ esac
 # The Dec 5-13 pilot campaign (#178): counts and dates only, safe in the public log.
 case "${PILOT_CAMPAIGN:-none}" in
   create)
-    log "Pilot campaign: create (no change if it exists)"
-    wp jlife pilot create
+    log "Pilot campaign: create on reflection-v1 (no change if it exists; an existing pilot keeps its engine)"
+    wp jlife pilot create --scoring-engine=reflection-v1
     ;;
   status)
     log "Pilot campaign: status"

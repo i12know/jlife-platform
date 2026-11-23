@@ -22,8 +22,9 @@ on:
       pilot_campaign:
         description: >-
           Pilot campaign (#178): "create" makes the Dec 5-13 pilot campaign
-          (key pilot-2026-12) if it does not exist yet; running it again changes
-          nothing; "status" prints its counts. It creates no groups and enrolls
+          (key pilot-2026-12) on the reflection-v1 scoring engine if it does not
+          exist yet; running it again changes nothing (an existing pilot keeps
+          its engine); "status" prints its counts and engine. It creates no groups and enrolls
           no one.
         type: choice
         options:
