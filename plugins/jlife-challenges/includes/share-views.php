@@ -3,9 +3,7 @@
  * View models for sharing (M7, #62): the share page and the group feeds.
  * Pure data, no output. Sharing is always a deliberate choice, per group (one
  * box per group on the SOAP form, or a section per group on /share) and never
- * changes points. The whole entry is * @param int $entry_id    Entry (0 = none yet).
- * @param bool $ahead       The day has not opened (#209): only groups the person starts, to schedule a share for.
- * @return array[] Rows of { id, name, status, day_key } where status is '' | shared | scheduled | hidden.| shared | scheduled | hidden.| shared | scheduled | hidden.(#98); there are no per-part
+ * changes points. The whole entry is shared (#98); there are no per-part
  * choices. A solo reader (no group) is offered no group to share to (#112).
  *
  * @package jlife-challenges

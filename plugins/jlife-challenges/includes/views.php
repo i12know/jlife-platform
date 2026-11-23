@@ -1,9 +1,3 @@
-	$index = null === $day_key ? $today : jlife_challenges_day_index( $campaign, $day_key );
-	// A day that has not opened is readable only by an active starter of an active group (#209).
-	$ahead = $index >= 1 && ! jlife_challenges_day_is_open( $campaign, $index );
-	if ( $index < 1 || ( $ahead && ! jlife_challenges_can_read_ahead( (int) $user_id, $campaign ) ) ) {
-		return array_merge( $base, array( 'state' => 'unavailable' ) );
-	}
 <?php
 /**
  * View models for the participant screens (M6, #61). Pure data, no output,
@@ -81,7 +75,7 @@ function jlife_challenges_day_view( $user_id, $day_key = null ) {
 	if ( $index < 1 || ( $ahead && ! jlife_challenges_can_read_ahead( (int) $user_id, $campaign ) ) ) {
 		return array_merge( $base, array( 'state' => 'unavailable' ) );
 	}
-	$key     =jlife_challenges_day_key( $index );
+	$key     = jlife_challenges_day_key( $index );
 	$reading = function_exists( 'jlife_studies_get_reading_day' ) ? jlife_studies_get_reading_day( (string) $campaign['plan_id'], $key ) : null;
 	$entry   = jlife_challenges_find_entry( $user_id, (int) $campaign['id'], $key );
 	$groups  = jlife_challenges_share_groups( $user_id, (int) $campaign['id'], $entry ? (int) $entry['id'] : 0, $ahead );
@@ -167,7 +161,7 @@ function jlife_challenges_marathon_view( $user_id ) {
 			$state = 'earned';
 		} elseif ( $ledger ) {
 			$state = 'late';
-			} elseif ( $i > $last ) {
+		} elseif ( $i > $last ) {
 			$state = $ahead && jlife_challenges_find_entry( $user_id, (int) $c['id'], $key ) ? 'draft' : 'future';
 		} elseif ( $i === $today ) {
 			$state = 'today';

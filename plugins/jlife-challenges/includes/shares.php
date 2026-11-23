@@ -414,6 +414,8 @@ function jlife_challenges_withdraw_share_row( $share_id ) {
 	return (int) $changed > 0;
 }
 
+// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared -- custom table; names from $wpdb->prefix, fixed column names, every value prepared.
+
 /**
  * Release the scheduled shares whose reading day has opened, and withdraw any
  * that are no longer allowed (#209). This is the single release function: it
@@ -493,3 +495,4 @@ function jlife_challenges_withdraw_unreleased_shares( $user_id = 0, $group_id = 
 	}
 	return $count;
 }
+// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared

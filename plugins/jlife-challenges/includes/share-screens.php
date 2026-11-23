@@ -637,9 +637,19 @@ function jlife_challenges_share_dest_text( $dest, $view ) {
  */
 function jlife_challenges_share_button_text( $dest, $ahead ) {
 	if ( $ahead ) {
-		return $dest['share'] ? __( 'Update scheduled post in %s', 'jlife-challenges' ) : __( 'Schedule for %s', 'jlife-challenges' );
+		if ( $dest['share'] ) {
+			/* translators: %s: group name. */
+			return __( 'Update scheduled post in %s', 'jlife-challenges' );
+		}
+		/* translators: %s: group name. */
+		return __( 'Schedule for %s', 'jlife-challenges' );
 	}
-	return $dest['share'] ? __( 'Update my post in %s', 'jlife-challenges' ) : __( 'Post to %s', 'jlife-challenges' );
+	if ( $dest['share'] ) {
+		/* translators: %s: group name. */
+		return __( 'Update my post in %s', 'jlife-challenges' );
+	}
+	/* translators: %s: group name. */
+	return __( 'Post to %s', 'jlife-challenges' );
 }
 
 /**
