@@ -429,10 +429,9 @@ return array(
 		'Write a few more words of your own.' => 'Hãy viết thêm vài từ của chính bạn.',
 		'My reflection' => 'Suy ngẫm của tôi',
 		// #225: guided reflection box.
-		'Respond to the questions above in your own words.' => 'Hãy trả lời các câu hỏi ở trên bằng lời của chính bạn.',
+		'Answer the question in the box below in your own words.' => 'Hãy trả lời câu hỏi trong ô bên dưới bằng lời của chính bạn.',
 		'Write about today\'s reading in your own words.' => 'Hãy viết về bài đọc hôm nay bằng lời của chính bạn.',
 		'Use SOAP' => 'Dùng SOAP',
-		'Reflection questions' => 'Câu hỏi suy ngẫm',
 		'Submit' => 'Gửi',
 		'Use SOAP template' => 'Dùng khung SOAP',
 		'Adds the four SOAP headings. Nothing you wrote is removed.' => 'Thêm bốn tiêu đề SOAP. Không có chữ nào bạn đã viết bị xóa.',

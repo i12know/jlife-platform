@@ -131,16 +131,6 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-devotional-body ul,.jl-devotional-body ol{padding-left:1.25rem}
 .jl-devotional-body img,.jl-devotional-body iframe,.jl-devotional-body table{max-width:100%}
 .jl-devotional-soap{margin:.5rem 0 0;color:var(--muted);font-size:.9375rem}
-/* Guided reflection (#225): the printed questions sit read-only above the response in one box. */
-.jl-response-box{margin-top:.35rem;border:1px solid var(--line);border-radius:.5rem;background:var(--bg)}
-.jl-response-box:focus-within{outline:3px solid var(--accent);outline-offset:2px}
-.jl-response-questions{padding:.5rem .75rem;background:var(--soft);border-bottom:1px solid var(--line);border-radius:.5rem .5rem 0 0;overflow-wrap:anywhere}
-.jl-response-q h3{font-size:1rem;line-height:1.3;margin:.25rem 0}
-.jl-response-q p,.jl-response-q li{margin:.35rem 0}
-.jl-response-q ul,.jl-response-q ol{padding-left:1.25rem}
-.jl-response-q-from{color:var(--muted);font-size:.875rem}
-.jl-soap .jl-response-box textarea{display:block;box-sizing:border-box;margin:0;border:0;border-radius:0 0 .5rem .5rem}
-.jl-soap .jl-response-box textarea:focus{outline:0}
 /* Group starters: read ahead and scheduled thoughts (#209) */
 .jl-ahead-note{margin:.75rem 0}
 .jl-ahead-note p{margin:0 0 .4rem;font-weight:400}.jl-ahead-note p:first-child{font-weight:700}

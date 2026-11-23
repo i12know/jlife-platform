@@ -2,9 +2,10 @@
 /**
  * The guided reflection box (#225, parts 1 and 2): the writing area follows the
  * guidance the participant has for the day (a Ready, released devotional in their
- * language), not the campaign's scoring engine; the marked reflection questions
- * show read-only above the response; and the questions shown always agree with the
- * text #210 leaves out of the word count. Everything is made up.
+ * language), not the campaign's scoring engine; the actual reflection question(s)
+ * are prefilled as editable text in a new, empty entry (corrected #225); and the
+ * questions prefilled always agree with the text #210 leaves out of the word
+ * count. Everything is made up.
  *
  * @package jlife-challenges
  */
@@ -77,29 +78,31 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Guidance: My reflection, a blank response, Submit, optional non-destructive SOAP, no mandatory-heading text.
+	 * Guidance: My reflection, the question prefilled as text, Submit, optional non-destructive SOAP, no separate panel.
 	 */
-	public function test_guidance_shows_my_reflection_with_a_blank_response() {
+	public function test_guidance_shows_my_reflection_with_the_question_prefilled() {
 		$this->make_devotional( 'publish', $this->marked_content( array( self::QUESTION ) ) );
 		foreach ( array( 'soap-regex', 'reflection-v1' ) as $engine ) {
 			$this->use_engine( $engine );
 			$view = jlife_challenges_day_view( $this->u['a'] );
 			$this->assertTrue( jlife_challenges_is_guided( $view ), $engine );
-			$this->assertSame( '', jlife_challenges_entry_text( $view ), 'a new entry starts blank on ' . $engine );
+			$this->assertSame( self::QUESTION . "\n\n\n", jlife_challenges_entry_text( $view ), 'a new entry starts with the question on ' . $engine );
 			$form = jlife_challenges_render_soap_panel( $view );
 			$this->assertStringContainsString( '>My reflection</label>', $form );
-			$this->assertStringContainsString( 'Respond to the questions above in your own words.', $form );
+			$this->assertStringContainsString( 'Answer the question in the box below in your own words.', $form );
+			$this->assertStringNotContainsString( 'questions above', $form );
 			$this->assertStringNotContainsString( 'You can use SOAP if you wish', $form );
 			$box = $this->between( $form, '<form', '</form>' );
 			$this->assertSame( 1, substr_count( $box, 'class="jl-soap-def"' ) - substr_count( $box, '<p class="jl-soap-def">SOAP' ), 'at most one help line outside the SOAP section' );
-			$this->assertStringContainsString( self::QUESTION, $this->between( $form, '<div class="jl-response-box">', '<textarea' ) );
+			$this->assertStringNotContainsString( 'jl-response', $form, 'no separate question panel' );
+			$this->assertMatchesRegularExpression( '/<textarea[^>]*>' . preg_quote( self::QUESTION, '/' ) . '\n\n\n<\/textarea>/', $form, 'the question is real text in the box' );
+			$this->assertStringNotContainsString( 'placeholder=', $form );
 			$this->assertStringContainsString( '<summary>Use SOAP</summary>', $form );
 			$this->assertStringContainsString( 'value="template" class="jl-button jl-soap-template" formnovalidate>Use SOAP template</button>', $form );
 			$this->assertStringContainsString( '>Submit</button>', $form );
 			$this->assertStringNotContainsString( 'Submit SOAP', $form );
 			$this->assertStringNotContainsString( '>My SOAP</label>', $form );
 			$this->assertStringNotContainsString( 'Write under each heading', $form, 'no mandatory-heading instruction' );
-			$this->assertStringContainsString( '></textarea>', $form, 'blank' );
 		}
 	}
 
@@ -111,8 +114,9 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 		$form = $this->panel();
 		$this->assertStringContainsString( '>My reflection</label>', $form );
 		$this->assertStringContainsString( esc_html( "Write about today's reading in your own words." ), $form );
-		$this->assertStringNotContainsString( 'reflection questions above', $form );
-		$this->assertStringNotContainsString( 'jl-response-questions', $form );
+		$this->assertStringNotContainsString( 'in the box below', $form );
+		$this->assertSame( '', jlife_challenges_entry_text( jlife_challenges_day_view( $this->u['a'] ) ), 'no question: nothing is prefilled' );
+		$this->assertStringContainsString( '></textarea>', $form );
 	}
 
 	/**
@@ -138,8 +142,7 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * The mode never depends on a collapsed panel: the response questions sit in the
-	 * form, outside the devotional's own collapsible panel.
+	 * The mode never depends on a collapsed panel; the devotional keeps its own questions and the box holds the prefill.
 	 */
 	public function test_collapsing_the_devotional_does_not_change_the_mode() {
 		$this->make_devotional( 'publish', $this->marked_content( array( self::QUESTION ) ) );
@@ -147,10 +150,8 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 		$panel = $this->between( $form, '<details class="jl-devotional"', '</details>' );
 		$this->assertStringContainsString( '<details class="jl-devotional" open>', $panel );
 		$this->assertStringContainsString( self::QUESTION, $panel, 'the full devotional keeps its own questions' );
-		$this->assertLessThan( strpos( $form, 'jl-response-box' ), strpos( $form, '<form' ) );
-		$box = $this->between( $form, '<div class="jl-response-box">', '<textarea' );
-		$this->assertStringContainsString( 'jl-response-questions', $box );
-		$this->assertStringContainsString( self::QUESTION, $box );
+		$this->assertLessThan( strpos( $form, '<textarea' ), strpos( $form, '<form' ) );
+		$this->assertStringContainsString( self::QUESTION, $this->between( $form, '<textarea', '</textarea>' ) );
 		$this->assertTrue( jlife_challenges_is_guided( jlife_challenges_day_view( $this->u['a'] ) ), 'the mode reads content, not the page' );
 	}
 
@@ -224,34 +225,68 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * The marked questions show read-only in the response box, above the textarea, never in it.
+	 * Only the actual question is extracted: real-world shapes, English and Vietnamese.
 	 */
-	public function test_marked_questions_are_shown_above_the_response_and_not_saved() {
-		$this->make_devotional( 'publish', $this->marked_content( array( self::QUESTION, 'What will you do today?' ) ) );
-		$form = $this->panel();
-		$box  = $this->between( $form, '<div class="jl-response-box">', '</textarea>' );
-		$this->assertLessThan( strpos( $box, '<textarea' ), strpos( $box, self::QUESTION ) );
-		$this->assertStringContainsString( '<section class="jl-response-q" aria-labelledby="jl-response-q-1"><h3 id="jl-response-q-1">Reflection questions</h3>', $box );
-		$this->assertStringContainsString( '></textarea>', $form, 'the answer box holds none of it' );
-		$this->assertStringNotContainsString( 'placeholder=', $form );
-		$this->assertSame( 1, substr_count( $form, 'id="jl-response-q-1"' ) );
-		$this->assertStringContainsString( 'id="jl-rq-test"', $form, 'the full devotional keeps its own marked section' );
+	public function test_only_the_actual_questions_are_extracted() {
+		$en = array(
+			'**Where have you seen God keep a promise this week?**',
+			'There is no need for an impressive answer. Is it hard? Write a few sentences in your own words (at least 20 words).',
+			'- Then press Submit Reflection.',
+			'Congratulations!',
+		);
+		$this->assertSame( array( 'Where have you seen God keep a promise this week?' ), jlife_challenges_extract_questions( $en ) );
+		$vi = array(
+			'- **Tại sao?**',
+			'- Không cần câu trả lời hay. Hãy viết vài câu bằng lời của bạn (ít nhất 20 từ).',
+			'- Sau đó nhấn Gửi.',
+		);
+		$this->assertSame( array( 'Tại sao?' ), jlife_challenges_extract_questions( $vi ) );
+		$this->assertSame( array( 'Bạn nghĩ sao？' ), jlife_challenges_extract_questions( array( '1. Bạn nghĩ sao？' ) ), 'full-width mark' );
+		$this->assertSame( array(), jlife_challenges_extract_questions( array( 'Just instructions. Why? Because.', 'Congratulations!' ) ), 'a mid-line mark is not a question' );
+	}
 
-		// Showing the prompts creates no entry, no point and no share.
+	/**
+	 * Real-shaped marked content: the box holds the question and blank lines only, never the instructions, and showing it saves nothing.
+	 */
+	public function test_the_prefill_holds_only_the_question_and_saves_nothing() {
+		$this->make_devotional(
+			'publish',
+			$this->marked_content(
+				array(
+					'<strong>' . self::QUESTION . '</strong>',
+					'There is no need for an impressive answer. Write a few sentences (at least 20 words).',
+					'Then press Submit Reflection. Congratulations!',
+				)
+			)
+		);
+		$form = $this->panel();
+		$box  = $this->between( $form, '<textarea', '</textarea>' );
+		$this->assertStringContainsString( '>' . self::QUESTION . "\n\n\n", $box );
+		$this->assertStringNotContainsString( 'impressive', $box );
+		$this->assertStringNotContainsString( 'Congratulations', $box );
+		$this->assertStringContainsString( 'data-prefill="' . esc_attr( self::QUESTION . "\n\n\n" ) . '"', $form, 'the script treats the untouched prefill like an untouched box' );
 		$this->assertNull( jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' ) );
 		$this->assertSame( 0, $this->ledger_rows( $this->u['a'] ) );
+	}
+
+	/**
+	 * Several questions each get their own line.
+	 */
+	public function test_several_questions_each_on_their_own_line() {
+		$this->make_devotional( 'publish', $this->marked_content( array( self::QUESTION, 'What will you do today?' ) ) );
+		$this->assertSame( self::QUESTION . "\nWhat will you do today?\n\n\n", jlife_challenges_entry_text( jlife_challenges_day_view( $this->u['a'] ) ) );
 	}
 
 	/**
 	 * Older unmarked content falls back to the lines stored at import; nothing is guessed from headings or bold text.
 	 */
 	public function test_unmarked_content_falls_back_to_the_stored_questions() {
-		$stored = "Where was God at work?\nWhat will you do?";
+		$stored = "Where was God at work?\nWrite a few sentences.\nWhat will you do?";
 		$this->make_devotional( 'publish', '<h3 class="wp-block-heading">Reflection Questions</h3><p><strong>A bold guess?</strong></p>', 'd001', 'en', $stored );
-		$form = $this->panel();
-		$this->assertStringContainsString( '<li>Where was God at work?</li><li>What will you do?</li>', $this->between( $form, '<div class="jl-response-box">', '<textarea' ) );
-		$this->assertStringNotContainsString( 'A bold guess?</li>', $this->between( $form, '<div class="jl-response-box">', '<textarea' ), 'bold text is never taken for a question' );
-		$this->assertContains( 'Where was God at work?', apply_filters( 'jlife_challenges_reflection_excluded_text', array(), $this->context() ) );
+		$view = jlife_challenges_day_view( $this->u['a'] );
+		$this->assertSame( "Where was God at work?\nWhat will you do?\n\n\n", jlife_challenges_entry_text( $view ) );
+		$excluded = apply_filters( 'jlife_challenges_reflection_excluded_text', array(), $this->context() );
+		$this->assertSame( array( 'Where was God at work?', 'What will you do?' ), $excluded, 'exactly the extracted questions' );
 	}
 
 	/**
@@ -283,7 +318,7 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 	 */
 	public function test_shown_questions_and_excluded_text_agree_after_an_edit() {
 		$id = $this->make_devotional( 'publish', $this->marked_content( array( 'First question?' ) ), 'd001', 'en', 'First question?' );
-		$this->assertStringContainsString( 'First question?', $this->panel() );
+		$this->assertStringContainsString( 'First question?', $this->between( $this->panel(), '<textarea', '</textarea>' ) );
 		$this->assertContains( 'First question?', apply_filters( 'jlife_challenges_reflection_excluded_text', array(), $this->context() ) );
 
 		wp_update_post(
@@ -292,9 +327,9 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 				'post_content' => $this->marked_content( array( 'Edited question?', 'A new second one?' ) ),
 			)
 		);
-		$shown    = $this->panel();
+		$shown    = $this->between( $this->panel(), '<textarea', '</textarea>' );
 		$excluded = apply_filters( 'jlife_challenges_reflection_excluded_text', array(), $this->context() );
-		$this->assertStringNotContainsString( 'First question?', $this->between( $shown, '<div class="jl-response-box">', '<textarea' ) );
+		$this->assertStringNotContainsString( 'First question?', $shown );
 		foreach ( array( 'Edited question?', 'A new second one?' ) as $q ) {
 			$this->assertStringContainsString( $q, $shown );
 			$this->assertContains( $q, $excluded );
@@ -321,23 +356,81 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * The untouched prefill earns no point under either engine; the prefill plus 20+ own words earns one under reflection-v1.
+	 */
+	public function test_the_untouched_prefill_earns_nothing_and_own_words_earn_the_point() {
+		$this->make_devotional( 'publish', $this->marked_content( array( self::QUESTION, 'Then press Submit Reflection. Congratulations!' ) ) );
+		$prefill = jlife_challenges_entry_text( jlife_challenges_day_view( $this->u['a'] ) );
+		foreach ( array( 'soap-regex', 'reflection-v1' ) as $engine ) {
+			$this->use_engine( $engine );
+			$r = jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $prefill );
+			$this->assertFalse( $r['passes'], 'untouched prefill on ' . $engine );
+			$this->assertSame( 0, $this->ledger_rows( $this->u['a'] ), $engine );
+		}
+		$this->use_engine( 'reflection-v1' );
+		$r = jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', rtrim( $prefill ) . "\n\n" . self::REFLECTION );
+		$this->assertTrue( $r['passes'], 'the prefill plus own words' );
+		$this->assertSame( 1, $this->ledger_rows( $this->u['a'] ) );
+	}
+
+	/**
+	 * The prefill plus the four SOAP parts still needs the parts on soap-regex; the questions add nothing.
+	 */
+	public function test_soap_regex_with_the_prefill_still_needs_the_four_parts() {
+		$this->make_devotional( 'publish', $this->marked_content( array( self::QUESTION ) ) );
+		$prefill = jlife_challenges_entry_text( jlife_challenges_day_view( $this->u['a'] ) );
+		$this->assertFalse( jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $prefill . self::REFLECTION )['passes'] );
+		$this->assertTrue( jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', $prefill . $this->soap() )['passes'] );
+	}
+
+	/**
+	 * "Use SOAP" without JavaScript adds the headings after the prefilled question and typed text; nothing is removed.
+	 */
+	public function test_use_soap_keeps_the_prefilled_text() {
+		$this->make_devotional( 'publish', $this->marked_content( array( self::QUESTION ) ) );
+		$prefill = jlife_challenges_entry_text( jlife_challenges_day_view( $this->u['a'] ) );
+		$typed   = $prefill . 'My first thoughts.';
+		$out     = jlife_challenges_append_soap_template( $typed );
+		$this->assertStringStartsWith( $typed, $out );
+		$this->assertStringContainsString( jlife_challenges_soap_template(), $out );
+		$js = (string) file_get_contents( dirname( __DIR__ ) . '/assets/soap.js' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
+		$this->assertStringContainsString( 'box.value = before + lead + template + tail + after;', $js, 'the script inserts at the cursor' );
+		$this->assertStringContainsString( 'current === prefill.replace', $js, 'a recovered backup never replaces anything but an untouched box' );
+	}
+
+	/**
+	 * A saved draft of the untouched prefill, a submitted entry and a language change keep what is stored.
+	 */
+	public function test_the_prefill_is_only_for_a_new_empty_entry() {
+		$this->make_devotional( 'publish', $this->marked_content( array( self::QUESTION ) ) );
+		$this->make_devotional( 'publish', $this->marked_content( array( 'Bạn đã thấy Chúa giữ lời hứa ở đâu?' ), 'Câu hỏi suy ngẫm' ), 'd001', 'vi' );
+		$edited = self::QUESTION . "\n\nMy own answer.";
+		jlife_challenges_save_draft( $this->u['a'], $this->campaign, 'd001', $edited );
+		$this->assertSame( $edited, jlife_challenges_entry_text( jlife_challenges_day_view( $this->u['a'] ) ) );
+		update_user_meta( $this->u['a'], 'locale', 'vi' );
+		$view = jlife_challenges_day_view( $this->u['a'] );
+		$this->assertSame( $edited, jlife_challenges_entry_text( $view ), 'language changed: the draft stays' );
+		$this->assertStringNotContainsString( 'Bạn đã thấy', $this->between( jlife_challenges_render_soap_panel( $view ), '<textarea', '</textarea>' ) );
+		update_user_meta( $this->u['a'], 'locale', 'en_US' );
+		jlife_challenges_submit( $this->u['a'], $this->campaign, 'd001', self::REFLECTION );
+		$this->assertSame( self::REFLECTION, jlife_challenges_entry_text( jlife_challenges_day_view( $this->u['a'] ) ), 'a submitted entry stays' );
+	}
+
+	/**
 	 * English and Vietnamese: each reader sees their own language's questions only.
 	 */
 	public function test_each_language_shows_its_own_questions() {
 		$this->make_devotional( 'publish', $this->marked_content( array( self::QUESTION ) ), 'd001', 'en' );
 		$this->make_devotional( 'publish', $this->marked_content( array( 'Bạn đã thấy Chúa giữ lời hứa ở đâu?' ), 'Câu hỏi suy ngẫm' ), 'd001', 'vi' );
 
-		$en = $this->panel();
-		$this->assertStringContainsString( self::QUESTION, $this->between( $en, '<div class="jl-response-box">', '<textarea' ) );
-		$this->assertStringNotContainsString( 'Bạn đã thấy', $this->between( $en, '<div class="jl-response-box">', '<textarea' ) );
+		$en = $this->between( $this->panel(), '<textarea', '</textarea>' );
+		$this->assertStringContainsString( self::QUESTION, $en );
+		$this->assertStringNotContainsString( 'Bạn đã thấy', $en );
 
 		update_user_meta( $this->u['a'], 'locale', 'vi' );
-		$vi  = $this->panel();
-		$box = $this->between( $vi, '<div class="jl-response-box">', '<textarea' );
-		$this->assertStringContainsString( 'Bạn đã thấy Chúa giữ lời hứa ở đâu?', $box );
-		$this->assertStringContainsString( '>Câu hỏi suy ngẫm</h3>', $box, 'the heading is read from the marked section, not matched by words' );
-		$this->assertStringContainsString( 'lang="vi"', $box );
-		$this->assertStringNotContainsString( self::QUESTION, $box );
+		$vi = $this->between( $this->panel(), '<textarea', '</textarea>' );
+		$this->assertStringContainsString( 'Bạn đã thấy Chúa giữ lời hứa ở đâu?', $vi );
+		$this->assertStringNotContainsString( self::QUESTION, $vi );
 
 		// The same question is excluded in both languages: a copy in either language does not count.
 		$excluded = apply_filters( 'jlife_challenges_reflection_excluded_text', array(), $this->context() );
@@ -346,9 +439,9 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Several sources keep their own attribution (the seam #209 will use for group leaders); nothing else changes.
+	 * Several sources each contribute their actual questions (the seam #209 will use for group leaders).
 	 */
-	public function test_several_sources_keep_their_attribution() {
+	public function test_several_sources_contribute_their_questions() {
 		$this->make_devotional( 'publish', $this->marked_content( array( self::QUESTION ) ) );
 		$extra = static function ( $sources ) {
 			$sources[] = array(
@@ -357,18 +450,15 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 				'questions'   => array(
 					'heading' => 'Our questions',
 					'html'    => '<p>What did you notice?</p>',
-					'lines'   => array( 'What did you notice?' ),
+					'lines'   => array( 'What did you notice?', 'Be brief.' ),
 				),
 			);
 			return $sources;
 		};
 		add_filter( 'jlife_challenges_guidance_sources', $extra );
-		$box = $this->between( $this->panel(), '<div class="jl-response-box">', '<textarea' );
+		$text = jlife_challenges_entry_text( jlife_challenges_day_view( $this->u['a'] ) );
 		remove_filter( 'jlife_challenges_guidance_sources', $extra );
-		$this->assertStringContainsString( '<p class="jl-response-q-from">Devotional</p>', $box );
-		$this->assertStringContainsString( '<p class="jl-response-q-from">Leader Pat</p>', $box );
-		$this->assertStringContainsString( 'id="jl-response-q-2"', $box );
-		$this->assertStringContainsString( 'What did you notice?', $box );
+		$this->assertSame( self::QUESTION . "\nWhat did you notice?\n\n\n", $text );
 	}
 
 	/**

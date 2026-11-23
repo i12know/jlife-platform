@@ -11,6 +11,7 @@
 	var key = 'jl-soap-' + form.dataset.campaign + '-' + form.dataset.day;
 	var status = form.querySelector('.jl-saved');
 	var template = form.dataset.template || '';
+	var prefill = form.dataset.prefill || ''; // the question(s) a new guided entry starts with (#225)
 	var headings = ['S \u2014 Scripture', 'O \u2014 Observation', 'A \u2014 Application', 'P \u2014 Prayer'];
 	var legacyKeys = ['scripture', 'observation', 'application', 'prayer'];
 	var timer = null;
@@ -51,11 +52,11 @@
 		return typeof saved.text === 'string' ? saved.text : joinLegacy(saved);
 	}
 
-	// Restore a local backup only when the server copy is untouched (empty or just the template).
+	// Restore a local backup only when the server copy is untouched (empty, just the template, or just the prefilled questions).
 	try {
 		var restored = backupText(localStorage.getItem(key));
 		var current = box.value.replace(/\s+$/, '');
-		var untouched = current === '' || current === template.replace(/\s+$/, '');
+		var untouched = current === '' || current === template.replace(/\s+$/, '') || (prefill !== '' && current === prefill.replace(/\s+$/, ''));
 		if (restored !== null && untouched && restored.replace(/\s+$/, '') !== current && restored.trim() !== '') {
 			box.value = restored;
 			status.textContent = msg.restored;

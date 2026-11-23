@@ -117,7 +117,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 	$html = '<!doctype html><html lang="' . esc_attr( '' !== $lang ? $lang : str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=24' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=25' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
 		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -668,8 +668,9 @@ function jlife_challenges_is_submitted( $view ) {
 
 /**
  * The text for the textbox: the saved entry, or for a new one the heading
- * template. A new entry starts blank when the participant has guidance for the day
- * (#225); the scoring engine plays no part. Saved text is returned as it is: only
+ * template. A new entry starts with the day's actual reflection question(s) when the
+ * participant has guidance for it (#225), or blank when there are none; the scoring
+ * engine plays no part. Saved text is returned as it is: only
  * an empty entry is ever seeded.
  *
  * @param array $view Day view.
@@ -680,7 +681,7 @@ function jlife_challenges_entry_text( $view ) {
 	if ( '' !== trim( $body ) ) {
 		return $body;
 	}
-	return jlife_challenges_is_guided( $view ) ? '' : jlife_challenges_soap_template();
+	return jlife_challenges_is_guided( $view ) ? jlife_challenges_guidance_prefill( jlife_challenges_view_guidance( $view ) ) : jlife_challenges_soap_template();
 }
 
 /**
@@ -995,15 +996,14 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$free      = jlife_challenges_campaign_starts_blank( $view['campaign'] );
 	$sources   = jlife_challenges_view_guidance( $view );
 	$guided    = (bool) $sources;
-	$lang      = jlife_challenges_devotional_user_language( get_current_user_id() );
-	$has_q     = ! empty( array_filter( array_column( array_column( $sources, 'questions' ), 'lines' ) ) );
+	$prefill   = jlife_challenges_guidance_prefill( $sources );
 	$groups    = (array) ( $view['share_groups'] ?? array() );
 	$out       = jlife_challenges_render_reader( $view )
 		. jlife_challenges_render_devotional( $view )
 		. jlife_challenges_render_leader_thoughts( $view )
 		. '<form method="post" class="jl-soap" data-status="' . esc_attr( $submitted ? 'submitted' : 'draft' ) . '"'
 		. ' data-rest="' . esc_url( rest_url( 'jlife/v1/soap/draft' ) ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'wp_rest' ) ) . '"'
-		. ' data-template="' . esc_attr( jlife_challenges_soap_template() ) . '" data-headings="' . esc_attr( (string) wp_json_encode( array_values( $headings ) ) ) . '"'
+		. ' data-template="' . esc_attr( jlife_challenges_soap_template() ) . '" data-prefill="' . esc_attr( $prefill ) . '" data-headings="' . esc_attr( (string) wp_json_encode( array_values( $headings ) ) ) . '"'
 		. ' data-i18n="' . esc_attr(
 			(string) wp_json_encode(
 				array(
@@ -1029,9 +1029,9 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	// No reference chips here (#188): the reference is typed under S.
 	$box = '<textarea id="jl-text" name="jl_text" rows="16" maxlength="' . esc_attr( (string) JLIFE_CHALLENGES_BODY_MAX ) . '">' . esc_textarea( $text ) . '</textarea>';
 	if ( $guided ) {
-		// Guided (#225): the printed questions sit read-only above the response, in the same box; SOAP is an optional extra and never replaces what is typed.
-		$out .= '<p class="jl-soap-def">' . esc_html( $has_q ? __( 'Respond to the questions above in your own words.', 'jlife-challenges' ) : __( "Write about today's reading in your own words.", 'jlife-challenges' ) ) . '</p>'
-			. '<div class="jl-response-box">' . jlife_challenges_render_response_questions( $sources, $lang ) . $box . '</div>'
+		// Guided (#225): the actual questions are real text in the box (a new entry only); SOAP is an optional extra and never replaces what is typed.
+		$out .= '<p class="jl-soap-def">' . esc_html( '' !== $prefill ? __( 'Answer the question in the box below in your own words.', 'jlife-challenges' ) : __( "Write about today's reading in your own words.", 'jlife-challenges' ) ) . '</p>'
+			. $box
 			. '<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'Use SOAP', 'jlife-challenges' ) . '</summary>'
 			. $soap_def . $soap_how
 			. '<button type="submit" name="jl_action" value="template" class="jl-button jl-soap-template" formnovalidate>' . esc_html__( 'Use SOAP template', 'jlife-challenges' ) . '</button><small>' . esc_html__( 'Adds the four SOAP headings. Nothing you wrote is removed.', 'jlife-challenges' ) . '</small>'
