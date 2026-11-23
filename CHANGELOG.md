@@ -9,6 +9,9 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 ## Unreleased
 
 ### Fixed
+- **A devotional edited in the Classic editor shows its paragraphs again** (#228). On a phone the Vietnamese Day 1 devotional ran its bold Scripture line into the first paragraph and showed no paragraph breaks.
+  - **Cause:** the Classic editor saves paragraphs as bare blank lines with no `<p>` tags and relies on WordPress to add them when the page is shown. The devotional renderer never did (the English devotional, converted to blocks, was fine). The importer was not at fault: it writes `<p>` tags.
+  - **Now:** content without blocks gets WordPress's own `wpautop()` before it is shown; block content is shown exactly as before. Nothing stored changes, so no content repair is needed and the import's edited-post check is unaffected.
 - **Sign-up and sign-in errors are in LATOC's language, not the browser's** (#222, QA round 6). Submitting the Vietnamese join form with no age showed the browser's English "Please select one of these options." The join, sign-in and code forms now leave checking to the server (`novalidate`), which already answers every missing field in the page language and keeps what was typed. `required` stays for screen readers.
 - **Sign-up in Vietnamese stays Vietnamese from the first screen** (#222). A tester on an iPhone chose Tiếng Việt in the form's Language field and still saw an all-English `/join/`.
   - **Cause:** the interface language of the signed-out pages came only from `?lang=` in the address (#165); the Language field just saved a preference for the account, so a link without `?lang=` (an invite or share link) opened in English, and an answer to "Send my code" (errors, the code page) ignored the field. The "English | Tiếng Việt" links were plain links, so a switch lost the typed code, name and email, and they disappeared after a send.

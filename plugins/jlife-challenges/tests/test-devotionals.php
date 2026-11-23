@@ -643,6 +643,64 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * Classic-editor content (#228): bare blank-line paragraphs, no `<p>` tags and no
+	 * block markup, as a Vietnamese devotional edited in the Classic editor is stored.
+	 * It renders as separate paragraphs, the bold reference line stays apart from the
+	 * first paragraph, diacritics survive, and the stored post is not changed.
+	 */
+	public function test_classic_content_renders_as_separate_paragraphs() {
+		$stored = "<strong>Lu-ca 1:1-4 (VIE2010)</strong>
+
+Đoạn thứ nhất của bài suy niệm thử.
+
+Đoạn thứ hai, có <strong>chữ đậm</strong>.
+
+<hr />
+
+<h3>Câu hỏi suy ngẫm</h3>
+<strong>Hãy nghĩ về hôm nay.</strong>
+
+Câu hỏi thử một?";
+		$id     = $this->make_post( 'd001', 'vi', 'publish', 'Ngày thử', $stored );
+		$html   = jlife_challenges_devotional_body_html( get_post( $id ) );
+		$this->assertStringContainsString( '<p><strong>Lu-ca 1:1-4 (VIE2010)</strong></p>', $html );
+		$this->assertStringContainsString( '<p>Đoạn thứ nhất của bài suy niệm thử.</p>', $html );
+		$this->assertStringContainsString( '<p>Đoạn thứ hai, có <strong>chữ đậm</strong>.</p>', $html );
+		$this->assertStringContainsString( '<strong>Hãy nghĩ về hôm nay.</strong>', $html );
+		$this->assertStringContainsString( '<h3>Câu hỏi suy ngẫm</h3>', $html );
+		$this->assertStringContainsString( '<p>Câu hỏi thử một?</p>', $html );
+		$this->assertStringNotContainsString( '</strong>Đoạn', $html );
+		$this->assertSame( $stored, get_post( $id )->post_content, 'rendering never changes the stored content' );
+	}
+
+	/**
+	 * Block content is rendered exactly as before: no extra paragraph tags are added.
+	 */
+	public function test_block_content_is_unchanged() {
+		$stored = "<!-- wp:paragraph -->
+<p>First block paragraph.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Second block paragraph.</p>
+<!-- /wp:paragraph -->";
+		$id     = $this->make_post( 'd001', 'en', 'publish', 'T', $stored );
+		$html   = jlife_challenges_devotional_body_html( get_post( $id ) );
+		$this->assertSame( 2, substr_count( $html, '<p>' ) );
+		$this->assertStringContainsString( '<p>First block paragraph.</p>', $html );
+		$this->assertStringNotContainsString( '<p></p>', $html );
+		$this->assertStringNotContainsString( '<br', $html );
+	}
+
+	/**
+	 * The importer's own HTML already has `<p>` tags, also for Vietnamese.
+	 */
+	public function test_vietnamese_import_output_has_paragraph_tags() {
+		$item = $this->day_one_items()[1];
+		$this->assertStringContainsString( '<p>', $item['html'] );
+	}
+
+	/**
 	 * Output is escaped on every surface: the body is filtered again, the title is
 	 * escaped, and a participant-visible page carries no script or handler.
 	 */
