@@ -88,7 +88,11 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 			$this->assertSame( '', jlife_challenges_entry_text( $view ), 'a new entry starts blank on ' . $engine );
 			$form = jlife_challenges_render_soap_panel( $view );
 			$this->assertStringContainsString( '>My reflection</label>', $form );
-			$this->assertStringContainsString( 'Respond to the reflection questions above in your own words. You can use SOAP if you wish.', $form );
+			$this->assertStringContainsString( 'Respond to the questions above in your own words.', $form );
+			$this->assertStringNotContainsString( 'You can use SOAP if you wish', $form );
+			$box = $this->between( $form, '<form', '</form>' );
+			$this->assertSame( 1, substr_count( $box, 'class="jl-soap-def"' ) - substr_count( $box, '<p class="jl-soap-def">SOAP' ), 'at most one help line outside the SOAP section' );
+			$this->assertStringContainsString( self::QUESTION, $this->between( $form, '<div class="jl-response-box">', '<textarea' ) );
 			$this->assertStringContainsString( '<summary>Use SOAP</summary>', $form );
 			$this->assertStringContainsString( 'value="template" class="jl-button jl-soap-template" formnovalidate>Use SOAP template</button>', $form );
 			$this->assertStringContainsString( '>Submit</button>', $form );
@@ -106,7 +110,7 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 		$this->make_devotional( 'publish', '<p>Just a lead-in, no questions.</p>' );
 		$form = $this->panel();
 		$this->assertStringContainsString( '>My reflection</label>', $form );
-		$this->assertStringContainsString( esc_html( "Write about today's reading in your own words. You can use SOAP if you wish." ), $form );
+		$this->assertStringContainsString( esc_html( "Write about today's reading in your own words." ), $form );
 		$this->assertStringNotContainsString( 'reflection questions above', $form );
 		$this->assertStringNotContainsString( 'jl-response-questions', $form );
 	}
