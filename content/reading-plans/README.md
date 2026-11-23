@@ -57,3 +57,4 @@ Changing the Bible Gateway translation for a language is an edit to its `fallbac
 - Book names for references come from `bin/content-lib/book-names.js` (Vietnamese: Protestant names, "Giăng 4:4-26").
 - `npm run plans:build` writes them into each day as `i18n.<lang>: { title, passages[] }`. The parsed `refs` and Bible links are language-independent and never translated.
 - The Vietnamese titles are a **DRAFT** for translator review before launch.
+- **Supplemental plan:** `i18n/rpl-harmony-parallel-2026.vi.json` is keyed by Robertson event ID (`gospel_event_id`), one title per Harmony section; the build writes each into its `harmony_sections[].i18n.vi.title`, and the validator requires every section to have a non-empty one. Either file may also carry a `source_attribution` (the Vietnamese source line; keep the names PlusNothing and Robertson (1922) exactly), built into the plan's `i18n.vi.source_attribution`. Re-import the plans after changing them.
