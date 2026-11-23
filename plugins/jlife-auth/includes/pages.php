@@ -93,6 +93,7 @@ function jlife_auth_page_html( $title, $body ) {
 		. 'label{display:block;margin:1rem 0 .25rem;font-weight:600}input[type=text],input[type=email],select{width:100%;box-sizing:border-box;padding:.75rem;font-size:1.1rem;border:1px solid #888;border-radius:.5rem}'
 		. 'input[inputmode=numeric]{letter-spacing:.3em;font-size:1.4rem}button{margin-top:1.25rem;width:100%;padding:.9rem;font-size:1.1rem;border:0;border-radius:.5rem;background:#2b5cab;color:#fff}'
 		. '.jl-err{background:#fde8e8;padding:.75rem;border-radius:.5rem}.jl-ok{background:#e7f5ea;padding:.75rem;border-radius:.5rem}.jl-hint{background:#fff6dc;padding:.75rem;border-radius:.5rem}'
+		. 'button.jl-secondary{min-height:44px;background:#fff;color:#2b5cab;border:2px solid #2b5cab;font-size:1rem;margin-top:.75rem}'
 		. 'fieldset{border:0;padding:0;margin:1rem 0 0}.jl-radio label{font-weight:400;margin:.4rem 0}'
 		. '.jl-lang{order:-1;text-align:right;font-size:.9rem;margin:0}.jl-lang button{display:inline-block;width:auto;min-width:44px;min-height:44px;margin:0;padding:.5rem .6rem;font-size:.9rem;background:none;color:#2b5cab;text-decoration:underline;cursor:pointer}'
 		. '.jl-lang a{display:inline-block;padding:.6rem .5rem}.jl-lang [aria-current]{font-weight:700;color:#1d1d1f;text-decoration:none}'
@@ -199,16 +200,76 @@ function jlife_auth_box( $text, $kind = 'jl-err' ) {
 }
 
 /**
- * The code-entry form.
+ * The join details of a code that is waiting, as the join form's fields, so a
+ * "Send a new code" from a join keeps them. Empty for a sign-in (or nothing waiting).
+ *
+ * @param string $email Normalized email.
+ * @return array
+ */
+function jlife_auth_pending_join_fields( $email ) {
+	$state = '' === $email ? false : get_transient( jlife_auth_code_key( jlife_auth_normalize_email( $email ) ) );
+	if ( ! is_array( $state ) || 'join' !== ( $state['purpose'] ?? '' ) || ! is_array( $state['payload'] ?? null ) ) {
+		return array();
+	}
+	$p = $state['payload'];
+	return array(
+		'mode'        => (string) ( $p['mode'] ?? '' ),
+		'invite_code' => (string) ( $p['invite_code'] ?? '' ),
+		'group_name'  => (string) ( $p['group_name'] ?? '' ),
+		'first_name'  => (string) ( $p['first_name'] ?? '' ),
+		'age_band'    => (string) ( $p['age_band'] ?? '' ),
+		'locale'      => (string) ( $p['locale'] ?? '' ),
+		'reminders'   => ! empty( $p['reminders'] ) ? '1' : '',
+	);
+}
+
+/**
+ * The "Send a new code" form: its own POST (nonce, email in the body, never in an
+ * address). For a join it carries the join details, which are checked again as on
+ * the first request.
  *
  * @param string $email Email the code went to.
- * @param string $error Error message.
+ * @param array  $join  Join form fields, or empty for a sign-in.
+ * @return string Escaped HTML.
+ */
+function jlife_auth_resend_form( $email, $join ) {
+	$out = '<form method="post" id="jl-resend" class="jl-resend" novalidate>' . wp_nonce_field( 'jlife_auth_resend', '_jlife_resend', false, false )
+		. '<input type="hidden" name="step" value="resend"><input type="hidden" name="email" value="' . esc_attr( $email ) . '">'
+		. '<input type="hidden" name="jl_lang" value="' . esc_attr( 0 === strpos( determine_locale(), 'vi' ) ? 'vi' : 'en' ) . '">'
+		. '<input type="hidden" name="redirect_to" value="' . esc_attr( jlife_auth_redirect_target() ) . '">';
+	if ( ! empty( $join ) ) {
+		$out .= '<input type="hidden" name="jl_join" value="1">';
+		foreach ( array( 'mode', 'invite_code', 'group_name', 'first_name', 'age_band', 'locale', 'reminders' ) as $k ) {
+			$out .= '<input type="hidden" name="' . esc_attr( $k ) . '" value="' . esc_attr( (string) ( $join[ $k ] ?? '' ) ) . '">';
+		}
+	}
+	return $out . '<button type="submit" class="jl-secondary">' . esc_html__( 'Send a new code', 'jlife-auth' ) . '</button></form>';
+}
+
+/**
+ * The code-entry form.
+ *
+ * @param string $email  Email the code went to.
+ * @param string $error  Error message.
+ * @param array  $join   Join form fields to keep for "Send a new code" (else read from the waiting code).
+ * @param string $notice Status line, e.g. after a resend.
  * @return string
  */
-function jlife_auth_code_form( $email, $error = '' ) {
+function jlife_auth_code_form( $email, $error = '', $join = array(), $notice = '' ) {
+	if ( empty( $join ) ) {
+		$join = jlife_auth_pending_join_fields( $email );
+	}
 	return '<h1>' . esc_html__( 'Check your email', 'jlife-auth' ) . '</h1>'
 		/* translators: %s: email address. */
 		. '<p>' . esc_html( sprintf( __( 'If %s can sign in, we just sent it a 6-digit code.', 'jlife-auth' ), $email ) ) . '</p>'
+		. '<p class="jl-hint">' . esc_html(
+			sprintf(
+				/* translators: %d: minutes the code lasts. */
+				__( 'It usually arrives within a minute. Don’t see it? Check your Spam or Junk folder and mark it “Not spam”. The code works once and expires in %d minutes. If you ask for another code, use the newest email.', 'jlife-auth' ),
+				(int) ( JLIFE_AUTH_CODE_TTL / MINUTE_IN_SECONDS )
+			)
+		) . '</p>'
+		. jlife_auth_box( $notice, 'jl-ok' )
 		. jlife_auth_box( $error )
 		. '<form method="post" id="jl-form" novalidate>' . wp_nonce_field( 'jlife_auth_verify', '_jlife_auth', true, false )
 		. '<input type="hidden" name="step" value="verify"><input type="hidden" name="email" value="' . esc_attr( $email ) . '">'
@@ -216,7 +277,36 @@ function jlife_auth_code_form( $email, $error = '' ) {
 		. '<input type="hidden" name="redirect_to" value="' . esc_attr( jlife_auth_redirect_target() ) . '">'
 		. '<label for="jl-code">' . esc_html__( '6-digit code', 'jlife-auth' ) . '</label>'
 		. '<input id="jl-code" type="text" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]*" maxlength="7" required autofocus>'
-		. '<button type="submit">' . esc_html__( 'Sign in', 'jlife-auth' ) . '</button></form>';
+		. '<button type="submit">' . esc_html__( 'Sign in', 'jlife-auth' ) . '</button></form>'
+		. jlife_auth_resend_form( $email, $join );
+}
+
+/**
+ * Handle "Send a new code": the same request path as the first one (so the same
+ * limits, eligibility and non-disclosing page), then the code page again.
+ */
+function jlife_auth_handle_resend() {
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- verified by caller.
+	$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+	$join  = array();
+	if ( ! empty( $_POST['jl_join'] ) ) {
+		foreach ( array( 'mode', 'invite_code', 'group_name', 'first_name', 'age_band', 'locale', 'reminders' ) as $k ) {
+			$join[ $k ] = isset( $_POST[ $k ] ) ? sanitize_text_field( wp_unslash( $_POST[ $k ] ) ) : '';
+		}
+	}
+	// phpcs:enable WordPress.Security.NonceVerification.Missing
+	if ( ! empty( $join ) ) {
+		$join['email'] = $email;
+		$sent          = jlife_auth_start_join( $join, jlife_auth_ip() );
+	} else {
+		$sent = jlife_auth_request_code( $email, 'signin', array(), jlife_auth_ip() );
+	}
+	$title = ! empty( $join ) ? __( 'Join', 'jlife-auth' ) : __( 'Sign in', 'jlife-auth' );
+	$email = jlife_auth_normalize_email( $email );
+	if ( is_wp_error( $sent ) ) {
+		jlife_auth_send_page( $title, jlife_auth_code_form( $email, $sent->get_error_message(), $join ) );
+	}
+	jlife_auth_send_page( $title, jlife_auth_code_form( $email, '', $join, __( 'We sent a new code.', 'jlife-auth' ) ) );
 }
 
 /**
@@ -288,6 +378,9 @@ function jlife_auth_page_signin() {
 	$step = isset( $_POST['step'] ) ? sanitize_key( wp_unslash( $_POST['step'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce checked per step below.
 	if ( 'verify' === $step && check_admin_referer( 'jlife_auth_verify', '_jlife_auth' ) ) {
 		jlife_auth_handle_verify();
+	}
+	if ( 'resend' === $step && check_admin_referer( 'jlife_auth_resend', '_jlife_resend' ) ) {
+		jlife_auth_handle_resend();
 	}
 	$error = '';
 	$email = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- only echoed back into the form, escaped; a real request checks its nonce below.
@@ -419,6 +512,9 @@ function jlife_auth_page_join() {
 	$step = isset( $_POST['step'] ) ? sanitize_key( wp_unslash( $_POST['step'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce checked per step below.
 	if ( 'verify' === $step && check_admin_referer( 'jlife_auth_verify', '_jlife_auth' ) ) {
 		jlife_auth_handle_verify();
+	}
+	if ( 'resend' === $step && check_admin_referer( 'jlife_auth_resend', '_jlife_resend' ) ) {
+		jlife_auth_handle_resend();
 	}
 	$error = '';
 	$in    = array(
