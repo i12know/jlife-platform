@@ -680,9 +680,7 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 	 * line break inside a paragraph does not become a `<br>` (#228 review).
 	 */
 	public function test_imported_html_with_paragraphs_is_not_autop() {
-		$stored = '<p>Dòng một' . "
-" . 'vẫn cùng đoạn.</p>' . "
-" . '<p>Đoạn hai.</p>';
+		$stored = '<p>Dòng một' . PHP_EOL . 'vẫn cùng đoạn.</p>' . PHP_EOL . '<p>Đoạn hai.</p>';
 		$id     = $this->make_post( 'd001', 'vi', 'publish', 'Ngày thử', $stored );
 		$html   = jlife_challenges_devotional_body_html( get_post( $id ) );
 		$this->assertStringNotContainsString( '<br', $html );
