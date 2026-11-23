@@ -628,27 +628,35 @@ function jlife_challenges_render_no_day( $view ) {
 }
 
 /**
- * The day heading, e.g. "Day 9 · December 28, 2026".
+ * The day heading, e.g. "Day 9: December 28, 2026 (4.4–4.6)" (#242). The
+ * brackets hold the printed-book sections and are left out for a day without any.
  *
  * @param array $view Day view.
  * @return string
  */
 function jlife_challenges_render_day_head( $view ) {
+	$date     = jlife_challenges_format_date( $view['date'] );
+	$sections = jlife_challenges_book_sections_text( $view );
 	/* translators: 1: day number, 2: date. */
-	return '<p class="jl-day">' . esc_html( sprintf( __( 'Day %1$d · %2$s', 'jlife-challenges' ), $view['index'], jlife_challenges_format_date( $view['date'] ) ) ) . '</p>'
-		. jlife_challenges_render_book_sections( $view );
+	$plain = sprintf( __( 'Day %1$d: %2$s', 'jlife-challenges' ), $view['index'], $date );
+	if ( '' === $sections ) {
+		return '<p class="jl-day">' . esc_html( $plain ) . '</p>';
+	}
+	/* translators: 1: day number, 2: date, 3: printed-book section numbers, e.g. "1.3, 1.4". */
+	$visible = sprintf( __( 'Day %1$d: %2$s (%3$s)', 'jlife-challenges' ), $view['index'], $date, $sections );
+	/* translators: %s: printed-book section numbers, e.g. "1.3, 1.4". */
+	$spoken = sprintf( __( 'Printed book sections: %s', 'jlife-challenges' ), $sections );
+	return '<p class="jl-day"><span aria-hidden="true">' . esc_html( $visible ) . '</span><span class="jl-sr">' . esc_html( $plain . '. ' . $spoken ) . '</span></p>';
 }
 
 /**
- * The printed-book section line under the day heading (#242), e.g.
- * "PlusNothing 1.3, 1.4". The primary plan's `plusnothing_sections` only
- * (never Robertson or Harmony sections). Each ID is kept as a string, in
- * reading order, so "4.40" is never "4.4". A day without sections shows nothing.
+ * The day's printed-book sections as shown, e.g. "1.3, 1.4" or "3.19–3.23".
+ * The primary plan's `plusnothing_sections` only (never Robertson or Harmony).
  *
  * @param array $view Day view.
- * @return string
+ * @return string Empty for a day without sections.
  */
-function jlife_challenges_render_book_sections( $view ) {
+function jlife_challenges_book_sections_text( $view ) {
 	$ids = array();
 	foreach ( (array) ( $view['reading']['day']['plusnothing_sections'] ?? array() ) as $id ) {
 		$id = trim( (string) $id );
@@ -656,15 +664,41 @@ function jlife_challenges_render_book_sections( $view ) {
 			$ids[] = $id;
 		}
 	}
-	if ( ! $ids ) {
-		return '';
+	return jlife_challenges_compress_sections( $ids );
+}
+
+/**
+ * Join section IDs in reading order. A run of three or more in one part whose
+ * numbers after the dot are consecutive becomes an en-dash range ("3.8–3.10");
+ * everything else is listed. IDs stay strings ("4.40", "1.10"): only the parts
+ * are compared as numbers, and an ID that is not "digits.digits" is listed as is.
+ *
+ * @param string[] $ids Section IDs.
+ * @return string
+ */
+function jlife_challenges_compress_sections( $ids ) {
+	$ids = array_values( $ids );
+	$out = array();
+	$n   = count( $ids );
+	$i   = 0;
+	while ( $i < $n ) {
+		$j = $i;
+		if ( preg_match( '/^(\d+)\.(\d+)$/', $ids[ $i ], $a ) ) {
+			while ( $j + 1 < $n && preg_match( '/^(\d+)\.(\d+)$/', $ids[ $j + 1 ], $b ) && $b[1] === $a[1] && (int) $b[2] === (int) $a[2] + 1 ) {
+				++$j;
+				$a = $b;
+			}
+		}
+		if ( $j - $i >= 2 ) {
+			$out[] = $ids[ $i ] . '–' . $ids[ $j ];
+		} else {
+			for ( $k = $i; $k <= $j; $k++ ) {
+				$out[] = $ids[ $k ];
+			}
+		}
+		$i = $j + 1;
 	}
-	$list = implode( ', ', $ids );
-	/* translators: %s: printed-book section numbers, e.g. "1.3, 1.4". */
-	$label = sprintf( __( 'PlusNothing %s', 'jlife-challenges' ), $list );
-	/* translators: %s: printed-book section numbers, e.g. "1.3, 1.4". */
-	$spoken = sprintf( __( 'Printed book sections: %s', 'jlife-challenges' ), $list );
-	return '<p class="jl-book-sections"><span aria-hidden="true">' . esc_html( $label ) . '</span><span class="jl-sr">' . esc_html( $spoken ) . '</span></p>';
+	return implode( ', ', $out );
 }
 
 /**
@@ -692,7 +726,7 @@ function jlife_challenges_render_day_nav( $view ) {
 		$label = sprintf( __( 'Next day: Day %d', 'jlife-challenges' ), $adjacent['next'] );
 		$next  = jlife_challenges_day_nav_link( $adjacent['next'], $label, '&rarr;' );
 	}
-	return '<div class="jl-daynav">' . $prev . '<div class="jl-daynav-mid">' . jlife_challenges_render_day_head( $view ) . '</div>' . $next . '</div>';
+	return '<div class="jl-daynav">' . $prev . jlife_challenges_render_day_head( $view ) . $next . '</div>';
 }
 
 /**

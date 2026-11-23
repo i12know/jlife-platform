@@ -293,27 +293,26 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * The printed-book sections sit under the day and date (#242): one section,
-	 * several in order, and trailing zeros kept as text.
+	 * The printed-book sections sit inside the day heading (#242): none, one,
+	 * a pair, a range, gaps, parts, kept text, and the screen-reader label.
 	 */
-	public function test_printed_book_sections_under_the_day() {
+	public function test_day_heading_with_sections() {
 		$one = $this->main_of( $this->page( 'd001' ) );
-		$this->assertStringContainsString( '<p class="jl-day">Day 1 · December 20, 2026</p><p class="jl-book-sections"><span aria-hidden="true">PlusNothing 1.1</span><span class="jl-sr">Printed book sections: 1.1</span></p>', $one );
-		$this->assertSame( 1, substr_count( $one, 'Day 1 · December 20, 2026' ), 'day and date are not repeated' );
+		$this->assertStringContainsString( '<p class="jl-day"><span aria-hidden="true">Day 1: December 20, 2026 (1.1)</span><span class="jl-sr">Day 1: December 20, 2026. Printed book sections: 1.1</span></p>', $one );
+		$this->assertStringNotContainsString( 'jl-book-sections', $one );
 
-		$many = $this->main_of( $this->page( 'd038' ) );
-		$this->assertStringContainsString( 'PlusNothing 4.4, 4.5, 4.6</span>', $many );
-		$this->assertStringContainsString( 'Printed book sections: 4.4, 4.5, 4.6', $many );
+		$range = $this->main_of( $this->page( 'd038' ) );
+		$this->assertStringContainsString( '(4.4–4.6)</span>', $range );
+		$this->assertStringContainsString( 'Printed book sections: 4.4–4.6', $range );
 
 		$zero = $this->main_of( $this->page( 'd053' ) );
-		$this->assertStringContainsString( 'PlusNothing 4.40</span>', $zero );
-		$this->assertStringNotContainsString( 'PlusNothing 4.4<', $zero );
+		$this->assertStringContainsString( '(4.40)</span>', $zero );
 	}
 
 	/**
-	 * A day with no sections shows no line, and the optional readings never feed it.
+	 * A day with no sections: "Day N: date" with no brackets and no hidden label.
 	 */
-	public function test_a_day_without_sections_shows_nothing() {
+	public function test_a_day_without_sections_shows_no_brackets() {
 		$this->change_day(
 			'd001',
 			static function ( $day ) {
@@ -322,17 +321,41 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 			}
 		);
 		$main = $this->main_of( $this->page( 'd001' ) );
-		$this->assertStringNotContainsString( 'jl-book-sections', $main );
-		$this->assertStringContainsString( '<p class="jl-day">Day 1 · December 20, 2026</p>', $main );
+		$this->assertStringContainsString( '<p class="jl-day">Day 1: December 20, 2026</p>', $main );
+		$this->assertStringNotContainsString( 'Printed book sections', $main );
 	}
 
 	/**
-	 * The Vietnamese draft label, with the same section text.
+	 * Range shortening: three or more consecutive in one part; strings kept.
 	 */
-	public function test_printed_book_sections_in_vietnamese() {
+	public function test_sections_are_shortened_only_for_real_runs() {
+		$cases = array(
+			array( array( '1.3' ), '1.3' ),
+			array( array( '1.3', '1.4' ), '1.3, 1.4' ),
+			array( array( '3.19', '3.20', '3.21', '3.22', '3.23' ), '3.19–3.23' ),
+			array( array( '3.8', '3.9', '3.10' ), '3.8–3.10' ),
+			array( array( '1.1', '1.2', '1.4' ), '1.1, 1.2, 1.4' ),
+			array( array( '2.10', '2.11', '3.1' ), '2.10, 2.11, 3.1' ),
+			array( array( '2.9', '2.10', '3.1', '3.2', '3.3' ), '2.9, 2.10, 3.1–3.3' ),
+			array( array( '4.40' ), '4.40' ),
+			array( array( '1.10', '1.11', '1.12' ), '1.10–1.12' ),
+			array( array( 'A', 'B', 'C' ), 'A, B, C' ),
+			array( array( '1.1', 'x', '1.3' ), '1.1, x, 1.3' ),
+			array( array(), '' ),
+		);
+		foreach ( $cases as $case ) {
+			$this->assertSame( $case[1], jlife_challenges_compress_sections( $case[0] ), implode( ' ', $case[0] ) );
+		}
+	}
+
+	/**
+	 * The Vietnamese heading and screen-reader label.
+	 */
+	public function test_day_heading_sections_in_vietnamese() {
 		$vi = $this->main_of( $this->page( 'd053', 'vi' ) );
-		$this->assertStringContainsString( 'Sách PlusNothing 4.40</span>', $vi );
+		$this->assertStringContainsString( '(4.40)</span>', $vi );
 		$this->assertStringContainsString( 'Các phần trong sách in: 4.40', $vi );
+		$this->assertStringContainsString( 'Ngày ', $vi );
 	}
 
 	/**
@@ -341,7 +364,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 	 */
 	public function test_the_layout_is_todays_in_order() {
 		$main = $this->main_of( $this->page( 'd001' ) );
-		$this->assertStringContainsString( '<p class="jl-day">Day 1 · December 20, 2026</p>', $main );
+		$this->assertStringContainsString( '<p class="jl-day"><span aria-hidden="true">Day 1: December 20, 2026 (1.1)</span>', $main );
 		$order = array(
 			'class="jl-day"',
 			'<section class="jl-reading"><h2>The Beginning</h2>',
@@ -558,7 +581,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$vi = $this->page( 'd001', 'vi' );
 		$this->assertStringContainsString( '<html lang="vi">', $vi );
 		$main = $this->main_of( $vi );
-		$this->assertStringContainsString( '<p class="jl-day">Ngày 1 · 20 tháng 12, 2026</p>', $main );
+		$this->assertStringContainsString( '<p class="jl-day"><span aria-hidden="true">Ngày 1: 20 tháng 12, 2026 (1.1)</span>', $main );
 		$this->assertStringContainsString( '<h2>Khởi đầu</h2>', $main );
 		$this->assertStringContainsString( '<ul class="jl-passages"><li>Lu-ca 1:1-4</li><li>Giăng 1:1-18</li></ul>', $main );
 		$this->assertStringContainsString( '>Tham gia Marathon Kinh Thánh</a>', $main );
@@ -689,7 +712,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$html = $this->page();
 		$this->assertStringContainsString( '<html lang="vi">', $html );
 		$this->assertStringContainsString( 'Viết SOAP của tôi cho ngày này', $html );
-		$this->assertStringContainsString( 'Ngày 1 · 20 tháng 12, 2026', $html );
+		$this->assertStringContainsString( 'Ngày 1: 20 tháng 12, 2026', $html );
 	}
 
 	/**

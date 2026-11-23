@@ -48,7 +48,7 @@ class Test_Day_Arrows extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'Previous day', $html );
 		$this->assertStringNotContainsString( 'Next day', $html );
 		$this->assertStringNotContainsString( '<a ', $html );
-		$this->assertStringContainsString( '<p class="jl-day">Day 1 · December 20, 2026</p>', $html );
+		$this->assertMatchesRegularExpression( '#<p class="jl-day">(<span aria-hidden="true">)?Day 1: December 20, 2026#', $html );
 		$this->assertSame( 0, array_sum( jlife_challenges_adjacent_days( jlife_challenges_day_view( $this->u['a'] ) ) ) );
 	}
 
@@ -65,7 +65,7 @@ class Test_Day_Arrows extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'href="' . esc_url( jlife_challenges_screen_url( 'soap', 'd002' ) ) . '"', $html );
 		$this->assertStringContainsString( 'href="' . esc_url( jlife_challenges_screen_url( 'soap', 'd004' ) ) . '"', $html );
 		$this->assertStringContainsString( '<span aria-hidden="true">', $html, 'the arrow glyph is decoration' );
-		$this->assertStringContainsString( '<p class="jl-day">Day 3 · December 22, 2026</p>', $html );
+		$this->assertMatchesRegularExpression( '#<p class="jl-day">(<span aria-hidden="true">)?Day 3: December 22, 2026#', $html );
 
 		$first = $this->nav( 'd001' );
 		$this->assertStringNotContainsString( 'Previous day', $first, 'no previous link before Day 1' );

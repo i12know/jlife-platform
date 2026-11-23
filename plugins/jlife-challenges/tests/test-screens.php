@@ -1186,7 +1186,7 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertFalse( $view['is_today'] );
 
 		$body = jlife_challenges_soap_body( $view );
-		$this->assertStringContainsString( 'Day 3 · ', $body );
+		$this->assertStringContainsString( 'Day 3: ', $body );
 		$this->assertStringContainsString( 'John the Baptizer Prepares the Way', $body );
 		$this->assertStringContainsString( '</details><form method="post" class="jl-soap"', $body );
 		$this->assertStringContainsString( 'data-day="d003"', $body );
