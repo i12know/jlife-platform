@@ -268,7 +268,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$this->assertStringStartsWith( '<!doctype html>', $html );
 		$this->assertStringContainsString( '<meta name="viewport" content="width=device-width, initial-scale=1">', $html );
 		$this->assertStringContainsString( '<meta name="robots" content="noindex, nofollow">', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=27', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=28', $html );
 		$this->assertSame( 1, substr_count( $html, '<main>' ) );
 		foreach ( array(
 			'Written by',
@@ -293,12 +293,78 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * The printed-book sections sit inside the day heading (#242): none, one,
+	 * a pair, a range, gaps, parts, kept text, and the screen-reader label.
+	 */
+	public function test_day_heading_with_sections() {
+		$one = $this->main_of( $this->page( 'd001' ) );
+		$this->assertStringContainsString( '<p class="jl-day"><span aria-hidden="true">Day 1: December 20, 2026 (1.1)</span><span class="jl-sr">Day 1: December 20, 2026. Printed book sections: 1.1</span></p>', $one );
+		$this->assertStringNotContainsString( 'jl-book-sections', $one );
+
+		$range = $this->main_of( $this->page( 'd038' ) );
+		$this->assertStringContainsString( '(4.4–4.6)</span>', $range );
+		$this->assertStringContainsString( 'Printed book sections: 4.4–4.6', $range );
+
+		$zero = $this->main_of( $this->page( 'd053' ) );
+		$this->assertStringContainsString( '(4.40)</span>', $zero );
+	}
+
+	/**
+	 * A day with no sections: "Day N: date" with no brackets and no hidden label.
+	 */
+	public function test_a_day_without_sections_shows_no_brackets() {
+		$this->change_day(
+			'd001',
+			static function ( $day ) {
+				$day['plusnothing_sections'] = array();
+				return $day;
+			}
+		);
+		$main = $this->main_of( $this->page( 'd001' ) );
+		$this->assertStringContainsString( '<p class="jl-day">Day 1: December 20, 2026</p>', $main );
+		$this->assertStringNotContainsString( 'Printed book sections', $main );
+	}
+
+	/**
+	 * Range shortening: three or more consecutive in one part; strings kept.
+	 */
+	public function test_sections_are_shortened_only_for_real_runs() {
+		$cases = array(
+			array( array( '1.3' ), '1.3' ),
+			array( array( '1.3', '1.4' ), '1.3, 1.4' ),
+			array( array( '3.19', '3.20', '3.21', '3.22', '3.23' ), '3.19–3.23' ),
+			array( array( '3.8', '3.9', '3.10' ), '3.8–3.10' ),
+			array( array( '1.1', '1.2', '1.4' ), '1.1, 1.2, 1.4' ),
+			array( array( '2.10', '2.11', '3.1' ), '2.10, 2.11, 3.1' ),
+			array( array( '2.9', '2.10', '3.1', '3.2', '3.3' ), '2.9, 2.10, 3.1–3.3' ),
+			array( array( '4.40' ), '4.40' ),
+			array( array( '1.10', '1.11', '1.12' ), '1.10–1.12' ),
+			array( array( 'A', 'B', 'C' ), 'A, B, C' ),
+			array( array( '1.1', 'x', '1.3' ), '1.1, x, 1.3' ),
+			array( array(), '' ),
+		);
+		foreach ( $cases as $case ) {
+			$this->assertSame( $case[1], jlife_challenges_compress_sections( $case[0] ), implode( ' ', $case[0] ) );
+		}
+	}
+
+	/**
+	 * The Vietnamese heading and screen-reader label.
+	 */
+	public function test_day_heading_sections_in_vietnamese() {
+		$vi = $this->main_of( $this->page( 'd053', 'vi' ) );
+		$this->assertStringContainsString( '(4.40)</span>', $vi );
+		$this->assertStringContainsString( 'Các phần trong sách in: 4.40', $vi );
+		$this->assertStringContainsString( 'Ngày ', $vi );
+	}
+
+	/**
 	 * The layout, in order, signed out: day and date, title, references, the
 	 * Bible links, the optional box, the invitation and the source line.
 	 */
 	public function test_the_layout_is_todays_in_order() {
 		$main = $this->main_of( $this->page( 'd001' ) );
-		$this->assertStringContainsString( '<p class="jl-day">Day 1 · December 20, 2026</p>', $main );
+		$this->assertStringContainsString( '<p class="jl-day"><span aria-hidden="true">Day 1: December 20, 2026 (1.1)</span>', $main );
 		$order = array(
 			'class="jl-day"',
 			'<section class="jl-reading"><h2>The Beginning</h2>',
@@ -515,7 +581,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$vi = $this->page( 'd001', 'vi' );
 		$this->assertStringContainsString( '<html lang="vi">', $vi );
 		$main = $this->main_of( $vi );
-		$this->assertStringContainsString( '<p class="jl-day">Ngày 1 · 20 tháng 12, 2026</p>', $main );
+		$this->assertStringContainsString( '<p class="jl-day"><span aria-hidden="true">Ngày 1: 20 tháng 12, 2026 (1.1)</span>', $main );
 		$this->assertStringContainsString( '<h2>Khởi đầu</h2>', $main );
 		$this->assertStringContainsString( '<ul class="jl-passages"><li>Lu-ca 1:1-4</li><li>Giăng 1:1-18</li></ul>', $main );
 		$this->assertStringContainsString( '>Tham gia Marathon Kinh Thánh</a>', $main );
@@ -646,7 +712,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$html = $this->page();
 		$this->assertStringContainsString( '<html lang="vi">', $html );
 		$this->assertStringContainsString( 'Viết SOAP của tôi cho ngày này', $html );
-		$this->assertStringContainsString( 'Ngày 1 · 20 tháng 12, 2026', $html );
+		$this->assertStringContainsString( 'Ngày 1: 20 tháng 12, 2026', $html );
 	}
 
 	/**
@@ -782,14 +848,14 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 	 * The stylesheet version is 25 everywhere it is linked (#188, #211), and the stylesheet
 	 * has what the public page needs (and dark tokens, which the page reuses).
 	 */
-	public function test_the_stylesheet_is_version_25_everywhere() {
+	public function test_the_stylesheet_is_version_28_everywhere() {
 		$files = array_merge( glob( dirname( __DIR__ ) . '/includes/*.php' ), array( dirname( __DIR__ ) . '/jlife-challenges.php' ) );
 		$seen  = 0;
 		foreach ( $files as $file ) {
 			$src = (string) file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading the plugin's own source.
 			preg_match_all( '/screens\.css\?v=(\d+)/', $src, $m );
 			foreach ( $m[1] as $version ) {
-				$this->assertSame( '27', $version, basename( $file ) );
+				$this->assertSame( '28', $version, basename( $file ) );
 				++$seen;
 			}
 		}
