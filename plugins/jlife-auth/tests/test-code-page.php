@@ -107,7 +107,7 @@ class Test_Code_Page extends WP_UnitTestCase {
 			),
 			$fields
 		);
-		$_REQUEST                  = $_POST;
+		$_REQUEST                  = $_POST;  // phpcs:ignore WordPress.Security.NonceVerification.Missing -- test fixture.
 		$stop                      = static function ( $title, $body ) {
 			throw new RuntimeException( $body ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- a test seam, never output.
 		};
