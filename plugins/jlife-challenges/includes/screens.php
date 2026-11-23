@@ -117,7 +117,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 	$html = '<!doctype html><html lang="' . esc_attr( '' !== $lang ? $lang : str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=27' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=28' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
 		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -635,7 +635,36 @@ function jlife_challenges_render_no_day( $view ) {
  */
 function jlife_challenges_render_day_head( $view ) {
 	/* translators: 1: day number, 2: date. */
-	return '<p class="jl-day">' . esc_html( sprintf( __( 'Day %1$d · %2$s', 'jlife-challenges' ), $view['index'], jlife_challenges_format_date( $view['date'] ) ) ) . '</p>';
+	return '<p class="jl-day">' . esc_html( sprintf( __( 'Day %1$d · %2$s', 'jlife-challenges' ), $view['index'], jlife_challenges_format_date( $view['date'] ) ) ) . '</p>'
+		. jlife_challenges_render_book_sections( $view );
+}
+
+/**
+ * The printed-book section line under the day heading (#242), e.g.
+ * "PlusNothing 1.3, 1.4". The primary plan's `plusnothing_sections` only
+ * (never Robertson or Harmony sections). Each ID is kept as a string, in
+ * reading order, so "4.40" is never "4.4". A day without sections shows nothing.
+ *
+ * @param array $view Day view.
+ * @return string
+ */
+function jlife_challenges_render_book_sections( $view ) {
+	$ids = array();
+	foreach ( (array) ( $view['reading']['day']['plusnothing_sections'] ?? array() ) as $id ) {
+		$id = trim( (string) $id );
+		if ( '' !== $id ) {
+			$ids[] = $id;
+		}
+	}
+	if ( ! $ids ) {
+		return '';
+	}
+	$list = implode( ', ', $ids );
+	/* translators: %s: printed-book section numbers, e.g. "1.3, 1.4". */
+	$label = sprintf( __( 'PlusNothing %s', 'jlife-challenges' ), $list );
+	/* translators: %s: printed-book section numbers, e.g. "1.3, 1.4". */
+	$spoken = sprintf( __( 'Printed book sections: %s', 'jlife-challenges' ), $list );
+	return '<p class="jl-book-sections"><span aria-hidden="true">' . esc_html( $label ) . '</span><span class="jl-sr">' . esc_html( $spoken ) . '</span></p>';
 }
 
 /**
@@ -663,7 +692,7 @@ function jlife_challenges_render_day_nav( $view ) {
 		$label = sprintf( __( 'Next day: Day %d', 'jlife-challenges' ), $adjacent['next'] );
 		$next  = jlife_challenges_day_nav_link( $adjacent['next'], $label, '&rarr;' );
 	}
-	return '<div class="jl-daynav">' . $prev . jlife_challenges_render_day_head( $view ) . $next . '</div>';
+	return '<div class="jl-daynav">' . $prev . '<div class="jl-daynav-mid">' . jlife_challenges_render_day_head( $view ) . '</div>' . $next . '</div>';
 }
 
 /**

@@ -520,5 +520,7 @@ return array(
 		'Only group starters can see this day early. What you write stays private to you. Your group sees nothing unless you choose to share it below, and then only when the day opens.' => 'Chỉ người lập nhóm mới xem được ngày này sớm. Những gì bạn viết là riêng tư. Nhóm không thấy gì trừ khi bạn chọn chia sẻ bên dưới, và cũng chỉ khi ngày đọc mở.',
 		'coming up — you can read ahead' => 'sắp tới — bạn có thể đọc trước',
 		'Scheduled for %l. Nothing shows until the reading day opens.' => 'Đã hẹn giờ cho %l. Chưa ai thấy gì cho đến khi ngày đọc mở.',
+		'PlusNothing %s' => 'Sách PlusNothing %s',
+		'Printed book sections: %s' => 'Các phần trong sách in: %s',
 	),
 );

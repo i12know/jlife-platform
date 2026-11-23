@@ -268,7 +268,7 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$this->assertStringStartsWith( '<!doctype html>', $html );
 		$this->assertStringContainsString( '<meta name="viewport" content="width=device-width, initial-scale=1">', $html );
 		$this->assertStringContainsString( '<meta name="robots" content="noindex, nofollow">', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=27', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=28', $html );
 		$this->assertSame( 1, substr_count( $html, '<main>' ) );
 		foreach ( array(
 			'Written by',
@@ -290,6 +290,49 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 			$this->assertStringNotContainsString( $chrome, $html, $chrome );
 		}
 		$this->assertStringContainsString( '<title>Day 1 · The Beginning</title>', $html );
+	}
+
+	/**
+	 * The printed-book sections sit under the day and date (#242): one section,
+	 * several in order, and trailing zeros kept as text.
+	 */
+	public function test_printed_book_sections_under_the_day() {
+		$one = $this->main_of( $this->page( 'd001' ) );
+		$this->assertStringContainsString( '<p class="jl-day">Day 1 · December 20, 2026</p><p class="jl-book-sections"><span aria-hidden="true">PlusNothing 1.1</span><span class="jl-sr">Printed book sections: 1.1</span></p>', $one );
+		$this->assertSame( 1, substr_count( $one, 'Day 1 · December 20, 2026' ), 'day and date are not repeated' );
+
+		$many = $this->main_of( $this->page( 'd038' ) );
+		$this->assertStringContainsString( 'PlusNothing 4.4, 4.5, 4.6</span>', $many );
+		$this->assertStringContainsString( 'Printed book sections: 4.4, 4.5, 4.6', $many );
+
+		$zero = $this->main_of( $this->page( 'd053' ) );
+		$this->assertStringContainsString( 'PlusNothing 4.40</span>', $zero );
+		$this->assertStringNotContainsString( 'PlusNothing 4.4<', $zero );
+	}
+
+	/**
+	 * A day with no sections shows no line, and the optional readings never feed it.
+	 */
+	public function test_a_day_without_sections_shows_nothing() {
+		$this->change_day(
+			'd001',
+			static function ( $day ) {
+				$day['plusnothing_sections'] = array();
+				return $day;
+			}
+		);
+		$main = $this->main_of( $this->page( 'd001' ) );
+		$this->assertStringNotContainsString( 'jl-book-sections', $main );
+		$this->assertStringContainsString( '<p class="jl-day">Day 1 · December 20, 2026</p>', $main );
+	}
+
+	/**
+	 * The Vietnamese draft label, with the same section text.
+	 */
+	public function test_printed_book_sections_in_vietnamese() {
+		$vi = $this->main_of( $this->page( 'd053', 'vi' ) );
+		$this->assertStringContainsString( 'Sách PlusNothing 4.40</span>', $vi );
+		$this->assertStringContainsString( 'Các phần trong sách in: 4.40', $vi );
 	}
 
 	/**
