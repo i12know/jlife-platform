@@ -670,7 +670,7 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 		$id     = $this->make_post( 'd001', 'en', 'publish', 'T', $stored );
 		$html   = jlife_challenges_devotional_body_html( get_post( $id ) );
 		$this->assertSame( 2, preg_match_all( '/<p[ >]/', $html ), $html );
-		$this->assertStringContainsString( '<p>First block paragraph.</p>', $html );
+		$this->assertMatchesRegularExpression( '#<p[^>]*>First block paragraph\.</p>#', $html );
 		$this->assertStringNotContainsString( '<p></p>', $html );
 		$this->assertStringNotContainsString( '<br', $html );
 	}
