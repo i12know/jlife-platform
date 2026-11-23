@@ -649,18 +649,7 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 	 * first paragraph, diacritics survive, and the stored post is not changed.
 	 */
 	public function test_classic_content_renders_as_separate_paragraphs() {
-		$stored = "<strong>Lu-ca 1:1-4 (VIE2010)</strong>
-
-Đoạn thứ nhất của bài suy niệm thử.
-
-Đoạn thứ hai, có <strong>chữ đậm</strong>.
-
-<hr />
-
-<h3>Câu hỏi suy ngẫm</h3>
-<strong>Hãy nghĩ về hôm nay.</strong>
-
-Câu hỏi thử một?";
+		$stored = "<strong>Lu-ca 1:1-4 (VIE2010)</strong>\n\nĐoạn thứ nhất của bài suy niệm thử.\n\nĐoạn thứ hai, có <strong>chữ đậm</strong>.\n\n<hr />\n\n<h3>Câu hỏi suy ngẫm</h3>\n<strong>Hãy nghĩ về hôm nay.</strong>\n\nCâu hỏi thử một?";
 		$id     = $this->make_post( 'd001', 'vi', 'publish', 'Ngày thử', $stored );
 		$html   = jlife_challenges_devotional_body_html( get_post( $id ) );
 		$this->assertStringContainsString( '<p><strong>Lu-ca 1:1-4 (VIE2010)</strong></p>', $html );
@@ -677,16 +666,10 @@ Câu hỏi thử một?";
 	 * Block content is rendered exactly as before: no extra paragraph tags are added.
 	 */
 	public function test_block_content_is_unchanged() {
-		$stored = "<!-- wp:paragraph -->
-<p>First block paragraph.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>Second block paragraph.</p>
-<!-- /wp:paragraph -->";
+		$stored = "<!-- wp:paragraph -->\n<p>First block paragraph.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Second block paragraph.</p>\n<!-- /wp:paragraph -->";
 		$id     = $this->make_post( 'd001', 'en', 'publish', 'T', $stored );
 		$html   = jlife_challenges_devotional_body_html( get_post( $id ) );
-		$this->assertSame( 2, substr_count( $html, '<p>' ) );
+		$this->assertSame( 2, preg_match_all( '/<p[ >]/', $html ), $html );
 		$this->assertStringContainsString( '<p>First block paragraph.</p>', $html );
 		$this->assertStringNotContainsString( '<p></p>', $html );
 		$this->assertStringNotContainsString( '<br', $html );
