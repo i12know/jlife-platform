@@ -179,7 +179,7 @@ return array(
 		'The Marathon starts on %s. See you on Day 1!' => 'Marathon bắt đầu vào %s. Hẹn gặp bạn vào Ngày 1!',
 		'The Marathon is complete' => 'Marathon đã kết thúc',
 		'Thank you for reading with us. Your SOAP entries stay here for you.' => 'Cảm ơn bạn đã cùng đọc. Các bài SOAP của bạn vẫn được giữ ở đây cho bạn.',
-		'This day hasn't opened yet' => 'Ngày đọc chưa mở',
+		'This day hasn\'t opened yet' => 'Ngày đọc chưa mở',
 		'Please come back when it opens.' => 'Xin hãy quay lại khi ngày này mở.',
 		'Day %1$d · %2$s' => 'Ngày %1$d · %2$s',
 		'You have %1$d of %2$d.' => 'Bạn có %1$d trên %2$d.',
