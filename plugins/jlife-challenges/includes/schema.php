@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const JLIFE_CHALLENGES_DB_VERSION = '6';
+const JLIFE_CHALLENGES_DB_VERSION = '7';
 
 /**
  * Table name helper.
@@ -154,6 +154,8 @@ function jlife_challenges_install_tables() {
 			source VARCHAR(20) NOT NULL DEFAULT 'platform',
 			engine VARCHAR(40) NOT NULL DEFAULT '',
 			engine_version VARCHAR(20) NOT NULL DEFAULT '',
+			early TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+			early_hours SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
 			created DATETIME NOT NULL,
 			PRIMARY KEY  (id),
 			UNIQUE KEY campaign_user_day (campaign_id, user_id, day_key),
@@ -171,6 +173,7 @@ function jlife_challenges_install_tables() {
 			day_key VARCHAR(20) NOT NULL,
 			body LONGTEXT NULL,
 			status VARCHAR(20) NOT NULL DEFAULT 'shared',
+			advance TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
 			hidden_reason VARCHAR(200) NOT NULL DEFAULT '',
 			created DATETIME NOT NULL,
 			updated DATETIME NOT NULL,
@@ -266,6 +269,7 @@ function jlife_challenges_maybe_upgrade() {
 	jlife_challenges_install_tables();
 	// A deploy may add a route (v5: /unsubscribe/); regenerate the rewrite rules on the next request.
 	delete_option( 'rewrite_rules' );
+	// v7 (#209): score_ledger.early / early_hours and group_shares.advance are added by dbDelta above; existing rows default to 0, so nothing already shared or scored changes.
 	// v6: the reminder cron event (the activation hook does not run on a deploy).
 	jlife_challenges_reminders_schedule();
 	delete_option( 'jlife_challenges_upgrading' );

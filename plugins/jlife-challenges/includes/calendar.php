@@ -133,3 +133,45 @@ function jlife_challenges_is_on_time( $campaign, $index, $moment = null ) {
 	$late  = jlife_challenges_days_between( jlife_challenges_day_date( $campaign, $index ), $today );
 	return $late >= 0 && $late <= (int) $campaign['grace_days'];
 }
+
+/**
+ * The first moment a campaign day is open: midnight at the start of its date in
+ * the campaign's timezone (#209). The same boundary as jlife_challenges_day_is_open(),
+ * which stays the rule every check uses; this is for showing the time. Where a
+ * zone has no midnight that day (a clock change at 00:00), PHP gives the first
+ * existing moment of the date.
+ *
+ * @param array $campaign Campaign row.
+ * @param int   $index    Day index.
+ * @return DateTimeImmutable
+ */
+function jlife_challenges_release_moment( $campaign, $index ) {
+	return new DateTimeImmutable( jlife_challenges_day_date( $campaign, $index ) . ' 00:00:00', new DateTimeZone( (string) $campaign['timezone'] ) );
+}
+
+/**
+ * Whole hours from now until a campaign day opens (0 when it is open or less than an hour away).
+ *
+ * @param array                  $campaign Campaign row.
+ * @param int                    $index    Day index.
+ * @param DateTimeImmutable|null $moment   Moment (default: now).
+ * @return int
+ */
+function jlife_challenges_hours_before_release( $campaign, $index, $moment = null ) {
+	$seconds = jlife_challenges_release_moment( $campaign, $index )->getTimestamp() - ( $moment ?? jlife_challenges_now() )->getTimestamp();
+	return (int) min( 65535, max( 0, intdiv( $seconds, HOUR_IN_SECONDS ) ) );
+}
+
+/**
+ * "December 21, 2026 at 12:00 AM PST" for the moment a day opens, in campaign time.
+ *
+ * @param array $campaign Campaign row.
+ * @param int   $index    Day index.
+ * @return string
+ */
+function jlife_challenges_release_label( $campaign, $index ) {
+	$moment = jlife_challenges_release_moment( $campaign, $index );
+	$vi     = 0 === strpos( (string) determine_locale(), 'vi' );
+	/* translators: 1: date, 2: time with time zone. */
+	return sprintf( __( '%1$s at %2$s', 'jlife-challenges' ), jlife_challenges_format_date( $moment->format( 'Y-m-d' ) ), $moment->format( $vi ? 'H:i T' : 'g:i A T' ) );
+}

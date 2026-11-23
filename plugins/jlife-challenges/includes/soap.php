@@ -43,9 +43,10 @@ function jlife_challenges_clean_text( $text ) {
  *
  * @param int         $campaign_id Campaign (0 = personal).
  * @param string|null $day_key     Requested day key (campaign: d###; personal: Y-m-d); null = today.
- * @return array|WP_Error { campaign: ?array, day_key: string, index: int }
+ * @param int|null    $user_id     Who asks (a day that has not opened is available only to an active group starter, #209).
+ * @return array|WP_Error { campaign: ?array, day_key: string, index: int, ahead: bool }
  */
-function jlife_challenges_resolve_day( $campaign_id, $day_key ) {
+function jlife_challenges_resolve_day( $campaign_id, $day_key, $user_id = null ) {
 	if ( 0 === (int) $campaign_id ) {
 		$today = wp_date( 'Y-m-d', jlife_challenges_now()->getTimestamp() );
 		$key   = null === $day_key ? $today : (string) $day_key;
@@ -56,6 +57,7 @@ function jlife_challenges_resolve_day( $campaign_id, $day_key ) {
 			'campaign' => null,
 			'day_key'  => $key,
 			'index'    => 0,
+			'ahead'    => false,
 		);
 	}
 	$campaign = jlife_challenges_get_campaign( $campaign_id );
@@ -63,13 +65,16 @@ function jlife_challenges_resolve_day( $campaign_id, $day_key ) {
 		return jlife_challenges_denied();
 	}
 	$index = null === $day_key ? jlife_challenges_current_day( $campaign ) : jlife_challenges_day_index( $campaign, $day_key );
-	if ( $index < 1 || ! jlife_challenges_day_is_open( $campaign, $index ) ) {
+	// A day that has not opened is available only to an active starter of an active group (#209); everyone else keeps the reading-day rule.
+	$ahead = $index >= 1 && ! jlife_challenges_day_is_open( $campaign, $index );
+	if ( $index < 1 || ( $ahead && ( null === $user_id || ! jlife_challenges_can_read_ahead( (int) $user_id, $campaign ) ) ) ) {
 		return new WP_Error( 'jlife_day_invalid', __( 'That day is not available.', 'jlife-challenges' ) );
 	}
 	return array(
 		'campaign' => $campaign,
 		'day_key'  => jlife_challenges_day_key( $index ),
 		'index'    => $index,
+		'ahead'    => $ahead,
 	);
 }
 
@@ -120,7 +125,7 @@ function jlife_challenges_save_draft( $user_id, $campaign_id, $day_key, $text ) 
 	if ( ! jlife_challenges_campaign_accepts_writes( (int) $campaign_id ) ) {
 		return jlife_challenges_campaign_closed_error();
 	}
-	$day = jlife_challenges_resolve_day( $campaign_id, $day_key );
+	$day = jlife_challenges_resolve_day( $campaign_id, $day_key, $user_id );
 	if ( is_wp_error( $day ) ) {
 		return $day;
 	}
@@ -161,7 +166,7 @@ function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $text ) {
 	if ( ! jlife_challenges_campaign_accepts_writes( (int) $campaign_id ) ) {
 		return jlife_challenges_campaign_closed_error();
 	}
-	$day = jlife_challenges_resolve_day( $campaign_id, $day_key );
+	$day = jlife_challenges_resolve_day( $campaign_id, $day_key, $user_id );
 	if ( is_wp_error( $day ) ) {
 		return $day;
 	}
@@ -202,6 +207,7 @@ function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $text ) {
 			'campaign' => $day['campaign'],
 			'day_key'  => $day['day_key'],
 			'index'    => $day['index'],
+			'ahead'    => $day['ahead'],
 		)
 	);
 	$first = $score['passes'] && 'draft' === $entry['status'];
@@ -231,7 +237,7 @@ function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $text ) {
 	);
 	if ( $day['campaign'] ) {
 		$ledger = $score['passes']
-			? jlife_challenges_record_score( $day['campaign'], $user_id, $day['index'], (int) $entry['id'], $score )
+			? jlife_challenges_record_score( $day['campaign'], $user_id, $day['index'], (int) $entry['id'], $score, $day['ahead'] )
 			: jlife_challenges_ledger_row( (int) $day['campaign']['id'], $user_id, $day['day_key'] );
 		if ( $ledger ) {
 			$result = array_merge( $result, $ledger );
@@ -268,19 +274,22 @@ function jlife_challenges_ledger_row( $campaign_id, $user_id, $day_key ) {
  * @param int   $index    Day index.
  * @param int   $entry_id Entry ID.
  * @param array $score    Engine result ({ engine, version }).
+ * @param bool  $ahead    The day had not opened yet (an authorized starter, #209): on time by definition; only "early" and the whole hours before it opens are recorded, never text.
  * @return array|null { points, status, reason }; null for a closed campaign (no row is written).
  */
-function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id, $score ) {
+function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id, $score, $ahead = false ) {
 	if ( ! jlife_challenges_campaign_accepts_writes( $campaign ) ) {
 		return null;
 	}
 	global $wpdb;
-	$on_time = jlife_challenges_is_on_time( $campaign, $index );
+	$ahead   = (bool) $ahead && ! jlife_challenges_day_is_open( $campaign, $index );
+	$on_time = $ahead || jlife_challenges_is_on_time( $campaign, $index );
 	$day_key = jlife_challenges_day_key( $index );
+	$hours   = $ahead ? jlife_challenges_hours_before_release( $campaign, $index ) : 0;
 	// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix; INSERT IGNORE relies on the UNIQUE key.
 	$wpdb->query(
 		$wpdb->prepare(
-			'INSERT IGNORE INTO ' . jlife_challenges_table( 'score_ledger' ) . " (campaign_id, user_id, day_key, entry_id, points, status, reason, source, engine, engine_version, created) VALUES (%d, %d, %s, %d, %d, %s, %s, 'platform', %s, %s, %s)",
+			'INSERT IGNORE INTO ' . jlife_challenges_table( 'score_ledger' ) . " (campaign_id, user_id, day_key, entry_id, points, status, reason, source, engine, engine_version, early, early_hours, created) VALUES (%d, %d, %s, %d, %d, %s, %s, 'platform', %s, %s, %d, %d, %s)",
 			(int) $campaign['id'],
 			(int) $user_id,
 			$day_key,
@@ -290,6 +299,8 @@ function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id, 
 			$on_time ? '' : JLIFE_CHALLENGES_LATE_RULE,
 			(string) $score['engine'],
 			(string) $score['version'],
+			$ahead ? 1 : 0,
+			$hours,
 			current_time( 'mysql', true )
 		)
 	);
@@ -332,7 +343,7 @@ function jlife_challenges_get_my_entry( $user_id, $campaign_id, $day_key = null 
 	if ( ! jlife_challenges_can_write_entry( $user_id, $campaign_id ) ) {
 		return jlife_challenges_denied();
 	}
-	$day = jlife_challenges_resolve_day( $campaign_id, $day_key );
+	$day = jlife_challenges_resolve_day( $campaign_id, $day_key, $user_id );
 	if ( is_wp_error( $day ) ) {
 		return $day;
 	}

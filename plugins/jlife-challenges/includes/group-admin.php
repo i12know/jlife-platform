@@ -119,6 +119,9 @@ function jlife_challenges_set_group_status( $actor, $group_id, $status ) {
 	if ( $status === $group['status'] ) {
 		return true;
 	}
+	if ( 'disabled' === $status ) {
+		jlife_challenges_release_due_shares( (int) $group_id ); // #209: shares whose day has opened go out first; the rest are withdrawn below.
+	}
 	global $wpdb;
 	if ( 'active' === $status ) {
 		$m     = jlife_challenges_table( 'group_members' );
@@ -131,6 +134,9 @@ function jlife_challenges_set_group_status( $actor, $group_id, $status ) {
 		}
 	}
 	$wpdb->update( jlife_challenges_table( 'groups' ), array( 'status' => $status ), array( 'id' => (int) $group_id ), array( '%s' ), array( '%d' ) );
+	if ( 'disabled' === $status ) {
+		jlife_challenges_withdraw_unreleased_shares( 0, (int) $group_id, (int) $group['campaign_id'] );
+	}
 	jlife_challenges_audit( $actor, 'active' === $status ? 'group_enabled' : 'group_disabled', 'group', (int) $group_id, (int) $group['campaign_id'] );
 	return true;
 }
@@ -341,6 +347,7 @@ function jlife_challenges_remove_from_group( $actor, $user_id, $group_id ) {
 	if ( ! jlife_challenges_is_organizer( $actor ) || ! $membership || 'active' !== $membership['status'] || ! jlife_challenges_active_enrollment( (int) $group['campaign_id'], (int) $user_id ) ) {
 		return jlife_challenges_denied();
 	}
+	jlife_challenges_release_due_shares( (int) $group_id ); // #209
 	global $wpdb;
 	$wpdb->update(
 		jlife_challenges_table( 'group_members' ),
@@ -351,6 +358,7 @@ function jlife_challenges_remove_from_group( $actor, $user_id, $group_id ) {
 		array( 'id' => (int) $membership['id'] )
 	);
 	jlife_challenges_audit( $actor, 'group_member_removed', 'enrollment', (int) $membership['enrollment_id'], (int) $group['campaign_id'], array( 'group_id' => (int) $group_id ) );
+	jlife_challenges_withdraw_unreleased_shares( (int) $user_id, (int) $group_id, (int) $group['campaign_id'] );
 	return true;
 }
 

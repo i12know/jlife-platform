@@ -415,6 +415,38 @@ Rules the tests pin down:
 - **D17.** Admins cannot browse group feeds, and neither surface lists or opens a share. An organizer's one route to a shared post stays `jlife_challenges_hide_share()`: it takes a share ID from a report, is audited (`share_hidden`) and tells the author. Hiding changes no count of points and no text appears anywhere afterwards.
 - **Scores.** Both surfaces are read-only: viewing or exporting never writes a ledger row, enrollment or membership.
 
+### 4i. Group starters read ahead and schedule a group share (#209)
+
+Owner-approved rule (#209, 2026-11-22). Two separate, explicit actions. **Starter** means the existing active `starter` membership: no WordPress role, no admin access.
+
+**Who may read ahead.** `jlife_challenges_can_read_ahead()`: the campaign is `running` or `upcoming`, the person has an active enrollment in it, and an active `starter` membership in an **active** group of that same campaign. Everyone else keeps the rule that a day must have opened in campaign time. A `closed`, `draft` or `ended` campaign never opens extra days. The same check sits in `jlife_challenges_resolve_day()`, so the page, the REST autosave and the submit are one path.
+
+| Actor / case | Open a future day | Draft / submit a future day | Schedule a group share | See a scheduled share (any read) |
+|---|---|---|---|---|
+| Starter of group A (active, campaign running or upcoming) | ✅ Scripture and Ready devotional only | ✅ the normal entry flow; scored at once | ✅ to **A** only | ✅ own, as "Scheduled for…", with update and withdraw |
+| Same person, asking for group B where they are only a member | ✅ (the right is "starter of any group") | ✅ | ❌ denied; nothing is copied to B | own only |
+| Ordinary member, solo reader, member of A who is not its starter | ❌ "not available" (page, `?day=`, REST, POST) | ❌ | ❌ | ❌ never: not in My Group, counts, previews, Today, `/share`, REST |
+| Former starter (left, removed, role lost), starter of a disabled group, starter of another campaign | ❌ | ❌ | ❌ | ❌ |
+| Starter of a **closed** campaign | ❌ read-only as today | ❌ | ❌ (withdrawing stays allowed) | own only |
+| Organizer, site admin, anonymous, magic-link actor | ❌ | ❌ | ❌ | ❌ (organizers hide by ID only, D17) |
+
+**Scoring.** A submit on a future day runs the campaign's engine at once (§3a). One point per person, campaign and day (UNIQUE key), across SOAP and reflection formats and every group. It is **never** re-scored at release; edits, retries, schedule, update and withdraw never add or remove a point. Only metadata is stored: `score_ledger.early` (yes/no) and `early_hours` (whole hours before release). No text enters the ledger, the audit log or any counts-only report.
+
+**Scheduled share.** A `group_shares` row with `status = 'scheduled'` and `advance = 1`, one per entry and group (existing UNIQUE). No release time is stored: the day opens by `jlife_challenges_day_is_open()` in the **campaign's** timezone (DST-safe date arithmetic). Every existing read selects `status = 'shared'`, so a scheduled share is invisible to feeds, counts, previews, `/share` for others and any REST route by construction. `jlife_challenges_release_due_shares()` turns a due share into `shared` only if the author is still an active starter of the active group in a campaign that still takes writes; otherwise it withdraws it. Nothing runs at deploy time that could release or reset one.
+
+| Event | Result |
+|---|---|
+| Day opens (campaign time) | Next read (any member's feed or Today, or the author's own page) releases it; no browser session needed; no scoring |
+| Author leaves, is removed or moved out, loses the role, group is disabled, campaign closes | Unreleased shares are **withdrawn** (status `removed`, text cleared, audited with IDs only). A share already due is released first. Regaining the role, rejoining or re-enabling never brings one back; the author must schedule again |
+| Author withdraws | `removed`, text cleared; the earned point stays; withdrawing twice is a no-op |
+| Schedule again, update, retry | One row per entry and group (upsert); the snapshot changes only on that explicit action |
+| Organizer hid it (D17) | Stays hidden; not re-scheduled |
+| Rollover or deploy | Shares never carry between campaigns and keep their campaign, day and group, so pilot shares never appear in the official campaign |
+
+**Presentation after release.** My Group: `advance = 1` posts first within that day's section (#203), labelled. Today: a collapsed "[Group name] leader's thoughts" disclosure per eligible group after the Scripture and devotional, before the writing area, from the same row; omitted when there is none; the author's own post is not repeated.
+
+**Read-ahead content.** Scripture and **Ready** devotionals of that day only. No drafts, nobody else's writing, no change to a post's status, public date or comment window.
+
 ## 5. Required tests (written first; CI)
 
 **Calendar:**

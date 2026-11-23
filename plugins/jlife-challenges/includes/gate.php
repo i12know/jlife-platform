@@ -204,3 +204,28 @@ function jlife_challenges_can_read_progress( $viewer_user_id, $subject_user_id )
 	}
 	return (int) $viewer_user_id === (int) $subject_user_id || jlife_challenges_is_organizer( $viewer_user_id );
 }
+
+/**
+ * May this person open, draft and submit days of the campaign that have not
+ * opened yet (#209)? Only an active starter of an active group of that campaign,
+ * while the campaign is running or upcoming: an active enrollment, an active
+ * `starter` membership and a group that is not disabled. This is the one narrow
+ * exception to "a day must have opened"; it grants no WordPress role, no organizer
+ * screen and no access to anyone's entries. A closed, draft or ended campaign
+ * never opens extra days.
+ *
+ * @param int        $user_id  User ID.
+ * @param array|null $campaign Campaign row.
+ * @return bool
+ */
+function jlife_challenges_can_read_ahead( $user_id, $campaign ) {
+	if ( (int) $user_id < 1 || ! is_array( $campaign ) || ! in_array( jlife_challenges_campaign_phase( $campaign ), array( 'running', 'upcoming' ), true ) ) {
+		return false;
+	}
+	foreach ( jlife_challenges_active_memberships( (int) $campaign['id'], (int) $user_id ) as $m ) {
+		if ( 'starter' === $m['role'] ) {
+			return true;
+		}
+	}
+	return false;
+}

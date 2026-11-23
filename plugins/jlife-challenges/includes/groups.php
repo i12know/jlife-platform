@@ -733,6 +733,8 @@ function jlife_challenges_leave_group( $user_id, $group_id ) {
 	if ( $user_id < 1 || ! $m || 'active' !== $m['status'] ) {
 		return jlife_challenges_denied();
 	}
+	// A share whose day has already opened is released while its author is still the starter; the rest are withdrawn below (#209).
+	jlife_challenges_release_due_shares( (int) $group_id );
 	global $wpdb;
 	$wpdb->update(
 		jlife_challenges_table( 'group_members' ),
@@ -743,6 +745,7 @@ function jlife_challenges_leave_group( $user_id, $group_id ) {
 		array( 'id' => (int) $m['id'] )
 	);
 	jlife_challenges_audit( $user_id, 'group_left', 'enrollment', (int) $m['enrollment_id'], (int) $m['campaign_id'], array( 'group_id' => (int) $group_id ) );
+	jlife_challenges_withdraw_unreleased_shares( (int) $user_id, (int) $group_id, (int) $m['campaign_id'] );
 	return true;
 }
 
@@ -785,6 +788,7 @@ function jlife_challenges_move_member( $actor, $user_id, $new_group_id, $from_gr
 	}
 	global $wpdb;
 	$t = jlife_challenges_table( 'group_members' );
+	jlife_challenges_release_due_shares( (int) $from_group_id ); // #209: release what has opened before the starter role goes.
 	// End the old membership first so the swap never trips the limit; put it back if the new one fails.
 	$wpdb->update(
 		$t,
@@ -806,6 +810,7 @@ function jlife_challenges_move_member( $actor, $user_id, $new_group_id, $from_gr
 		);
 		return $added;
 	}
+	jlife_challenges_withdraw_unreleased_shares( (int) $user_id, (int) $from_group_id, (int) $group['campaign_id'] );
 	jlife_challenges_audit(
 		$actor,
 		'member_moved',
@@ -837,6 +842,9 @@ function jlife_challenges_remove_member( $actor, $campaign_id, $user_id ) {
 	global $wpdb;
 	$now       = current_time( 'mysql', true );
 	$group_ids = array_map( 'intval', array_column( jlife_challenges_active_memberships( $campaign_id, $user_id ), 'group_id' ) );
+	foreach ( $group_ids as $gid ) {
+		jlife_challenges_release_due_shares( $gid ); // Already-open shares are released while the author is still eligible (#209).
+	}
 	$wpdb->update(
 		jlife_challenges_table( 'enrollments' ),
 		array(
@@ -857,6 +865,7 @@ function jlife_challenges_remove_member( $actor, $campaign_id, $user_id ) {
 		)
 	);
 	jlife_challenges_audit( $actor, 'member_removed', 'enrollment', (int) $e['id'], (int) $campaign_id, array( 'group_ids' => $group_ids ) );
+	jlife_challenges_withdraw_unreleased_shares( (int) $user_id, 0, (int) $campaign_id );
 	return true;
 }
 

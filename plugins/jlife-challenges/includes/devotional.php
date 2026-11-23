@@ -185,14 +185,15 @@ function jlife_challenges_devotional_find( $plan_id, $day_id, $lang ) {
  *
  * @param array|null $campaign Campaign row.
  * @param string     $day_key  Day key (d001).
+ * @param bool       $ahead    An authorized starter reading ahead (#209): the day need not have opened. Never true for public pages.
  * @return bool
  */
-function jlife_challenges_devotional_released( $campaign, $day_key ) {
+function jlife_challenges_devotional_released( $campaign, $day_key, $ahead = false ) {
 	if ( ! is_array( $campaign ) ) {
 		return false;
 	}
 	$index = jlife_challenges_day_index( $campaign, (string) $day_key );
-	return $index >= 1 && jlife_challenges_day_is_open( $campaign, $index );
+	return $index >= 1 && ( $ahead || jlife_challenges_day_is_open( $campaign, $index ) );
 }
 
 /**
@@ -204,10 +205,11 @@ function jlife_challenges_devotional_released( $campaign, $day_key ) {
  * @param array|null $campaign Campaign row.
  * @param string     $day_key  Day key (d001).
  * @param string     $lang     en or vi.
+ * @param bool       $ahead    An authorized starter reading ahead (#209): the day need not have opened.
  * @return WP_Post|null
  */
-function jlife_challenges_devotional_for_day( $campaign, $day_key, $lang ) {
-	if ( ! jlife_challenges_devotional_released( $campaign, $day_key ) ) {
+function jlife_challenges_devotional_for_day( $campaign, $day_key, $lang, $ahead = false ) {
+	if ( ! jlife_challenges_devotional_released( $campaign, $day_key, $ahead ) ) {
 		return null;
 	}
 	$post = jlife_challenges_devotional_find( (string) $campaign['plan_id'], (string) $day_key, (string) $lang );
@@ -345,11 +347,12 @@ function jlife_challenges_devotional_questions( $post ) {
  * @param array|null $campaign Campaign row.
  * @param string     $day_key  Day key (d001).
  * @param string     $lang     en or vi.
+ * @param bool       $ahead    An authorized starter reading ahead (#209): the day need not have opened.
  * @return array[]
  */
-function jlife_challenges_guidance_sources( $campaign, $day_key, $lang ) {
+function jlife_challenges_guidance_sources( $campaign, $day_key, $lang, $ahead = false ) {
 	$sources = array();
-	$post    = jlife_challenges_devotional_for_day( $campaign, $day_key, $lang );
+	$post    = jlife_challenges_devotional_for_day( $campaign, $day_key, $lang, $ahead );
 	if ( $post ) {
 		$sources[] = array(
 			'id'          => 'devotional-' . (int) $post->ID,
@@ -388,7 +391,7 @@ function jlife_challenges_view_guidance( $view ) {
 	if ( null === $campaign || '' === $day_key ) {
 		return array();
 	}
-	return jlife_challenges_guidance_sources( $campaign, $day_key, jlife_challenges_devotional_user_language( get_current_user_id() ) );
+	return jlife_challenges_guidance_sources( $campaign, $day_key, jlife_challenges_devotional_user_language( get_current_user_id() ), ! empty( $view['ahead'] ) );
 }
 
 /**
@@ -453,7 +456,7 @@ function jlife_challenges_devotional_excluded_text( $excluded, $context ) {
 		return $excluded;
 	}
 	foreach ( jlife_challenges_devotional_languages() as $lang ) {
-		$post = jlife_challenges_devotional_for_day( $campaign, $day_key, $lang );
+		$post = jlife_challenges_devotional_for_day( $campaign, $day_key, $lang, ! empty( $context['ahead'] ) );
 		if ( ! $post ) {
 			continue;
 		}
@@ -539,7 +542,7 @@ function jlife_challenges_render_devotional( $view ) {
 		$lang     = jlife_challenges_devotional_user_language( get_current_user_id() );
 		$campaign = is_array( $view['campaign'] ?? null ) ? $view['campaign'] : null;
 	}
-	$post = jlife_challenges_devotional_for_day( $campaign, $day_key, $lang );
+	$post = jlife_challenges_devotional_for_day( $campaign, $day_key, $lang, ! $public && ! empty( $view['ahead'] ) );
 	if ( ! $post ) {
 		return '';
 	}

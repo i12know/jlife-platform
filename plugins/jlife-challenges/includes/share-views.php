@@ -30,19 +30,24 @@ function jlife_challenges_current_share( $user_id, $entry_id, $group_id ) {
  * The groups a person can share to in a campaign, with whether one entry is
  * already shared to each. Empty for a solo reader: no box, no share UI.
  *
- * @param int $user_id     Author.
- * @param int $campaign_id Campaign.
- * @param int $entry_id    Entry (0 = none yet).
- * @return array[] Rows of { id, name, status } where status is '' | shared | hidden.
+ * @param int  $user_id     Author.
+ * @param int  $campaign_id Campaign.
+ * @param int  $entry_id    Entry (0 = none yet).
+ * @param bool $ahead       The day has not opened (#209): only the groups the person starts.
+ * @return array[] Rows of { id, name, status, day_key } where status is '' | shared | scheduled | hidden.
  */
-function jlife_challenges_share_groups( $user_id, $campaign_id, $entry_id = 0 ) {
+function jlife_challenges_share_groups( $user_id, $campaign_id, $entry_id = 0, $ahead = false ) {
 	$out = array();
 	foreach ( jlife_challenges_active_memberships( (int) $campaign_id, (int) $user_id ) as $m ) {
+		if ( $ahead && 'starter' !== $m['role'] ) {
+			continue;
+		}
 		$share = $entry_id > 0 ? jlife_challenges_current_share( $user_id, (int) $entry_id, (int) $m['group_id'] ) : null;
 		$out[] = array(
-			'id'     => (int) $m['group_id'],
-			'name'   => (string) $m['name'],
-			'status' => $share ? (string) $share['status'] : '',
+			'id'      => (int) $m['group_id'],
+			'name'    => (string) $m['name'],
+			'status'  => $share ? (string) $share['status'] : '',
+			'day_key' => $share ? (string) $share['day_key'] : '',
 		);
 	}
 	return $out;
@@ -73,6 +78,9 @@ function jlife_challenges_share_view( $user_id, $day_key ) {
 		return $view;
 	}
 	foreach ( jlife_challenges_active_memberships( (int) $view['campaign']['id'], $user_id ) as $m ) {
+		if ( ! empty( $view['ahead'] ) && 'starter' !== $m['role'] ) {
+			continue; // Before the day opens only the groups the person starts (#209).
+		}
 		$share = jlife_challenges_current_share( $user_id, (int) $entry['id'], (int) $m['group_id'] );
 		$block = '';
 		if ( jlife_challenges_needs_guardian_consent( $enrollment ) ) {
@@ -196,4 +204,43 @@ function jlife_challenges_group_view( $user_id, $group_id = 0 ) {
 		'can_start'  => jlife_challenges_can_start_group( $user_id ),
 		'posts'      => $feed,
 	);
+}
+
+/**
+ * The released thoughts of a group's starter for one day, for Today (#209): the
+ * very same shared posts My Group lists first, one entry per group the viewer is
+ * an active member of. Nothing that is still scheduled can appear: the query
+ * reads only released (`shared`) posts of an advance share, after the release
+ * check, and only for a day that has opened in that campaign. The author's own
+ * post is not repeated for them. A group the viewer is not in contributes nothing.
+ *
+ * @param int    $viewer_user_id Viewer.
+ * @param array  $campaign       Campaign row.
+ * @param string $day_key        Day key.
+ * @return array[] Rows of { group_id, group_name, author, body }, in the order of the viewer's groups.
+ */
+function jlife_challenges_leader_thoughts( $viewer_user_id, $campaign, $day_key ) {
+	$index = jlife_challenges_day_index( $campaign, (string) $day_key );
+	if ( (int) $viewer_user_id < 1 || $index < 1 || ! jlife_challenges_day_is_open( $campaign, $index ) ) {
+		return array();
+	}
+	global $wpdb;
+	$out = array();
+	foreach ( jlife_challenges_active_memberships( (int) $campaign['id'], (int) $viewer_user_id ) as $m ) {
+		if ( ! jlife_challenges_can_read_feed( $viewer_user_id, (int) $m['group_id'] ) ) {
+			continue;
+		}
+		jlife_challenges_release_due_shares( (int) $m['group_id'] );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix.
+		$rows = (array) $wpdb->get_results( $wpdb->prepare( 'SELECT user_id, body FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND campaign_id = %d AND day_key = %s AND status = 'shared' AND advance = 1 AND user_id <> %d ORDER BY updated DESC", (int) $m['group_id'], (int) $campaign['id'], (string) $day_key, (int) $viewer_user_id ), ARRAY_A );
+		foreach ( $rows as $r ) {
+			$out[] = array(
+				'group_id'   => (int) $m['group_id'],
+				'group_name' => (string) $m['name'],
+				'author'     => jlife_challenges_feed_name( (int) $r['user_id'] ),
+				'body'       => (string) $r['body'],
+			);
+		}
+	}
+	return $out;
 }
