@@ -117,7 +117,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 	$html = '<!doctype html><html lang="' . esc_attr( '' !== $lang ? $lang : str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=26' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=27' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
 		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -296,6 +296,7 @@ function jlife_challenges_render_optional_readings( $reading ) {
  * @return string
  */
 function jlife_challenges_render_harmony_sections( $day ) {
+	$vi  = 0 === strpos( (string) determine_locale(), 'vi' );
 	$out = '';
 	foreach ( (array) ( $day['harmony_sections'] ?? array() ) as $section ) {
 		$url = (string) ( $section['url'] ?? '' );
@@ -304,12 +305,33 @@ function jlife_challenges_render_harmony_sections( $day ) {
 		}
 		/* translators: 1: Harmony Bible section number, 2: section title. */
 		$label = sprintf( __( "Harmony's section %1\$s: %2\$s", 'jlife-challenges' ), (string) $section['number'], (string) $section['title'] );
-		$out  .= '<li><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . esc_html( $label ) . '</a></li>';
+		$out  .= '<li><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . esc_html( $label ) . '</a>';
+		if ( $vi ) {
+			$out .= ' ' . jlife_challenges_harmony_translate_link( $url, $label );
+		}
+		$out .= '</li>';
 	}
 	if ( '' === $out ) {
 		return '';
 	}
-	return '<div class="jl-harmony"><h3>' . esc_html__( 'Harmony Bible sections', 'jlife-challenges' ) . '</h3><ul>' . $out . '</ul></div>';
+	$notice = $vi ? '<p class="jl-harmony-note">' . esc_html__( 'Automatic Google translation; it may be inaccurate, including the Scripture on that page.', 'jlife-challenges' ) . '</p>' : '';
+	return '<div class="jl-harmony"><h3>' . esc_html__( 'Harmony Bible sections', 'jlife-challenges' ) . '</h3>' . $notice . '<ul>' . $out . '</ul></div>';
+}
+
+/**
+ * Optional Google Translate link for one Harmony page (#235, Vietnamese
+ * readers only). Only the public Harmony URL goes to Google: it comes from the
+ * reading-plan data, never from this site's request, user or tokens.
+ *
+ * @param string $harmony_url The Harmony page URL (already checked as Harmony's).
+ * @param string $label       The section's link label, for the accessible name.
+ * @return string
+ */
+function jlife_challenges_harmony_translate_link( $harmony_url, $label ) {
+	$href = 'https://translate.google.com/translate?sl=en&tl=vi&u=' . rawurlencode( $harmony_url );
+	/* translators: %s: Harmony section link label. */
+	$name = sprintf( __( 'Automatic Vietnamese translation of %s', 'jlife-challenges' ), $label );
+	return '<a class="jl-harmony-translate" href="' . esc_url( $href ) . '" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr( $name ) . '">' . esc_html__( '(Automatic Vietnamese translation)', 'jlife-challenges' ) . '</a>';
 }
 
 /**
