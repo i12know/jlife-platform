@@ -552,7 +552,7 @@ function jlife_challenges_render_reminder_settings( $user_id, $campaign_id, $sav
 	$picker  = jlife_challenges_render_bible_picker( $user_id, $campaign_id, $bible_saved );
 	$heading = '' !== $toggle ? __( 'Daily reading email', 'jlife-challenges' ) : __( 'Bible', 'jlife-challenges' );
 	$section = '' !== ( $toggle . $picker ) ? '<section class="jl-reminders"><h2>' . esc_html( $heading ) . '</h2>' . $toggle . $picker . '</section>' : '';
-	$inner = jlife_challenges_render_language_setting( $user_id, $campaign_id, $language_saved ) . $section;
+	$inner   = jlife_challenges_render_language_setting( $user_id, $campaign_id, $language_saved ) . $section;
 	if ( '' === $inner ) {
 		return '';
 	}
