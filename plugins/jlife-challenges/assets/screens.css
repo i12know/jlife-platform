@@ -141,3 +141,7 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-leader-body{overflow-wrap:anywhere}.jl-leader-body p{margin:.4rem 0}
 .jl-leader-post{border-left:4px solid var(--accent)}
 .jl-leader-label{margin:0 0 .25rem;font-size:.8125rem;font-weight:700;color:var(--muted)}
+.jl-settings{margin:.5rem 0}
+.jl-settings>summary{display:list-item;list-style-position:inside;min-height:2.75rem;padding:.65rem .75rem;border:1px solid var(--line);border-radius:.6rem;background:var(--soft);font-weight:700;cursor:pointer;overflow-wrap:anywhere}
+.jl-settings>summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.jl-settings[open]>summary{margin-bottom:.25rem}

@@ -365,8 +365,8 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 	public function test_picker_markup_is_in_the_reminder_section_under_the_language() {
 		update_option( 'jlife_reminders_mode', 'live' ); // The checkbox and its heading show only in saved Live mode (#189).
 		$html = $this->section( $this->u['a'] );
-		$this->assertStringStartsWith( '<section class="jl-reminders jl-language"><h2>Language</h2>', $html );
-		$this->assertStringEndsWith( '</section>', $html );
+		$this->assertMatchesRegularExpression( '#^<details class="jl-settings"><summary>[^<]+</summary><section class="jl-reminders jl-language"><h2>Language</h2>#', $html );
+		$this->assertStringEndsWith( '</section></details>', $html );
 		$language = strpos( $html, 'id="jl-language"' );
 		$reminder = strpos( $html, '<section class="jl-reminders"><h2>Daily reading email</h2>' );
 		$picker   = strpos( $html, 'class="jl-bible-picker"' );
@@ -654,13 +654,48 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * The collapsed settings row (#237): saved state only, EN and VI, one or two
+	 * Bibles, Email shown only in Live mode; closed on a plain visit, open after
+	 * each save flag; one copy of each control.
+	 */
+	public function test_settings_row_summary_and_open_state() {
+		$a = $this->u['a'];
+		update_option( 'jlife_reminders_mode', 'off' );
+		$html = $this->section( $a );
+		$this->assertStringContainsString( '<details class="jl-settings"><summary>Settings: English · NLT</summary>', $html );
+		$this->assertStringNotContainsString( 'Email:', $html );
+
+		$this->rest_as( $a, array( 'bible_version_2' => 'erv' ) );
+		$this->assertStringContainsString( '<summary>Settings: English · NLT + ERV</summary>', $this->section( $a ) );
+
+		update_option( 'jlife_reminders_mode', 'live' );
+		$this->assertStringContainsString( '<summary>Settings: English · NLT + ERV · Email: Off</summary>', $this->section( $a ) );
+		jlife_challenges_set_reminder( $a, $a, $this->campaign, true, 'en_US' );
+		$this->assertStringContainsString( ' · Email: On</summary>', $this->section( $a ) );
+
+		jlife_challenges_set_language( $a, $a, 'vi' );
+		$vi = $this->section( $a );
+		$this->assertMatchesRegularExpression( '#<summary>Settings: Tiếng Việt · [^<]+ · Email: On</summary>#u', $vi );
+
+		$this->assertStringNotContainsString( '<details class="jl-settings" open>', $html );
+		foreach ( array( array( true, false, false ), array( false, true, false ), array( false, false, true ) ) as $flags ) {
+			$open = jlife_challenges_render_reminder_settings( $a, $this->campaign, ...$flags );
+			$this->assertStringContainsString( '<details class="jl-settings" open>', $open );
+			$this->assertSame( 1, substr_count( $open, 'id="jl-bible-version"' ) );
+			$this->assertSame( 1, substr_count( $open, 'id="jl-language"' ) );
+		}
+		update_option( 'jlife_reminders_mode', 'off' );
+		$this->assertStringNotContainsString( 'jl_reminder', $this->section( $a ), 'no hidden checkbox outside Live' );
+	}
+
+	/**
 	 * The picker's script and the new stylesheet version load on My Marathon.
 	 */
 	public function test_my_marathon_loads_the_script_and_stylesheet_version() {
 		$html = jlife_challenges_page_html( 'My Marathon', $this->section( $this->u['a'] ), 'marathon', array( 'reminder', 'bible' ) );
 		$this->assertStringContainsString( 'assets/bible.js?v=1', $html );
 		$this->assertStringContainsString( 'assets/reminder.js?v=2', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=25', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=26', $html );
 		$this->assertStringNotContainsString( 'bible.js', jlife_challenges_page_html( 'Today', '', 'today', array( 'soap', 'reminder' ) ) );
 		$css = (string) file_get_contents( dirname( __DIR__ ) . '/assets/screens.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
 		$this->assertStringContainsString( '.jl-bible-picker', $css );
