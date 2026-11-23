@@ -87,8 +87,26 @@ function buildPlan(plan, linkConfig, toEvent) {
   const translations = Object.entries(plan.i18n || {}).map(([lang, rel]) => {
     const t = readJson(path.join(PLAN_DIR, rel));
     if (t.plan_id !== plan.plan_id || t.language !== lang) errors.push(`${rel}: plan_id/language do not match ${plan.plan_id}/${lang}`);
-    return { lang, rel, titles: t.titles || {} };
+    return { lang, rel, titles: t.titles || {}, source_attribution: t.source_attribution };
   });
+  // The supplemental plan's translated titles are Harmony section titles keyed by
+  // Robertson event ID (not day titles): every key must be a section the plan
+  // uses, every section needs a title, no empty strings.
+  const sectionTitles = Boolean(plan.harmony_sections_url);
+  if (sectionTitles) {
+    const used = new Set(records.flatMap((r) => buildHarmonySections(
+      list(r[col.robertson_sections]).map((x) => x.replace(/^#/, '')), toEvent, plan.harmony_sections_url, plan.harmony_sections_overrides,
+    ).map((x) => x.gospel_event_id)));
+    for (const t of translations) {
+      for (const [key, title] of Object.entries(t.titles)) {
+        if (!used.has(key)) errors.push(`${t.rel}: ${key} is not a Harmony section of ${plan.plan_id}`);
+        if (typeof title !== 'string' || title.trim() === '') errors.push(`${t.rel}: empty ${t.lang} title for ${key}`);
+      }
+      for (const key of used) {
+        if (!String(t.titles[key] || '').trim()) errors.push(`${t.rel}: no ${t.lang} title for ${key}`);
+      }
+    }
+  }
 
   const days = records.map((r) => {
     const day = Number(r[col.day]);
@@ -113,11 +131,17 @@ function buildPlan(plan, linkConfig, toEvent) {
     }
     const notes = String(r[col.notes] || '').trim();
     const harmonySections = plan.harmony_sections_url
-      ? { harmony_sections: buildHarmonySections(robertson, toEvent, plan.harmony_sections_url, plan.harmony_sections_overrides) }
+      ? { harmony_sections: buildHarmonySections(robertson, toEvent, plan.harmony_sections_url, plan.harmony_sections_overrides).map((section) => {
+        const tr = {};
+        for (const t of translations) {
+          if (t.titles[section.gospel_event_id]) tr[t.lang] = { title: String(t.titles[section.gospel_event_id]).trim() };
+        }
+        return Object.keys(tr).length ? { ...section, i18n: tr } : section;
+      }) }
       : {};
     const dayId = `d${String(day).padStart(3, '0')}`;
     const i18n = {};
-    for (const t of translations) {
+    for (const t of sectionTitles ? [] : translations) {
       const title = String(t.titles[dayId] || '').trim();
       if (!title) {
         errors.push(`${t.rel}: no ${t.lang} title for ${dayId}`);
@@ -147,6 +171,15 @@ function buildPlan(plan, linkConfig, toEvent) {
     };
   });
 
+  // Plan-level translated source line (#119): { vi: { source_attribution } }.
+  const planI18n = {};
+  for (const t of translations) {
+    if (t.source_attribution !== undefined) {
+      if (typeof t.source_attribution !== 'string' || t.source_attribution.trim().length < 20) errors.push(`${t.rel}: source_attribution must be a real sentence`);
+      else planI18n[t.lang] = { source_attribution: t.source_attribution.trim() };
+    }
+  }
+
   if (errors.length) throw new Error(`${plan.plan_id}:\n  ${errors.join('\n  ')}`);
 
   const doc = {
@@ -164,6 +197,7 @@ function buildPlan(plan, linkConfig, toEvent) {
     source_attribution: plan.source_attribution,
     rights_note: plan.rights_note,
     links_config: linkConfig,
+    ...(Object.keys(planI18n).length ? { i18n: planI18n } : {}),
     days,
   });
   return doc;

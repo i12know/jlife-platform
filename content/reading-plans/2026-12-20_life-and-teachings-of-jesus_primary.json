@@ -27,6 +27,11 @@
       "embed": true
     }
   },
+  "i18n": {
+    "vi": {
+      "source_attribution": "Lịch đọc 104 ngày do chủ dự án biên soạn (06/09/2026), theo cách sắp xếp Cuộc đời và Lời dạy của Chúa Giê-xu của PlusNothing; các phần đối chiếu Phúc Âm của Robertson (1922) dùng để tham khảo chéo."
+    }
+  },
   "days": [
     {
       "day_id": "d001",

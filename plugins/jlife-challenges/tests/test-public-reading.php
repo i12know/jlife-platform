@@ -535,6 +535,54 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * Vietnamese readers get the Harmony section titles and the source line in
+	 * Vietnamese (#119); English stays English, and a section without a
+	 * Vietnamese title falls back to English.
+	 */
+	public function test_vietnamese_harmony_titles_and_source_line() {
+		$post_id = $this->post_of( 'd001' );
+		$plan    = jlife_studies_get_json_meta( $post_id, '_jlife_plan' );
+
+		$plan['i18n'] = array( 'vi' => array( 'source_attribution' => 'Lịch đọc 104 ngày do chủ dự án biên soạn, theo PlusNothing; Robertson (1922) dùng để tham khảo chéo.' ) );
+		jlife_studies_put_json_meta( $post_id, '_jlife_plan', $plan );
+
+		$supplemental = jlife_studies_get_json_meta( $post_id, '_jlife_supplemental' );
+		$this->assertGreaterThan( 1, count( $supplemental['day']['harmony_sections'] ) );
+		$supplemental['day']['harmony_sections'][0]['i18n'] = array( 'vi' => array( 'title' => 'Lu-ca giải thích cách ông tìm hiểu và viết sách' ) );
+		jlife_studies_put_json_meta( $post_id, '_jlife_supplemental', $supplemental );
+		$english_second = $supplemental['day']['harmony_sections'][1]['title'];
+
+		$vi = $this->main_of( $this->page( 'd001', 'vi' ) );
+		$this->assertStringContainsString( ': Lu-ca giải thích cách ông tìm hiểu và viết sách</a>', $vi );
+		$this->assertStringNotContainsString( 'In the Dedication Luke Explains', $vi );
+		$this->assertStringContainsString( esc_html( $english_second ), $vi, 'a section with no Vietnamese title keeps its English title' );
+		$this->assertStringContainsString( '<p class="jl-source"><small>Lịch đọc 104 ngày do chủ dự án biên soạn, theo PlusNothing; Robertson (1922) dùng để tham khảo chéo.</small></p>', $vi );
+		$this->assertStringNotContainsString( 'Owner-created', $vi );
+		$this->assertStringContainsString( 'href="https://harmony-bible.com/sections/1/"', $vi, 'links never change' );
+
+		$en = $this->main_of( $this->page( 'd001', 'en' ) );
+		$this->assertStringContainsString( 'In the Dedication Luke Explains', $en );
+		$this->assertStringNotContainsString( 'Lu-ca giải thích', $en );
+		$this->assertStringContainsString( '<p class="jl-source"><small>Owner-created 104-day schedule', $en );
+	}
+
+	/**
+	 * The locked-day heading reads as a statement, not as missing content, in
+	 * both languages (#119).
+	 */
+	public function test_the_locked_day_heading_in_both_languages() {
+		$view = array( 'state' => 'unavailable' );
+		$en   = (string) jlife_challenges_render_no_day( $view );
+		$this->assertStringContainsString( '<h1>This day hasn&#039;t opened yet</h1>', $en );
+		$this->assertStringNotContainsString( 'Not available', $en );
+		$this->assertStringNotContainsString( 'That day has not opened yet.', $en, 'the body does not repeat the heading' );
+
+		$vi = (string) jlife_auth_in_locale( 'vi', static fn() => jlife_challenges_render_no_day( $view ) );
+		$this->assertStringContainsString( '<h1>Ngày đọc chưa mở</h1>', $vi );
+		$this->assertStringNotContainsString( 'Không có', $vi );
+	}
+
+	/**
 	 * Every new string has a Vietnamese draft in the catalog (the suite's
 	 * Test_Translations scans the code for the rest).
 	 */

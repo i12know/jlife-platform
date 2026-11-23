@@ -90,7 +90,10 @@
         "notes": "Notes"
       },
       "source_attribution": "Owner-created optional parallel-reading schedule (2026-09-06) following Robertson's 1922 Harmony of the Gospels (public domain), aligned day-for-day with the primary plan.",
-      "rights_note": "Reference-only schedule: dates, Scripture citations, section IDs and short titles; no Bible or study text. Optional enrichment; never adds points. Cleared for import per docs/content-rights.md §1a (PR #50)."
+      "rights_note": "Reference-only schedule: dates, Scripture citations, section IDs and short titles; no Bible or study text. Optional enrichment; never adds points. Cleared for import per docs/content-rights.md §1a (PR #50).",
+      "i18n": {
+        "vi": "i18n/rpl-harmony-parallel-2026.vi.json"
+      }
     }
   ]
 }

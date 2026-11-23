@@ -3,6 +3,7 @@
   "language": "vi",
   "status": "DRAFT",
   "note": "DRAFT Vietnamese day titles (#119): machine-assisted first draft, NOT yet reviewed by a native-speaking translator. Names and terms follow the Bản Phổ Thông (BPT) Easy-to-Read Version that the reader links to (Chúa Giê-xu, Giăng Báp-tít). Keep the ' | ' separators in step with the English titles. A translator must review every line before real participants see it.",
+  "source_attribution": "Lịch đọc 104 ngày do chủ dự án biên soạn (06/09/2026), theo cách sắp xếp Cuộc đời và Lời dạy của Chúa Giê-xu của PlusNothing; các phần đối chiếu Phúc Âm của Robertson (1922) dùng để tham khảo chéo.",
   "titles": {
     "d001": "Ban đầu",
     "d002": "Thiên sứ báo tin Giăng Báp-tít ra đời",

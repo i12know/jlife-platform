@@ -28,6 +28,11 @@
       "embed": true
     }
   },
+  "i18n": {
+    "vi": {
+      "source_attribution": "Lịch đọc song song tùy chọn do chủ dự án biên soạn (06/09/2026), theo cuốn Harmony of the Gospels (1922) của Robertson (phạm vi công cộng), sắp xếp từng ngày khớp với lịch chính."
+    }
+  },
   "days": [
     {
       "day_id": "d001",
@@ -54,13 +59,23 @@
           "number": "1",
           "title": "In the Dedication Luke Explains His Method of Research",
           "gospel_event_id": "r1922-001",
-          "url": "https://harmony-bible.com/sections/1/"
+          "url": "https://harmony-bible.com/sections/1/",
+          "i18n": {
+            "vi": {
+              "title": "Lu-ca giải thích cách ông tìm hiểu và viết sách"
+            }
+          }
         },
         {
           "number": "2",
           "title": "In His Introduction John Pictures Christ as the Word (Logos)",
           "gospel_event_id": "r1922-002",
-          "url": "https://harmony-bible.com/sections/2/"
+          "url": "https://harmony-bible.com/sections/2/",
+          "i18n": {
+            "vi": {
+              "title": "Giăng giới thiệu Đấng Christ là Ngôi Lời (Logos)"
+            }
+          }
         }
       ],
       "passages": [
@@ -158,7 +173,12 @@
           "number": "4",
           "title": "The Annunciation of the Birth of the Baptist to Zacharias",
           "gospel_event_id": "r1922-004",
-          "url": "https://harmony-bible.com/sections/4/"
+          "url": "https://harmony-bible.com/sections/4/",
+          "i18n": {
+            "vi": {
+              "title": "Thiên sứ báo tin cho Xa-cha-ri về việc Giăng Báp-tít ra đời"
+            }
+          }
         }
       ],
       "passages": [
@@ -237,13 +257,23 @@
           "number": "5",
           "title": "The Annunciation to the Virgin Mary of the Birth of Jesus",
           "gospel_event_id": "r1922-005",
-          "url": "https://harmony-bible.com/sections/5/"
+          "url": "https://harmony-bible.com/sections/5/",
+          "i18n": {
+            "vi": {
+              "title": "Thiên sứ báo tin cho trinh nữ Ma-ri về việc Chúa Giê-xu ra đời"
+            }
+          }
         },
         {
           "number": "6",
           "title": "The Song of Elisabeth to Mary Upon Her Visit",
           "gospel_event_id": "r1922-006",
-          "url": "https://harmony-bible.com/sections/6/"
+          "url": "https://harmony-bible.com/sections/6/",
+          "i18n": {
+            "vi": {
+              "title": "Ê-li-sa-bét chào đón Ma-ri đến thăm"
+            }
+          }
         }
       ],
       "passages": [
@@ -345,25 +375,45 @@
           "number": "7",
           "title": "The Magnificat of Mary",
           "gospel_event_id": "r1922-007",
-          "url": "https://harmony-bible.com/sections/7/"
+          "url": "https://harmony-bible.com/sections/7/",
+          "i18n": {
+            "vi": {
+              "title": "Bài ca ngợi khen của Ma-ri"
+            }
+          }
         },
         {
           "number": "8a",
           "title": "The Birth and Childhood of the Baptist, and His Desert Life",
           "gospel_event_id": "r1922-008",
-          "url": "https://harmony-bible.com/sections/8a/"
+          "url": "https://harmony-bible.com/sections/8a/",
+          "i18n": {
+            "vi": {
+              "title": "Giăng Báp-tít ra đời, lớn lên và sống nơi hoang mạc"
+            }
+          }
         },
         {
           "number": "8b",
           "title": "The Birth and Childhood of the Baptist, and His Desert Life",
           "gospel_event_id": "r1922-008",
-          "url": "https://harmony-bible.com/sections/8b/"
+          "url": "https://harmony-bible.com/sections/8b/",
+          "i18n": {
+            "vi": {
+              "title": "Giăng Báp-tít ra đời, lớn lên và sống nơi hoang mạc"
+            }
+          }
         },
         {
           "number": "8c",
           "title": "The Birth and Childhood of the Baptist, and His Desert Life",
           "gospel_event_id": "r1922-008",
-          "url": "https://harmony-bible.com/sections/8c/"
+          "url": "https://harmony-bible.com/sections/8c/",
+          "i18n": {
+            "vi": {
+              "title": "Giăng Báp-tít ra đời, lớn lên và sống nơi hoang mạc"
+            }
+          }
         }
       ],
       "passages": [
@@ -470,31 +520,56 @@
           "number": "8a",
           "title": "The Birth and Childhood of the Baptist, and His Desert Life",
           "gospel_event_id": "r1922-008",
-          "url": "https://harmony-bible.com/sections/8a/"
+          "url": "https://harmony-bible.com/sections/8a/",
+          "i18n": {
+            "vi": {
+              "title": "Giăng Báp-tít ra đời, lớn lên và sống nơi hoang mạc"
+            }
+          }
         },
         {
           "number": "8b",
           "title": "The Birth and Childhood of the Baptist, and His Desert Life",
           "gospel_event_id": "r1922-008",
-          "url": "https://harmony-bible.com/sections/8b/"
+          "url": "https://harmony-bible.com/sections/8b/",
+          "i18n": {
+            "vi": {
+              "title": "Giăng Báp-tít ra đời, lớn lên và sống nơi hoang mạc"
+            }
+          }
         },
         {
           "number": "8c",
           "title": "The Birth and Childhood of the Baptist, and His Desert Life",
           "gospel_event_id": "r1922-008",
-          "url": "https://harmony-bible.com/sections/8c/"
+          "url": "https://harmony-bible.com/sections/8c/",
+          "i18n": {
+            "vi": {
+              "title": "Giăng Báp-tít ra đời, lớn lên và sống nơi hoang mạc"
+            }
+          }
         },
         {
           "number": "9",
           "title": "The Annunciation to Joseph of the Birth of Jesus",
           "gospel_event_id": "r1922-009",
-          "url": "https://harmony-bible.com/sections/9/"
+          "url": "https://harmony-bible.com/sections/9/",
+          "i18n": {
+            "vi": {
+              "title": "Thiên sứ báo tin cho Giô-sép về việc Chúa Giê-xu ra đời"
+            }
+          }
         },
         {
           "number": "10",
           "title": "The Birth of Jesus",
           "gospel_event_id": "r1922-010",
-          "url": "https://harmony-bible.com/sections/10/"
+          "url": "https://harmony-bible.com/sections/10/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu ra đời"
+            }
+          }
         }
       ],
       "passages": [
@@ -645,19 +720,34 @@
           "number": "11",
           "title": "The Praise of the Angels and the Homage of the Shepherds",
           "gospel_event_id": "r1922-011",
-          "url": "https://harmony-bible.com/sections/11/"
+          "url": "https://harmony-bible.com/sections/11/",
+          "i18n": {
+            "vi": {
+              "title": "Các thiên sứ ca ngợi và các người chăn chiên thờ lạy"
+            }
+          }
         },
         {
           "number": "12",
           "title": "The Circumcision of Jesus",
           "gospel_event_id": "r1922-012",
-          "url": "https://harmony-bible.com/sections/12/"
+          "url": "https://harmony-bible.com/sections/12/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu chịu cắt bì"
+            }
+          }
         },
         {
           "number": "13",
           "title": "The Presentation in the Temple with the Homage of Simeon and Anna",
           "gospel_event_id": "r1922-013",
-          "url": "https://harmony-bible.com/sections/13/"
+          "url": "https://harmony-bible.com/sections/13/",
+          "i18n": {
+            "vi": {
+              "title": "Dâng Chúa Giê-xu trong đền thờ, có Si-mê-ôn và An-na chúc tụng"
+            }
+          }
         }
       ],
       "passages": [
@@ -782,13 +872,23 @@
           "number": "14",
           "title": "Magi Visit the New-born King of the Jews",
           "gospel_event_id": "r1922-014",
-          "url": "https://harmony-bible.com/sections/14/"
+          "url": "https://harmony-bible.com/sections/14/",
+          "i18n": {
+            "vi": {
+              "title": "Các nhà thông thái đến thăm vua mới sinh của dân Do-thái"
+            }
+          }
         },
         {
           "number": "15",
           "title": "The Child Jesus Carried to Egypt, and the Children at Bethlehem Slain",
           "gospel_event_id": "r1922-015",
-          "url": "https://harmony-bible.com/sections/15/"
+          "url": "https://harmony-bible.com/sections/15/",
+          "i18n": {
+            "vi": {
+              "title": "Con trẻ Giê-xu được đưa sang Ai-cập, và các trẻ em ở Bết-lê-hem bị giết"
+            }
+          }
         }
       ],
       "passages": [
@@ -897,25 +997,45 @@
           "number": "16",
           "title": "The Child Brought from Egypt to Nazareth",
           "gospel_event_id": "r1922-016",
-          "url": "https://harmony-bible.com/sections/16/"
+          "url": "https://harmony-bible.com/sections/16/",
+          "i18n": {
+            "vi": {
+              "title": "Con trẻ Giê-xu từ Ai-cập trở về Na-xa-rét"
+            }
+          }
         },
         {
           "number": "17",
           "title": "The Childhood of Jesus at Nazareth",
           "gospel_event_id": "r1922-017",
-          "url": "https://harmony-bible.com/sections/17/"
+          "url": "https://harmony-bible.com/sections/17/",
+          "i18n": {
+            "vi": {
+              "title": "Thời thơ ấu của Chúa Giê-xu ở Na-xa-rét"
+            }
+          }
         },
         {
           "number": "18",
           "title": "The Visit of the Boy Jesus to Jerusalem When Twelve Years Old",
           "gospel_event_id": "r1922-018",
-          "url": "https://harmony-bible.com/sections/18/"
+          "url": "https://harmony-bible.com/sections/18/",
+          "i18n": {
+            "vi": {
+              "title": "Cậu bé Giê-xu mười hai tuổi lên Giê-ru-sa-lem"
+            }
+          }
         },
         {
           "number": "19",
           "title": "The Eighteen Years at Nazareth",
           "gospel_event_id": "r1922-019",
-          "url": "https://harmony-bible.com/sections/19/"
+          "url": "https://harmony-bible.com/sections/19/",
+          "i18n": {
+            "vi": {
+              "title": "Mười tám năm ở Na-xa-rét"
+            }
+          }
         }
       ],
       "passages": [
@@ -1091,25 +1211,45 @@
           "number": "20",
           "title": "The Time of the Beginning",
           "gospel_event_id": "r1922-020",
-          "url": "https://harmony-bible.com/sections/20/"
+          "url": "https://harmony-bible.com/sections/20/",
+          "i18n": {
+            "vi": {
+              "title": "Thời điểm khởi đầu"
+            }
+          }
         },
         {
           "number": "21",
           "title": "The Message and the Messenger",
           "gospel_event_id": "r1922-021",
-          "url": "https://harmony-bible.com/sections/21/"
+          "url": "https://harmony-bible.com/sections/21/",
+          "i18n": {
+            "vi": {
+              "title": "Sứ điệp và sứ giả"
+            }
+          }
         },
         {
           "number": "22",
           "title": "A Specimen of John's Preaching",
           "gospel_event_id": "r1922-022",
-          "url": "https://harmony-bible.com/sections/22/"
+          "url": "https://harmony-bible.com/sections/22/",
+          "i18n": {
+            "vi": {
+              "title": "Một mẫu lời giảng của Giăng"
+            }
+          }
         },
         {
           "number": "23",
           "title": "The Forerunner's Picture of the Messiah Before Seeing Him",
           "gospel_event_id": "r1922-023",
-          "url": "https://harmony-bible.com/sections/23/"
+          "url": "https://harmony-bible.com/sections/23/",
+          "i18n": {
+            "vi": {
+              "title": "Giăng Báp-tít mô tả Đấng Mê-si trước khi gặp Ngài"
+            }
+          }
         }
       ],
       "passages": [
@@ -1402,25 +1542,45 @@
           "number": "3",
           "title": "Apparently Joseph's Genealogy in Matthew and Mary's in Luke",
           "gospel_event_id": "r1922-003",
-          "url": "https://harmony-bible.com/sections/3/"
+          "url": "https://harmony-bible.com/sections/3/",
+          "i18n": {
+            "vi": {
+              "title": "Gia phả của Giô-sép trong Ma-thi-ơ và của Ma-ri trong Lu-ca"
+            }
+          }
         },
         {
           "number": "24",
           "title": "Jesus Baptized by John in the Jordan",
           "gospel_event_id": "r1922-024",
-          "url": "https://harmony-bible.com/sections/24/"
+          "url": "https://harmony-bible.com/sections/24/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu chịu Giăng làm báp-têm dưới sông Giô-đan"
+            }
+          }
         },
         {
           "number": "25",
           "title": "The Three Temptations of Jesus",
           "gospel_event_id": "r1922-025",
-          "url": "https://harmony-bible.com/sections/25/"
+          "url": "https://harmony-bible.com/sections/25/",
+          "i18n": {
+            "vi": {
+              "title": "Ba lần Chúa Giê-xu bị cám dỗ"
+            }
+          }
         },
         {
           "number": "26",
           "title": "The Testimony of the Baptist to the Committee of the Sanhedrin",
           "gospel_event_id": "r1922-026",
-          "url": "https://harmony-bible.com/sections/26/"
+          "url": "https://harmony-bible.com/sections/26/",
+          "i18n": {
+            "vi": {
+              "title": "Giăng Báp-tít làm chứng trước phái đoàn Hội đồng Do-thái"
+            }
+          }
         }
       ],
       "passages": [
@@ -1684,13 +1844,23 @@
           "number": "27",
           "title": "John's Identification of Jesus as the Messiah",
           "gospel_event_id": "r1922-027",
-          "url": "https://harmony-bible.com/sections/27/"
+          "url": "https://harmony-bible.com/sections/27/",
+          "i18n": {
+            "vi": {
+              "title": "Giăng giới thiệu Chúa Giê-xu là Đấng Mê-si"
+            }
+          }
         },
         {
           "number": "28",
           "title": "Jesus Makes His First Disciples",
           "gospel_event_id": "r1922-028",
-          "url": "https://harmony-bible.com/sections/28/"
+          "url": "https://harmony-bible.com/sections/28/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu chọn các môn đệ đầu tiên"
+            }
+          }
         }
       ],
       "passages": [
@@ -1798,31 +1968,56 @@
           "number": "29",
           "title": "Jesus Works His First Miracle",
           "gospel_event_id": "r1922-029",
-          "url": "https://harmony-bible.com/sections/29/"
+          "url": "https://harmony-bible.com/sections/29/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu làm phép lạ đầu tiên"
+            }
+          }
         },
         {
           "number": "30",
           "title": "Jesus Makes a First Sojourn at Capernaum, Accompanied by His Kindred and His Early Disciples",
           "gospel_event_id": "r1922-030",
-          "url": "https://harmony-bible.com/sections/30/"
+          "url": "https://harmony-bible.com/sections/30/",
+          "i18n": {
+            "vi": {
+              "title": "Lần đầu Chúa Giê-xu ở Ca-bê-na-um cùng gia đình và các môn đệ đầu tiên"
+            }
+          }
         },
         {
           "number": "31",
           "title": "The First Cleansing of the Temple at the Passover",
           "gospel_event_id": "r1922-031",
-          "url": "https://harmony-bible.com/sections/31/"
+          "url": "https://harmony-bible.com/sections/31/",
+          "i18n": {
+            "vi": {
+              "title": "Lần thứ nhất Chúa dọn sạch đền thờ trong dịp lễ Vượt Qua"
+            }
+          }
         },
         {
           "number": "32a",
           "title": "The Interview of Nicodemus with Jesus",
           "gospel_event_id": "r1922-032",
-          "url": "https://harmony-bible.com/sections/32a/"
+          "url": "https://harmony-bible.com/sections/32a/",
+          "i18n": {
+            "vi": {
+              "title": "Ni-cô-đem gặp Chúa Giê-xu"
+            }
+          }
         },
         {
           "number": "32b",
           "title": "The Interview of Nicodemus with Jesus",
           "gospel_event_id": "r1922-032",
-          "url": "https://harmony-bible.com/sections/32b/"
+          "url": "https://harmony-bible.com/sections/32b/",
+          "i18n": {
+            "vi": {
+              "title": "Ni-cô-đem gặp Chúa Giê-xu"
+            }
+          }
         }
       ],
       "passages": [
@@ -1973,31 +2168,56 @@
           "number": "32a",
           "title": "The Interview of Nicodemus with Jesus",
           "gospel_event_id": "r1922-032",
-          "url": "https://harmony-bible.com/sections/32a/"
+          "url": "https://harmony-bible.com/sections/32a/",
+          "i18n": {
+            "vi": {
+              "title": "Ni-cô-đem gặp Chúa Giê-xu"
+            }
+          }
         },
         {
           "number": "32b",
           "title": "The Interview of Nicodemus with Jesus",
           "gospel_event_id": "r1922-032",
-          "url": "https://harmony-bible.com/sections/32b/"
+          "url": "https://harmony-bible.com/sections/32b/",
+          "i18n": {
+            "vi": {
+              "title": "Ni-cô-đem gặp Chúa Giê-xu"
+            }
+          }
         },
         {
           "number": "33",
           "title": "The Parallel Ministry of Jesus and John with John's Loyalty to Jesus",
           "gospel_event_id": "r1922-033",
-          "url": "https://harmony-bible.com/sections/33/"
+          "url": "https://harmony-bible.com/sections/33/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu và Giăng cùng làm việc, Giăng trung thành với Chúa"
+            }
+          }
         },
         {
           "number": "34a",
           "title": "Christ's Reasons for Leaving Judea",
           "gospel_event_id": "r1922-034",
-          "url": "https://harmony-bible.com/sections/34a/"
+          "url": "https://harmony-bible.com/sections/34a/",
+          "i18n": {
+            "vi": {
+              "title": "Lý do Chúa Giê-xu rời miền Giu-đê"
+            }
+          }
         },
         {
           "number": "34b",
           "title": "Christ's Reasons for Leaving Judea",
           "gospel_event_id": "r1922-034",
-          "url": "https://harmony-bible.com/sections/34b/"
+          "url": "https://harmony-bible.com/sections/34b/",
+          "i18n": {
+            "vi": {
+              "title": "Lý do Chúa Giê-xu rời miền Giu-đê"
+            }
+          }
         }
       ],
       "passages": [
@@ -2210,19 +2430,34 @@
           "number": "35a",
           "title": "Jesus in Samaria at Jacob's Well and in Sychar",
           "gospel_event_id": "r1922-035",
-          "url": "https://harmony-bible.com/sections/35a/"
+          "url": "https://harmony-bible.com/sections/35a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu ở Sa-ma-ri, bên giếng Gia-cốp và tại Xi-ca"
+            }
+          }
         },
         {
           "number": "35b",
           "title": "Jesus in Samaria at Jacob's Well and in Sychar",
           "gospel_event_id": "r1922-035",
-          "url": "https://harmony-bible.com/sections/35b/"
+          "url": "https://harmony-bible.com/sections/35b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu ở Sa-ma-ri, bên giếng Gia-cốp và tại Xi-ca"
+            }
+          }
         },
         {
           "number": "35c",
           "title": "Jesus in Samaria at Jacob's Well and in Sychar",
           "gospel_event_id": "r1922-035",
-          "url": "https://harmony-bible.com/sections/35c/"
+          "url": "https://harmony-bible.com/sections/35c/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu ở Sa-ma-ri, bên giếng Gia-cốp và tại Xi-ca"
+            }
+          }
         }
       ],
       "passages": [
@@ -2308,31 +2543,56 @@
           "number": "35a",
           "title": "Jesus in Samaria at Jacob's Well and in Sychar",
           "gospel_event_id": "r1922-035",
-          "url": "https://harmony-bible.com/sections/35a/"
+          "url": "https://harmony-bible.com/sections/35a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu ở Sa-ma-ri, bên giếng Gia-cốp và tại Xi-ca"
+            }
+          }
         },
         {
           "number": "35b",
           "title": "Jesus in Samaria at Jacob's Well and in Sychar",
           "gospel_event_id": "r1922-035",
-          "url": "https://harmony-bible.com/sections/35b/"
+          "url": "https://harmony-bible.com/sections/35b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu ở Sa-ma-ri, bên giếng Gia-cốp và tại Xi-ca"
+            }
+          }
         },
         {
           "number": "35c",
           "title": "Jesus in Samaria at Jacob's Well and in Sychar",
           "gospel_event_id": "r1922-035",
-          "url": "https://harmony-bible.com/sections/35c/"
+          "url": "https://harmony-bible.com/sections/35c/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu ở Sa-ma-ri, bên giếng Gia-cốp và tại Xi-ca"
+            }
+          }
         },
         {
           "number": "36",
           "title": "The Arrival of Jesus in Galilee",
           "gospel_event_id": "r1922-036",
-          "url": "https://harmony-bible.com/sections/36/"
+          "url": "https://harmony-bible.com/sections/36/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu đến miền Ga-li-lê"
+            }
+          }
         },
         {
           "number": "38",
           "title": "The Healing at Cana of the Son of a Courtier of Capernaum",
           "gospel_event_id": "r1922-038",
-          "url": "https://harmony-bible.com/sections/38/"
+          "url": "https://harmony-bible.com/sections/38/",
+          "i18n": {
+            "vi": {
+              "title": "Chữa lành con trai viên quan ở Ca-bê-na-um tại Ca-na"
+            }
+          }
         }
       ],
       "passages": [
@@ -2483,19 +2743,34 @@
           "number": "37",
           "title": "General Account of His Teaching in Galilee",
           "gospel_event_id": "r1922-037",
-          "url": "https://harmony-bible.com/sections/37/"
+          "url": "https://harmony-bible.com/sections/37/",
+          "i18n": {
+            "vi": {
+              "title": "Tường thuật chung về việc Chúa dạy dỗ ở Ga-li-lê"
+            }
+          }
         },
         {
           "number": "39",
           "title": "The First Rejection at Nazareth",
           "gospel_event_id": "r1922-039",
-          "url": "https://harmony-bible.com/sections/39/"
+          "url": "https://harmony-bible.com/sections/39/",
+          "i18n": {
+            "vi": {
+              "title": "Lần đầu bị từ chối ở Na-xa-rét"
+            }
+          }
         },
         {
           "number": "40",
           "title": "The New Home in Capernaum",
           "gospel_event_id": "r1922-040",
-          "url": "https://harmony-bible.com/sections/40/"
+          "url": "https://harmony-bible.com/sections/40/",
+          "i18n": {
+            "vi": {
+              "title": "Nơi ở mới tại Ca-bê-na-um"
+            }
+          }
         }
       ],
       "passages": [
@@ -2673,31 +2948,56 @@
           "number": "41",
           "title": "Jesus Finds Four Fishers of Men in Four Fishermen",
           "gospel_event_id": "r1922-041",
-          "url": "https://harmony-bible.com/sections/41/"
+          "url": "https://harmony-bible.com/sections/41/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu gọi bốn ngư dân thành người đánh lưới người"
+            }
+          }
         },
         {
           "number": "44",
           "title": "Jesus Finds Four Fishers of Men in Four Fishermen",
           "gospel_event_id": "r1922-041",
-          "url": "https://harmony-bible.com/sections/44/"
+          "url": "https://harmony-bible.com/sections/44/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu gọi bốn ngư dân thành người đánh lưới người"
+            }
+          }
         },
         {
           "number": "42",
           "title": "The Excitement in the Synagogue Because of the Teaching of Jesus and the Healing of a Demoniac on the Sabbath",
           "gospel_event_id": "r1922-042",
-          "url": "https://harmony-bible.com/sections/42/"
+          "url": "https://harmony-bible.com/sections/42/",
+          "i18n": {
+            "vi": {
+              "title": "Hội đường xôn xao vì lời dạy của Chúa, và Ngài đuổi quỷ trong ngày Sa-bát"
+            }
+          }
         },
         {
           "number": "43",
           "title": "He Heals Peter's Mother-in-Law and Many Others",
           "gospel_event_id": "r1922-043",
-          "url": "https://harmony-bible.com/sections/43/"
+          "url": "https://harmony-bible.com/sections/43/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa lành mẹ vợ Phi-e-rơ và nhiều người khác"
+            }
+          }
         },
         {
           "number": "43b",
           "title": "The First Tour of Galilee with the Four Fishermen",
           "gospel_event_id": "r1922-044",
-          "url": "https://harmony-bible.com/sections/43b/"
+          "url": "https://harmony-bible.com/sections/43b/",
+          "i18n": {
+            "vi": {
+              "title": "Chuyến đi đầu tiên khắp Ga-li-lê cùng bốn ngư dân"
+            }
+          }
         }
       ],
       "passages": [
@@ -2945,31 +3245,56 @@
           "number": "43b",
           "title": "The First Tour of Galilee with the Four Fishermen",
           "gospel_event_id": "r1922-044",
-          "url": "https://harmony-bible.com/sections/43b/"
+          "url": "https://harmony-bible.com/sections/43b/",
+          "i18n": {
+            "vi": {
+              "title": "Chuyến đi đầu tiên khắp Ga-li-lê cùng bốn ngư dân"
+            }
+          }
         },
         {
           "number": "45",
           "title": "A Leper Healed and Much Popular Excitement",
           "gospel_event_id": "r1922-045",
-          "url": "https://harmony-bible.com/sections/45/"
+          "url": "https://harmony-bible.com/sections/45/",
+          "i18n": {
+            "vi": {
+              "title": "Người phong cùi được chữa lành và dân chúng xôn xao"
+            }
+          }
         },
         {
           "number": "46",
           "title": "Thronged in Capernaum, He Heals a Paralytic Lowered Through the Roof of Peter's House",
           "gospel_event_id": "r1922-046",
-          "url": "https://harmony-bible.com/sections/46/"
+          "url": "https://harmony-bible.com/sections/46/",
+          "i18n": {
+            "vi": {
+              "title": "Giữa đám đông ở Ca-bê-na-um, Chúa chữa người bại liệt được thả xuống qua mái nhà"
+            }
+          }
         },
         {
           "number": "47a",
           "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
           "gospel_event_id": "r1922-047",
-          "url": "https://harmony-bible.com/sections/47a/"
+          "url": "https://harmony-bible.com/sections/47a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa gọi Ma-thi-ơ (Lê-vi) và bữa tiệc ông thết đãi Chúa Giê-xu"
+            }
+          }
         },
         {
           "number": "47b",
           "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
           "gospel_event_id": "r1922-047",
-          "url": "https://harmony-bible.com/sections/47b/"
+          "url": "https://harmony-bible.com/sections/47b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa gọi Ma-thi-ơ (Lê-vi) và bữa tiệc ông thết đãi Chúa Giê-xu"
+            }
+          }
         }
       ],
       "passages": [
@@ -3307,37 +3632,67 @@
           "number": "47a",
           "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
           "gospel_event_id": "r1922-047",
-          "url": "https://harmony-bible.com/sections/47a/"
+          "url": "https://harmony-bible.com/sections/47a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa gọi Ma-thi-ơ (Lê-vi) và bữa tiệc ông thết đãi Chúa Giê-xu"
+            }
+          }
         },
         {
           "number": "47b",
           "title": "The Call of Matthew (Levi) and His Reception in Honor of Jesus",
           "gospel_event_id": "r1922-047",
-          "url": "https://harmony-bible.com/sections/47b/"
+          "url": "https://harmony-bible.com/sections/47b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa gọi Ma-thi-ơ (Lê-vi) và bữa tiệc ông thết đãi Chúa Giê-xu"
+            }
+          }
         },
         {
           "number": "48",
           "title": "Jesus in Three Parables Defends His Disciples for Feasting Instead of Fasting",
           "gospel_event_id": "r1922-048",
-          "url": "https://harmony-bible.com/sections/48/"
+          "url": "https://harmony-bible.com/sections/48/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa dùng ba ví dụ để bênh vực các môn đệ ăn tiệc thay vì nhịn ăn"
+            }
+          }
         },
         {
           "number": "49a",
           "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
           "gospel_event_id": "r1922-049",
-          "url": "https://harmony-bible.com/sections/49a/"
+          "url": "https://harmony-bible.com/sections/49a/",
+          "i18n": {
+            "vi": {
+              "title": "Tại lễ ở Giê-ru-sa-lem, Chúa chữa người què trong ngày Sa-bát và bênh vực việc ấy trước người Pha-ri-xi bằng một bài giảng lớn"
+            }
+          }
         },
         {
           "number": "49b",
           "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
           "gospel_event_id": "r1922-049",
-          "url": "https://harmony-bible.com/sections/49b/"
+          "url": "https://harmony-bible.com/sections/49b/",
+          "i18n": {
+            "vi": {
+              "title": "Tại lễ ở Giê-ru-sa-lem, Chúa chữa người què trong ngày Sa-bát và bênh vực việc ấy trước người Pha-ri-xi bằng một bài giảng lớn"
+            }
+          }
         },
         {
           "number": "49c",
           "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
           "gospel_event_id": "r1922-049",
-          "url": "https://harmony-bible.com/sections/49c/"
+          "url": "https://harmony-bible.com/sections/49c/",
+          "i18n": {
+            "vi": {
+              "title": "Tại lễ ở Giê-ru-sa-lem, Chúa chữa người què trong ngày Sa-bát và bênh vực việc ấy trước người Pha-ri-xi bằng một bài giảng lớn"
+            }
+          }
         }
       ],
       "passages": [
@@ -3574,19 +3929,34 @@
           "number": "49a",
           "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
           "gospel_event_id": "r1922-049",
-          "url": "https://harmony-bible.com/sections/49a/"
+          "url": "https://harmony-bible.com/sections/49a/",
+          "i18n": {
+            "vi": {
+              "title": "Tại lễ ở Giê-ru-sa-lem, Chúa chữa người què trong ngày Sa-bát và bênh vực việc ấy trước người Pha-ri-xi bằng một bài giảng lớn"
+            }
+          }
         },
         {
           "number": "49b",
           "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
           "gospel_event_id": "r1922-049",
-          "url": "https://harmony-bible.com/sections/49b/"
+          "url": "https://harmony-bible.com/sections/49b/",
+          "i18n": {
+            "vi": {
+              "title": "Tại lễ ở Giê-ru-sa-lem, Chúa chữa người què trong ngày Sa-bát và bênh vực việc ấy trước người Pha-ri-xi bằng một bài giảng lớn"
+            }
+          }
         },
         {
           "number": "49c",
           "title": "At a Feast in Jerusalem Jesus Heals a Lame Man on the Sabbath and Defends This Action to the Pharisees in a Great Discourse",
           "gospel_event_id": "r1922-049",
-          "url": "https://harmony-bible.com/sections/49c/"
+          "url": "https://harmony-bible.com/sections/49c/",
+          "i18n": {
+            "vi": {
+              "title": "Tại lễ ở Giê-ru-sa-lem, Chúa chữa người què trong ngày Sa-bát và bênh vực việc ấy trước người Pha-ri-xi bằng một bài giảng lớn"
+            }
+          }
         }
       ],
       "passages": [
@@ -3668,19 +4038,34 @@
           "number": "50",
           "title": "Another Sabbath Controversy with the Pharisees When the Disciples Pluck Ears of Grain in the Fields",
           "gospel_event_id": "r1922-050",
-          "url": "https://harmony-bible.com/sections/50/"
+          "url": "https://harmony-bible.com/sections/50/",
+          "i18n": {
+            "vi": {
+              "title": "Lại tranh luận về ngày Sa-bát khi các môn đệ bứt bông lúa ngoài đồng"
+            }
+          }
         },
         {
           "number": "51",
           "title": "A Third Sabbath Controversy with the Pharisees Over the Healing of a Man with a Withered Hand in a Synagogue",
           "gospel_event_id": "r1922-051",
-          "url": "https://harmony-bible.com/sections/51/"
+          "url": "https://harmony-bible.com/sections/51/",
+          "i18n": {
+            "vi": {
+              "title": "Lần tranh luận thứ ba về ngày Sa-bát khi Chúa chữa người bị teo tay trong hội đường"
+            }
+          }
         },
         {
           "number": "52",
           "title": "Jesus Teaches and Heals Great Multitudes by the Sea of Galilee",
           "gospel_event_id": "r1922-052",
-          "url": "https://harmony-bible.com/sections/52/"
+          "url": "https://harmony-bible.com/sections/52/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa dạy dỗ và chữa bệnh cho đoàn dân đông bên Biển Ga-li-lê"
+            }
+          }
         }
       ],
       "passages": [
@@ -3928,61 +4313,111 @@
           "number": "53",
           "title": "After a Night of Prayer Jesus Selects Twelve Apostles",
           "gospel_event_id": "r1922-053",
-          "url": "https://harmony-bible.com/sections/53/"
+          "url": "https://harmony-bible.com/sections/53/",
+          "i18n": {
+            "vi": {
+              "title": "Sau một đêm cầu nguyện, Chúa chọn mười hai sứ đồ"
+            }
+          }
         },
         {
           "number": "54a",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54a/"
+          "url": "https://harmony-bible.com/sections/54a/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54b",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54b/"
+          "url": "https://harmony-bible.com/sections/54b/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54c",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54c/"
+          "url": "https://harmony-bible.com/sections/54c/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54d",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54d/"
+          "url": "https://harmony-bible.com/sections/54d/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54e",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54e/"
+          "url": "https://harmony-bible.com/sections/54e/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54f",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54f/"
+          "url": "https://harmony-bible.com/sections/54f/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54g",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54g/"
+          "url": "https://harmony-bible.com/sections/54g/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54h",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54h/"
+          "url": "https://harmony-bible.com/sections/54h/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54i",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54i/"
+          "url": "https://harmony-bible.com/sections/54i/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         }
       ],
       "passages": [
@@ -4222,55 +4657,100 @@
           "number": "54a",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54a/"
+          "url": "https://harmony-bible.com/sections/54a/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54b",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54b/"
+          "url": "https://harmony-bible.com/sections/54b/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54c",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54c/"
+          "url": "https://harmony-bible.com/sections/54c/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54d",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54d/"
+          "url": "https://harmony-bible.com/sections/54d/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54e",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54e/"
+          "url": "https://harmony-bible.com/sections/54e/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54f",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54f/"
+          "url": "https://harmony-bible.com/sections/54f/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54g",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54g/"
+          "url": "https://harmony-bible.com/sections/54g/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54h",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54h/"
+          "url": "https://harmony-bible.com/sections/54h/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54i",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54i/"
+          "url": "https://harmony-bible.com/sections/54i/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         }
       ],
       "passages": [
@@ -4394,55 +4874,100 @@
           "number": "54a",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54a/"
+          "url": "https://harmony-bible.com/sections/54a/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54b",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54b/"
+          "url": "https://harmony-bible.com/sections/54b/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54c",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54c/"
+          "url": "https://harmony-bible.com/sections/54c/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54d",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54d/"
+          "url": "https://harmony-bible.com/sections/54d/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54e",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54e/"
+          "url": "https://harmony-bible.com/sections/54e/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54f",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54f/"
+          "url": "https://harmony-bible.com/sections/54f/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54g",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54g/"
+          "url": "https://harmony-bible.com/sections/54g/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54h",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54h/"
+          "url": "https://harmony-bible.com/sections/54h/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54i",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54i/"
+          "url": "https://harmony-bible.com/sections/54i/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         }
       ],
       "passages": [
@@ -4524,55 +5049,100 @@
           "number": "54a",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54a/"
+          "url": "https://harmony-bible.com/sections/54a/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54b",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54b/"
+          "url": "https://harmony-bible.com/sections/54b/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54c",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54c/"
+          "url": "https://harmony-bible.com/sections/54c/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54d",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54d/"
+          "url": "https://harmony-bible.com/sections/54d/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54e",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54e/"
+          "url": "https://harmony-bible.com/sections/54e/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54f",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54f/"
+          "url": "https://harmony-bible.com/sections/54f/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54g",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54g/"
+          "url": "https://harmony-bible.com/sections/54g/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54h",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54h/"
+          "url": "https://harmony-bible.com/sections/54h/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         },
         {
           "number": "54i",
           "title": "The Sermon on the Mount: Privileges and Requirements of the Messianic Reign, Christ's Standard of Righteousness",
           "gospel_event_id": "r1922-054",
-          "url": "https://harmony-bible.com/sections/54i/"
+          "url": "https://harmony-bible.com/sections/54i/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên núi: đặc ân và đòi hỏi của nước Mê-si, tiêu chuẩn công chính của Đấng Christ"
+            }
+          }
         }
       ],
       "passages": [
@@ -4781,7 +5351,12 @@
           "number": "55",
           "title": "Jesus Heals a Centurion's Servant at Capernaum",
           "gospel_event_id": "r1922-055",
-          "url": "https://harmony-bible.com/sections/55/"
+          "url": "https://harmony-bible.com/sections/55/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa lành đầy tớ của viên đại đội trưởng ở Ca-bê-na-um"
+            }
+          }
         }
       ],
       "passages": [
@@ -4883,13 +5458,23 @@
           "number": "56",
           "title": "He Raises a Widow's Son at Nain",
           "gospel_event_id": "r1922-056",
-          "url": "https://harmony-bible.com/sections/56/"
+          "url": "https://harmony-bible.com/sections/56/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa cho con trai bà góa ở Na-in sống lại"
+            }
+          }
         },
         {
           "number": "57",
           "title": "The Message from the Baptist and the Eulogy of Jesus",
           "gospel_event_id": "r1922-057",
-          "url": "https://harmony-bible.com/sections/57/"
+          "url": "https://harmony-bible.com/sections/57/",
+          "i18n": {
+            "vi": {
+              "title": "Lời nhắn của Giăng Báp-tít và lời Chúa ca ngợi ông"
+            }
+          }
         }
       ],
       "passages": [
@@ -5018,19 +5603,34 @@
           "number": "58",
           "title": "Woes Upon the Cities of Opportunity: The Claims of Christ as the Teacher About the Father",
           "gospel_event_id": "r1922-058",
-          "url": "https://harmony-bible.com/sections/58/"
+          "url": "https://harmony-bible.com/sections/58/",
+          "i18n": {
+            "vi": {
+              "title": "Khốn cho các thành được nhiều cơ hội; Đấng Christ là Thầy dạy về Cha"
+            }
+          }
         },
         {
           "number": "59",
           "title": "The Anointing of Christ's Feet by a Sinful Woman in the House of Simon a Pharisee: The Parable of the Two Debtors",
           "gospel_event_id": "r1922-059",
-          "url": "https://harmony-bible.com/sections/59/"
+          "url": "https://harmony-bible.com/sections/59/",
+          "i18n": {
+            "vi": {
+              "title": "Người đàn bà tội lỗi xức chân Chúa tại nhà Si-môn người Pha-ri-xi: ví dụ về hai con nợ"
+            }
+          }
         },
         {
           "number": "60",
           "title": "The Second Tour of Galilee",
           "gospel_event_id": "r1922-060",
-          "url": "https://harmony-bible.com/sections/60/"
+          "url": "https://harmony-bible.com/sections/60/",
+          "i18n": {
+            "vi": {
+              "title": "Chuyến đi thứ hai khắp Ga-li-lê"
+            }
+          }
         }
       ],
       "passages": [
@@ -5155,13 +5755,23 @@
           "number": "61",
           "title": "Blasphemous Accusation of League with Beelzebub",
           "gospel_event_id": "r1922-061",
-          "url": "https://harmony-bible.com/sections/61/"
+          "url": "https://harmony-bible.com/sections/61/",
+          "i18n": {
+            "vi": {
+              "title": "Bị cáo buộc phạm thượng là cấu kết với Bê-ên-xê-bun"
+            }
+          }
         },
         {
           "number": "62",
           "title": "Scribes and Pharisees Demand a Sign",
           "gospel_event_id": "r1922-062",
-          "url": "https://harmony-bible.com/sections/62/"
+          "url": "https://harmony-bible.com/sections/62/",
+          "i18n": {
+            "vi": {
+              "title": "Các thầy dạy luật và người Pha-ri-xi đòi một dấu lạ"
+            }
+          }
         }
       ],
       "passages": [
@@ -5291,79 +5901,144 @@
           "number": "63",
           "title": "Christ's Mother and Brethren Seek to Take Him Home",
           "gospel_event_id": "r1922-063",
-          "url": "https://harmony-bible.com/sections/63/"
+          "url": "https://harmony-bible.com/sections/63/",
+          "i18n": {
+            "vi": {
+              "title": "Mẹ và các em Chúa tìm cách đưa Ngài về nhà"
+            }
+          }
         },
         {
           "number": "64a",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64a/"
+          "url": "https://harmony-bible.com/sections/64a/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64b",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64b/"
+          "url": "https://harmony-bible.com/sections/64b/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64c",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64c/"
+          "url": "https://harmony-bible.com/sections/64c/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64d",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64d/"
+          "url": "https://harmony-bible.com/sections/64d/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64e",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64e/"
+          "url": "https://harmony-bible.com/sections/64e/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64f",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64f/"
+          "url": "https://harmony-bible.com/sections/64f/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64g",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64g/"
+          "url": "https://harmony-bible.com/sections/64g/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64h",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64h/"
+          "url": "https://harmony-bible.com/sections/64h/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64i",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64i/"
+          "url": "https://harmony-bible.com/sections/64i/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64j",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64j/"
+          "url": "https://harmony-bible.com/sections/64j/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64k",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64k/"
+          "url": "https://harmony-bible.com/sections/64k/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "106",
           "title": "Blasphemous Accusation of League with Beelzebub",
           "gospel_event_id": "r1922-106",
-          "url": "https://harmony-bible.com/sections/106/"
+          "url": "https://harmony-bible.com/sections/106/",
+          "i18n": {
+            "vi": {
+              "title": "Bị cáo buộc phạm thượng là cấu kết với Bê-ên-xê-bun"
+            }
+          }
         }
       ],
       "passages": [
@@ -5654,67 +6329,122 @@
           "number": "64a",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64a/"
+          "url": "https://harmony-bible.com/sections/64a/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64b",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64b/"
+          "url": "https://harmony-bible.com/sections/64b/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64c",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64c/"
+          "url": "https://harmony-bible.com/sections/64c/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64d",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64d/"
+          "url": "https://harmony-bible.com/sections/64d/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64e",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64e/"
+          "url": "https://harmony-bible.com/sections/64e/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64f",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64f/"
+          "url": "https://harmony-bible.com/sections/64f/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64g",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64g/"
+          "url": "https://harmony-bible.com/sections/64g/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64h",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64h/"
+          "url": "https://harmony-bible.com/sections/64h/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64i",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64i/"
+          "url": "https://harmony-bible.com/sections/64i/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64j",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64j/"
+          "url": "https://harmony-bible.com/sections/64j/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64k",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64k/"
+          "url": "https://harmony-bible.com/sections/64k/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         }
       ],
       "passages": [
@@ -5918,73 +6648,133 @@
           "number": "64a",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64a/"
+          "url": "https://harmony-bible.com/sections/64a/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64b",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64b/"
+          "url": "https://harmony-bible.com/sections/64b/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64c",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64c/"
+          "url": "https://harmony-bible.com/sections/64c/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64d",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64d/"
+          "url": "https://harmony-bible.com/sections/64d/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64e",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64e/"
+          "url": "https://harmony-bible.com/sections/64e/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64f",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64f/"
+          "url": "https://harmony-bible.com/sections/64f/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64g",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64g/"
+          "url": "https://harmony-bible.com/sections/64g/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64h",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64h/"
+          "url": "https://harmony-bible.com/sections/64h/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64i",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64i/"
+          "url": "https://harmony-bible.com/sections/64i/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64j",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64j/"
+          "url": "https://harmony-bible.com/sections/64j/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "64k",
           "title": "The First Great Group of Parables",
           "gospel_event_id": "r1922-064",
-          "url": "https://harmony-bible.com/sections/64k/"
+          "url": "https://harmony-bible.com/sections/64k/",
+          "i18n": {
+            "vi": {
+              "title": "Loạt ví dụ lớn đầu tiên"
+            }
+          }
         },
         {
           "number": "65",
           "title": "In Crossing the Lake, Jesus Stills the Tempest",
           "gospel_event_id": "r1922-065",
-          "url": "https://harmony-bible.com/sections/65/"
+          "url": "https://harmony-bible.com/sections/65/",
+          "i18n": {
+            "vi": {
+              "title": "Qua hồ, Chúa Giê-xu làm yên cơn bão"
+            }
+          }
         }
       ],
       "passages": [
@@ -6243,7 +7033,12 @@
           "number": "66",
           "title": "Beyond the Lake Jesus Heals the Gerasene Demoniac",
           "gospel_event_id": "r1922-066",
-          "url": "https://harmony-bible.com/sections/66/"
+          "url": "https://harmony-bible.com/sections/66/",
+          "i18n": {
+            "vi": {
+              "title": "Bên kia hồ, Chúa chữa người bị quỷ ám ở xứ Ghê-ra-sa"
+            }
+          }
         }
       ],
       "passages": [
@@ -6364,7 +7159,12 @@
           "number": "67",
           "title": "The Return and the Healing of Jairus' Daughter and of the Woman Who Only Touched Christ's Garment",
           "gospel_event_id": "r1922-067",
-          "url": "https://harmony-bible.com/sections/67/"
+          "url": "https://harmony-bible.com/sections/67/",
+          "i18n": {
+            "vi": {
+              "title": "Trở về, Chúa chữa con gái Gia-ia và người đàn bà chỉ chạm áo Ngài"
+            }
+          }
         }
       ],
       "passages": [
@@ -6493,31 +7293,56 @@
           "number": "68",
           "title": "He Heals Two Blind Men and a Dumb Demoniac; a Blasphemous Accusation",
           "gospel_event_id": "r1922-068",
-          "url": "https://harmony-bible.com/sections/68/"
+          "url": "https://harmony-bible.com/sections/68/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa hai người mù và người câm bị quỷ ám; lại bị cáo buộc phạm thượng"
+            }
+          }
         },
         {
           "number": "69",
           "title": "The Last Visit to Nazareth",
           "gospel_event_id": "r1922-069",
-          "url": "https://harmony-bible.com/sections/69/"
+          "url": "https://harmony-bible.com/sections/69/",
+          "i18n": {
+            "vi": {
+              "title": "Lần cuối đến thăm Na-xa-rét"
+            }
+          }
         },
         {
           "number": "70a",
           "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
           "gospel_event_id": "r1922-070",
-          "url": "https://harmony-bible.com/sections/70a/"
+          "url": "https://harmony-bible.com/sections/70a/",
+          "i18n": {
+            "vi": {
+              "title": "Chuyến đi thứ ba khắp Ga-li-lê, sau khi Chúa dạy và sai mười hai sứ đồ đi từng đôi"
+            }
+          }
         },
         {
           "number": "70b",
           "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
           "gospel_event_id": "r1922-070",
-          "url": "https://harmony-bible.com/sections/70b/"
+          "url": "https://harmony-bible.com/sections/70b/",
+          "i18n": {
+            "vi": {
+              "title": "Chuyến đi thứ ba khắp Ga-li-lê, sau khi Chúa dạy và sai mười hai sứ đồ đi từng đôi"
+            }
+          }
         },
         {
           "number": "70c",
           "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
           "gospel_event_id": "r1922-070",
-          "url": "https://harmony-bible.com/sections/70c/"
+          "url": "https://harmony-bible.com/sections/70c/",
+          "i18n": {
+            "vi": {
+              "title": "Chuyến đi thứ ba khắp Ga-li-lê, sau khi Chúa dạy và sai mười hai sứ đồ đi từng đôi"
+            }
+          }
         }
       ],
       "passages": [
@@ -6689,31 +7514,56 @@
           "number": "70a",
           "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
           "gospel_event_id": "r1922-070",
-          "url": "https://harmony-bible.com/sections/70a/"
+          "url": "https://harmony-bible.com/sections/70a/",
+          "i18n": {
+            "vi": {
+              "title": "Chuyến đi thứ ba khắp Ga-li-lê, sau khi Chúa dạy và sai mười hai sứ đồ đi từng đôi"
+            }
+          }
         },
         {
           "number": "70b",
           "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
           "gospel_event_id": "r1922-070",
-          "url": "https://harmony-bible.com/sections/70b/"
+          "url": "https://harmony-bible.com/sections/70b/",
+          "i18n": {
+            "vi": {
+              "title": "Chuyến đi thứ ba khắp Ga-li-lê, sau khi Chúa dạy và sai mười hai sứ đồ đi từng đôi"
+            }
+          }
         },
         {
           "number": "70c",
           "title": "The Third Tour of Galilee After Instructing the Twelve and Sending Them Forth by Twos",
           "gospel_event_id": "r1922-070",
-          "url": "https://harmony-bible.com/sections/70c/"
+          "url": "https://harmony-bible.com/sections/70c/",
+          "i18n": {
+            "vi": {
+              "title": "Chuyến đi thứ ba khắp Ga-li-lê, sau khi Chúa dạy và sai mười hai sứ đồ đi từng đôi"
+            }
+          }
         },
         {
           "number": "71a",
           "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
           "gospel_event_id": "r1922-071",
-          "url": "https://harmony-bible.com/sections/71a/"
+          "url": "https://harmony-bible.com/sections/71a/",
+          "i18n": {
+            "vi": {
+              "title": "Vua Hê-rốt An-ti-ba lo sợ về Chúa Giê-xu vì ông đã chém đầu Giăng Báp-tít"
+            }
+          }
         },
         {
           "number": "71b",
           "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
           "gospel_event_id": "r1922-071",
-          "url": "https://harmony-bible.com/sections/71b/"
+          "url": "https://harmony-bible.com/sections/71b/",
+          "i18n": {
+            "vi": {
+              "title": "Vua Hê-rốt An-ti-ba lo sợ về Chúa Giê-xu vì ông đã chém đầu Giăng Báp-tít"
+            }
+          }
         }
       ],
       "passages": [
@@ -6975,31 +7825,56 @@
           "number": "71a",
           "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
           "gospel_event_id": "r1922-071",
-          "url": "https://harmony-bible.com/sections/71a/"
+          "url": "https://harmony-bible.com/sections/71a/",
+          "i18n": {
+            "vi": {
+              "title": "Vua Hê-rốt An-ti-ba lo sợ về Chúa Giê-xu vì ông đã chém đầu Giăng Báp-tít"
+            }
+          }
         },
         {
           "number": "71b",
           "title": "The Guilty Fears of Herod Antipas About Jesus Because He Had Beheaded the Baptist in Machaerus",
           "gospel_event_id": "r1922-071",
-          "url": "https://harmony-bible.com/sections/71b/"
+          "url": "https://harmony-bible.com/sections/71b/",
+          "i18n": {
+            "vi": {
+              "title": "Vua Hê-rốt An-ti-ba lo sợ về Chúa Giê-xu vì ông đã chém đầu Giăng Báp-tít"
+            }
+          }
         },
         {
           "number": "72a",
           "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
           "gospel_event_id": "r1922-072",
-          "url": "https://harmony-bible.com/sections/72a/"
+          "url": "https://harmony-bible.com/sections/72a/",
+          "i18n": {
+            "vi": {
+              "title": "Lần lui về đầu tiên: mười hai sứ đồ trở về, Chúa đưa họ qua bên kia hồ; làm cho năm ngàn người ăn no"
+            }
+          }
         },
         {
           "number": "72b",
           "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
           "gospel_event_id": "r1922-072",
-          "url": "https://harmony-bible.com/sections/72b/"
+          "url": "https://harmony-bible.com/sections/72b/",
+          "i18n": {
+            "vi": {
+              "title": "Lần lui về đầu tiên: mười hai sứ đồ trở về, Chúa đưa họ qua bên kia hồ; làm cho năm ngàn người ăn no"
+            }
+          }
         },
         {
           "number": "72c",
           "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
           "gospel_event_id": "r1922-072",
-          "url": "https://harmony-bible.com/sections/72c/"
+          "url": "https://harmony-bible.com/sections/72c/",
+          "i18n": {
+            "vi": {
+              "title": "Lần lui về đầu tiên: mười hai sứ đồ trở về, Chúa đưa họ qua bên kia hồ; làm cho năm ngàn người ăn no"
+            }
+          }
         }
       ],
       "passages": [
@@ -7156,37 +8031,67 @@
           "number": "72a",
           "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
           "gospel_event_id": "r1922-072",
-          "url": "https://harmony-bible.com/sections/72a/"
+          "url": "https://harmony-bible.com/sections/72a/",
+          "i18n": {
+            "vi": {
+              "title": "Lần lui về đầu tiên: mười hai sứ đồ trở về, Chúa đưa họ qua bên kia hồ; làm cho năm ngàn người ăn no"
+            }
+          }
         },
         {
           "number": "72b",
           "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
           "gospel_event_id": "r1922-072",
-          "url": "https://harmony-bible.com/sections/72b/"
+          "url": "https://harmony-bible.com/sections/72b/",
+          "i18n": {
+            "vi": {
+              "title": "Lần lui về đầu tiên: mười hai sứ đồ trở về, Chúa đưa họ qua bên kia hồ; làm cho năm ngàn người ăn no"
+            }
+          }
         },
         {
           "number": "72c",
           "title": "The First Retirement: The Twelve Return, Jesus Retires with Them Beyond the Lake; Feeding of the Five Thousand",
           "gospel_event_id": "r1922-072",
-          "url": "https://harmony-bible.com/sections/72c/"
+          "url": "https://harmony-bible.com/sections/72c/",
+          "i18n": {
+            "vi": {
+              "title": "Lần lui về đầu tiên: mười hai sứ đồ trở về, Chúa đưa họ qua bên kia hồ; làm cho năm ngàn người ăn no"
+            }
+          }
         },
         {
           "number": "73",
           "title": "The Prevention of the Revolutionary Purpose to Proclaim Jesus King (A Political Messiah)",
           "gospel_event_id": "r1922-073",
-          "url": "https://harmony-bible.com/sections/73/"
+          "url": "https://harmony-bible.com/sections/73/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa ngăn dân chúng muốn tôn Ngài làm vua (một Đấng Mê-si chính trị)"
+            }
+          }
         },
         {
           "number": "74",
           "title": "The Peril to the Twelve in the Storm at Sea and Christ's Coming to Them on the Water in the Darkness",
           "gospel_event_id": "r1922-074",
-          "url": "https://harmony-bible.com/sections/74/"
+          "url": "https://harmony-bible.com/sections/74/",
+          "i18n": {
+            "vi": {
+              "title": "Mười hai sứ đồ gặp nguy trong cơn bão, Chúa đi trên mặt nước đến với họ trong đêm tối"
+            }
+          }
         },
         {
           "number": "75",
           "title": "The Reception at Gennesaret",
           "gospel_event_id": "r1922-075",
-          "url": "https://harmony-bible.com/sections/75/"
+          "url": "https://harmony-bible.com/sections/75/",
+          "i18n": {
+            "vi": {
+              "title": "Dân chúng đón tiếp Chúa tại Ghê-nê-xa-rết"
+            }
+          }
         }
       ],
       "passages": [
@@ -7606,13 +8511,23 @@
           "number": "76a",
           "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
           "gospel_event_id": "r1922-076",
-          "url": "https://harmony-bible.com/sections/76a/"
+          "url": "https://harmony-bible.com/sections/76a/",
+          "i18n": {
+            "vi": {
+              "title": "Chiến dịch Ga-li-lê sụp đổ vì Chúa không theo ý dân chúng mong đợi về Đấng Mê-si"
+            }
+          }
         },
         {
           "number": "76b",
           "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
           "gospel_event_id": "r1922-076",
-          "url": "https://harmony-bible.com/sections/76b/"
+          "url": "https://harmony-bible.com/sections/76b/",
+          "i18n": {
+            "vi": {
+              "title": "Chiến dịch Ga-li-lê sụp đổ vì Chúa không theo ý dân chúng mong đợi về Đấng Mê-si"
+            }
+          }
         }
       ],
       "passages": [
@@ -7691,19 +8606,34 @@
           "number": "76a",
           "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
           "gospel_event_id": "r1922-076",
-          "url": "https://harmony-bible.com/sections/76a/"
+          "url": "https://harmony-bible.com/sections/76a/",
+          "i18n": {
+            "vi": {
+              "title": "Chiến dịch Ga-li-lê sụp đổ vì Chúa không theo ý dân chúng mong đợi về Đấng Mê-si"
+            }
+          }
         },
         {
           "number": "76b",
           "title": "The Collapse of the Galilean Campaign Because Jesus Will Not Conform to Popular Messianic Expectations",
           "gospel_event_id": "r1922-076",
-          "url": "https://harmony-bible.com/sections/76b/"
+          "url": "https://harmony-bible.com/sections/76b/",
+          "i18n": {
+            "vi": {
+              "title": "Chiến dịch Ga-li-lê sụp đổ vì Chúa không theo ý dân chúng mong đợi về Đấng Mê-si"
+            }
+          }
         },
         {
           "number": "77",
           "title": "Pharisees from Jerusalem Reproach Jesus for Allowing His Disciples to Disregard Their Traditions About Ceremonial Defilement of the Hands",
           "gospel_event_id": "r1922-077",
-          "url": "https://harmony-bible.com/sections/77/"
+          "url": "https://harmony-bible.com/sections/77/",
+          "i18n": {
+            "vi": {
+              "title": "Người Pha-ri-xi từ Giê-ru-sa-lem trách Chúa vì các môn đệ không giữ truyền thống rửa tay theo nghi thức"
+            }
+          }
         }
       ],
       "passages": [
@@ -7854,19 +8784,34 @@
           "number": "78",
           "title": "The Second Withdrawal to the Region of Tyre and Sidon and the Healing of the Daughter of a Syro-Phoenician Woman",
           "gospel_event_id": "r1922-078",
-          "url": "https://harmony-bible.com/sections/78/"
+          "url": "https://harmony-bible.com/sections/78/",
+          "i18n": {
+            "vi": {
+              "title": "Lần rút lui thứ hai đến vùng Ty-rơ và Si-đôn, chữa con gái của người đàn bà Phê-ni-xi gốc Sy-ri"
+            }
+          }
         },
         {
           "number": "79a",
           "title": "The Third Withdrawal North Through Phoenicia and East Towards Hermon and South Into Decapolis: Healing of the Deaf and Dumb Man and Feeding of the Four Thousand",
           "gospel_event_id": "r1922-079",
-          "url": "https://harmony-bible.com/sections/79a/"
+          "url": "https://harmony-bible.com/sections/79a/",
+          "i18n": {
+            "vi": {
+              "title": "Lần rút lui thứ ba lên phía bắc qua Phê-ni-xi, rồi sang phía đông và xuống Mười Thành: chữa người điếc và câm, làm cho bốn ngàn người ăn no"
+            }
+          }
         },
         {
           "number": "79b",
           "title": "The Third Withdrawal North Through Phoenicia and East Towards Hermon and South Into Decapolis: Healing of the Deaf and Dumb Man and Feeding of the Four Thousand",
           "gospel_event_id": "r1922-079",
-          "url": "https://harmony-bible.com/sections/79b/"
+          "url": "https://harmony-bible.com/sections/79b/",
+          "i18n": {
+            "vi": {
+              "title": "Lần rút lui thứ ba lên phía bắc qua Phê-ni-xi, rồi sang phía đông và xuống Mười Thành: chữa người điếc và câm, làm cho bốn ngàn người ăn no"
+            }
+          }
         }
       ],
       "passages": [
@@ -8067,25 +9012,45 @@
           "number": "80",
           "title": "The Brief Visit to Magadan (Dalmanutha) in Galilee and the Sharp Attack by the Pharisees and Sadducees",
           "gospel_event_id": "r1922-080",
-          "url": "https://harmony-bible.com/sections/80/"
+          "url": "https://harmony-bible.com/sections/80/",
+          "i18n": {
+            "vi": {
+              "title": "Ghé thăm Ma-ga-đan (Đan-ma-nu-tha) ở Ga-li-lê và bị người Pha-ri-xi cùng Sa-đu-sê chất vấn gay gắt"
+            }
+          }
         },
         {
           "number": "81a",
           "title": "The Fourth Retirement to Bethsaida Julias with Sharp Rebuke of the Dulness of the Disciples and the Healing of a Blind Man in Bethsaida",
           "gospel_event_id": "r1922-081",
-          "url": "https://harmony-bible.com/sections/81a/"
+          "url": "https://harmony-bible.com/sections/81a/",
+          "i18n": {
+            "vi": {
+              "title": "Lần rút lui thứ tư đến Bết-sai-đa Giu-li-a, quở trách sự chậm hiểu của các môn đệ và chữa một người mù ở Bết-sai-đa"
+            }
+          }
         },
         {
           "number": "81b",
           "title": "The Fourth Retirement to Bethsaida Julias with Sharp Rebuke of the Dulness of the Disciples and the Healing of a Blind Man in Bethsaida",
           "gospel_event_id": "r1922-081",
-          "url": "https://harmony-bible.com/sections/81b/"
+          "url": "https://harmony-bible.com/sections/81b/",
+          "i18n": {
+            "vi": {
+              "title": "Lần rút lui thứ tư đến Bết-sai-đa Giu-li-a, quở trách sự chậm hiểu của các môn đệ và chữa một người mù ở Bết-sai-đa"
+            }
+          }
         },
         {
           "number": "82",
           "title": "Near Caesarea Philippi Jesus Tests the Faith of the Twelve in His Messiahship",
           "gospel_event_id": "r1922-082",
-          "url": "https://harmony-bible.com/sections/82/"
+          "url": "https://harmony-bible.com/sections/82/",
+          "i18n": {
+            "vi": {
+              "title": "Gần Sê-xa-rê Phi-líp, Chúa thử đức tin của mười hai sứ đồ về việc Ngài là Đấng Mê-si"
+            }
+          }
         }
       ],
       "passages": [
@@ -8339,25 +9304,45 @@
           "number": "83",
           "title": "Jesus Distinctly Foretells That He, the Messiah, Will Be Rejected and Killed and Will Rise the Third Day",
           "gospel_event_id": "r1922-083",
-          "url": "https://harmony-bible.com/sections/83/"
+          "url": "https://harmony-bible.com/sections/83/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói rõ Ngài, Đấng Mê-si, sẽ bị chối bỏ, bị giết và sống lại ngày thứ ba"
+            }
+          }
         },
         {
           "number": "84",
           "title": "The Coming of the Son of Man in That Generation",
           "gospel_event_id": "r1922-084",
-          "url": "https://harmony-bible.com/sections/84/"
+          "url": "https://harmony-bible.com/sections/84/",
+          "i18n": {
+            "vi": {
+              "title": "Con Người đến trong thế hệ ấy"
+            }
+          }
         },
         {
           "number": "85",
           "title": "The Transfiguration of Jesus on a Mountain (Probably Hermon) Near Caesarea Philippi",
           "gospel_event_id": "r1922-085",
-          "url": "https://harmony-bible.com/sections/85/"
+          "url": "https://harmony-bible.com/sections/85/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu biến hình trên núi (có lẽ là núi Hẹt-môn) gần Sê-xa-rê Phi-líp"
+            }
+          }
         },
         {
           "number": "86",
           "title": "The Puzzle of the Three Disciples About the Resurrection and About Elijah on Their Way Down the Mountain",
           "gospel_event_id": "r1922-086",
-          "url": "https://harmony-bible.com/sections/86/"
+          "url": "https://harmony-bible.com/sections/86/",
+          "i18n": {
+            "vi": {
+              "title": "Ba môn đệ thắc mắc về sự sống lại và về Ê-li khi xuống núi"
+            }
+          }
         }
       ],
       "passages": [
@@ -8701,19 +9686,34 @@
           "number": "87",
           "title": "The Demoniac Boy, Whom the Disciples Could Not Heal",
           "gospel_event_id": "r1922-087",
-          "url": "https://harmony-bible.com/sections/87/"
+          "url": "https://harmony-bible.com/sections/87/",
+          "i18n": {
+            "vi": {
+              "title": "Cậu bé bị quỷ ám mà các môn đệ không chữa được"
+            }
+          }
         },
         {
           "number": "88",
           "title": "Returning Privately Through Galilee, He Again Foretells His Death and Resurrection",
           "gospel_event_id": "r1922-088",
-          "url": "https://harmony-bible.com/sections/88/"
+          "url": "https://harmony-bible.com/sections/88/",
+          "i18n": {
+            "vi": {
+              "title": "Trở về Ga-li-lê kín đáo, Chúa lại báo trước về cái chết và sự sống lại của Ngài"
+            }
+          }
         },
         {
           "number": "89",
           "title": "Jesus, the Messiah, Pays the Half-Shekel for the Temple",
           "gospel_event_id": "r1922-089",
-          "url": "https://harmony-bible.com/sections/89/"
+          "url": "https://harmony-bible.com/sections/89/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu, Đấng Mê-si, đóng nửa siếc-lơ cho đền thờ"
+            }
+          }
         }
       ],
       "passages": [
@@ -8937,25 +9937,45 @@
           "number": "90",
           "title": "The Twelve Contend as to Who Shall Be Greatest Under the Messiah's Reign: His Subjects Must Be Childlike",
           "gospel_event_id": "r1922-090",
-          "url": "https://harmony-bible.com/sections/90/"
+          "url": "https://harmony-bible.com/sections/90/",
+          "i18n": {
+            "vi": {
+              "title": "Mười hai sứ đồ tranh nhau ai là lớn nhất; dân của Đấng Mê-si phải như trẻ thơ"
+            }
+          }
         },
         {
           "number": "91",
           "title": "The Mistaken Zeal of the Apostle John Rebuked by Jesus in Pertinent Parables",
           "gospel_event_id": "r1922-091",
-          "url": "https://harmony-bible.com/sections/91/"
+          "url": "https://harmony-bible.com/sections/91/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa quở lòng nhiệt thành sai lầm của sứ đồ Giăng và dạy bằng các ví dụ"
+            }
+          }
         },
         {
           "number": "92",
           "title": "Right Treatment of a Brother Who Has Sinned Against One, and Duty of Patiently Forgiving a Brother (Parable of the Unmerciful Servant)",
           "gospel_event_id": "r1922-092",
-          "url": "https://harmony-bible.com/sections/92/"
+          "url": "https://harmony-bible.com/sections/92/",
+          "i18n": {
+            "vi": {
+              "title": "Cách đối xử với anh em phạm lỗi, và bổn phận kiên nhẫn tha thứ (ví dụ người đầy tớ không biết thương xót)"
+            }
+          }
         },
         {
           "number": "95",
           "title": "The Messiah's Followers Must Give Up Everything for His Service",
           "gospel_event_id": "r1922-093",
-          "url": "https://harmony-bible.com/sections/95/"
+          "url": "https://harmony-bible.com/sections/95/",
+          "i18n": {
+            "vi": {
+              "title": "Người theo Đấng Mê-si phải từ bỏ mọi sự để phục vụ Ngài"
+            }
+          }
         }
       ],
       "passages": [
@@ -9215,7 +10235,12 @@
           "number": "93",
           "title": "The Unbelieving Brothers of Jesus Counsel Him to Exhibit Himself in Judea, and He Rejects the Advice",
           "gospel_event_id": "r1922-094",
-          "url": "https://harmony-bible.com/sections/93/"
+          "url": "https://harmony-bible.com/sections/93/",
+          "i18n": {
+            "vi": {
+              "title": "Các em không tin của Chúa khuyên Ngài tỏ mình ở Giu-đê, và Ngài từ chối lời khuyên ấy"
+            }
+          }
         }
       ],
       "passages": [
@@ -9293,13 +10318,23 @@
           "number": "96a",
           "title": "The Coming of Jesus to the Feast of Tabernacles Creates Intense Excitement Concerning the Messiahship",
           "gospel_event_id": "r1922-096",
-          "url": "https://harmony-bible.com/sections/96a/"
+          "url": "https://harmony-bible.com/sections/96a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa đến dự lễ Lều Tạm khiến mọi người rất xôn xao về việc Ngài là Đấng Mê-si"
+            }
+          }
         },
         {
           "number": "96b",
           "title": "The Coming of Jesus to the Feast of Tabernacles Creates Intense Excitement Concerning the Messiahship",
           "gospel_event_id": "r1922-096",
-          "url": "https://harmony-bible.com/sections/96b/"
+          "url": "https://harmony-bible.com/sections/96b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa đến dự lễ Lều Tạm khiến mọi người rất xôn xao về việc Ngài là Đấng Mê-si"
+            }
+          }
         }
       ],
       "passages": [
@@ -9401,13 +10436,23 @@
           "number": "97",
           "title": "Story of an Adulterous Woman Brought to Jesus for Judgment",
           "gospel_event_id": "r1922-097",
-          "url": "https://harmony-bible.com/sections/97/"
+          "url": "https://harmony-bible.com/sections/97/",
+          "i18n": {
+            "vi": {
+              "title": "Người đàn bà ngoại tình bị đem đến cho Chúa Giê-xu xét xử"
+            }
+          }
         },
         {
           "number": "98",
           "title": "After the Feast of Tabernacles in the Temple Jesus Angers the Pharisees by Claiming to Be the Light of the World",
           "gospel_event_id": "r1922-098",
-          "url": "https://harmony-bible.com/sections/98/"
+          "url": "https://harmony-bible.com/sections/98/",
+          "i18n": {
+            "vi": {
+              "title": "Sau lễ Lều Tạm, tại đền thờ Chúa làm người Pha-ri-xi tức giận khi nói Ngài là ánh sáng của thế gian"
+            }
+          }
         }
       ],
       "passages": [
@@ -9516,13 +10561,23 @@
           "number": "99a",
           "title": "The Pharisees Attempt to Stone Jesus When He Exposes Their Sinfulness",
           "gospel_event_id": "r1922-099",
-          "url": "https://harmony-bible.com/sections/99a/"
+          "url": "https://harmony-bible.com/sections/99a/",
+          "i18n": {
+            "vi": {
+              "title": "Người Pha-ri-xi toan ném đá Chúa khi Ngài vạch trần tội lỗi họ"
+            }
+          }
         },
         {
           "number": "99b",
           "title": "The Pharisees Attempt to Stone Jesus When He Exposes Their Sinfulness",
           "gospel_event_id": "r1922-099",
-          "url": "https://harmony-bible.com/sections/99b/"
+          "url": "https://harmony-bible.com/sections/99b/",
+          "i18n": {
+            "vi": {
+              "title": "Người Pha-ri-xi toan ném đá Chúa khi Ngài vạch trần tội lỗi họ"
+            }
+          }
         }
       ],
       "passages": [
@@ -9624,31 +10679,56 @@
           "number": "100a",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100a/"
+          "url": "https://harmony-bible.com/sections/100a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người mù từ thuở sinh ra, ông này khôn khéo đối đáp người Pha-ri-xi; các nhà lãnh đạo cấm nhận Chúa là Đấng Mê-si; người được chữa tin Chúa"
+            }
+          }
         },
         {
           "number": "100b",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100b/"
+          "url": "https://harmony-bible.com/sections/100b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người mù từ thuở sinh ra, ông này khôn khéo đối đáp người Pha-ri-xi; các nhà lãnh đạo cấm nhận Chúa là Đấng Mê-si; người được chữa tin Chúa"
+            }
+          }
         },
         {
           "number": "100c",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100c/"
+          "url": "https://harmony-bible.com/sections/100c/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người mù từ thuở sinh ra, ông này khôn khéo đối đáp người Pha-ri-xi; các nhà lãnh đạo cấm nhận Chúa là Đấng Mê-si; người được chữa tin Chúa"
+            }
+          }
         },
         {
           "number": "100d",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100d/"
+          "url": "https://harmony-bible.com/sections/100d/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người mù từ thuở sinh ra, ông này khôn khéo đối đáp người Pha-ri-xi; các nhà lãnh đạo cấm nhận Chúa là Đấng Mê-si; người được chữa tin Chúa"
+            }
+          }
         },
         {
           "number": "100e",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100e/"
+          "url": "https://harmony-bible.com/sections/100e/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người mù từ thuở sinh ra, ông này khôn khéo đối đáp người Pha-ri-xi; các nhà lãnh đạo cấm nhận Chúa là Đấng Mê-si; người được chữa tin Chúa"
+            }
+          }
         }
       ],
       "passages": [
@@ -9751,31 +10831,56 @@
           "number": "100a",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100a/"
+          "url": "https://harmony-bible.com/sections/100a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người mù từ thuở sinh ra, ông này khôn khéo đối đáp người Pha-ri-xi; các nhà lãnh đạo cấm nhận Chúa là Đấng Mê-si; người được chữa tin Chúa"
+            }
+          }
         },
         {
           "number": "100b",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100b/"
+          "url": "https://harmony-bible.com/sections/100b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người mù từ thuở sinh ra, ông này khôn khéo đối đáp người Pha-ri-xi; các nhà lãnh đạo cấm nhận Chúa là Đấng Mê-si; người được chữa tin Chúa"
+            }
+          }
         },
         {
           "number": "100c",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100c/"
+          "url": "https://harmony-bible.com/sections/100c/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người mù từ thuở sinh ra, ông này khôn khéo đối đáp người Pha-ri-xi; các nhà lãnh đạo cấm nhận Chúa là Đấng Mê-si; người được chữa tin Chúa"
+            }
+          }
         },
         {
           "number": "100d",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100d/"
+          "url": "https://harmony-bible.com/sections/100d/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người mù từ thuở sinh ra, ông này khôn khéo đối đáp người Pha-ri-xi; các nhà lãnh đạo cấm nhận Chúa là Đấng Mê-si; người được chữa tin Chúa"
+            }
+          }
         },
         {
           "number": "100e",
           "title": "Jesus Heals a Man Born Blind Who Outwits the Pharisees: The Rulers Forbid the Recognition of Jesus as the Messiah; The Conversion of the Healed Man",
           "gospel_event_id": "r1922-100",
-          "url": "https://harmony-bible.com/sections/100e/"
+          "url": "https://harmony-bible.com/sections/100e/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người mù từ thuở sinh ra, ông này khôn khéo đối đáp người Pha-ri-xi; các nhà lãnh đạo cấm nhận Chúa là Đấng Mê-si; người được chữa tin Chúa"
+            }
+          }
         }
       ],
       "passages": [
@@ -9902,19 +11007,34 @@
           "number": "94",
           "title": "He Goes Privately to Jerusalem Through Samaria",
           "gospel_event_id": "r1922-095",
-          "url": "https://harmony-bible.com/sections/94/"
+          "url": "https://harmony-bible.com/sections/94/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa kín đáo đi Giê-ru-sa-lem qua xứ Sa-ma-ri"
+            }
+          }
         },
         {
           "number": "101a",
           "title": "In the Parable of the Good Shepherd Jesus Draws the Picture of the Hostile Pharisees and Intimates That He Is Going to Die for His Flock",
           "gospel_event_id": "r1922-101",
-          "url": "https://harmony-bible.com/sections/101a/"
+          "url": "https://harmony-bible.com/sections/101a/",
+          "i18n": {
+            "vi": {
+              "title": "Qua ví dụ người chăn hiền lành, Chúa vẽ chân dung người Pha-ri-xi thù nghịch và cho biết Ngài sắp chết vì đàn chiên"
+            }
+          }
         },
         {
           "number": "101b",
           "title": "In the Parable of the Good Shepherd Jesus Draws the Picture of the Hostile Pharisees and Intimates That He Is Going to Die for His Flock",
           "gospel_event_id": "r1922-101",
-          "url": "https://harmony-bible.com/sections/101b/"
+          "url": "https://harmony-bible.com/sections/101b/",
+          "i18n": {
+            "vi": {
+              "title": "Qua ví dụ người chăn hiền lành, Chúa vẽ chân dung người Pha-ri-xi thù nghịch và cho biết Ngài sắp chết vì đàn chiên"
+            }
+          }
         }
       ],
       "passages": [
@@ -10060,13 +11180,23 @@
           "number": "102a",
           "title": "The Mission of the Seventy; Christ's Joy in Their Work on Their Return",
           "gospel_event_id": "r1922-102",
-          "url": "https://harmony-bible.com/sections/102a/"
+          "url": "https://harmony-bible.com/sections/102a/",
+          "i18n": {
+            "vi": {
+              "title": "Sai bảy mươi người đi; Chúa vui mừng khi họ trở về"
+            }
+          }
         },
         {
           "number": "102b",
           "title": "The Mission of the Seventy; Christ's Joy in Their Work on Their Return",
           "gospel_event_id": "r1922-102",
-          "url": "https://harmony-bible.com/sections/102b/"
+          "url": "https://harmony-bible.com/sections/102b/",
+          "i18n": {
+            "vi": {
+              "title": "Sai bảy mươi người đi; Chúa vui mừng khi họ trở về"
+            }
+          }
         }
       ],
       "passages": [
@@ -10172,19 +11302,34 @@
           "number": "103",
           "title": "Jesus Answers a Lawyer's Question as to Eternal Life, Giving the Parable of the Good Samaritan",
           "gospel_event_id": "r1922-103",
-          "url": "https://harmony-bible.com/sections/103/"
+          "url": "https://harmony-bible.com/sections/103/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa trả lời câu hỏi của một thầy dạy luật về sự sống đời đời, kể ví dụ người Sa-ma-ri nhân lành"
+            }
+          }
         },
         {
           "number": "104",
           "title": "Jesus the Guest of Martha and Mary",
           "gospel_event_id": "r1922-104",
-          "url": "https://harmony-bible.com/sections/104/"
+          "url": "https://harmony-bible.com/sections/104/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu là khách của Ma-thê và Ma-ri"
+            }
+          }
         },
         {
           "number": "105",
           "title": "Jesus Again Gives a Model of Prayer and Encourages His Disciples to Pray: Parable of the Importunate Friend",
           "gospel_event_id": "r1922-105",
-          "url": "https://harmony-bible.com/sections/105/"
+          "url": "https://harmony-bible.com/sections/105/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa lại dạy cách cầu nguyện và khuyến khích các môn đệ cầu nguyện: ví dụ người bạn nài nỉ"
+            }
+          }
         }
       ],
       "passages": [
@@ -10305,7 +11450,12 @@
           "number": "107",
           "title": "While Breakfasting with a Pharisee, Jesus Severely Denounces the Pharisees and Lawyers and Excites Their Enmity",
           "gospel_event_id": "r1922-107",
-          "url": "https://harmony-bible.com/sections/107/"
+          "url": "https://harmony-bible.com/sections/107/",
+          "i18n": {
+            "vi": {
+              "title": "Đang dùng bữa sáng với một người Pha-ri-xi, Chúa nghiêm khắc quở trách người Pha-ri-xi và các thầy dạy luật, khiến họ thù ghét"
+            }
+          }
         }
       ],
       "passages": [
@@ -10385,31 +11535,56 @@
           "number": "108a",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108a/"
+          "url": "https://harmony-bible.com/sections/108a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói với các môn đệ và đám đông về thói giả hình, lòng tham, nỗi lo đời này, sự tỉnh thức và cuộc khổ nạn sắp đến của Ngài"
+            }
+          }
         },
         {
           "number": "108b",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108b/"
+          "url": "https://harmony-bible.com/sections/108b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói với các môn đệ và đám đông về thói giả hình, lòng tham, nỗi lo đời này, sự tỉnh thức và cuộc khổ nạn sắp đến của Ngài"
+            }
+          }
         },
         {
           "number": "108c",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108c/"
+          "url": "https://harmony-bible.com/sections/108c/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói với các môn đệ và đám đông về thói giả hình, lòng tham, nỗi lo đời này, sự tỉnh thức và cuộc khổ nạn sắp đến của Ngài"
+            }
+          }
         },
         {
           "number": "108d",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108d/"
+          "url": "https://harmony-bible.com/sections/108d/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói với các môn đệ và đám đông về thói giả hình, lòng tham, nỗi lo đời này, sự tỉnh thức và cuộc khổ nạn sắp đến của Ngài"
+            }
+          }
         },
         {
           "number": "108e",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108e/"
+          "url": "https://harmony-bible.com/sections/108e/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói với các môn đệ và đám đông về thói giả hình, lòng tham, nỗi lo đời này, sự tỉnh thức và cuộc khổ nạn sắp đến của Ngài"
+            }
+          }
         }
       ],
       "passages": [
@@ -10540,43 +11715,78 @@
           "number": "108a",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108a/"
+          "url": "https://harmony-bible.com/sections/108a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói với các môn đệ và đám đông về thói giả hình, lòng tham, nỗi lo đời này, sự tỉnh thức và cuộc khổ nạn sắp đến của Ngài"
+            }
+          }
         },
         {
           "number": "108b",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108b/"
+          "url": "https://harmony-bible.com/sections/108b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói với các môn đệ và đám đông về thói giả hình, lòng tham, nỗi lo đời này, sự tỉnh thức và cuộc khổ nạn sắp đến của Ngài"
+            }
+          }
         },
         {
           "number": "108c",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108c/"
+          "url": "https://harmony-bible.com/sections/108c/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói với các môn đệ và đám đông về thói giả hình, lòng tham, nỗi lo đời này, sự tỉnh thức và cuộc khổ nạn sắp đến của Ngài"
+            }
+          }
         },
         {
           "number": "108d",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108d/"
+          "url": "https://harmony-bible.com/sections/108d/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói với các môn đệ và đám đông về thói giả hình, lòng tham, nỗi lo đời này, sự tỉnh thức và cuộc khổ nạn sắp đến của Ngài"
+            }
+          }
         },
         {
           "number": "108e",
           "title": "He Speaks to His Disciples and a Vast Throng About Hypocrisy, Covetousness, Worldly Anxieties, Watchfulness, and His Own Approaching Passion",
           "gospel_event_id": "r1922-108",
-          "url": "https://harmony-bible.com/sections/108e/"
+          "url": "https://harmony-bible.com/sections/108e/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa nói với các môn đệ và đám đông về thói giả hình, lòng tham, nỗi lo đời này, sự tỉnh thức và cuộc khổ nạn sắp đến của Ngài"
+            }
+          }
         },
         {
           "number": "109",
           "title": "All Must Repent or Perish: Two Current Tragedies; Parable of the Barren Fig Tree",
           "gospel_event_id": "r1922-109",
-          "url": "https://harmony-bible.com/sections/109/"
+          "url": "https://harmony-bible.com/sections/109/",
+          "i18n": {
+            "vi": {
+              "title": "Mọi người phải ăn năn, nếu không sẽ bị diệt vong: hai thảm kịch thời ấy; ví dụ cây vả không trái"
+            }
+          }
         },
         {
           "number": "110",
           "title": "Jesus Heals a Crippled Woman on the Sabbath and Defends Himself Against the Ruler of the Synagogue; Repetition of the Parables of the Mustard Seed and of the Leaven",
           "gospel_event_id": "r1922-110",
-          "url": "https://harmony-bible.com/sections/110/"
+          "url": "https://harmony-bible.com/sections/110/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa chữa người đàn bà còng lưng trong ngày Sa-bát và tự bênh vực trước người cai quản hội đường; nhắc lại ví dụ hạt cải và men"
+            }
+          }
         }
       ],
       "passages": [
@@ -10727,25 +11937,45 @@
           "number": "111",
           "title": "At the Feast of Dedication Jesus Will Not Yet Openly Say That He Is the Messiah; The Jews Try to Stone Him",
           "gospel_event_id": "r1922-111",
-          "url": "https://harmony-bible.com/sections/111/"
+          "url": "https://harmony-bible.com/sections/111/",
+          "i18n": {
+            "vi": {
+              "title": "Tại lễ Cung Hiến, Chúa chưa công khai nói Ngài là Đấng Mê-si; người Do-thái toan ném đá Ngài"
+            }
+          }
         },
         {
           "number": "112",
           "title": "The Withdrawal from Jerusalem to Bethany Beyond Jordan",
           "gospel_event_id": "r1922-112",
-          "url": "https://harmony-bible.com/sections/112/"
+          "url": "https://harmony-bible.com/sections/112/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa rời Giê-ru-sa-lem đến Bê-tha-ni bên kia sông Giô-đan"
+            }
+          }
         },
         {
           "number": "113a",
           "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
           "gospel_event_id": "r1922-113",
-          "url": "https://harmony-bible.com/sections/113a/"
+          "url": "https://harmony-bible.com/sections/113a/",
+          "i18n": {
+            "vi": {
+              "title": "Dạy dỗ ở Bê-rê trên đường đến Giê-ru-sa-lem, được cảnh báo về Hê-rốt An-ti-ba"
+            }
+          }
         },
         {
           "number": "113b",
           "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
           "gospel_event_id": "r1922-113",
-          "url": "https://harmony-bible.com/sections/113b/"
+          "url": "https://harmony-bible.com/sections/113b/",
+          "i18n": {
+            "vi": {
+              "title": "Dạy dỗ ở Bê-rê trên đường đến Giê-ru-sa-lem, được cảnh báo về Hê-rốt An-ti-ba"
+            }
+          }
         }
       ],
       "passages": [
@@ -10870,19 +12100,34 @@
           "number": "113a",
           "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
           "gospel_event_id": "r1922-113",
-          "url": "https://harmony-bible.com/sections/113a/"
+          "url": "https://harmony-bible.com/sections/113a/",
+          "i18n": {
+            "vi": {
+              "title": "Dạy dỗ ở Bê-rê trên đường đến Giê-ru-sa-lem, được cảnh báo về Hê-rốt An-ti-ba"
+            }
+          }
         },
         {
           "number": "113b",
           "title": "Teaching in Perea, on a Journey Toward Jerusalem, Warned Against Herod Antipas",
           "gospel_event_id": "r1922-113",
-          "url": "https://harmony-bible.com/sections/113b/"
+          "url": "https://harmony-bible.com/sections/113b/",
+          "i18n": {
+            "vi": {
+              "title": "Dạy dỗ ở Bê-rê trên đường đến Giê-ru-sa-lem, được cảnh báo về Hê-rốt An-ti-ba"
+            }
+          }
         },
         {
           "number": "114",
           "title": "While Dining with a Chief Pharisee, He Again Heals on the Sabbath and Defends Himself; Three Parables Suggested by the Occasion",
           "gospel_event_id": "r1922-114",
-          "url": "https://harmony-bible.com/sections/114/"
+          "url": "https://harmony-bible.com/sections/114/",
+          "i18n": {
+            "vi": {
+              "title": "Dùng bữa với một người Pha-ri-xi lãnh đạo, Chúa lại chữa bệnh ngày Sa-bát và tự bênh vực; ba ví dụ nhân dịp ấy"
+            }
+          }
         }
       ],
       "passages": [
@@ -10982,7 +12227,12 @@
           "number": "115",
           "title": "Great Crowds Follow Him, and He Warns Them to Count the Cost of Discipleship to Him",
           "gospel_event_id": "r1922-115",
-          "url": "https://harmony-bible.com/sections/115/"
+          "url": "https://harmony-bible.com/sections/115/",
+          "i18n": {
+            "vi": {
+              "title": "Đám đông đi theo Chúa, và Ngài cảnh báo họ phải tính cái giá của việc làm môn đệ"
+            }
+          }
         }
       ],
       "passages": [
@@ -11058,7 +12308,12 @@
           "number": "116",
           "title": "The Pharisees and Scribes Murmur Against Jesus for Receiving Sinners: He Defends Himself by Three Great Parables (The Lost Sheep, The Lost Coin, The Lost Son)",
           "gospel_event_id": "r1922-116",
-          "url": "https://harmony-bible.com/sections/116/"
+          "url": "https://harmony-bible.com/sections/116/",
+          "i18n": {
+            "vi": {
+              "title": "Người Pha-ri-xi và các thầy dạy luật cằn nhằn việc Chúa tiếp đón người tội lỗi; Ngài đáp bằng ba ví dụ lớn (chiên lạc, đồng bạc mất, đứa con hoang đàng)"
+            }
+          }
         }
       ],
       "passages": [
@@ -11133,19 +12388,34 @@
           "number": "117a",
           "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
           "gospel_event_id": "r1922-117",
-          "url": "https://harmony-bible.com/sections/117a/"
+          "url": "https://harmony-bible.com/sections/117a/",
+          "i18n": {
+            "vi": {
+              "title": "Ba ví dụ về việc quản lý (người quản gia bất lương; người giàu và La-xa-rơ; những đầy tớ vô dụng)"
+            }
+          }
         },
         {
           "number": "117b",
           "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
           "gospel_event_id": "r1922-117",
-          "url": "https://harmony-bible.com/sections/117b/"
+          "url": "https://harmony-bible.com/sections/117b/",
+          "i18n": {
+            "vi": {
+              "title": "Ba ví dụ về việc quản lý (người quản gia bất lương; người giàu và La-xa-rơ; những đầy tớ vô dụng)"
+            }
+          }
         },
         {
           "number": "117c",
           "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
           "gospel_event_id": "r1922-117",
-          "url": "https://harmony-bible.com/sections/117c/"
+          "url": "https://harmony-bible.com/sections/117c/",
+          "i18n": {
+            "vi": {
+              "title": "Ba ví dụ về việc quản lý (người quản gia bất lương; người giàu và La-xa-rơ; những đầy tớ vô dụng)"
+            }
+          }
         }
       ],
       "passages": [
@@ -11223,19 +12493,34 @@
           "number": "117a",
           "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
           "gospel_event_id": "r1922-117",
-          "url": "https://harmony-bible.com/sections/117a/"
+          "url": "https://harmony-bible.com/sections/117a/",
+          "i18n": {
+            "vi": {
+              "title": "Ba ví dụ về việc quản lý (người quản gia bất lương; người giàu và La-xa-rơ; những đầy tớ vô dụng)"
+            }
+          }
         },
         {
           "number": "117b",
           "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
           "gospel_event_id": "r1922-117",
-          "url": "https://harmony-bible.com/sections/117b/"
+          "url": "https://harmony-bible.com/sections/117b/",
+          "i18n": {
+            "vi": {
+              "title": "Ba ví dụ về việc quản lý (người quản gia bất lương; người giàu và La-xa-rơ; những đầy tớ vô dụng)"
+            }
+          }
         },
         {
           "number": "117c",
           "title": "Three Parables on Stewardship (The Unjust Steward; The Rich Man and Lazarus; The Unprofitable Servants)",
           "gospel_event_id": "r1922-117",
-          "url": "https://harmony-bible.com/sections/117c/"
+          "url": "https://harmony-bible.com/sections/117c/",
+          "i18n": {
+            "vi": {
+              "title": "Ba ví dụ về việc quản lý (người quản gia bất lương; người giàu và La-xa-rơ; những đầy tớ vô dụng)"
+            }
+          }
         }
       ],
       "passages": [
@@ -11336,13 +12621,23 @@
           "number": "118a",
           "title": "Jesus Raises Lazarus from the Dead",
           "gospel_event_id": "r1922-118",
-          "url": "https://harmony-bible.com/sections/118a/"
+          "url": "https://harmony-bible.com/sections/118a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu cho La-xa-rơ sống lại"
+            }
+          }
         },
         {
           "number": "118b",
           "title": "Jesus Raises Lazarus from the Dead",
           "gospel_event_id": "r1922-118",
-          "url": "https://harmony-bible.com/sections/118b/"
+          "url": "https://harmony-bible.com/sections/118b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu cho La-xa-rơ sống lại"
+            }
+          }
         }
       ],
       "passages": [
@@ -11445,19 +12740,34 @@
           "number": "119",
           "title": "The Effect of the Raising of Lazarus (On the People, On the Sanhedrin, On the Movements of Jesus)",
           "gospel_event_id": "r1922-119",
-          "url": "https://harmony-bible.com/sections/119/"
+          "url": "https://harmony-bible.com/sections/119/",
+          "i18n": {
+            "vi": {
+              "title": "Ảnh hưởng của việc La-xa-rơ sống lại (trên dân chúng, trên Hội đồng Do-thái, trên các chuyến đi của Chúa)"
+            }
+          }
         },
         {
           "number": "120a",
           "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
           "gospel_event_id": "r1922-120",
-          "url": "https://harmony-bible.com/sections/120a/"
+          "url": "https://harmony-bible.com/sections/120a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa bắt đầu chuyến đi cuối cùng đến Giê-ru-sa-lem qua Sa-ma-ri và Ga-li-lê"
+            }
+          }
         },
         {
           "number": "120b",
           "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
           "gospel_event_id": "r1922-120",
-          "url": "https://harmony-bible.com/sections/120b/"
+          "url": "https://harmony-bible.com/sections/120b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa bắt đầu chuyến đi cuối cùng đến Giê-ru-sa-lem qua Sa-ma-ri và Ga-li-lê"
+            }
+          }
         }
       ],
       "passages": [
@@ -11559,19 +12869,34 @@
           "number": "120a",
           "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
           "gospel_event_id": "r1922-120",
-          "url": "https://harmony-bible.com/sections/120a/"
+          "url": "https://harmony-bible.com/sections/120a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa bắt đầu chuyến đi cuối cùng đến Giê-ru-sa-lem qua Sa-ma-ri và Ga-li-lê"
+            }
+          }
         },
         {
           "number": "120b",
           "title": "Jesus Starts on the Last Journey to Jerusalem by Way of Samaria and Galilee",
           "gospel_event_id": "r1922-120",
-          "url": "https://harmony-bible.com/sections/120b/"
+          "url": "https://harmony-bible.com/sections/120b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa bắt đầu chuyến đi cuối cùng đến Giê-ru-sa-lem qua Sa-ma-ri và Ga-li-lê"
+            }
+          }
         },
         {
           "number": "121",
           "title": "Two Parables on Prayer (The Importunate Widow; The Pharisee and the Publican)",
           "gospel_event_id": "r1922-121",
-          "url": "https://harmony-bible.com/sections/121/"
+          "url": "https://harmony-bible.com/sections/121/",
+          "i18n": {
+            "vi": {
+              "title": "Hai ví dụ về cầu nguyện (bà góa nài nỉ; người Pha-ri-xi và người thu thuế)"
+            }
+          }
         }
       ],
       "passages": [
@@ -11674,13 +12999,23 @@
           "number": "122",
           "title": "Going from Galilee Through Perea, He Teaches Concerning Divorce",
           "gospel_event_id": "r1922-122",
-          "url": "https://harmony-bible.com/sections/122/"
+          "url": "https://harmony-bible.com/sections/122/",
+          "i18n": {
+            "vi": {
+              "title": "Từ Ga-li-lê qua Bê-rê, Chúa dạy về việc ly dị"
+            }
+          }
         },
         {
           "number": "123",
           "title": "Christ and Children and the Failure of the Disciples to Understand the Attitude of Jesus",
           "gospel_event_id": "r1922-123",
-          "url": "https://harmony-bible.com/sections/123/"
+          "url": "https://harmony-bible.com/sections/123/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu và các trẻ nhỏ; các môn đệ không hiểu thái độ của Ngài"
+            }
+          }
         }
       ],
       "passages": [
@@ -11850,13 +13185,23 @@
           "number": "124a",
           "title": "The Rich Young Ruler, the Perils of Riches, and Amazement of the Disciples; Rewards of Following the Messiah (Parable of the Laborers in the Vineyard)",
           "gospel_event_id": "r1922-124",
-          "url": "https://harmony-bible.com/sections/124a/"
+          "url": "https://harmony-bible.com/sections/124a/",
+          "i18n": {
+            "vi": {
+              "title": "Người trẻ giàu có, hiểm họa của của cải, các môn đệ kinh ngạc; phần thưởng cho người theo Đấng Mê-si (ví dụ các người làm công trong vườn nho)"
+            }
+          }
         },
         {
           "number": "124b",
           "title": "The Rich Young Ruler, the Perils of Riches, and Amazement of the Disciples; Rewards of Following the Messiah (Parable of the Laborers in the Vineyard)",
           "gospel_event_id": "r1922-124",
-          "url": "https://harmony-bible.com/sections/124b/"
+          "url": "https://harmony-bible.com/sections/124b/",
+          "i18n": {
+            "vi": {
+              "title": "Người trẻ giàu có, hiểm họa của của cải, các môn đệ kinh ngạc; phần thưởng cho người theo Đấng Mê-si (ví dụ các người làm công trong vườn nho)"
+            }
+          }
         }
       ],
       "passages": [
@@ -12007,19 +13352,34 @@
           "number": "125a",
           "title": "Jesus Again Foretells to the Disciples His Death and Resurrection, and Rebukes the Selfish Ambition of James and John",
           "gospel_event_id": "r1922-125",
-          "url": "https://harmony-bible.com/sections/125a/"
+          "url": "https://harmony-bible.com/sections/125a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa lại báo trước cho các môn đệ về cái chết và sự sống lại của Ngài, và quở tham vọng ích kỷ của Gia-cơ và Giăng"
+            }
+          }
         },
         {
           "number": "125b",
           "title": "Jesus Again Foretells to the Disciples His Death and Resurrection, and Rebukes the Selfish Ambition of James and John",
           "gospel_event_id": "r1922-125",
-          "url": "https://harmony-bible.com/sections/125b/"
+          "url": "https://harmony-bible.com/sections/125b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa lại báo trước cho các môn đệ về cái chết và sự sống lại của Ngài, và quở tham vọng ích kỷ của Gia-cơ và Giăng"
+            }
+          }
         },
         {
           "number": "126",
           "title": "Blind Bartimaeus and His Companion Healed",
           "gospel_event_id": "r1922-126",
-          "url": "https://harmony-bible.com/sections/126/"
+          "url": "https://harmony-bible.com/sections/126/",
+          "i18n": {
+            "vi": {
+              "title": "Người mù Ba-ti-mê và bạn ông được chữa lành"
+            }
+          }
         }
       ],
       "passages": [
@@ -12258,13 +13618,23 @@
           "number": "127a",
           "title": "Jesus Visits Zacchaeus, and Speaks the Parable of the Pounds, and Sets Out for Jerusalem",
           "gospel_event_id": "r1922-127",
-          "url": "https://harmony-bible.com/sections/127a/"
+          "url": "https://harmony-bible.com/sections/127a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa đến nhà Xa-chê, kể ví dụ về các nén bạc và lên đường đến Giê-ru-sa-lem"
+            }
+          }
         },
         {
           "number": "127b",
           "title": "Jesus Visits Zacchaeus, and Speaks the Parable of the Pounds, and Sets Out for Jerusalem",
           "gospel_event_id": "r1922-127",
-          "url": "https://harmony-bible.com/sections/127b/"
+          "url": "https://harmony-bible.com/sections/127b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa đến nhà Xa-chê, kể ví dụ về các nén bạc và lên đường đến Giê-ru-sa-lem"
+            }
+          }
         }
       ],
       "passages": [
@@ -12366,13 +13736,23 @@
           "number": "128a",
           "title": "Jesus Arrives at Bethany Near Jerusalem",
           "gospel_event_id": "r1922-128a",
-          "url": "https://harmony-bible.com/sections/128a/"
+          "url": "https://harmony-bible.com/sections/128a/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu đến Bê-tha-ni gần Giê-ru-sa-lem"
+            }
+          }
         },
         {
           "number": "128b",
           "title": "Jesus Arrives at Bethany Near Jerusalem",
           "gospel_event_id": "r1922-128a",
-          "url": "https://harmony-bible.com/sections/128b/"
+          "url": "https://harmony-bible.com/sections/128b/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu đến Bê-tha-ni gần Giê-ru-sa-lem"
+            }
+          }
         }
       ],
       "passages": [
@@ -12604,37 +13984,67 @@
           "number": "129a",
           "title": "The Barren Fig Tree Cursed, and the Second Cleansing of the Temple",
           "gospel_event_id": "r1922-129",
-          "url": "https://harmony-bible.com/sections/129a/"
+          "url": "https://harmony-bible.com/sections/129a/",
+          "i18n": {
+            "vi": {
+              "title": "Cây vả không trái bị rủa sả, và lần thứ hai Chúa dọn sạch đền thờ"
+            }
+          }
         },
         {
           "number": "129b",
           "title": "The Barren Fig Tree Cursed, and the Second Cleansing of the Temple",
           "gospel_event_id": "r1922-129",
-          "url": "https://harmony-bible.com/sections/129b/"
+          "url": "https://harmony-bible.com/sections/129b/",
+          "i18n": {
+            "vi": {
+              "title": "Cây vả không trái bị rủa sả, và lần thứ hai Chúa dọn sạch đền thờ"
+            }
+          }
         },
         {
           "number": "131",
           "title": "The Barren Fig Tree Found to Have Withered",
           "gospel_event_id": "r1922-131",
-          "url": "https://harmony-bible.com/sections/131/"
+          "url": "https://harmony-bible.com/sections/131/",
+          "i18n": {
+            "vi": {
+              "title": "Cây vả không trái được thấy đã khô héo"
+            }
+          }
         },
         {
           "number": "139h",
           "title": "The Barren Fig Tree Found to Have Withered",
           "gospel_event_id": "r1922-131",
-          "url": "https://harmony-bible.com/sections/139h/"
+          "url": "https://harmony-bible.com/sections/139h/",
+          "i18n": {
+            "vi": {
+              "title": "Cây vả không trái được thấy đã khô héo"
+            }
+          }
         },
         {
           "number": "132a",
           "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
           "gospel_event_id": "r1922-132",
-          "url": "https://harmony-bible.com/sections/132a/"
+          "url": "https://harmony-bible.com/sections/132a/",
+          "i18n": {
+            "vi": {
+              "title": "Các nhà lãnh đạo (Hội đồng Do-thái) chính thức chất vấn thẩm quyền của Chúa Giê-xu là một thầy dạy được công nhận (Ra-bi)"
+            }
+          }
         },
         {
           "number": "132b",
           "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
           "gospel_event_id": "r1922-132",
-          "url": "https://harmony-bible.com/sections/132b/"
+          "url": "https://harmony-bible.com/sections/132b/",
+          "i18n": {
+            "vi": {
+              "title": "Các nhà lãnh đạo (Hội đồng Do-thái) chính thức chất vấn thẩm quyền của Chúa Giê-xu là một thầy dạy được công nhận (Ra-bi)"
+            }
+          }
         }
       ],
       "passages": [
@@ -12940,13 +14350,23 @@
           "number": "132a",
           "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
           "gospel_event_id": "r1922-132",
-          "url": "https://harmony-bible.com/sections/132a/"
+          "url": "https://harmony-bible.com/sections/132a/",
+          "i18n": {
+            "vi": {
+              "title": "Các nhà lãnh đạo (Hội đồng Do-thái) chính thức chất vấn thẩm quyền của Chúa Giê-xu là một thầy dạy được công nhận (Ra-bi)"
+            }
+          }
         },
         {
           "number": "132b",
           "title": "The Rulers (Sanhedrin) Formally Challenge the Authority of Jesus as an Accredited Teacher (Rabbi)",
           "gospel_event_id": "r1922-132",
-          "url": "https://harmony-bible.com/sections/132b/"
+          "url": "https://harmony-bible.com/sections/132b/",
+          "i18n": {
+            "vi": {
+              "title": "Các nhà lãnh đạo (Hội đồng Do-thái) chính thức chất vấn thẩm quyền của Chúa Giê-xu là một thầy dạy được công nhận (Ra-bi)"
+            }
+          }
         }
       ],
       "passages": [
@@ -13076,7 +14496,12 @@
           "number": "133",
           "title": "The Pharisees and the Herodians Try to Ensnare Jesus About Paying Tribute to Caesar",
           "gospel_event_id": "r1922-133",
-          "url": "https://harmony-bible.com/sections/133/"
+          "url": "https://harmony-bible.com/sections/133/",
+          "i18n": {
+            "vi": {
+              "title": "Người Pha-ri-xi và phe Hê-rốt gài bẫy Chúa về việc nộp thuế cho Sê-xa"
+            }
+          }
         }
       ],
       "passages": [
@@ -13205,19 +14630,34 @@
           "number": "134",
           "title": "The Sadducees Ask Him a Puzzling Question About the Resurrection",
           "gospel_event_id": "r1922-134",
-          "url": "https://harmony-bible.com/sections/134/"
+          "url": "https://harmony-bible.com/sections/134/",
+          "i18n": {
+            "vi": {
+              "title": "Người Sa-đu-sê hỏi Chúa một câu hóc búa về sự sống lại"
+            }
+          }
         },
         {
           "number": "135",
           "title": "The Pharisees Rejoice Over the Rout of the Sadducees and a Pharisaic Lawyer Asks Jesus a Legal Question",
           "gospel_event_id": "r1922-135",
-          "url": "https://harmony-bible.com/sections/135/"
+          "url": "https://harmony-bible.com/sections/135/",
+          "i18n": {
+            "vi": {
+              "title": "Người Pha-ri-xi vui mừng vì người Sa-đu-sê bị thua, và một thầy dạy luật hỏi Chúa một câu về luật"
+            }
+          }
         },
         {
           "number": "136",
           "title": "Jesus Silences His Enemies by the Pertinent Question of the Messiah's Descent from David and Lordship Over David",
           "gospel_event_id": "r1922-136",
-          "url": "https://harmony-bible.com/sections/136/"
+          "url": "https://harmony-bible.com/sections/136/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa làm các kẻ thù im lặng bằng câu hỏi về nguồn gốc Đấng Mê-si từ Đa-vít và việc Ngài là Chúa của Đa-vít"
+            }
+          }
         }
       ],
       "passages": [
@@ -13455,13 +14895,23 @@
           "number": "137a",
           "title": "In His Last Public Discourse, Jesus Solemnly Denounces the Scribes and Pharisees",
           "gospel_event_id": "r1922-137",
-          "url": "https://harmony-bible.com/sections/137a/"
+          "url": "https://harmony-bible.com/sections/137a/",
+          "i18n": {
+            "vi": {
+              "title": "Trong bài giảng công khai cuối cùng, Chúa nghiêm khắc quở trách các thầy dạy luật và người Pha-ri-xi"
+            }
+          }
         },
         {
           "number": "137b",
           "title": "In His Last Public Discourse, Jesus Solemnly Denounces the Scribes and Pharisees",
           "gospel_event_id": "r1922-137",
-          "url": "https://harmony-bible.com/sections/137b/"
+          "url": "https://harmony-bible.com/sections/137b/",
+          "i18n": {
+            "vi": {
+              "title": "Trong bài giảng công khai cuối cùng, Chúa nghiêm khắc quở trách các thầy dạy luật và người Pha-ri-xi"
+            }
+          }
         }
       ],
       "passages": [
@@ -13615,49 +15065,89 @@
           "number": "138",
           "title": "Jesus Closely Observes the Contributions in the Temple, and Commends the Poor Widow's Gift",
           "gospel_event_id": "r1922-138",
-          "url": "https://harmony-bible.com/sections/138/"
+          "url": "https://harmony-bible.com/sections/138/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa quan sát việc dâng tiền trong đền thờ và khen món quà của bà góa nghèo"
+            }
+          }
         },
         {
           "number": "139a",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139a/"
+          "url": "https://harmony-bible.com/sections/139a/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139b",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139b/"
+          "url": "https://harmony-bible.com/sections/139b/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139c",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139c/"
+          "url": "https://harmony-bible.com/sections/139c/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139d",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139d/"
+          "url": "https://harmony-bible.com/sections/139d/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139e",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139e/"
+          "url": "https://harmony-bible.com/sections/139e/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139f",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139f/"
+          "url": "https://harmony-bible.com/sections/139f/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139g",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139g/"
+          "url": "https://harmony-bible.com/sections/139g/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         }
       ],
       "passages": [
@@ -14031,43 +15521,78 @@
           "number": "139a",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139a/"
+          "url": "https://harmony-bible.com/sections/139a/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139b",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139b/"
+          "url": "https://harmony-bible.com/sections/139b/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139c",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139c/"
+          "url": "https://harmony-bible.com/sections/139c/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139d",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139d/"
+          "url": "https://harmony-bible.com/sections/139d/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139e",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139e/"
+          "url": "https://harmony-bible.com/sections/139e/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139f",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139f/"
+          "url": "https://harmony-bible.com/sections/139f/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139g",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139g/"
+          "url": "https://harmony-bible.com/sections/139g/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         }
       ],
       "passages": [
@@ -14189,43 +15714,78 @@
           "number": "139a",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139a/"
+          "url": "https://harmony-bible.com/sections/139a/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139b",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139b/"
+          "url": "https://harmony-bible.com/sections/139b/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139c",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139c/"
+          "url": "https://harmony-bible.com/sections/139c/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139d",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139d/"
+          "url": "https://harmony-bible.com/sections/139d/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139e",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139e/"
+          "url": "https://harmony-bible.com/sections/139e/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139f",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139f/"
+          "url": "https://harmony-bible.com/sections/139f/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139g",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139g/"
+          "url": "https://harmony-bible.com/sections/139g/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         }
       ],
       "passages": [
@@ -14354,43 +15914,78 @@
           "number": "139a",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139a/"
+          "url": "https://harmony-bible.com/sections/139a/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139b",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139b/"
+          "url": "https://harmony-bible.com/sections/139b/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139c",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139c/"
+          "url": "https://harmony-bible.com/sections/139c/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139d",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139d/"
+          "url": "https://harmony-bible.com/sections/139d/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139e",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139e/"
+          "url": "https://harmony-bible.com/sections/139e/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139f",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139f/"
+          "url": "https://harmony-bible.com/sections/139f/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         },
         {
           "number": "139g",
           "title": "Sitting on the Mount of Olives, Jesus Speaks to His Disciples About the Destruction of Jerusalem and His Own Second Coming: The Great Eschatological Discourse",
           "gospel_event_id": "r1922-139",
-          "url": "https://harmony-bible.com/sections/139g/"
+          "url": "https://harmony-bible.com/sections/139g/",
+          "i18n": {
+            "vi": {
+              "title": "Ngồi trên núi Ô-liu, Chúa nói với các môn đệ về sự hủy diệt Giê-ru-sa-lem và sự trở lại của Ngài: bài giảng lớn về những việc cuối cùng"
+            }
+          }
         }
       ],
       "passages": [
@@ -14467,13 +16062,23 @@
           "number": "130a",
           "title": "The Desire of Some Greeks to See Jesus Leads Jesus to Interpret Life and Death as Sacrifice and Show How Being Lifted Up He Will Draw All Men to Him",
           "gospel_event_id": "r1922-130",
-          "url": "https://harmony-bible.com/sections/130a/"
+          "url": "https://harmony-bible.com/sections/130a/",
+          "i18n": {
+            "vi": {
+              "title": "Một số người Hy-lạp muốn gặp Chúa; Ngài nói về sự sống và cái chết như của lễ hy sinh, và khi được treo lên Ngài sẽ kéo mọi người đến với mình"
+            }
+          }
         },
         {
           "number": "130b",
           "title": "The Desire of Some Greeks to See Jesus Leads Jesus to Interpret Life and Death as Sacrifice and Show How Being Lifted Up He Will Draw All Men to Him",
           "gospel_event_id": "r1922-130",
-          "url": "https://harmony-bible.com/sections/130b/"
+          "url": "https://harmony-bible.com/sections/130b/",
+          "i18n": {
+            "vi": {
+              "title": "Một số người Hy-lạp muốn gặp Chúa; Ngài nói về sự sống và cái chết như của lễ hy sinh, và khi được treo lên Ngài sẽ kéo mọi người đến với mình"
+            }
+          }
         }
       ],
       "passages": [
@@ -14574,25 +16179,45 @@
           "number": "140",
           "title": "Jesus Predicts His Crucifixion Two Days Hence (Jewish Friday)",
           "gospel_event_id": "r1922-140",
-          "url": "https://harmony-bible.com/sections/140/"
+          "url": "https://harmony-bible.com/sections/140/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa báo trước Ngài sẽ bị đóng đinh hai ngày nữa (thứ Sáu theo lịch Do-thái)"
+            }
+          }
         },
         {
           "number": "141",
           "title": "At the Feast in the House of Simon the Leper Mary of Bethany Anoints Jesus for His Burial",
           "gospel_event_id": "r1922-141",
-          "url": "https://harmony-bible.com/sections/141/"
+          "url": "https://harmony-bible.com/sections/141/",
+          "i18n": {
+            "vi": {
+              "title": "Tại bữa tiệc ở nhà Si-môn người phong cùi, Ma-ri ở Bê-tha-ni xức dầu cho Chúa để chuẩn bị chôn cất"
+            }
+          }
         },
         {
           "number": "142",
           "title": "Judas, Stung by the Rebuke of Jesus at the Feast, Bargains with the Rulers to Betray Jesus",
           "gospel_event_id": "r1922-142",
-          "url": "https://harmony-bible.com/sections/142/"
+          "url": "https://harmony-bible.com/sections/142/",
+          "i18n": {
+            "vi": {
+              "title": "Giu-đa, bị Chúa quở tại bữa tiệc, thỏa thuận với các nhà lãnh đạo để phản Chúa"
+            }
+          }
         },
         {
           "number": "143",
           "title": "The Preparation for the Paschal Meal at the Home of a Friend",
           "gospel_event_id": "r1922-143",
-          "url": "https://harmony-bible.com/sections/143/"
+          "url": "https://harmony-bible.com/sections/143/",
+          "i18n": {
+            "vi": {
+              "title": "Chuẩn bị bữa tiệc Vượt Qua tại nhà một người bạn"
+            }
+          }
         }
       ],
       "passages": [
@@ -14924,19 +16549,34 @@
           "number": "144",
           "title": "Jesus Partakes of the Paschal Meal with the Twelve Apostles and Rebukes Their Jealousy",
           "gospel_event_id": "r1922-144",
-          "url": "https://harmony-bible.com/sections/144/"
+          "url": "https://harmony-bible.com/sections/144/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa dùng bữa Vượt Qua với mười hai sứ đồ và quở sự ghen tị của họ"
+            }
+          }
         },
         {
           "number": "146",
           "title": "Jesus Partakes of the Paschal Meal with the Twelve Apostles and Rebukes Their Jealousy",
           "gospel_event_id": "r1922-144",
-          "url": "https://harmony-bible.com/sections/146/"
+          "url": "https://harmony-bible.com/sections/146/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa dùng bữa Vượt Qua với mười hai sứ đồ và quở sự ghen tị của họ"
+            }
+          }
         },
         {
           "number": "145",
           "title": "During the Paschal Meal, Jesus Washes the Feet of His Disciples",
           "gospel_event_id": "r1922-145",
-          "url": "https://harmony-bible.com/sections/145/"
+          "url": "https://harmony-bible.com/sections/145/",
+          "i18n": {
+            "vi": {
+              "title": "Trong bữa Vượt Qua, Chúa Giê-xu rửa chân cho các môn đệ"
+            }
+          }
         }
       ],
       "passages": [
@@ -15107,13 +16747,23 @@
           "number": "146",
           "title": "At the Paschal Meal Jesus Points Out Judas as the Betrayer",
           "gospel_event_id": "r1922-146",
-          "url": "https://harmony-bible.com/sections/146/"
+          "url": "https://harmony-bible.com/sections/146/",
+          "i18n": {
+            "vi": {
+              "title": "Tại bữa Vượt Qua, Chúa chỉ ra Giu-đa là kẻ phản bội"
+            }
+          }
         },
         {
           "number": "148",
           "title": "Jesus Institutes the Memorial of Eating Bread and Drinking Wine",
           "gospel_event_id": "r1922-148",
-          "url": "https://harmony-bible.com/sections/148/"
+          "url": "https://harmony-bible.com/sections/148/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa lập lễ tưởng niệm bằng việc ăn bánh và uống rượu nho"
+            }
+          }
         }
       ],
       "passages": [
@@ -15352,7 +17002,12 @@
           "number": "147",
           "title": "After the Departure of Judas Jesus Warns the Disciples (Peter in Particular) Against Desertion, While All Protest Their Loyalty",
           "gospel_event_id": "r1922-147",
-          "url": "https://harmony-bible.com/sections/147/"
+          "url": "https://harmony-bible.com/sections/147/",
+          "i18n": {
+            "vi": {
+              "title": "Sau khi Giu-đa ra đi, Chúa cảnh báo các môn đệ (nhất là Phi-e-rơ) về việc bỏ Ngài, trong khi ai cũng quả quyết trung thành"
+            }
+          }
         }
       ],
       "passages": [
@@ -15497,7 +17152,12 @@
           "number": "149",
           "title": "The Farewell Discourse to His Disciples in the Upper Room",
           "gospel_event_id": "r1922-149",
-          "url": "https://harmony-bible.com/sections/149/"
+          "url": "https://harmony-bible.com/sections/149/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng từ biệt dành cho các môn đệ trong phòng cao"
+            }
+          }
         }
       ],
       "passages": [
@@ -15572,31 +17232,56 @@
           "number": "150a",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150a/"
+          "url": "https://harmony-bible.com/sections/150a/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150b",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150b/"
+          "url": "https://harmony-bible.com/sections/150b/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150c",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150c/"
+          "url": "https://harmony-bible.com/sections/150c/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150d",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150d/"
+          "url": "https://harmony-bible.com/sections/150d/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150e",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150e/"
+          "url": "https://harmony-bible.com/sections/150e/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         }
       ],
       "passages": [
@@ -15676,31 +17361,56 @@
           "number": "150a",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150a/"
+          "url": "https://harmony-bible.com/sections/150a/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150b",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150b/"
+          "url": "https://harmony-bible.com/sections/150b/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150c",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150c/"
+          "url": "https://harmony-bible.com/sections/150c/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150d",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150d/"
+          "url": "https://harmony-bible.com/sections/150d/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150e",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150e/"
+          "url": "https://harmony-bible.com/sections/150e/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         }
       ],
       "passages": [
@@ -15829,31 +17539,56 @@
           "number": "150a",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150a/"
+          "url": "https://harmony-bible.com/sections/150a/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150b",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150b/"
+          "url": "https://harmony-bible.com/sections/150b/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150c",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150c/"
+          "url": "https://harmony-bible.com/sections/150c/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150d",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150d/"
+          "url": "https://harmony-bible.com/sections/150d/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         },
         {
           "number": "150e",
           "title": "The Discourse on the Way to Gethsemane",
           "gospel_event_id": "r1922-150",
-          "url": "https://harmony-bible.com/sections/150e/"
+          "url": "https://harmony-bible.com/sections/150e/",
+          "i18n": {
+            "vi": {
+              "title": "Bài giảng trên đường đến vườn Ghết-sê-ma-nê"
+            }
+          }
         }
       ],
       "passages": [
@@ -15929,7 +17664,12 @@
           "number": "151",
           "title": "Christ's Intercessory Prayer",
           "gospel_event_id": "r1922-151",
-          "url": "https://harmony-bible.com/sections/151/"
+          "url": "https://harmony-bible.com/sections/151/",
+          "i18n": {
+            "vi": {
+              "title": "Lời cầu nguyện thay cho các môn đệ của Đấng Christ"
+            }
+          }
         }
       ],
       "passages": [
@@ -16005,7 +17745,12 @@
           "number": "152",
           "title": "Going Forth to Gethsemane, Jesus Suffers Long in Agony",
           "gospel_event_id": "r1922-152",
-          "url": "https://harmony-bible.com/sections/152/"
+          "url": "https://harmony-bible.com/sections/152/",
+          "i18n": {
+            "vi": {
+              "title": "Đến vườn Ghết-sê-ma-nê, Chúa Giê-xu đau đớn khôn xiết"
+            }
+          }
         }
       ],
       "passages": [
@@ -16195,7 +17940,12 @@
           "number": "153",
           "title": "Jesus Is Betrayed, Arrested, and Forsaken",
           "gospel_event_id": "r1922-153",
-          "url": "https://harmony-bible.com/sections/153/"
+          "url": "https://harmony-bible.com/sections/153/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu bị phản, bị bắt và bị bỏ rơi"
+            }
+          }
         }
       ],
       "passages": [
@@ -16345,13 +18095,23 @@
           "number": "154",
           "title": "Jesus First Examined by Annas, the Ex-High Priest",
           "gospel_event_id": "r1922-154",
-          "url": "https://harmony-bible.com/sections/154/"
+          "url": "https://harmony-bible.com/sections/154/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu bị cựu thầy tế lễ thượng phẩm A-nơ thẩm vấn đầu tiên"
+            }
+          }
         },
         {
           "number": "156",
           "title": "Peter Thrice Denies His Lord",
           "gospel_event_id": "r1922-156",
-          "url": "https://harmony-bible.com/sections/156/"
+          "url": "https://harmony-bible.com/sections/156/",
+          "i18n": {
+            "vi": {
+              "title": "Phi-e-rơ ba lần chối Chúa"
+            }
+          }
         }
       ],
       "passages": [
@@ -16614,13 +18374,23 @@
           "number": "155",
           "title": "Jesus Hurriedly Tried and Condemned by Caiaphas and the Sanhedrin, Who Mock and Buffet Him",
           "gospel_event_id": "r1922-155",
-          "url": "https://harmony-bible.com/sections/155/"
+          "url": "https://harmony-bible.com/sections/155/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu bị Cai-phe và Hội đồng Do-thái xử vội và kết án, họ chế nhạo và đánh Ngài"
+            }
+          }
         },
         {
           "number": "158",
           "title": "Remorse and Suicide of Judas the Betrayer",
           "gospel_event_id": "r1922-158",
-          "url": "https://harmony-bible.com/sections/158/"
+          "url": "https://harmony-bible.com/sections/158/",
+          "i18n": {
+            "vi": {
+              "title": "Giu-đa, kẻ phản bội, ăn năn và tự tử"
+            }
+          }
         }
       ],
       "passages": [
@@ -16886,19 +18656,34 @@
           "number": "157",
           "title": "After Dawn, Jesus Is Formally Condemned by the Sanhedrin",
           "gospel_event_id": "r1922-157",
-          "url": "https://harmony-bible.com/sections/157/"
+          "url": "https://harmony-bible.com/sections/157/",
+          "i18n": {
+            "vi": {
+              "title": "Sau bình minh, Hội đồng Do-thái chính thức kết án Chúa Giê-xu"
+            }
+          }
         },
         {
           "number": "159",
           "title": "Jesus Before Pilate the First Time",
           "gospel_event_id": "r1922-159",
-          "url": "https://harmony-bible.com/sections/159/"
+          "url": "https://harmony-bible.com/sections/159/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu đứng trước Phi-lát lần thứ nhất"
+            }
+          }
         },
         {
           "number": "160",
           "title": "Jesus Before Herod Antipas the Tetrarch",
           "gospel_event_id": "r1922-160",
-          "url": "https://harmony-bible.com/sections/160/"
+          "url": "https://harmony-bible.com/sections/160/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu đứng trước Hê-rốt An-ti-ba, quan tứ phân"
+            }
+          }
         }
       ],
       "passages": [
@@ -17162,13 +18947,23 @@
           "number": "161",
           "title": "Jesus the Second Time Before Pilate",
           "gospel_event_id": "r1922-161",
-          "url": "https://harmony-bible.com/sections/161/"
+          "url": "https://harmony-bible.com/sections/161/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu đứng trước Phi-lát lần thứ hai"
+            }
+          }
         },
         {
           "number": "162",
           "title": "The Roman Soldiers Mock Jesus",
           "gospel_event_id": "r1922-162",
-          "url": "https://harmony-bible.com/sections/162/"
+          "url": "https://harmony-bible.com/sections/162/",
+          "i18n": {
+            "vi": {
+              "title": "Lính La-mã chế nhạo Chúa Giê-xu"
+            }
+          }
         }
       ],
       "passages": [
@@ -17369,13 +19164,23 @@
           "number": "163",
           "title": "Jesus on the Way to the Cross (Via Dolorosa) on Golgotha",
           "gospel_event_id": "r1922-163",
-          "url": "https://harmony-bible.com/sections/163/"
+          "url": "https://harmony-bible.com/sections/163/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu trên đường đến thập tự giá (đường Thương Khó) tại Gô-gô-tha"
+            }
+          }
         },
         {
           "number": "164",
           "title": "The First Three Hours on the Cross",
           "gospel_event_id": "r1922-164",
-          "url": "https://harmony-bible.com/sections/164/"
+          "url": "https://harmony-bible.com/sections/164/",
+          "i18n": {
+            "vi": {
+              "title": "Ba giờ đầu trên thập tự giá"
+            }
+          }
         }
       ],
       "passages": [
@@ -17623,31 +19428,56 @@
           "number": "165",
           "title": "The Three Hours of Darkness from Noon to Three P.M.",
           "gospel_event_id": "r1922-165",
-          "url": "https://harmony-bible.com/sections/165/"
+          "url": "https://harmony-bible.com/sections/165/",
+          "i18n": {
+            "vi": {
+              "title": "Ba giờ tối tăm từ trưa đến ba giờ chiều"
+            }
+          }
         },
         {
           "number": "166",
           "title": "The Phenomena Accompanying the Death of Christ",
           "gospel_event_id": "r1922-166",
-          "url": "https://harmony-bible.com/sections/166/"
+          "url": "https://harmony-bible.com/sections/166/",
+          "i18n": {
+            "vi": {
+              "title": "Những dấu lạ khi Đấng Christ chết"
+            }
+          }
         },
         {
           "number": "167a",
           "title": "The Burial of the Body of Jesus in the Tomb of Joseph of Arimathea After Proof of His Death",
           "gospel_event_id": "r1922-167",
-          "url": "https://harmony-bible.com/sections/167a/"
+          "url": "https://harmony-bible.com/sections/167a/",
+          "i18n": {
+            "vi": {
+              "title": "Chôn thi thể Chúa Giê-xu trong mộ của Giô-sép ở A-ri-ma-thê sau khi xác nhận Ngài đã chết"
+            }
+          }
         },
         {
           "number": "167b",
           "title": "The Burial of the Body of Jesus in the Tomb of Joseph of Arimathea After Proof of His Death",
           "gospel_event_id": "r1922-167",
-          "url": "https://harmony-bible.com/sections/167b/"
+          "url": "https://harmony-bible.com/sections/167b/",
+          "i18n": {
+            "vi": {
+              "title": "Chôn thi thể Chúa Giê-xu trong mộ của Giô-sép ở A-ri-ma-thê sau khi xác nhận Ngài đã chết"
+            }
+          }
         },
         {
           "number": "168",
           "title": "The Watch of the Women by the Tomb of Jesus",
           "gospel_event_id": "r1922-168",
-          "url": "https://harmony-bible.com/sections/168/"
+          "url": "https://harmony-bible.com/sections/168/",
+          "i18n": {
+            "vi": {
+              "title": "Các người đàn bà canh giữ bên mộ Chúa Giê-xu"
+            }
+          }
         }
       ],
       "passages": [
@@ -18146,25 +19976,45 @@
           "number": "169",
           "title": "The Visit of the Women to the Tomb of Jesus",
           "gospel_event_id": "r1922-169",
-          "url": "https://harmony-bible.com/sections/169/"
+          "url": "https://harmony-bible.com/sections/169/",
+          "i18n": {
+            "vi": {
+              "title": "Các người đàn bà đến thăm mộ Chúa Giê-xu"
+            }
+          }
         },
         {
           "number": "170",
           "title": "The Earthquake, the Rolling Away of the Stone by an Angel, and the Fright of the Roman Watchers",
           "gospel_event_id": "r1922-170",
-          "url": "https://harmony-bible.com/sections/170/"
+          "url": "https://harmony-bible.com/sections/170/",
+          "i18n": {
+            "vi": {
+              "title": "Động đất, thiên sứ lăn tảng đá ra, và lính canh La-mã kinh hoàng"
+            }
+          }
         },
         {
           "number": "171",
           "title": "The Visit of the Women to the Tomb About Sunrise Sunday Morning and the Message of the Angels About the Empty Tomb",
           "gospel_event_id": "r1922-171",
-          "url": "https://harmony-bible.com/sections/171/"
+          "url": "https://harmony-bible.com/sections/171/",
+          "i18n": {
+            "vi": {
+              "title": "Các người đàn bà đến mộ lúc rạng đông sáng Chủ nhật và nghe thiên sứ báo tin mộ trống"
+            }
+          }
         },
         {
           "number": "172",
           "title": "Mary Magdalene and the Other Women Report to the Apostles, and Peter and John Visit the Empty Tomb",
           "gospel_event_id": "r1922-172",
-          "url": "https://harmony-bible.com/sections/172/"
+          "url": "https://harmony-bible.com/sections/172/",
+          "i18n": {
+            "vi": {
+              "title": "Ma-ri Mạc-đa-la và các người đàn bà khác báo tin cho các sứ đồ; Phi-e-rơ và Giăng đến mộ trống"
+            }
+          }
         }
       ],
       "passages": [
@@ -18431,19 +20281,34 @@
           "number": "173",
           "title": "The Appearance of Jesus to Mary Magdalene and the Message to the Disciples",
           "gospel_event_id": "r1922-173",
-          "url": "https://harmony-bible.com/sections/173/"
+          "url": "https://harmony-bible.com/sections/173/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu hiện ra với Ma-ri Mạc-đa-la và nhắn các môn đệ"
+            }
+          }
         },
         {
           "number": "174",
           "title": "The Appearance of Jesus to the Other Women",
           "gospel_event_id": "r1922-174",
-          "url": "https://harmony-bible.com/sections/174/"
+          "url": "https://harmony-bible.com/sections/174/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa Giê-xu hiện ra với các người đàn bà khác"
+            }
+          }
         },
         {
           "number": "175",
           "title": "Some of the Guard Report to the Jewish Rulers",
           "gospel_event_id": "r1922-175",
-          "url": "https://harmony-bible.com/sections/175/"
+          "url": "https://harmony-bible.com/sections/175/",
+          "i18n": {
+            "vi": {
+              "title": "Một số lính canh báo cho các nhà lãnh đạo Do-thái"
+            }
+          }
         }
       ],
       "passages": [
@@ -18594,19 +20459,34 @@
           "number": "176",
           "title": "The Appearance to Two Disciples (Cleopas and Another) on the Way to Emmaus",
           "gospel_event_id": "r1922-176",
-          "url": "https://harmony-bible.com/sections/176/"
+          "url": "https://harmony-bible.com/sections/176/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa hiện ra với hai môn đệ (Cơ-lê-ô-ba và một người khác) trên đường đến Ê-ma-út"
+            }
+          }
         },
         {
           "number": "177",
           "title": "The Report of the Two Disciples and the News of the Appearance to Simon Peter",
           "gospel_event_id": "r1922-177",
-          "url": "https://harmony-bible.com/sections/177/"
+          "url": "https://harmony-bible.com/sections/177/",
+          "i18n": {
+            "vi": {
+              "title": "Hai môn đệ báo tin và tin Chúa hiện ra với Si-môn Phi-e-rơ"
+            }
+          }
         },
         {
           "number": "178",
           "title": "The Appearance to the Astonished Disciples (Thomas Absent) with a Commission and Their Failure to Convince Thomas",
           "gospel_event_id": "r1922-178",
-          "url": "https://harmony-bible.com/sections/178/"
+          "url": "https://harmony-bible.com/sections/178/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa hiện ra với các môn đệ đang kinh ngạc (Thô-ma vắng mặt), giao nhiệm vụ, và họ không thuyết phục được Thô-ma"
+            }
+          }
         }
       ],
       "passages": [
@@ -18823,13 +20703,23 @@
           "number": "179",
           "title": "The Appearance to the Disciples the Next Sunday Night and the Convincing of Thomas",
           "gospel_event_id": "r1922-179",
-          "url": "https://harmony-bible.com/sections/179/"
+          "url": "https://harmony-bible.com/sections/179/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa hiện ra với các môn đệ vào tối Chủ nhật sau và thuyết phục Thô-ma"
+            }
+          }
         },
         {
           "number": "180",
           "title": "The Appearance to Seven Disciples Beside the Sea of Galilee: The Miraculous Draught of Fishes",
           "gospel_event_id": "r1922-180",
-          "url": "https://harmony-bible.com/sections/180/"
+          "url": "https://harmony-bible.com/sections/180/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa hiện ra với bảy môn đệ bên Biển Ga-li-lê: mẻ cá lạ lùng"
+            }
+          }
         }
       ],
       "passages": [
@@ -18958,25 +20848,45 @@
           "number": "181",
           "title": "The Appearance to About Five Hundred on an Appointed Mountain in Galilee, and a Commission Given",
           "gospel_event_id": "r1922-181",
-          "url": "https://harmony-bible.com/sections/181/"
+          "url": "https://harmony-bible.com/sections/181/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa hiện ra với khoảng năm trăm người trên ngọn núi đã hẹn ở Ga-li-lê, và giao nhiệm vụ"
+            }
+          }
         },
         {
           "number": "182",
           "title": "The Appearance to James the Brother of Jesus",
           "gospel_event_id": "r1922-182",
-          "url": "https://harmony-bible.com/sections/182/"
+          "url": "https://harmony-bible.com/sections/182/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa hiện ra với Gia-cơ, em của Chúa Giê-xu"
+            }
+          }
         },
         {
           "number": "183",
           "title": "The Appearance to the Disciples with Another Commission",
           "gospel_event_id": "r1922-183",
-          "url": "https://harmony-bible.com/sections/183/"
+          "url": "https://harmony-bible.com/sections/183/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa hiện ra với các môn đệ và giao thêm một nhiệm vụ"
+            }
+          }
         },
         {
           "number": "184",
           "title": "The Appearance to the Disciples with Another Commission",
           "gospel_event_id": "r1922-183",
-          "url": "https://harmony-bible.com/sections/184/"
+          "url": "https://harmony-bible.com/sections/184/",
+          "i18n": {
+            "vi": {
+              "title": "Chúa hiện ra với các môn đệ và giao thêm một nhiệm vụ"
+            }
+          }
         }
       ],
       "passages": [
@@ -19168,7 +21078,12 @@
           "number": "184",
           "title": "The Last Appearance and the Ascension",
           "gospel_event_id": "r1922-184",
-          "url": "https://harmony-bible.com/sections/184/"
+          "url": "https://harmony-bible.com/sections/184/",
+          "i18n": {
+            "vi": {
+              "title": "Lần hiện ra cuối cùng và việc Chúa thăng thiên"
+            }
+          }
         }
       ],
       "passages": [
