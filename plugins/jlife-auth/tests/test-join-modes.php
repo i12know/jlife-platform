@@ -243,6 +243,50 @@ class Test_Join_Modes extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The consent page has the photo bullet and a points line that fits every campaign's rule.
+	 */
+	public function test_consent_text_has_photo_bullet_and_neutral_points_line() {
+		$html = jlife_auth_consent_body();
+		$this->assertStringContainsString( 'If your campaign accepts photos, a photo of your handwritten page is private to you', $html );
+		$this->assertStringContainsString( 'shown to a group only if you tick that group', $html );
+		$this->assertStringContainsString( 'meets your campaign&#039;s rule', $html );
+		$this->assertStringNotContainsString( 'all four parts of SOAP', $html );
+	}
+
+	/**
+	 * Accepting a newer version keeps the earlier acceptance in the audit log, once per
+	 * level (account and enrollment); a first acceptance writes none.
+	 */
+	public function test_reaccepting_keeps_the_earlier_acceptance_in_the_audit_log() {
+		global $wpdb;
+		$count = function ( $action ) use ( $wpdb ) {
+			return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'audit_log' ) . ' WHERE action = %s', $action ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery
+		};
+		jlife_auth_start_join( $this->input( array( 'mode' => 'solo' ) ) );
+		$r = jlife_auth_complete( 'reader@example.test', $this->last_code() );
+		jlife_auth_record_consent( $r['user_id'] );
+		$this->assertSame( 0, $count( 'consent_superseded' ), 'a first acceptance writes none' );
+
+		update_user_meta( $r['user_id'], 'jlife_consent_version', 'draft-2026-11-18' );
+		update_user_meta( $r['user_id'], 'jlife_consent_at', '2026-11-20 10:00:00' );
+		$wpdb->update( jlife_challenges_table( 'enrollments' ), array( 'consent_version' => 'draft-2026-11-18', 'consented' => '2026-11-20 10:00:00' ), array( 'campaign_id' => $this->campaign, 'user_id' => $r['user_id'] ) ); // phpcs:ignore WordPress.DB,WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound
+		jlife_auth_record_consent( $r['user_id'] );
+
+		$rows = $wpdb->get_results( 'SELECT object_type, detail FROM ' . jlife_challenges_table( 'audit_log' ) . " WHERE action = 'consent_superseded' ORDER BY id", ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery
+		$this->assertCount( 2, $rows, 'one row per level' );
+		$this->assertSame( array( 'user', 'enrollment' ), wp_list_pluck( $rows, 'object_type' ) );
+		foreach ( $rows as $row ) {
+			$detail = json_decode( $row['detail'], true );
+			$this->assertSame( 'draft-2026-11-18', $detail['old_version'] );
+			$this->assertSame( '2026-11-20 10:00:00', $detail['old_at'] );
+			$this->assertSame( JLIFE_AUTH_CONSENT_VERSION, $detail['new_version'] );
+		}
+
+		jlife_auth_record_consent( $r['user_id'] );
+		$this->assertSame( 2, $count( 'consent_superseded' ), 'the same version again writes none' );
+	}
+
+	/**
 	 * The consent text says sharing posts the whole entry, Prayer included.
 	 */
 	public function test_consent_text_says_whole_entry_including_prayer() {
