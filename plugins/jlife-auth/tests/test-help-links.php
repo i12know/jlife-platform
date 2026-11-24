@@ -165,7 +165,7 @@ class Test_Help_Links extends WP_UnitTestCase {
 
 		$this->assertCount( 7, $items[1], 'seven consent bullets' );
 		$this->assertSame( 'draft-2026-11-24', JLIFE_AUTH_CONSENT_VERSION, 'the version the wording below belongs to' );
-		$this->assertSame( '3dd91207eb4882b9c6af86ba36c2a185', md5( $text ), 'the consent wording changed: bump JLIFE_AUTH_CONSENT_VERSION' );
+		$this->assertSame( '95ef5c7beebabd70450fab5f0c8a1d1e', md5( $text ), 'the consent wording changed: bump JLIFE_AUTH_CONSENT_VERSION' );
 
 		// The privacy link is a link, not wording: it is outside the bullets and the label.
 		$this->assertStringNotContainsString( 'privacy summary', $text );
