@@ -903,6 +903,22 @@ function jlife_challenges_record_consent( $user_id, $campaign_id, $version ) {
 	if ( ! $e ) {
 		return jlife_challenges_denied();
 	}
+	$old_version = (string) $e['consent_version'];
+	if ( '' !== $old_version && (string) $version !== $old_version ) {
+		// Keep the earlier acceptance in the audit log: ids, versions and the time only.
+		jlife_challenges_audit(
+			$user_id,
+			'consent_superseded',
+			'enrollment',
+			(int) $e['id'],
+			(int) $campaign_id,
+			array(
+				'old_version' => $old_version,
+				'old_at'      => (string) $e['consented'],
+				'new_version' => sanitize_text_field( (string) $version ),
+			)
+		);
+	}
 	global $wpdb;
 	$wpdb->update(
 		jlife_challenges_table( 'enrollments' ),

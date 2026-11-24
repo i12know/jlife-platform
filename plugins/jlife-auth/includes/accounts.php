@@ -29,7 +29,7 @@ const JLIFE_AUTH_LOCALES = array(
  * Current consent wording version. Bump it when the owner changes the
  * wording (#65) so everyone is asked again.
  */
-const JLIFE_AUTH_CONSENT_VERSION = 'draft-2026-11-18';
+const JLIFE_AUTH_CONSENT_VERSION = 'draft-2026-11-24';
 
 /**
  * Which way in the join page is on: 'solo' ("Read on my own", no code),
@@ -320,6 +320,22 @@ function jlife_auth_needs_consent( $user_id ) {
  * @param int $user_id User.
  */
 function jlife_auth_record_consent( $user_id ) {
+	$old_version = (string) get_user_meta( $user_id, 'jlife_consent_version', true );
+	if ( '' !== $old_version && JLIFE_AUTH_CONSENT_VERSION !== $old_version && function_exists( 'jlife_challenges_audit' ) ) {
+		// Keep the earlier acceptance in the audit log: ids, versions and the time only.
+		jlife_challenges_audit(
+			$user_id,
+			'consent_superseded',
+			'user',
+			$user_id,
+			0,
+			array(
+				'old_version' => $old_version,
+				'old_at'      => (string) get_user_meta( $user_id, 'jlife_consent_at', true ),
+				'new_version' => JLIFE_AUTH_CONSENT_VERSION,
+			)
+		);
+	}
 	update_user_meta( $user_id, 'jlife_consent_version', JLIFE_AUTH_CONSENT_VERSION );
 	update_user_meta( $user_id, 'jlife_consent_at', current_time( 'mysql', true ) );
 	if ( function_exists( 'jlife_challenges_user_enrollments' ) ) {
