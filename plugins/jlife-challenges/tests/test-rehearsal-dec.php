@@ -276,7 +276,7 @@ class Test_Rehearsal_Dec extends Jlife_Challenges_TestCase {
 			),
 		);
 		foreach ( $this->p as $label => $id ) {
-			$pref = jlife_challenges_reminder_pref( $id, $this->official );
+			$pref                       = jlife_challenges_reminder_pref( $id, $this->official );
 			$out['enrolled'][ $label ]  = $this->enrollment_count( $this->official, $id );
 			$out['reminders'][ $label ] = null === $pref ? 'none' : ( jlife_challenges_reminder_is_on( $pref ) ? 'on' : 'off' );
 		}
@@ -584,7 +584,9 @@ class Test_Rehearsal_Dec extends Jlife_Challenges_TestCase {
 			$this->assertSame( 0, $this->rows( $t, $this->official ), "no official {$t}" );
 		}
 		$groups = $this->official_groups();
-		$this->assertSame( array( 'Evening Readers', 'Morning Readers' ), array_keys( $groups ) );
+		$names = array_keys( $groups );
+		sort( $names );
+		$this->assertSame( array( 'Evening Readers', 'Morning Readers' ), $names );
 		foreach ( $this->pg as $g ) {
 			$this->assertNotContains( $g['id'], $groups, 'the official groups are new' );
 		}
