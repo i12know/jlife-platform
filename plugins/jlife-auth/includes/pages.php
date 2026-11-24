@@ -87,6 +87,7 @@ function jlife_auth_page_html( $title, $body ) {
 	$lang = jlife_auth_language_links( false !== strpos( $body, 'id="jl-form"' ) );
 	return '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
+		. jlife_auth_launcher_head_tags()
 		. '<title>' . esc_html( $title ) . '</title>'
 		. '<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:30rem;margin:0 auto;padding:1.25rem;line-height:1.5;color:#1d1d1f;background:#fff;display:flex;flex-direction:column}'
 		. 'h1{overflow-wrap:anywhere}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b45309;outline-offset:2px}'
@@ -101,6 +102,16 @@ function jlife_auth_page_html( $title, $body ) {
 		. '.jl-help-links{margin-top:2rem;text-align:center;font-size:.875rem}.jl-help-links a{display:inline-block;padding:.5rem .4rem}</style></head><body>'
 		// The language switch comes last in the markup so Enter in a field still presses the form's own button; CSS shows it first.
 		. $hint . $body . jlife_auth_help_footer() . $lang . '</body></html>';
+}
+
+/**
+ * The home-screen launcher tags (#251): the shared helper belongs to
+ * jlife-challenges, so signed-out pages ask it. Empty when it is not active.
+ *
+ * @return string Escaped HTML.
+ */
+function jlife_auth_launcher_head_tags() {
+	return function_exists( 'jlife_challenges_launcher_head_tags' ) ? jlife_challenges_launcher_head_tags() : '';
 }
 
 /**
@@ -588,7 +599,8 @@ function jlife_auth_consent_body( $error = '' ) {
 		__( 'Your SOAP entries are private. Only you can read them. Group leaders and organizers cannot see what you write.', 'jlife-auth' ),
 		__( 'Entries are private by default. You choose what to share: when you tick a group\'s box as you save, that group\'s members see the whole entry, including your Prayer, with your first name.', 'jlife-auth' ),
 		__( 'You can update or remove a share at any time on the share page (/share).', 'jlife-auth' ),
-		__( 'Points come from participation: one point for each day you complete all four parts of SOAP on time. Points never depend on what you write. Organizers see points and counts, not your words.', 'jlife-auth' ),
+		__( 'You earn one point for each day you submit, on time, a reflection that meets your campaign\'s rule (see Rules); one point per day at most. Points never depend on what you write. Organizers see points and counts, not your words.', 'jlife-auth' ),
+		__( 'If your campaign accepts photos, a photo of your handwritten page is private to you, stored apart from the website\'s public files, and shown to a group only if you tick that group\'s box when you submit. The project owner may look at the photos of prize finalists before a prize is given.', 'jlife-auth' ),
 		__( 'If you choose daily reminders, we email you each morning\'s reading. You can turn them off at any time from My Marathon or the link in any reminder.', 'jlife-auth' ),
 		__( 'You can delete your account and everything you have written at any time.', 'jlife-auth' ),
 	);

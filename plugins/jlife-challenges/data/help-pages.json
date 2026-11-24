@@ -34,6 +34,13 @@
 				["p", "You can read on your own, or belong to up to three groups. Joining a group needs an invite code from someone in it. Only adults (18 or older) can start a group. Groups never change your points: points are personal."],
 				["h2", "If you started a group: reading ahead"],
 				["p", "A person who started a group can open the coming days, write them and submit them early. Submitting early earns the point for that reading day in the usual way, and nothing is scored again when the day opens. Your group sees nothing early. To share ahead, tick **Share with this group on the reading day** for a group you started: it stays hidden from everyone but you until that day opens in campaign time, you can update or withdraw it until then, and it is withdrawn if you leave the group. Withdrawing never removes a point you earned."],
+				["h2", "Add LATOC to your Home Screen", "add-to-home-screen"],
+				["p", "You can put LATOC on your phone's Home Screen so it opens in one tap, like an app. It is the same website: nothing is installed from an app store."],
+				["ul", [
+					"**iPhone:** Safari is recommended. Tap the Share button, then **Add to Home Screen**. If you see **Open as Web App**, turn it on. Then tap **Add**. Other browsers on iOS 16.4 or newer can do this too, from their own menu.",
+					"**Android:** In Chrome, tap the menu (the three dots), then **Add to Home screen** or **Install app**."
+				]],
+				["p", "You may need to sign in the first time you open it."],
 				["h2", "Questions"],
 				["p", "Questions or problems? Email [privacy contact email]."]
 			]
@@ -71,6 +78,13 @@
 				["p", "Bạn có thể đọc một mình, hoặc tham gia tối đa ba nhóm. Muốn vào một nhóm, bạn cần mã mời từ một người trong nhóm đó. Chỉ người lớn (từ 18 tuổi) mới lập được nhóm. Nhóm không làm thay đổi điểm của bạn: điểm là của riêng mỗi người."],
 				["h2", "Nếu bạn đã lập nhóm: đọc trước"],
 				["p", "Người đã lập nhóm có thể mở các ngày sắp tới, viết và gửi sớm. Gửi sớm vẫn được điểm của ngày đọc đó như thường lệ, và không chấm điểm lại khi ngày ấy mở. Nhóm không thấy gì sớm. Muốn chia sẻ trước, hãy đánh dấu **Chia sẻ với nhóm này vào ngày đọc** cho nhóm bạn đã lập: bài ẩn với mọi người trừ bạn cho đến khi ngày đó mở theo giờ của chiến dịch, bạn có thể cập nhật hoặc rút lại cho đến lúc đó, và bài sẽ bị rút lại nếu bạn rời nhóm. Rút lại không bao giờ làm mất điểm bạn đã có."],
+				["h2", "Thêm LATOC vào Màn hình chính", "add-to-home-screen"],
+				["p", "Bạn có thể đặt LATOC trên Màn hình chính của điện thoại để mở bằng một lần chạm, như một ứng dụng. Đây vẫn là trang web này: không cài gì từ cửa hàng ứng dụng."],
+				["ul", [
+					"**iPhone:** Nên dùng Safari. Chạm nút Chia sẻ, rồi chọn **Thêm vào Màn hình chính**. Nếu thấy **Mở như Ứng dụng web**, hãy bật nó. Sau đó chạm **Thêm**. Các trình duyệt khác trên iOS 16.4 trở lên cũng làm được, từ menu của chính trình duyệt đó.",
+					"**Android:** Trong Chrome, chạm menu (ba dấu chấm), rồi chọn **Thêm vào Màn hình chính** hoặc **Cài đặt ứng dụng**."
+				]],
+				["p", "Lần đầu mở, bạn có thể cần đăng nhập."],
 				["h2", "Câu hỏi"],
 				["p", "Có câu hỏi hoặc vấn đề? Hãy gửi email đến [privacy contact email]."]
 			]

@@ -482,6 +482,28 @@ Owner decisions on #244 (2026-11-23): official Marathon only (the pilot stays te
 | `wp jlife photos export` | Host only, organizer. Zip of one participant's photo-earned days (`dNNN.jpg` + `days.csv`) in `~/.latoc/` (0600); output and audit are counts and the path |
 | My Marathon | A photo-earned day stays green and shows a camera marker; its label reads "Point earned – photo upload" |
 
+### 4k. Ask the Pastors (#249)
+
+Owner decisions (2026-11-24): questions are **private to administrators, not anonymous to them**; one gate, `jlife_questions_can_review()`, true only for `manage_options` (network super admins count), with a filter so a pastor capability can be added later (separate staff accounts; `jlife-auth` eligibility unchanged, no role or capability ships now); admins may permanently delete **archived** questions only; **no retention job**; the switch is an on/off button on the Bible Questions screen, default off; a private pastor note exists and is never exported; minors stay in the queue with an "under 18" badge and a paraphrase warning; no urgent-help contact and no email. **BQ** = a question (`jlife_bible_questions`: user, campaign, day, passage, text, minor flag, status, note). BQ shares no column or join with S, GS, L or scores.
+
+| Actor | BQ create | BQ list / read | Status, note | De-identified export | Delete |
+|---|---|---|---|---|---|
+| Participant (solo, in a group, minor) | ✅ own, within limits, enrolled and the day open | ❌ (receipt only; no list of their own questions) | ❌ | ❌ | ❌ |
+| Member, leader or starter of the asker's group; any other group | ❌ for others | ❌ | ❌ | ❌ | ❌ |
+| Editor, author, any other wp-admin user | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Site administrator (`manage_options`) | ❌ (not as a reader here) | ✅ identity + text | ✅ | ✅ text and passage only | ✅ archived only |
+| Anonymous, magic-link actor | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+| Case | Result |
+|---|---|
+| Feature off (default) | No link, no screen, `jlife_questions_submit()` refuses; nothing stored |
+| Not enrolled, a day that has not opened (including a starter reading ahead), a closed campaign | Refused; nothing stored |
+| 10 to 1,000 characters, passage at most 100, tags stripped | Otherwise refused with a message; typed text is kept |
+| 3 per rolling 24 hours, 15 per campaign, same text on the same day within 24 hours | The 4th and 16th are refused; the repeat returns the first row |
+| A question | Earns no point, makes no share, changes no draft, sends no email; audit row `question_submitted` holds ids only |
+| Export | Numbered list of `(passage) question` ordered by passage; no name, id, date, status, minor flag or note; audited as a count |
+| Delete | Archived rows only, by an administrator; audited by id; account deletion removes a person's questions; removing a test campaign removes its questions; no automatic purge |
+
 ## 5. Required tests (written first; CI)
 
 **Calendar:**
@@ -548,6 +570,14 @@ Owner decisions on #244 (2026-11-23): official Marathon only (the pilot stays te
 - the CSV has individual points and the formula guard on every text cell
 - viewing and exporting write no ledger, enrollment or membership change; an export is audited with a count only
 - acceptance: the CSV for the two-group scenario has each person's point and no reflection
+
+**Ask the Pastors (#249; written first, `test-bible-questions.php`):**
+- every actor above on list, detail, status, note, export, delete and the switch, directly and by forged request; nonce bound to the operation and question; GET changes nothing
+- the gate filter widens and narrows access; no new role or capability exists and a subscriber stays eligible for emailed codes
+- length, rate and repeat limits; not enrolled, unopened day, closed campaign and feature off store nothing
+- no points, shares, entries or membership change and a draft is untouched
+- export holds no name, date, note or flag; no question text in `error_log`, the audit log or any email
+- account deletion and test-campaign removal purge; no retention cron
 
 ## 6. Interfaces for the screens (M6/M7)
 

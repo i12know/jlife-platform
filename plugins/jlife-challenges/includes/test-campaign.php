@@ -94,7 +94,7 @@ function jlife_challenges_create_test_campaign( $actor, $plan_id = 'rpl-life-and
  * Campaign-scoped tables cleared when a test campaign is removed, in delete
  * order. soap_revisions has no campaign_id and is cleared through its entry.
  */
-const JLIFE_CHALLENGES_TEST_TABLES = array( 'photos', 'group_shares', 'score_ledger', 'soap_entries', 'group_members', 'reminder_prefs', 'reminder_sends', 'enrollments', 'groups', 'audit_log' );
+const JLIFE_CHALLENGES_TEST_TABLES = array( 'photos', 'bible_questions', 'group_shares', 'score_ledger', 'soap_entries', 'group_members', 'reminder_prefs', 'reminder_sends', 'enrollments', 'groups', 'audit_log' );
 
 /**
  * Participants enrolled in a test campaign, split into accounts that a
