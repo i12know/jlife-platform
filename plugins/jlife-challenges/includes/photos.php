@@ -265,7 +265,7 @@ function jlife_challenges_photo_process( $tmp ) {
 	if ( ! is_array( $info ) ) {
 		return jlife_challenges_photo_error( 'jlife_photo_type' );
 	}
-	$type = (int) ( $info[2] ?? 0 );
+	$type = (int) $info[2];
 	if ( ! in_array( $type, array( IMAGETYPE_JPEG, IMAGETYPE_PNG ), true ) || (int) $info[0] < 1 || (int) $info[1] < 1 ) {
 		return jlife_challenges_photo_error( 'jlife_photo_type' );
 	}
@@ -306,9 +306,6 @@ function jlife_challenges_photo_render( $src, $mime, $work ) {
 	);
 	foreach ( $specs as $name => $spec ) {
 		$size = $editor->get_size();
-		if ( is_wp_error( $size ) ) {
-			return jlife_challenges_photo_error( 'jlife_photo_failed' );
-		}
 		if ( max( (int) $size['width'], (int) $size['height'] ) > $spec[0] ) {
 			if ( is_wp_error( $editor->resize( $spec[0], $spec[0], false ) ) ) {
 				return jlife_challenges_photo_error( 'jlife_photo_failed' );
@@ -553,7 +550,6 @@ function jlife_challenges_photo_attach( $user_id, $campaign_id, $day_key, $file 
 	if ( is_wp_error( $day ) ) {
 		return $day;
 	}
-	$file  = is_array( $file ) ? $file : array();
 	$error = (int) ( $file['error'] ?? UPLOAD_ERR_NO_FILE );
 	if ( UPLOAD_ERR_OK !== $error ) {
 		if ( UPLOAD_ERR_NO_FILE === $error ) {
