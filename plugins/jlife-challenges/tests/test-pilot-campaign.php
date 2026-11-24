@@ -128,14 +128,14 @@ class Test_Pilot_Campaign extends Jlife_Challenges_TestCase {
 		foreach ( array( 'today', 'marathon', 'group' ) as $active ) {
 			$html = jlife_challenges_page_html( 'T', '<h1>Body</h1>', $active );
 			$this->assertStringContainsString(
-				"Practice week: Nov 29–Dec 13. Points don't count for prizes. The Marathon starts Dec 20.",
+				"Practice period: Nov 29–Dec 13. Points don't count for prizes. The Marathon starts Dec 20.",
 				$this->text( $html ),
 				$active
 			);
-			$this->assertLessThan( strpos( $html, '<h1>Body</h1>' ), strpos( $html, 'Practice week' ), 'above the screen content' );
+			$this->assertLessThan( strpos( $html, '<h1>Body</h1>' ), strpos( $html, 'Practice period' ), 'above the screen content' );
 		}
-		$this->assertStringNotContainsString( 'Practice week', jlife_challenges_page_html( 'T', 'x', 'signout' ), 'not on the sign-out confirmation' );
-		$this->assertStringNotContainsString( 'Practice week', jlife_challenges_page_html( 'T', 'x', 'public' ), 'not on the public reading page' );
+		$this->assertStringNotContainsString( 'Practice period', jlife_challenges_page_html( 'T', 'x', 'signout' ), 'not on the sign-out confirmation' );
+		$this->assertStringNotContainsString( 'Practice period', jlife_challenges_page_html( 'T', 'x', 'public' ), 'not on the public reading page' );
 	}
 
 	/**
@@ -144,15 +144,15 @@ class Test_Pilot_Campaign extends Jlife_Challenges_TestCase {
 	public function test_banner_only_while_the_pilot_is_current() {
 		$this->set_now( '2026-12-07 18:00:00' );
 		wp_set_current_user( $this->u['a'] ); // Enrolled in the Marathon only.
-		$this->assertStringNotContainsString( 'Practice week', jlife_challenges_page_html( 'T', 'x', 'today' ) );
+		$this->assertStringNotContainsString( 'Practice period', jlife_challenges_page_html( 'T', 'x', 'today' ) );
 		wp_set_current_user( 0 );
-		$this->assertStringNotContainsString( 'Practice week', jlife_challenges_page_html( 'T', 'x', 'today' ) );
+		$this->assertStringNotContainsString( 'Practice period', jlife_challenges_page_html( 'T', 'x', 'today' ) );
 
 		$this->enroll_pilot( 'outsider' );
 		wp_set_current_user( $this->u['outsider'] );
-		$this->assertStringContainsString( 'Practice week', jlife_challenges_page_html( 'T', 'x', 'today' ) );
+		$this->assertStringContainsString( 'Practice period', jlife_challenges_page_html( 'T', 'x', 'today' ) );
 		$this->set_now( '2026-12-20 18:00:00' ); // Both enrolled would show the Marathon; the pilot-only reader still sees the (ended) pilot, so no practice banner on an ended pilot.
-		$this->assertStringNotContainsString( 'Practice week', jlife_challenges_page_html( 'T', 'x', 'today' ) );
+		$this->assertStringNotContainsString( 'Practice period', jlife_challenges_page_html( 'T', 'x', 'today' ) );
 	}
 
 	/**
@@ -160,7 +160,7 @@ class Test_Pilot_Campaign extends Jlife_Challenges_TestCase {
 	 */
 	public function test_banner_has_a_vietnamese_draft() {
 		$catalog = require dirname( __DIR__ ) . '/languages/jlife-challenges-vi.l10n.php';
-		$key     = "Practice week: Nov 29–Dec 13. Points don't count for prizes. The Marathon starts Dec 20.";
+		$key     = "Practice period: Nov 29–Dec 13. Points don't count for prizes. The Marathon starts Dec 20.";
 		$this->assertArrayHasKey( $key, $catalog['messages'] );
 		$this->assertNotSame( '', $catalog['messages'][ $key ] );
 	}
