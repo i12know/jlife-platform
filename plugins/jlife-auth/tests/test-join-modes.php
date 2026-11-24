@@ -249,6 +249,8 @@ class Test_Join_Modes extends WP_UnitTestCase {
 		$html = jlife_auth_consent_body();
 		$this->assertStringContainsString( 'If your campaign accepts photos, a photo of your handwritten page is private to you', $html );
 		$this->assertStringContainsString( 'shown to a group only if you tick that group', $html );
+		$this->assertStringContainsString( 'prize finalists', $html );
+		$this->assertStringContainsString( 'Organizers see points and counts, not your words', $html );
 		$this->assertStringContainsString( 'meets your campaign&#039;s rule', $html );
 		$this->assertStringNotContainsString( 'all four parts of SOAP', $html );
 	}

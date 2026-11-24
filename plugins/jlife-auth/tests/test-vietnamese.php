@@ -171,6 +171,8 @@ class Test_Vietnamese extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'Nếu chiến dịch của bạn nhận ảnh', $consent, 'the photo bullet' );
 		$this->assertStringContainsString( 'đạt quy tắc của chiến dịch', $consent, 'the campaign-neutral points bullet' );
 		$this->assertStringNotContainsString( 'bốn phần của SOAP', $consent );
+		$this->assertStringContainsString( 'trước khi trao giải', $consent );
+		$this->assertStringContainsString( 'Ban tổ chức chỉ thấy điểm', $consent );
 	}
 
 	/**
