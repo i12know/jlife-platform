@@ -9,7 +9,7 @@
  *   post would be published or overwritten by an unrelated deploy. As separate
  *   posts, neither importer ever sees the other's rows.
  * - The release rule needs the campaign calendar (current-campaign.php,
- *   calendar.php), and the pilot (Day 1 Dec 5) and the Marathon (Day 1 Dec 20)
+ *   calendar.php), and the pilot (Day 1 Nov 29) and the Marathon (Day 1 Dec 20)
  *   share the same Reading Day. So release is decided per campaign day, never by
  *   the post's own date.
  *

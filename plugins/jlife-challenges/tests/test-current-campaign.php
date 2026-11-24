@@ -2,7 +2,7 @@
 /**
  * The current campaign (#177, docs/challenges-engine-design.md §3b): one date-
  * and status-aware rule for joining and for what a participant sees. Written
- * before the rule. The Dec 5–13, 2026 pilot and the Dec 20, 2026 – Apr 2, 2027
+ * before the rule. The Nov 29–Dec 13, 2026 pilot and the Dec 20, 2026 – Apr 2, 2027
  * Marathon are both active; America/Los_Angeles is UTC-8 in December.
  *
  * @package jlife-challenges
@@ -32,7 +32,7 @@ class Test_Current_Campaign extends JLife_Challenges_TestCase {
 	 */
 	public function set_up() {
 		parent::set_up();
-		$this->pilot = $this->make_campaign( 'pilot', '2026-12-05', '2026-12-13' );
+		$this->pilot = $this->make_campaign( 'pilot', '2026-11-29', '2026-12-13' );
 		$group       = jlife_challenges_create_group( $this->u['organizer'], $this->pilot, 'Pilot Group' );
 		$this->assertIsArray( $group );
 		$this->pilot_group = $group;
@@ -111,9 +111,9 @@ class Test_Current_Campaign extends JLife_Challenges_TestCase {
 	 */
 	public static function overlap_matrix() {
 		return array(
-			'Nov 29, recruiting opens'   => array( '2026-11-29 20:00:00', 'pilot', 'pilot' ),
-			'Dec 4 23:59:59 PT'          => array( '2026-12-05 07:59:59', 'pilot', 'pilot' ),
-			'Dec 5 00:00 PT, pilot Day1' => array( '2026-12-05 08:00:00', 'pilot', 'pilot' ),
+			'Nov 28, pilot created'      => array( '2026-11-29 04:00:00', 'pilot', 'pilot' ),
+			'Nov 28 23:59:59 PT'         => array( '2026-11-29 07:59:59', 'pilot', 'pilot' ),
+			'Nov 29 00:00 PT, Day 1'     => array( '2026-11-29 08:00:00', 'pilot', 'pilot' ),
 			'Dec 9, mid-pilot'           => array( '2026-12-09 18:00:00', 'pilot', 'pilot' ),
 			'Dec 13 23:59:59 PT'         => array( '2026-12-14 07:59:59', 'pilot', 'pilot' ),
 			'Dec 14 00:00 PT, gap'       => array( '2026-12-14 08:00:00', 'marathon', 'marathon' ),
@@ -133,7 +133,7 @@ class Test_Current_Campaign extends JLife_Challenges_TestCase {
 	 * @param string $join Expected join target.
 	 */
 	public function test_overlap_matrix( $utc, $view, $join ) {
-		$this->set_now( '2026-11-29 20:00:00' );
+		$this->set_now( '2026-11-29 04:00:00' );
 		$this->enroll_pilot( 'a' ); // Already in the Marathon (base set-up).
 		$ids = array(
 			'pilot'    => $this->pilot,
@@ -152,8 +152,8 @@ class Test_Current_Campaign extends JLife_Challenges_TestCase {
 		$pilot    = jlife_challenges_get_campaign( $this->pilot );
 		$marathon = $this->campaign_row();
 		$at       = static fn( $utc ) => new DateTimeImmutable( $utc, new DateTimeZone( 'UTC' ) );
-		$this->assertSame( 'upcoming', jlife_challenges_campaign_phase( $pilot, $at( '2026-12-05 07:59:59' ) ) );
-		$this->assertSame( 'running', jlife_challenges_campaign_phase( $pilot, $at( '2026-12-05 08:00:00' ) ) );
+		$this->assertSame( 'upcoming', jlife_challenges_campaign_phase( $pilot, $at( '2026-11-29 07:59:59' ) ) );
+		$this->assertSame( 'running', jlife_challenges_campaign_phase( $pilot, $at( '2026-11-29 08:00:00' ) ) );
 		$this->assertSame( 'running', jlife_challenges_campaign_phase( $pilot, $at( '2026-12-14 07:59:59' ) ) );
 		$this->assertSame( 'ended', jlife_challenges_campaign_phase( $pilot, $at( '2026-12-14 08:00:00' ) ) );
 		$this->assertSame( 'upcoming', jlife_challenges_campaign_phase( $marathon, $at( '2026-12-20 07:59:59' ) ) );
@@ -166,9 +166,9 @@ class Test_Current_Campaign extends JLife_Challenges_TestCase {
 	 * During the pilot, Today, My Marathon and My Group show the pilot, not the future Marathon.
 	 */
 	public function test_screens_follow_the_rule_during_the_pilot() {
-		$this->set_now( '2026-12-01 18:00:00' );
+		$this->set_now( '2026-11-29 04:00:00' );
 		$this->enroll_pilot( 'a' );
-		$this->set_now( '2026-12-07 18:00:00' ); // Pilot Day 3.
+		$this->set_now( '2026-12-01 18:00:00' ); // Pilot Day 3.
 
 		$today = jlife_challenges_day_view( $this->u['a'] );
 		$this->assertSame( 'active', $today['state'] );
@@ -177,7 +177,7 @@ class Test_Current_Campaign extends JLife_Challenges_TestCase {
 
 		$grid = jlife_challenges_marathon_view( $this->u['a'] );
 		$this->assertSame( $this->pilot, (int) $grid['campaign']['id'] );
-		$this->assertCount( 9, $grid['cells'] );
+		$this->assertCount( 15, $grid['cells'] );
 
 		$group = jlife_challenges_group_view( $this->u['a'] );
 		$this->assertSame( 'solo', $group['state'], 'solo in the pilot; the Marathon group is not shown yet' );

@@ -1,6 +1,6 @@
 <?php
 /**
- * The Dec 5–13 pilot campaign, its practice banner and the "I'll start Dec 20"
+ * The Nov 29–Dec 13 pilot campaign, its practice banner and the "I'll start Dec 20"
  * flag (#178). Written before the code. The pilot's key does not start with
  * `test-`, so the staging cleanup never touches it (#174).
  *
@@ -49,12 +49,12 @@ class Test_Pilot_Campaign extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * The pilot is Dec 5–13, 2026 (Pacific), active, with a key that is not a test key.
+	 * The pilot is Nov 29–Dec 13, 2026 (Pacific), active, with a key that is not a test key.
 	 */
 	public function test_creates_the_pilot_with_the_right_shape() {
 		$c = jlife_challenges_get_campaign( $this->pilot );
 		$this->assertSame( 'pilot-2026-12', $c['campaign_key'] );
-		$this->assertSame( '2026-12-05', $c['start_date'] );
+		$this->assertSame( '2026-11-29', $c['start_date'] );
 		$this->assertSame( '2026-12-13', $c['end_date'] );
 		$this->assertSame( 'America/Los_Angeles', $c['timezone'] );
 		$this->assertSame( 'active', $c['status'] );
@@ -86,15 +86,15 @@ class Test_Pilot_Campaign extends Jlife_Challenges_TestCase {
 		foreach ( array( 'test-pilot', 'marathon-2026', '' ) as $key ) {
 			$this->assertWPError( jlife_challenges_create_pilot_campaign( $this->u['organizer'], array( 'campaign_key' => $key ) ), "key '$key'" );
 		}
-		$odd = jlife_challenges_create_pilot_campaign( $this->u['organizer'], array( 'start_date' => '2026-12-13', 'end_date' => '2026-12-05' ) ); // phpcs:ignore WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound -- test data.
+		$odd = jlife_challenges_create_pilot_campaign( $this->u['organizer'], array( 'start_date' => '2026-12-13', 'end_date' => '2026-11-29' ) ); // phpcs:ignore WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound -- test data.
 		$this->assertWPError( $odd, 'reversed dates' );
 	}
 
 	/**
-	 * The pilot is joinable from Nov 29, and while it is, nothing else is the join target.
+	 * The pilot is joinable from creation (Nov 28 evening, before Day 1 on Nov 29), and while it is, nothing else is the join target.
 	 */
-	public function test_sign_ups_from_nov_29_join_the_pilot() {
-		$this->set_now( '2026-11-29 18:00:00' );
+	public function test_sign_ups_from_creation_join_the_pilot() {
+		$this->set_now( '2026-11-29 04:00:00' ); // Nov 28, 8:00 PM Pacific.
 		$open = jlife_challenges_open_campaign();
 		$this->assertSame( $this->pilot, (int) $open['id'], 'upcoming pilot beats the later Marathon' );
 		$this->set_now( '2026-12-14 08:00:00' );
@@ -128,7 +128,7 @@ class Test_Pilot_Campaign extends Jlife_Challenges_TestCase {
 		foreach ( array( 'today', 'marathon', 'group' ) as $active ) {
 			$html = jlife_challenges_page_html( 'T', '<h1>Body</h1>', $active );
 			$this->assertStringContainsString(
-				"Practice week: Dec 5–13. Points don't count for prizes. The Marathon starts Dec 20.",
+				"Practice week: Nov 29–Dec 13. Points don't count for prizes. The Marathon starts Dec 20.",
 				$this->text( $html ),
 				$active
 			);
@@ -160,7 +160,7 @@ class Test_Pilot_Campaign extends Jlife_Challenges_TestCase {
 	 */
 	public function test_banner_has_a_vietnamese_draft() {
 		$catalog = require dirname( __DIR__ ) . '/languages/jlife-challenges-vi.l10n.php';
-		$key     = "Practice week: Dec 5–13. Points don't count for prizes. The Marathon starts Dec 20.";
+		$key     = "Practice week: Nov 29–Dec 13. Points don't count for prizes. The Marathon starts Dec 20.";
 		$this->assertArrayHasKey( $key, $catalog['messages'] );
 		$this->assertNotSame( '', $catalog['messages'][ $key ] );
 	}

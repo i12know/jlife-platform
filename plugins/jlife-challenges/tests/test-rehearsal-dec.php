@@ -25,7 +25,7 @@
 class Test_Rehearsal_Dec extends Jlife_Challenges_TestCase {
 
 	/**
-	 * The pilot (Dec 5-13, 2026).
+	 * The pilot (Nov 29–Dec 13, 2026).
 	 *
 	 * @var int
 	 */
@@ -94,7 +94,7 @@ class Test_Rehearsal_Dec extends Jlife_Challenges_TestCase {
 		$wpdb->update( jlife_challenges_table( 'campaigns' ), array( 'status' => 'draft' ), array( 'id' => $this->campaign ) );
 		$org = $this->u['organizer'];
 
-		$this->set_now( '2026-12-01 18:00:00' );
+		$this->set_now( '2026-11-29 04:00:00' ); // Nov 28, 8:00 PM Pacific: the pilot is created the evening before Day 1.
 		$this->pilot    = (int) jlife_challenges_create_pilot_campaign( $org )['campaign_id'];
 		$this->official = (int) jlife_challenges_create_official_campaign( $org )['campaign_id'];
 		$this->assertGreaterThan( 0, $this->pilot );
@@ -452,11 +452,11 @@ class Test_Rehearsal_Dec extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Point 1: the pilot is seeded as described (Dec 5-13, two groups, six people).
+	 * Point 1: the pilot is seeded as described (Nov 29–Dec 13, two groups, six people).
 	 */
 	public function test_pilot_is_seeded() {
 		$c = jlife_challenges_get_campaign( $this->pilot );
-		$this->assertSame( '2026-12-05', $c['start_date'] );
+		$this->assertSame( '2026-11-29', $c['start_date'] );
 		$this->assertSame( '2026-12-13', $c['end_date'] );
 		$this->assertSame( 'active', $c['status'] );
 		$this->assertSame( 5, jlife_challenges_close_count( 'enrollments', $this->pilot, 'active' ), 'fay never joined the pilot' );

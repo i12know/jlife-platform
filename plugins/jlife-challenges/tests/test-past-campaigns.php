@@ -34,7 +34,7 @@ class Test_Past_Campaigns extends JLife_Challenges_TestCase {
 	private $share_a = 0;
 
 	/**
-	 * A practice week (Dec 5-13) before the base campaign (Dec 20 on), with a and b
+	 * A practice week (Nov 29–Dec 13) before the base campaign (Dec 20 on), with a and b
 	 * in one practice group; a writes and shares one SOAP, b writes one.
 	 */
 	public function set_up() {
@@ -45,13 +45,13 @@ class Test_Past_Campaigns extends JLife_Challenges_TestCase {
 				'campaign_key' => 'pilot-' . wp_generate_password( 6, false ),
 				'plan_id'      => 'rpl-life-and-teachings-of-jesus-2026',
 				'title'        => 'Practice week (test)',
-				'start_date'   => '2026-12-05',
+				'start_date'   => '2026-11-29',
 				'end_date'     => '2026-12-13',
 				'status'       => 'active',
 			)
 		);
 		$this->assertIsInt( $this->pilot );
-		$this->set_now( '2026-12-06 18:00:00' ); // Practice Day 2, 10:00 AM Pacific.
+		$this->set_now( '2026-12-06 18:00:00' ); // Practice Day 8, 10:00 AM Pacific.
 		$this->pg = jlife_challenges_create_group( $this->u['organizer'], $this->pilot, 'Practice Group' )['id'];
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $this->u['a'], $this->pg ) );
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $this->u['b'], $this->pg ) );
@@ -152,7 +152,7 @@ class Test_Past_Campaigns extends JLife_Challenges_TestCase {
 	 * (review finding 1): the share is a snapshot, independent of the entry.
 	 */
 	public function test_share_of_a_cleared_draft_stays_removable() {
-		$this->set_now( '2026-12-07 18:00:00' ); // Practice Day 3.
+		$this->set_now( '2026-12-07 18:00:00' ); // Practice Day 9.
 		$entry = jlife_challenges_save_draft( $this->u['b'], $this->pilot, null, $this->soap( 'b-draft' ) );
 		$this->assertIsInt( $entry );
 		$share = jlife_challenges_share( $this->u['b'], $entry, $this->pg );

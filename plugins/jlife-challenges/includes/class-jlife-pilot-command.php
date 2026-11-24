@@ -1,7 +1,7 @@
 <?php
 /**
  * WP-CLI: `wp jlife pilot create [--key=<key>]` and `wp jlife pilot status`
- * (the Dec 5–13 pilot campaign, #178).
+ * (the Nov 29–Dec 13 pilot campaign, #178).
  *
  * Prints counts and dates only, never people: deploy logs may be public.
  *
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 class Jlife_Pilot_Command {
 
 	/**
-	 * Create the pilot campaign (Dec 5–13, 2026, Pacific time, active), or
+	 * Create the pilot campaign (Nov 29–Dec 13, 2026, Pacific time, active), or
 	 * report that it already exists. Safe to run again. Creates no groups and
 	 * enrolls no one. The key must start with "pilot-" (never "test-").
 	 *

@@ -293,7 +293,7 @@ case "${TEST_CAMPAIGN:-none}" in
   *) die "Unknown TEST_CAMPAIGN: ${TEST_CAMPAIGN}" ;;
 esac
 
-# The Dec 5-13 pilot campaign (#178): counts and dates only, safe in the public log.
+# The Nov 29–Dec 13 pilot campaign (#178): counts and dates only, safe in the public log.
 case "${PILOT_CAMPAIGN:-none}" in
   create)
     log "Pilot campaign: create on reflection-v1 (no change if it exists; an existing pilot keeps its engine)"

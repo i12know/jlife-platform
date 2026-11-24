@@ -1,6 +1,6 @@
 <?php
 /**
- * The Dec 5–13, 2026 pilot ("practice week"): its campaign, the practice banner
+ * The Nov 29–Dec 13, 2026 pilot ("practice week"): its campaign, the practice banner
  * and the "I'll start Dec 20" flag (#178, part of #174).
  *
  * - The pilot is an ordinary campaign whose key starts with `pilot-` (never
@@ -42,7 +42,7 @@ function jlife_challenges_is_pilot_campaign( $campaign ) {
 }
 
 /**
- * Create the pilot campaign (or find it again): Dec 5–13, 2026, Pacific time,
+ * Create the pilot campaign (or find it again): Nov 29–Dec 13, 2026, Pacific time,
  * active, same reading plan as the Marathon. Running it again changes nothing.
  * It creates no groups and enrolls no one.
  *
@@ -60,7 +60,7 @@ function jlife_challenges_create_pilot_campaign( $actor, $args = array() ) {
 			'campaign_key' => JLIFE_CHALLENGES_PILOT_PREFIX . '2026-12',
 			'plan_id'      => 'rpl-life-and-teachings-of-jesus-2026',
 			'title'        => 'Bible Marathon practice week',
-			'start_date'   => '2026-12-05',
+			'start_date'   => '2026-11-29',
 			'end_date'     => '2026-12-13',
 		)
 	);
@@ -133,7 +133,7 @@ function jlife_challenges_practice_banner( $user_id, $active ) {
 		|| ! in_array( jlife_challenges_campaign_phase( $current['campaign'] ), array( 'running', 'upcoming' ), true ) ) {
 		return '';
 	}
-	return '<p class="jl-hint jl-practice" role="note">' . esc_html__( "Practice week: Dec 5–13. Points don't count for prizes. The Marathon starts Dec 20.", 'jlife-challenges' ) . '</p>';
+	return '<p class="jl-hint jl-practice" role="note">' . esc_html__( "Practice week: Nov 29–Dec 13. Points don't count for prizes. The Marathon starts Dec 20.", 'jlife-challenges' ) . '</p>';
 }
 
 /**
