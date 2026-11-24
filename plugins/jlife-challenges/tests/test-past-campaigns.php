@@ -51,7 +51,7 @@ class Test_Past_Campaigns extends JLife_Challenges_TestCase {
 			)
 		);
 		$this->assertIsInt( $this->pilot );
-		$this->set_now( '2026-12-06 18:00:00' ); // Practice Day 8, 10:00 AM Pacific.
+		$this->set_now( '2026-11-30 18:00:00' ); // Practice Day 2, 10:00 AM Pacific.
 		$this->pg = jlife_challenges_create_group( $this->u['organizer'], $this->pilot, 'Practice Group' )['id'];
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $this->u['a'], $this->pg ) );
 		$this->assertIsInt( jlife_challenges_enroll( $this->u['organizer'], $this->u['b'], $this->pg ) );
@@ -152,7 +152,7 @@ class Test_Past_Campaigns extends JLife_Challenges_TestCase {
 	 * (review finding 1): the share is a snapshot, independent of the entry.
 	 */
 	public function test_share_of_a_cleared_draft_stays_removable() {
-		$this->set_now( '2026-12-07 18:00:00' ); // Practice Day 9.
+		$this->set_now( '2026-12-01 18:00:00' ); // Practice Day 3.
 		$entry = jlife_challenges_save_draft( $this->u['b'], $this->pilot, null, $this->soap( 'b-draft' ) );
 		$this->assertIsInt( $entry );
 		$share = jlife_challenges_share( $this->u['b'], $entry, $this->pg );
