@@ -54,7 +54,7 @@ function jlife_questions_entry_html( $view ) {
 }
 
 /**
- * The link on My Marathon, for a question about no particular day.
+ * The link on My Marathon. It opens /ask/ with no day, so the screen defaults to today's reading (the passage is prefilled and editable).
  *
  * @return string Escaped HTML; empty when the feature is off.
  */

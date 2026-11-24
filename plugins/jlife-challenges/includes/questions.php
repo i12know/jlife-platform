@@ -93,7 +93,7 @@ function jlife_questions_length( $text ) {
  * same day within 24 hours returns the first row's ID instead of a second row.
  *
  * @param int    $user_id   Asker.
- * @param string $day_key   Reading day (d###), or '' for a question about no particular day.
+ * @param string $day_key   Reading day (d###), or '' for a question about no particular day (the /ask/ screen passes the day it was opened for, which defaults to today).
  * @param string $reference Scripture passage the asker typed or accepted.
  * @param string $body      The question.
  * @return int|WP_Error New or existing question ID.
@@ -311,8 +311,8 @@ function jlife_questions_apply( $method, array $fields ) {
 		if ( ! $ids ) {
 			return $result( 'no_selection' );
 		}
-		$in   = implode( ',', $ids ); // Integers only.
-		$rows = (array) $wpdb->get_results( 'SELECT id, reference, body FROM ' . $table . " WHERE id IN ({$in})", ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- integers only.
+		$marks = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		$rows  = (array) $wpdb->get_results( $wpdb->prepare( 'SELECT id, reference, body FROM ' . $table . ' WHERE id IN (' . $marks . ')', $ids ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- the placeholders are built from a count; table name from $wpdb->prefix.
 		if ( ! $rows ) {
 			return $result( 'no_selection' );
 		}

@@ -272,7 +272,7 @@ class Test_Bible_Questions extends Jlife_Challenges_TestCase {
 		$day = 20;
 		for ( $n = 4; $n <= 15; $n++ ) { // Twelve more on later days, three a day: 15 in all.
 			if ( 0 === ( $n - 1 ) % 3 ) {
-				$day++;
+				++$day;
 				$this->set_now( '2026-12-' . $day . ' 18:00:00' );
 			}
 			$this->assertIsInt( jlife_questions_submit( $this->u['a'], '', '', "Question number $n about the reading" ), "n=$n" );
@@ -451,13 +451,14 @@ class Test_Bible_Questions extends Jlife_Challenges_TestCase {
 		$rows = $this->audits( 'question_status' );
 		$this->assertCount( 4, $rows );
 		$this->assertStringNotContainsString( 'SECRETMARK', (string) wp_json_encode( $rows ) );
-		$this->assertSame( 'not_found', $this->apply(
+		$missing = $this->apply(
 			'status',
 			array(
 				'id'     => 99999,
 				'status' => 'selected',
 			)
-		)['code'] );
+		);
+		$this->assertSame( 'not_found', $missing['code'] );
 	}
 
 	/**
@@ -478,13 +479,14 @@ class Test_Bible_Questions extends Jlife_Challenges_TestCase {
 		$this->assertSame( 'exported', $ex['code'] );
 		$this->assertStringNotContainsString( 'NOTEMARK', $ex['text'] );
 		$this->assertStringNotContainsString( 'NOTEMARK', (string) wp_json_encode( $this->audits( 'question_note' ) ) );
-		$this->assertSame( 'bad_note', $this->apply(
+		$long = $this->apply(
 			'note',
 			array(
 				'id'   => $id,
 				'note' => str_repeat( 'n', 2001 ),
 			)
-		)['code'] );
+		);
+		$this->assertSame( 'bad_note', $long['code'] );
 	}
 
 	/**

@@ -131,8 +131,8 @@ function jlife_questions_admin_asker( $row ) {
  */
 function jlife_questions_admin_html( array $view ) {
 	$html = '<div class="wrap"><h1>' . esc_html__( 'Bible Questions', 'jlife-challenges' ) . '</h1>'
-		. '<p>' . esc_html__( 'Questions readers sent privately to the pastors. Only site administrators can see this screen. Readers are not anonymous to you, so treat who asked as private.', 'jlife-challenges' ) . '</p>';
-	$html .= jlife_questions_admin_switch( $view );
+		. '<p>' . esc_html__( 'Questions readers sent privately to the pastors. Only site administrators can see this screen. Readers are not anonymous to you, so treat who asked as private.', 'jlife-challenges' ) . '</p>'
+		. jlife_questions_admin_switch( $view );
 	if ( ! empty( $view['detail'] ) ) {
 		return $html . jlife_questions_admin_detail( $view['detail'] ) . '</div>';
 	}
@@ -319,6 +319,7 @@ function jlife_questions_admin_post() {
 	if ( 'exported' === $code ) {
 		nocache_headers();
 		header( 'X-Robots-Tag: noindex, nofollow' );
+		header( 'X-Content-Type-Options: nosniff' );
 		if ( 'txt' === $format ) {
 			header( 'Content-Type: text/plain; charset=utf-8' );
 			header( 'Content-Disposition: attachment; filename="bible-questions.txt"' );
