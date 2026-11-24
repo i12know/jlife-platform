@@ -584,7 +584,7 @@ class Test_Rehearsal_Dec extends Jlife_Challenges_TestCase {
 			$this->assertSame( 0, $this->rows( $t, $this->official ), "no official {$t}" );
 		}
 		$groups = $this->official_groups();
-		$names = array_keys( $groups );
+		$names  = array_keys( $groups );
 		sort( $names );
 		$this->assertSame( array( 'Evening Readers', 'Morning Readers' ), $names );
 		foreach ( $this->pg as $g ) {
