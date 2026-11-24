@@ -74,6 +74,14 @@ if [ ! -f "${WP_PATH}/wp-config.php" ]; then
   wp config set WP_ENVIRONMENT_TYPE staging --type=constant
 fi
 
+# Private photo storage above the public web root (#244). Set once, before any
+# photo exists; files already stored elsewhere are never moved.
+if ! wp config has JLIFE_PHOTO_DIR --type=constant >/dev/null 2>&1; then
+  mkdir -p "${STATE_DIR}/photos" && chmod 700 "${STATE_DIR}/photos"
+  wp config set JLIFE_PHOTO_DIR "${STATE_DIR}/photos" --type=constant
+  log "Photo storage set outside the web root"
+fi
+
 # Mail credentials stay in the protected state directory, outside the web root.
 # Only the include path/expression are versioned/provisioned here, never the key.
 # These definitions run before wp-settings.php in both web PHP and WP-CLI.

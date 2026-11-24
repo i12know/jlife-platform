@@ -746,7 +746,7 @@ Do it right after **official create** (Dec 14). A starter who writes ahead (#209
 
 `wp-content/jlife-private/site-<id>/`, outside the Media Library and `uploads/`, in random-named files with no extension. The folder has `.htaccess` (deny all) and `index.php`. A photo opens only through `/photo/<id>/`, after an access check; the answer to every refusal is the same 404.
 
-- **Better, if you can:** put the folder above the web root. Add `define( 'JLIFE_PHOTO_DIR', '/home/<user>/.latoc/photos' );` to `wp-config.php` (the plugin appends `/site-<id>`). Do it **before** the first photo: existing files are not moved.
+- **On latoc the deploy does this automatically:** it sets `JLIFE_PHOTO_DIR` to `~/.latoc/photos` (mode 700, above the web root) in `wp-config.php` once, if it isn't set yet (the plugin appends `/site-<id>`). Existing files are never moved, so this must happen before the first photo. For another host, add the same `define` by hand.
 - **nginx or any host that ignores `.htaccess`:** the deny rule does not apply. The random names still cannot be guessed, but use `JLIFE_PHOTO_DIR` outside the web root.
 - **Backups:** the per-deploy backups contain **only the database**. Photos depend on the hosting account's own backups (off-site backups, #162, are deferred). A photo is about 300 KB, one per person per day, so 100 people for 104 days is about 3 GB at most.
 
