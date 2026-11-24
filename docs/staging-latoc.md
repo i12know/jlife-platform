@@ -435,7 +435,7 @@ also prints the counts `remove` would affect.
 
 ## Pilot campaign (#178)
 
-The Nov 29–Dec 13 pilot ("practice week", 15 days) is a normal campaign whose key starts
+The Nov 29–Dec 13 pilot ("practice period", 15 days) is a normal campaign whose key starts
 with `pilot-`, never `test-`, so the test-campaign removal cannot delete it.
 
 - **Create it** with the deploy choice **pilot_campaign = create** (or
@@ -451,7 +451,7 @@ with `pilot-`, never `test-`, so the test-campaign removal cannot delete it.
 - **Do this after the test campaign is removed** and before the Nov 29
   announcement. Sign-ups from creation (Nov 28 evening) join the pilot by default (the join rule,
   design §3b); from Dec 14 00:00 Pacific new sign-ups go to the Marathon.
-- **While the pilot is current** its participants see "Practice week: Nov 29–Dec 13.
+- **While the pilot is current** its participants see "Practice period: Nov 29–Dec 13.
   Points don't count for prizes. The Marathon starts Dec 20." above Today, My
   Marathon, My Group and `/share`.
 - **"I'll start Dec 20"** appears on `/join` while the pilot is what people

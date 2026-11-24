@@ -87,7 +87,7 @@ return array(
 		'J-Life email: the last sending attempt failed. Check Brevo delivery events and the private runtime configuration.' => 'Email J-Life: lần gửi gần nhất đã thất bại. Hãy kiểm tra các sự kiện gửi thư trong Brevo và cấu hình riêng trên máy chủ.',
 		// "I'll start Dec 20" (#178). DRAFT: for the Vietnamese reviewers.
 		"I'll start Dec 20" => 'Tôi sẽ bắt đầu ngày 20 tháng 12',
-		'Skip the practice week. We will create your account now and sign you up for the Marathon that starts Dec 20. Nothing is shared and you will not be emailed until you choose.' => 'Bỏ qua tuần thực hành. Chúng tôi sẽ tạo tài khoản cho bạn ngay bây giờ và ghi danh bạn vào Marathon bắt đầu ngày 20 tháng 12. Không có gì được chia sẻ và bạn sẽ không nhận email cho đến khi bạn chọn.',
+		'Skip the practice period. We will create your account now and sign you up for the Marathon that starts Dec 20. Nothing is shared and you will not be emailed until you choose.' => 'Bỏ qua giai đoạn thực hành. Chúng tôi sẽ tạo tài khoản cho bạn ngay bây giờ và ghi danh bạn vào Marathon bắt đầu ngày 20 tháng 12. Không có gì được chia sẻ và bạn sẽ không nhận email cho đến khi bạn chọn.',
 		'You are on the list' => 'Bạn đã có tên trong danh sách',
 		'Your account is ready. The Marathon starts Dec 20. We will sign you up for it, so there is nothing else to do. Sign in then with an emailed code.' => 'Tài khoản của bạn đã sẵn sàng. Marathon bắt đầu ngày 20 tháng 12. Chúng tôi sẽ ghi danh bạn, nên bạn không cần làm gì thêm. Đến lúc đó hãy đăng nhập bằng mã gửi qua email.',
 		'That choice is no longer offered. You can join the Marathon now instead.' => 'Lựa chọn này không còn nữa. Bạn có thể tham gia Marathon ngay bây giờ.',

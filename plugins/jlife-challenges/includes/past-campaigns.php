@@ -2,7 +2,7 @@
 /**
  * Earlier reading periods (#174, D4-A): a participant's own read-only history
  * of a campaign that has ended or been closed and is no longer their current
- * one (for LATOC, the Nov 29–Dec 13 practice week once the Marathon is current).
+ * one (for LATOC, the Nov 29–Dec 13 practice period once the Marathon is current).
  *
  * - Shown from My Marathon (`/marathon/?past=<campaign id>`), only to the
  *   person themself: their own entries and their own shares, nothing else.

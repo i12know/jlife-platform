@@ -253,7 +253,7 @@ class Test_Wait_Choice extends WP_UnitTestCase {
 		$r    = jlife_auth_complete( 'reader@example.test', $this->last_code() );
 		$html = $this->text( jlife_auth_join_result_html( $r, home_url( '/today/' ) ) );
 		$this->assertStringContainsString( 'The Marathon starts Dec 20', $html );
-		$this->assertStringNotContainsString( 'Practice week', $html );
+		$this->assertStringNotContainsString( 'Practice period', $html );
 		$this->assertStringContainsString( 'Continue', $html );
 	}
 

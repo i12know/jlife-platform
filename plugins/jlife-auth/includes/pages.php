@@ -467,7 +467,7 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
 			. '<p>' . esc_html__( 'No group needed. Your SOAP entries are private. You can join a group later with an invite code.', 'jlife-auth' ) . '</p>';
 	} elseif ( 'wait' === $mode ) {
 		$head = '<h1>' . esc_html__( "I'll start Dec 20", 'jlife-auth' ) . '</h1>'
-			. '<p>' . esc_html__( 'Skip the practice week. We will create your account now and sign you up for the Marathon that starts Dec 20. Nothing is shared and you will not be emailed until you choose.', 'jlife-auth' ) . '</p>';
+			. '<p>' . esc_html__( 'Skip the practice period. We will create your account now and sign you up for the Marathon that starts Dec 20. Nothing is shared and you will not be emailed until you choose.', 'jlife-auth' ) . '</p>';
 	} elseif ( 'start' === $mode ) {
 		$head = '<h1>' . esc_html__( 'Start a group', 'jlife-auth' ) . '</h1>'
 			. '<p>' . esc_html__( 'For adults (18 or older). Name your group, and you will get an invite code and link to share with friends or the people you mentor. As the starter you can make a new code later; you do not see anyone else\'s SOAP.', 'jlife-auth' ) . '</p>';
