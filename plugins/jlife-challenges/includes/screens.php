@@ -101,7 +101,11 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 		'reminder' => 2,
 		'bible'    => 1,
 		'language' => 1,
+		'launcher' => 1,
 	);
+	if ( false !== strpos( $body, 'jl-launcher-hint' ) ) {
+		$script = array_merge( (array) $script, array( 'launcher' ) );
+	}
 	foreach ( (array) $script as $file ) {
 		if ( isset( $versions[ $file ] ) ) {
 			$scripts .= '<script src="' . esc_url( $base . $file . '.js?v=' . $versions[ $file ] ) . '"></script>'; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -118,8 +122,9 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 
 	$html = '<!doctype html><html lang="' . esc_attr( '' !== $lang ? $lang : str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
+		. jlife_challenges_launcher_head_tags()
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=29' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=30' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
 		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -1021,7 +1026,8 @@ function jlife_challenges_render_soap_feedback( $view, $state ) {
 	$out = '' !== $state['notice'] ? '<p class="jl-ok" role="status">' . esc_html( $state['notice'] ) . '</p>' : '';
 	if ( $flags['done'] && jlife_challenges_is_submitted( $view ) ) {
 		/* translators: 1: points, 2: number of days. */
-		$out .= '<p class="jl-ok" role="status">' . esc_html( jlife_challenges_status_text( $view ) ) . ' ' . esc_html( sprintf( __( 'You have %1$d of %2$d.', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>';
+		$out .= '<p class="jl-ok" role="status">' . esc_html( jlife_challenges_status_text( $view ) ) . ' ' . esc_html( sprintf( __( 'You have %1$d of %2$d.', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>'
+			. jlife_challenges_launcher_hint(); // Home-screen tip (#251): the script shows it once.
 	} elseif ( $flags['incomplete'] && ! empty( $view['entry'] ) ) {
 		$reasons = jlife_challenges_score_entry(
 			(string) $view['entry']['body'],
