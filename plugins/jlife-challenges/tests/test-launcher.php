@@ -136,4 +136,17 @@ class Test_Launcher extends WP_UnitTestCase {
 		$this->assertStringContainsString( '<link rel="manifest" href="' . esc_url( home_url( '/latoc.webmanifest' ) ) . '">', $head );
 		$this->assertStringContainsString( 'name="apple-mobile-web-app-title"', $head );
 	}
+
+	/**
+	 * With a published Help page, the hint links to its home-screen section.
+	 */
+	public function test_the_hint_links_to_the_help_section_when_the_page_exists() {
+		$this->assertStringNotContainsString( '>How</a>', jlife_challenges_launcher_hint(), 'no Help page, no link' );
+		$help = (int) self::factory()->post->create( array( 'post_type' => 'page' ) );
+		update_option( 'jlife_challenges_help_page_id', $help );
+		$hint = jlife_challenges_launcher_hint();
+		$this->assertStringContainsString( '#add-to-home-screen">How</a>', $hint );
+		$this->assertStringContainsString( esc_url( get_permalink( $help ) ), $hint );
+		delete_option( 'jlife_challenges_help_page_id' );
+	}
 }
