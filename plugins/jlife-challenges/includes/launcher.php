@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 const JLIFE_CHALLENGES_LAUNCHER_NAME   = 'LATOC';
 const JLIFE_CHALLENGES_LAUNCHER_COLOR  = '#2b5c8a';
-const JLIFE_CHALLENGES_LAUNCHER_BG     = '#ffffff';
+const JLIFE_CHALLENGES_LAUNCHER_BG     = '#fcf8f2'; // The LATOC logo's cream, so the launch screen matches the icon.
 const JLIFE_CHALLENGES_LAUNCHER_ASSETS = 'assets/launcher/';
 
 add_action( 'init', 'jlife_challenges_launcher_add_rewrite' );
