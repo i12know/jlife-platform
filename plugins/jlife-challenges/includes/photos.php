@@ -53,7 +53,7 @@ function jlife_challenges_campaign_accepts_photos( $campaign ) {
  *
  * @param int  $actor       Organizer.
  * @param int  $campaign_id Campaign.
- * @param bool $on          Accept photos?
+ * @param bool $on          Accept photos or not.
  * @return array|WP_Error { changed: bool, accepts_photos: bool }
  */
 function jlife_challenges_set_campaign_photos( $actor, $campaign_id, $on ) {
@@ -822,7 +822,9 @@ function jlife_challenges_photo_earned_days( $user_id, $campaign_id = 0 ) {
 	if ( (int) $campaign_id > 0 ) {
 		$where .= $wpdb->prepare( ' AND l.campaign_id = %d', (int) $campaign_id );
 	}
-	$rows = $wpdb->get_results( "SELECT l.campaign_id, l.day_key, l.entry_id, p.id AS photo_id, p.file, p.updated AS uploaded FROM {$l} l LEFT JOIN {$p} p ON p.kind = 'entry' AND p.entry_id = l.entry_id AND p.share_id = 0 WHERE {$where} ORDER BY l.campaign_id, l.day_key", ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom tables; names from $wpdb->prefix; values prepared above.
+	// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom tables; names from $wpdb->prefix; values prepared above.
+	$rows = $wpdb->get_results( "SELECT l.campaign_id, l.day_key, l.entry_id, p.id AS photo_id, p.file, p.updated AS uploaded FROM {$l} l LEFT JOIN {$p} p ON p.kind = 'entry' AND p.entry_id = l.entry_id AND p.share_id = 0 WHERE {$where} ORDER BY l.campaign_id, l.day_key", ARRAY_A );
+	// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	return is_array( $rows ) ? $rows : array();
 }
 

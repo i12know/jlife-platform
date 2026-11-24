@@ -316,7 +316,7 @@ function jlife_challenges_group_feed( $viewer_user_id, $group_id, $limit = 50 ) 
 	// A share whose day has opened is released on this read (no browser session or cron needed); one still scheduled is never selected below.
 	jlife_challenges_release_due_shares( (int) $group_id );
 	global $wpdb;
-	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND status = 'shared' ORDER BY day_key DESC, advance DESC, updated DESC LIMIT %d", (int) $group_id, max( 1, (int) $limit ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	$rows   = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND status = 'shared' ORDER BY day_key DESC, advance DESC, updated DESC LIMIT %d", (int) $group_id, max( 1, (int) $limit ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	$out    = array();
 	$photos = jlife_challenges_share_photo_ids( array_column( (array) $rows, 'id' ) );
 	foreach ( $rows as $r ) {

@@ -1136,11 +1136,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 					'restored'      => __( 'Restored your unsaved draft', 'jlife-challenges' ),
 					'leave_failed'  => __( 'Could not save your writing, so you stayed on this day. Nothing was lost. Please try again.', 'jlife-challenges' ),
 					'leave_unsaved' => __( 'You have unsaved edits. Save them with the button below before you leave this day.', 'jlife-challenges' ),
-					'photo_saving'  => __( 'Saving your photo…', 'jlife-challenges' ),
-					'photo_saved'   => __( 'Photo saved', 'jlife-challenges' ),
-					'photo_failed'  => __( 'The photo was not saved. Check your connection and choose it again.', 'jlife-challenges' ),
-					'photo_removed' => __( 'Photo removed.', 'jlife-challenges' ),
-				)
+				) + ( $photos ? jlife_challenges_photo_js_strings() : array() )
 			)
 		) . '"'
 		. ' data-campaign="' . esc_attr( (string) $view['campaign']['id'] ) . '" data-day="' . esc_attr( $view['day_key'] ) . '">'
@@ -1182,6 +1178,20 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		. '<button type="submit" name="jl_action" value="submit" class="jl-button jl-primary">' . esc_html( $submitted ? __( 'Save changes', 'jlife-challenges' ) : ( $guided || $free ? __( 'Submit', 'jlife-challenges' ) : __( 'Submit SOAP', 'jlife-challenges' ) ) ) . '</button>'
 		. ( $submitted ? '' : '<button type="submit" name="jl_action" value="draft" class="jl-button" formnovalidate>' . esc_html__( 'Save draft', 'jlife-challenges' ) . '</button>' )
 		. '</form>';
+}
+
+/**
+ * The messages the script shows while it saves or removes a photo (#244).
+ *
+ * @return array<string,string>
+ */
+function jlife_challenges_photo_js_strings() {
+	return array(
+		'photo_saving'  => __( 'Saving your photo…', 'jlife-challenges' ),
+		'photo_saved'   => __( 'Photo saved', 'jlife-challenges' ),
+		'photo_failed'  => __( 'The photo was not saved. Check your connection and choose it again.', 'jlife-challenges' ),
+		'photo_removed' => __( 'Photo removed.', 'jlife-challenges' ),
+	);
 }
 
 /**

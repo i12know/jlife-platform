@@ -70,15 +70,15 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 				continue;
 			}
 			$path = $dir . '/' . $name;
-			is_dir( $path ) ? $this->rrmdir( $path ) : unlink( $path );
+			is_dir( $path ) ? $this->rrmdir( $path ) : unlink( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- test cleanup of its own temporary folder.
 		}
-		rmdir( $dir );
+		rmdir( $dir ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- test cleanup of its own temporary folder.
 	}
 
 	/**
 	 * Turn photos on or off for the base campaign.
 	 *
-	 * @param bool $on On?
+	 * @param bool $on On or off.
 	 */
 	private function photos_on( $on ) {
 		global $wpdb;
@@ -126,7 +126,7 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 	 * @return string
 	 */
 	private function exif( $orientation = 1 ) {
-		$tiff    = "MM\x00\x2A\x00\x00\x00\x08" . "\x00\x01" . "\x01\x12\x00\x03\x00\x00\x00\x01" . pack( 'n', $orientation ) . "\x00\x00" . "\x00\x00\x00\x00";
+		$tiff    = "MM\x00\x2A\x00\x00\x00\x08\x00\x01\x01\x12\x00\x03\x00\x00\x00\x01" . pack( 'n', $orientation ) . "\x00\x00\x00\x00\x00\x00";
 		$payload = "Exif\x00\x00" . $tiff . 'GPSLatitude-SECRET-PLACE';
 		return "\xFF\xE1" . pack( 'n', strlen( $payload ) + 2 ) . $payload;
 	}
@@ -410,7 +410,7 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 				'accepts_photos' => 1,
 			)
 		);
-		$r = jlife_challenges_photo_attach( $this->u['a'], $other, null, $this->upload( $this->jpeg() ) );
+		$r     = jlife_challenges_photo_attach( $this->u['a'], $other, null, $this->upload( $this->jpeg() ) );
 		$this->assertSame( 'jlife_denied', $r->get_error_code(), 'not enrolled there' );
 		$r = jlife_challenges_photo_attach( $this->u['outsider'], $this->campaign, null, $this->upload( $this->jpeg() ) );
 		$this->assertSame( 'jlife_denied', $r->get_error_code(), 'not enrolled at all' );
@@ -596,7 +596,7 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 	 */
 	public function test_the_marker_stripper_keeps_pixels_and_drops_metadata() {
 		$clean = $this->jpeg( 64, 48 );
-		$dirty = substr( $clean, 0, 2 ) . $this->exif() . "\xFF\xFE\x00\x06abcd" . "\xFF\xEE\x00\x04zz" . substr( $clean, 2 );
+		$dirty = substr( $clean, 0, 2 ) . $this->exif() . "\xFF\xFE\x00\x06abcd\xFF\xEE\x00\x04zz" . substr( $clean, 2 );
 		$out   = jlife_challenges_photo_strip_markers( $dirty );
 		$this->assertNotNull( $out );
 		$this->assertStringNotContainsString( 'GPSLatitude', $out );
@@ -725,7 +725,7 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 		$this->assertSame( 1, $this->ledger_rows( $this->u['a'] ) );
 		$this->assertSame( 'photo', $this->ledger( 'a' )['submission_type'] );
 		$this->assertSame( 1, jlife_challenges_progress( $this->u['a'], $this->u['a'], $this->campaign )['points'] );
-		$audit = $wpdb->get_row( "SELECT * FROM " . jlife_challenges_table( 'audit_log' ) . " WHERE action = 'photo_replaced'", ARRAY_A ); // phpcs:ignore WordPress.DB
+		$audit = $wpdb->get_row( 'SELECT * FROM ' . jlife_challenges_table( 'audit_log' ) . " WHERE action = 'photo_replaced'", ARRAY_A ); // phpcs:ignore WordPress.DB
 		$this->assertNotNull( $audit );
 		$entry = jlife_challenges_find_entry( $this->u['a'], $this->campaign, 'd001' );
 		$this->assertSame( wp_json_encode( array( 'entry_id' => (int) $entry['id'] ) ), $audit['detail'], 'IDs only' );
@@ -1001,7 +1001,7 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 	 * same lock as set-engine); organizers only; audited.
 	 */
 	public function test_the_setting_is_off_by_default_and_locks_like_the_engine() {
-		$make = function ( $start, $extra = array() ) {
+		$make   = function ( $start, $extra = array() ) {
 			return jlife_challenges_create_campaign(
 				$this->u['organizer'],
 				array_merge(
@@ -1029,7 +1029,7 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 		$this->assertFalse( jlife_challenges_set_campaign_photos( $this->u['organizer'], $future, true )['changed'], 'same value, nothing changed' );
 		$this->assertTrue( jlife_challenges_set_campaign_photos( $this->u['organizer'], $future, false )['changed'] );
 		global $wpdb;
-		$this->assertSame( 2, (int) $wpdb->get_var( "SELECT COUNT(*) FROM " . jlife_challenges_table( 'audit_log' ) . " WHERE action = 'campaign_photos_set'" ) ); // phpcs:ignore WordPress.DB
+		$this->assertSame( 2, (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( 'audit_log' ) . " WHERE action = 'campaign_photos_set'" ) ); // phpcs:ignore WordPress.DB
 
 		// Day 1 has started (the base campaign runs): locked, in both directions.
 		$this->photos_on( false );
@@ -1038,7 +1038,7 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 
 		// Entries exist before Day 1 (a starter's early draft): locked.
 		$early = $make( '2027-02-01' );
-		$wpdb->insert(
+		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- test fixture.
 			jlife_challenges_table( 'soap_entries' ),
 			array(
 				'user_id'     => $this->u['a'],
@@ -1050,7 +1050,7 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 				'created'     => current_time( 'mysql', true ),
 				'updated'     => current_time( 'mysql', true ),
 			)
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- test fixture.
+		);
 		$this->assertSame( 'jlife_engine_locked', jlife_challenges_set_campaign_photos( $this->u['organizer'], $early, true )->get_error_code() );
 
 		// Closed: locked.
@@ -1281,12 +1281,12 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 		$this->assertSame( '0600', substr( sprintf( '%o', fileperms( $r['path'] ) ), -4 ) );
 		$zip = new ZipArchive();
 		$this->assertTrue( $zip->open( $r['path'] ) );
-		$this->assertSame( 2, $zip->numFiles );
+		$this->assertSame( 2, $zip->count() );
 		$this->assertSame( $expected, md5( (string) $zip->getFromName( 'd001.jpg' ) ), 'the stored picture, named by day' );
 		$csv = (string) $zip->getFromName( 'days.csv' );
 		$zip->close();
 		$this->assertStringContainsString( 'campaign_id,day,date,upload_time_utc,submission_type,file', $csv );
-		$this->assertMatchesRegularExpression( '/^' . $this->campaign . ',d001,2026-12-20,\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},photo,d001\.jpg$/m', $csv );
+		$this->assertMatchesRegularExpression( '/^' . $this->campaign . ',d001,2026-12-20,"?\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"?,photo,d001\.jpg$/m', $csv );
 		$this->assertStringNotContainsString( 'd002', $csv, 'a text-earned day is not in the review' );
 		$this->assertStringNotContainsString( 'Aname', $csv . $r['path'], 'no names' );
 		$this->rrmdir( $dir );

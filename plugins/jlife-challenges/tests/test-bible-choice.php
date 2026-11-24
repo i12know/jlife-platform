@@ -623,7 +623,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 		$this->assertNotFalse( $h1 );
 		$this->assertGreaterThan( $h1, $settings, 'under the heading' );
 		$this->assertLessThan( (int) strpos( $fn, 'jl-score' ), $settings, 'before the score' );
-		$this->assertLessThan( (int) strpos( $fn, 'jl-grid' ), $settings, 'before the grid' );
+		$this->assertLessThan( (int) strpos( $fn, 'jlife_challenges_render_grid(' ), $settings, 'before the grid' );
 
 		foreach ( array( 'off', 'dry_run', 'test' ) as $mode ) {
 			update_option( 'jlife_reminders_mode', $mode );
