@@ -87,6 +87,7 @@ function jlife_auth_page_html( $title, $body ) {
 	$lang = jlife_auth_language_links( false !== strpos( $body, 'id="jl-form"' ) );
 	return '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
+		. jlife_auth_launcher_head_tags()
 		. '<title>' . esc_html( $title ) . '</title>'
 		. '<style>body{font-family:system-ui,-apple-system,sans-serif;max-width:30rem;margin:0 auto;padding:1.25rem;line-height:1.5;color:#1d1d1f;background:#fff;display:flex;flex-direction:column}'
 		. 'h1{overflow-wrap:anywhere}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b45309;outline-offset:2px}'
@@ -101,6 +102,16 @@ function jlife_auth_page_html( $title, $body ) {
 		. '.jl-help-links{margin-top:2rem;text-align:center;font-size:.875rem}.jl-help-links a{display:inline-block;padding:.5rem .4rem}</style></head><body>'
 		// The language switch comes last in the markup so Enter in a field still presses the form's own button; CSS shows it first.
 		. $hint . $body . jlife_auth_help_footer() . $lang . '</body></html>';
+}
+
+/**
+ * The home-screen launcher tags (#251): the shared helper belongs to
+ * jlife-challenges, so signed-out pages ask it. Empty when it is not active.
+ *
+ * @return string Escaped HTML.
+ */
+function jlife_auth_launcher_head_tags() {
+	return function_exists( 'jlife_challenges_launcher_head_tags' ) ? jlife_challenges_launcher_head_tags() : '';
 }
 
 /**

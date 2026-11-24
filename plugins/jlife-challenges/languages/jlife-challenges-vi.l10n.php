@@ -541,6 +541,9 @@ return array(
 		'Your handwritten reflection' => 'Bài suy ngẫm viết tay của bạn',
 		'Replace' => 'Thay ảnh',
 		'JPEG or PNG. Your photo is saved with your draft. It counts toward your point only when you press Submit.' => 'JPEG hoặc PNG. Ảnh được lưu cùng bản nháp của bạn và chỉ được tính điểm khi bạn bấm Gửi.',
+		'Tip: add LATOC to your Home Screen to open it in one tap.' => 'Mẹo: thêm LATOC vào Màn hình chính để mở bằng một lần chạm.',
+		'How' => 'Cách làm',
+		'Dismiss' => 'Đóng',
 		'Point earned – photo upload' => 'Đã được điểm – ảnh tải lên',
 		'Shared handwritten reflection (opens full size)' => 'Bài suy ngẫm viết tay được chia sẻ (mở kích thước đầy đủ)',
 

@@ -51,6 +51,7 @@ require_once __DIR__ . '/includes/lifecycle.php';
 require_once __DIR__ . '/includes/views.php';
 require_once __DIR__ . '/includes/help-pages.php';
 require_once __DIR__ . '/includes/pilot-feedback.php';
+require_once __DIR__ . '/includes/launcher.php';
 require_once __DIR__ . '/includes/screens.php';
 require_once __DIR__ . '/includes/reading-page.php';
 require_once __DIR__ . '/includes/share-views.php';

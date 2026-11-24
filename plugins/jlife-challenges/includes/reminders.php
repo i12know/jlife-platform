@@ -331,8 +331,9 @@ function jlife_challenges_screen_unsubscribe() {
 	$base = plugins_url( 'assets/', dirname( __DIR__ ) . '/jlife-challenges.php' );
 	echo '<!doctype html><html lang="' . esc_attr( str_replace( '_', '-', '' !== $req['locale'] ? $req['locale'] : determine_locale() ) ) . '"><head><meta charset="utf-8">' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every part is escaped.
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer">'
+		. jlife_challenges_launcher_head_tags()
 		. '<title>' . esc_html( $page[0] ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=29' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=30' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. '</head><body><main>' . $page[1] . '</main></body></html>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts.
 	exit;
 }
