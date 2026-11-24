@@ -60,11 +60,13 @@ function jlife_challenges_share( $user_id, $entry_id, $group_id ) {
 	if ( jlife_challenges_needs_guardian_consent( $enrollment ) ) {
 		return new WP_Error( 'jlife_guardian_consent_required', __( 'Sharing with your group starts once a parent or guardian has agreed.', 'jlife-challenges' ) );
 	}
-	if ( '' === trim( (string) $entry['body'] ) ) {
+	$campaign = jlife_challenges_get_campaign( (int) $entry['campaign_id'] );
+	// A photo of a handwritten page is shared along with any text, as a frozen copy (#244); a photo alone is enough to share.
+	$has_photo = $campaign && jlife_challenges_campaign_accepts_photos( $campaign ) && jlife_challenges_entry_has_photo( (int) $entry_id );
+	if ( '' === trim( (string) $entry['body'] ) && ! $has_photo ) {
 		return new WP_Error( 'jlife_share_empty', __( 'There is nothing to share yet.', 'jlife-challenges' ) );
 	}
 	$group_id = (int) $group_id;
-	$campaign = jlife_challenges_get_campaign( (int) $entry['campaign_id'] );
 	$index    = $campaign ? jlife_challenges_day_index( $campaign, (string) $entry['day_key'] ) : 0;
 	$ahead    = $index >= 1 && ! jlife_challenges_day_is_open( $campaign, $index );
 	if ( $ahead && ! jlife_challenges_can_schedule_share( $user_id, $campaign, $group_id ) ) {
@@ -103,6 +105,9 @@ function jlife_challenges_share( $user_id, $entry_id, $group_id ) {
 	);
 	$id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$t} WHERE entry_id = %d AND group_id = %d", (int) $entry_id, $group_id ) );
 	// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	if ( $id > 0 ) {
+		jlife_challenges_photo_sync_share( $id, $entry, $has_photo ); // The copy is made now and never changes by itself.
+	}
 	return $id > 0 ? $id : new WP_Error( 'jlife_db', 'Could not share.' );
 }
 
@@ -233,6 +238,7 @@ function jlife_challenges_unshare( $user_id, $share_id ) {
 		// The snapshot may still be visible: never audit or report it as removed.
 		return new WP_Error( 'jlife_unshare_failed', __( 'Your post could not be removed. Please try again.', 'jlife-challenges' ) );
 	}
+	jlife_challenges_delete_share_photo( (int) $share_id ); // The shared copy of a photo goes with the text (#244).
 	jlife_challenges_audit( $user_id, 'scheduled' === $share['status'] ? 'share_withdrawn' : 'share_removed', 'group_share', (int) $share_id, (int) $share['campaign_id'], array( 'group_id' => (int) $share['group_id'] ) );
 	return true;
 }
@@ -301,7 +307,7 @@ function jlife_challenges_feed_name( $user_id ) {
  * @param int $viewer_user_id Viewer.
  * @param int $group_id       Group.
  * @param int $limit          Max posts.
- * @return array|WP_Error rows of { id, author, day_key, body, updated, mine, leader }
+ * @return array|WP_Error rows of { id, author, day_key, body, updated, mine, leader, photo_id (the frozen photo copy, 0 = none; opened only through /photo/<id>/) }
  */
 function jlife_challenges_group_feed( $viewer_user_id, $group_id, $limit = 50 ) {
 	if ( ! jlife_challenges_can_read_feed( $viewer_user_id, (int) $group_id ) ) {
@@ -311,16 +317,18 @@ function jlife_challenges_group_feed( $viewer_user_id, $group_id, $limit = 50 ) 
 	jlife_challenges_release_due_shares( (int) $group_id );
 	global $wpdb;
 	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND status = 'shared' ORDER BY day_key DESC, advance DESC, updated DESC LIMIT %d", (int) $group_id, max( 1, (int) $limit ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
-	$out  = array();
+	$out    = array();
+	$photos = jlife_challenges_share_photo_ids( array_column( (array) $rows, 'id' ) );
 	foreach ( $rows as $r ) {
 		$out[] = array(
-			'id'      => (int) $r['id'],
-			'author'  => jlife_challenges_feed_name( (int) $r['user_id'] ),
-			'day_key' => $r['day_key'],
-			'body'    => (string) $r['body'],
-			'updated' => $r['updated'],
-			'mine'    => (int) $r['user_id'] === (int) $viewer_user_id,
-			'leader'  => 1 === (int) $r['advance'],
+			'id'       => (int) $r['id'],
+			'author'   => jlife_challenges_feed_name( (int) $r['user_id'] ),
+			'day_key'  => $r['day_key'],
+			'body'     => (string) $r['body'],
+			'updated'  => $r['updated'],
+			'mine'     => (int) $r['user_id'] === (int) $viewer_user_id,
+			'leader'   => 1 === (int) $r['advance'],
+			'photo_id' => $photos[ (int) $r['id'] ] ?? 0,
 		);
 	}
 	return $out;
@@ -411,6 +419,9 @@ function jlife_challenges_can_schedule_share( $user_id, $campaign, $group_id ) {
 function jlife_challenges_withdraw_share_row( $share_id ) {
 	global $wpdb;
 	$changed = $wpdb->query( $wpdb->prepare( 'UPDATE ' . jlife_challenges_table( 'group_shares' ) . " SET status = 'removed', body = NULL, updated = %s WHERE id = %d AND status = 'scheduled'", current_time( 'mysql', true ), (int) $share_id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	if ( (int) $changed > 0 ) {
+		jlife_challenges_delete_share_photo( (int) $share_id );
+	}
 	return (int) $changed > 0;
 }
 

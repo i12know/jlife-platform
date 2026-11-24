@@ -94,7 +94,7 @@ function jlife_challenges_create_test_campaign( $actor, $plan_id = 'rpl-life-and
  * Campaign-scoped tables cleared when a test campaign is removed, in delete
  * order. soap_revisions has no campaign_id and is cleared through its entry.
  */
-const JLIFE_CHALLENGES_TEST_TABLES = array( 'group_shares', 'score_ledger', 'soap_entries', 'group_members', 'reminder_prefs', 'reminder_sends', 'enrollments', 'groups', 'audit_log' );
+const JLIFE_CHALLENGES_TEST_TABLES = array( 'photos', 'group_shares', 'score_ledger', 'soap_entries', 'group_members', 'reminder_prefs', 'reminder_sends', 'enrollments', 'groups', 'audit_log' );
 
 /**
  * Participants enrolled in a test campaign, split into accounts that a
@@ -189,6 +189,7 @@ function jlife_challenges_remove_test_campaigns( $actor, $delete_accounts = fals
 		$accounts['keep']   = array_merge( $accounts['keep'], $accounts['delete'] );
 		$accounts['delete'] = array();
 	}
+	jlife_challenges_delete_photos( array( 'campaign_ids' => $ids ) ); // The private files first (#244); the rows follow with the tables below.
 	// phpcs:disable WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared -- custom tables; names from $wpdb->prefix, IDs are integers.
 	$n_entries = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$entries} WHERE campaign_id IN ({$in})" );
 	$wpdb->query( 'DELETE r FROM ' . jlife_challenges_table( 'soap_revisions' ) . " r JOIN {$entries} e ON e.id = r.entry_id WHERE e.campaign_id IN ({$in})" );

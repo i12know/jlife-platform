@@ -210,6 +210,17 @@ function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $text ) {
 			'ahead'    => $day['ahead'],
 		)
 	);
+	// A typed text that passes is a text point. Only when it does not, a photo that is stored and complete (and a campaign that accepts photos) is a photo point (#244). Choosing a file never gets here: only this Submit decides.
+	$type = 'text';
+	if ( ! $score['passes'] && $day['campaign'] && jlife_challenges_campaign_accepts_photos( $day['campaign'] ) && jlife_challenges_entry_has_photo( (int) $entry['id'] ) ) {
+		$type  = 'photo';
+		$score = array(
+			'passes'  => true,
+			'reasons' => array(),
+			'engine'  => JLIFE_CHALLENGES_PHOTO_ENGINE,
+			'version' => '1',
+		);
+	}
 	$first = $score['passes'] && 'draft' === $entry['status'];
 	if ( $score['passes'] ) {
 		$wpdb->update(
@@ -234,10 +245,11 @@ function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $text ) {
 		'reasons'          => $score['reasons'],
 		'engine'           => $score['engine'],
 		'engine_version'   => $score['version'],
+		'submission_type'  => $type,
 	);
 	if ( $day['campaign'] ) {
 		$ledger = $score['passes']
-			? jlife_challenges_record_score( $day['campaign'], $user_id, $day['index'], (int) $entry['id'], $score, $day['ahead'] )
+			? jlife_challenges_record_score( $day['campaign'], $user_id, $day['index'], (int) $entry['id'], $score, $day['ahead'], $type )
 			: jlife_challenges_ledger_row( (int) $day['campaign']['id'], $user_id, $day['day_key'] );
 		if ( $ledger ) {
 			$result = array_merge( $result, $ledger );
@@ -256,11 +268,12 @@ function jlife_challenges_submit( $user_id, $campaign_id, $day_key, $text ) {
  */
 function jlife_challenges_ledger_row( $campaign_id, $user_id, $day_key ) {
 	global $wpdb;
-	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT points, status, reason FROM ' . jlife_challenges_table( 'score_ledger' ) . ' WHERE campaign_id = %d AND user_id = %d AND day_key = %s', (int) $campaign_id, (int) $user_id, (string) $day_key ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	$row = $wpdb->get_row( $wpdb->prepare( 'SELECT points, status, reason, submission_type FROM ' . jlife_challenges_table( 'score_ledger' ) . ' WHERE campaign_id = %d AND user_id = %d AND day_key = %s', (int) $campaign_id, (int) $user_id, (string) $day_key ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	return $row ? array(
-		'points' => (int) $row['points'],
-		'status' => (string) $row['status'],
-		'reason' => (string) $row['reason'],
+		'points'          => (int) $row['points'],
+		'status'          => (string) $row['status'],
+		'reason'          => (string) $row['reason'],
+		'submission_type' => (string) $row['submission_type'],
 	) : null;
 }
 
@@ -269,15 +282,16 @@ function jlife_challenges_ledger_row( $campaign_id, $user_id, $day_key ) {
  * row records which scoring engine and version passed the entry. It is only
  * ever added: a later submission or engine never changes or removes it.
  *
- * @param array $campaign Campaign row.
- * @param int   $user_id  Participant.
- * @param int   $index    Day index.
- * @param int   $entry_id Entry ID.
- * @param array $score    Engine result ({ engine, version }).
- * @param bool  $ahead    The day had not opened yet (an authorized starter, #209): on time by definition; only "early" and the whole hours before it opens are recorded, never text.
+ * @param array  $campaign Campaign row.
+ * @param int    $user_id  Participant.
+ * @param int    $index    Day index.
+ * @param int    $entry_id Entry ID.
+ * @param array  $score    Engine result ({ engine, version }).
+ * @param bool   $ahead    The day had not opened yet (an authorized starter, #209): on time by definition; only "early" and the whole hours before it opens are recorded, never text.
+ * @param string $type     What earned the day: text (the typed words passed the engine) or photo (#244). Written once with the row and never inferred later.
  * @return array|null { points, status, reason }; null for a closed campaign (no row is written).
  */
-function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id, $score, $ahead = false ) {
+function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id, $score, $ahead = false, $type = 'text' ) {
 	if ( ! jlife_challenges_campaign_accepts_writes( $campaign ) ) {
 		return null;
 	}
@@ -289,7 +303,7 @@ function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id, 
 	// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix; INSERT IGNORE relies on the UNIQUE key.
 	$wpdb->query(
 		$wpdb->prepare(
-			'INSERT IGNORE INTO ' . jlife_challenges_table( 'score_ledger' ) . " (campaign_id, user_id, day_key, entry_id, points, status, reason, source, engine, engine_version, early, early_hours, created) VALUES (%d, %d, %s, %d, %d, %s, %s, 'platform', %s, %s, %d, %d, %s)",
+			'INSERT IGNORE INTO ' . jlife_challenges_table( 'score_ledger' ) . " (campaign_id, user_id, day_key, entry_id, points, status, reason, source, engine, engine_version, submission_type, early, early_hours, created) VALUES (%d, %d, %s, %d, %d, %s, %s, 'platform', %s, %s, %s, %d, %d, %s)",
 			(int) $campaign['id'],
 			(int) $user_id,
 			$day_key,
@@ -299,6 +313,7 @@ function jlife_challenges_record_score( $campaign, $user_id, $index, $entry_id, 
 			$on_time ? '' : JLIFE_CHALLENGES_LATE_RULE,
 			(string) $score['engine'],
 			(string) $score['version'],
+			'photo' === $type ? 'photo' : 'text',
 			$ahead ? 1 : 0,
 			$hours,
 			current_time( 'mysql', true )

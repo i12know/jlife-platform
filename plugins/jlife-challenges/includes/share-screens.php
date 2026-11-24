@@ -391,6 +391,22 @@ function jlife_challenges_group_days_html( $posts ) {
 }
 
 /**
+ * The frozen photo copy of a share (#244): a small thumbnail that opens full size.
+ * Both addresses are the access-checked /photo/ route, so only current members of
+ * the group (and the author) can open them; the thumbnail loads lazily so a long
+ * feed does not fetch every photo at once.
+ *
+ * @param int $photo_id Photo copy ID (0 = none).
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_shared_photo_html( $photo_id ) {
+	if ( $photo_id < 1 ) {
+		return '';
+	}
+	return '<p class="jl-post-photo"><a href="' . esc_url( jlife_challenges_photo_url( $photo_id ) ) . '" target="_blank" rel="noopener"><img class="jl-photo-img" loading="lazy" src="' . esc_url( jlife_challenges_photo_url( $photo_id, true ) ) . '" alt="' . esc_attr__( 'Shared handwritten reflection (opens full size)', 'jlife-challenges' ) . '"></a></p>';
+}
+
+/**
  * One shared message card.
  *
  * @param array $p Feed row.
@@ -404,7 +420,8 @@ function jlife_challenges_group_post_html( $p ) {
 		. ( $leader ? '<p class="jl-leader-label">' . esc_html__( 'Group starter', 'jlife-challenges' ) . '</p>' : '' )
 		. '<p class="jl-post-meta"><strong>' . esc_html( $meta ) . '</strong>'
 		. ( '' !== $p['refs'] ? ' · ' . esc_html( $p['refs'] ) : '' ) . '</p>'
-		. '<p class="jl-excerpt">' . esc_html( $p['body'] ) . '</p>';
+		. ( '' !== trim( (string) $p['body'] ) ? '<p class="jl-excerpt">' . esc_html( $p['body'] ) . '</p>' : '' )
+		. jlife_challenges_shared_photo_html( (int) ( $p['photo_id'] ?? 0 ) );
 	if ( $p['mine'] ) {
 		$out .= '<p><a href="' . esc_url( add_query_arg( 'day', $p['day_key'], home_url( '/share/' ) ) ) . '">' . esc_html__( 'Yours — change or remove', 'jlife-challenges' ) . '</a></p>';
 	}
@@ -669,7 +686,8 @@ function jlife_challenges_render_leader_thoughts( $view ) {
 		$label = sprintf( __( '%s leader’s thoughts', 'jlife-challenges' ), (string) $t['group_name'] );
 		$out  .= '<details class="jl-leader-thoughts"><summary>' . esc_html( $label ) . '</summary>'
 			. '<div class="jl-leader-body"><p class="jl-post-meta">' . esc_html( (string) $t['author'] ) . '</p>'
-			. '<p class="jl-excerpt">' . esc_html( (string) $t['body'] ) . '</p></div></details>';
+			. ( '' !== trim( (string) $t['body'] ) ? '<p class="jl-excerpt">' . esc_html( (string) $t['body'] ) . '</p>' : '' )
+			. jlife_challenges_shared_photo_html( (int) ( $t['photo_id'] ?? 0 ) ) . '</div></details>';
 	}
 	return $out;
 }

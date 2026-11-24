@@ -49,7 +49,7 @@ const JLIFE_CHALLENGES_GROUP_NAME_MAX = 60;
  * Create a campaign. Organizers only.
  *
  * @param int   $actor User creating it.
- * @param array $args  campaign_key, plan_id, title, start_date, end_date, timezone, grace_days, status.
+ * @param array $args  campaign_key, plan_id, title, start_date, end_date, timezone, grace_days, status, scoring_engine, accepts_photos (0 default, #244).
  * @return int|WP_Error Campaign ID.
  */
 function jlife_challenges_create_campaign( $actor, $args ) {
@@ -63,6 +63,7 @@ function jlife_challenges_create_campaign( $actor, $args ) {
 			'grace_days'     => 1,
 			'status'         => 'draft',
 			'scoring_engine' => JLIFE_CHALLENGES_DEFAULT_ENGINE,
+			'accepts_photos' => 0,
 		)
 	);
 	foreach ( array( 'campaign_key', 'plan_id', 'title', 'start_date', 'end_date' ) as $k ) {
@@ -94,9 +95,10 @@ function jlife_challenges_create_campaign( $actor, $args ) {
 			'grace_days'     => max( 0, (int) $args['grace_days'] ),
 			'status'         => (string) $args['status'],
 			'scoring_engine' => (string) $args['scoring_engine'],
+			'accepts_photos' => empty( $args['accepts_photos'] ) ? 0 : 1,
 			'created'        => current_time( 'mysql', true ),
 		),
-		array( '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s' )
+		array( '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s' )
 	);
 	if ( false === $ok ) {
 		return new WP_Error( 'jlife_db', 'Could not create campaign.' );

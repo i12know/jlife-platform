@@ -30,7 +30,7 @@ function jlife_challenges_site_has_pilot() {
  * site has no pilot campaign, unless forced (§3d).
  *
  * @param int   $actor Organizer.
- * @param array $args  Optional campaign_key, plan_id, title, start_date, end_date, scoring_engine (default soap-regex; new campaigns only).
+ * @param array $args  Optional campaign_key, plan_id, title, start_date, end_date, scoring_engine (default soap-regex; new campaigns only), accepts_photos (default off; new campaigns only, #244).
  * @param bool  $force Create even when the site has no pilot campaign.
  * @return array|WP_Error { campaign_id, campaign_key, created, start_date, end_date }
  */
@@ -83,6 +83,7 @@ function jlife_challenges_create_official_campaign( $actor, $args = array(), $fo
 			'end_date'       => (string) $args['end_date'],
 			'status'         => 'active',
 			'scoring_engine' => $engine,
+			'accepts_photos' => ! empty( $args['accepts_photos'] ) ? 1 : 0,
 		)
 	);
 	if ( is_wp_error( $id ) ) {

@@ -34,6 +34,7 @@ require_once __DIR__ . '/includes/past-campaigns.php';
 require_once __DIR__ . '/includes/group-admin.php';
 require_once __DIR__ . '/includes/soap.php';
 require_once __DIR__ . '/includes/scores.php';
+require_once __DIR__ . '/includes/photos.php';
 require_once __DIR__ . '/includes/shares.php';
 require_once __DIR__ . '/includes/reminders.php';
 require_once __DIR__ . '/includes/bible-choice.php';
@@ -79,6 +80,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	WP_CLI::add_command( 'jlife help-pages', 'Jlife_Help_Pages_Command' );
 	WP_CLI::add_command( 'jlife reminders', 'Jlife_Reminders_Command' );
 	WP_CLI::add_command( 'jlife bible', 'Jlife_Bible_Command' );
+	require_once __DIR__ . '/includes/class-jlife-photos-command.php';
+	WP_CLI::add_command( 'jlife photos', 'Jlife_Photos_Command' );
 }
 
 register_activation_hook( __FILE__, 'jlife_challenges_activate' );

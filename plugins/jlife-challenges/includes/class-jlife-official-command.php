@@ -32,6 +32,9 @@ class Jlife_Official_Command {
 	 * [--scoring-engine=<id>]
 	 * : Scoring engine for a NEW campaign: soap-regex (default; the four SOAP parts) or reflection-v1 (free-form or SOAP, 20 own words). An existing campaign keeps its engine; change it before Day 1 with `wp jlife campaign set-engine`.
 	 *
+	 * [--photo-reflections]
+	 * : Let participants add a photo of a handwritten reflection (#244) for a NEW campaign. Off by default; an existing campaign keeps its setting. Change it before Day 1 with `wp jlife campaign set-photos`.
+	 *
 	 * @param array $args       Positional args.
 	 * @param array $assoc_args Options.
 	 */
@@ -43,6 +46,9 @@ class Jlife_Official_Command {
 		}
 		if ( ! empty( $assoc_args['scoring-engine'] ) ) {
 			$input['scoring_engine'] = (string) $assoc_args['scoring-engine'];
+		}
+		if ( ! empty( $assoc_args['photo-reflections'] ) ) {
+			$input['accepts_photos'] = 1;
 		}
 		$r = jlife_challenges_create_official_campaign( jlife_challenges_cli_organizer(), $input, ! empty( $assoc_args['force'] ) );
 		if ( is_wp_error( $r ) ) {
@@ -78,7 +84,7 @@ class Jlife_Official_Command {
 			WP_CLI::log( sprintf( 'No campaign %s yet. Run: wp jlife official create', $key ) );
 		} else {
 			$id = (int) $c['id'];
-			WP_CLI::log( sprintf( '%s (id %d): %s to %s, status %s, phase %s, %d days.', $c['campaign_key'], $id, $c['start_date'], $c['end_date'], $c['status'], jlife_challenges_campaign_phase( $c ), jlife_challenges_day_count( $c ) ) );
+			WP_CLI::log( sprintf( '%s (id %d): %s to %s, status %s, phase %s, %d days, photo reflections %s.', $c['campaign_key'], $id, $c['start_date'], $c['end_date'], $c['status'], jlife_challenges_campaign_phase( $c ), jlife_challenges_day_count( $c ), jlife_challenges_campaign_accepts_photos( $c ) ? 'on' : 'off' ) );
 			$counts = array(
 				'enrollments' => jlife_challenges_close_count( 'enrollments', $id, 'active' ),
 				'entries'     => jlife_challenges_close_count( 'soap_entries', $id ),

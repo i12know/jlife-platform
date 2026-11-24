@@ -179,6 +179,7 @@ function jlife_challenges_marathon_view( $user_id ) {
 			'date'    => jlife_challenges_day_date( $c, $i ),
 			'state'   => $state,
 			'ahead'   => $ahead && $i > $last,
+			'photo'   => 'earned' === $state && 'photo' === ( $progress['types'][ $key ] ?? '' ), // The day's point was earned by a photo (#244): shown with a camera marker; read from the ledger, never worked out here.
 		);
 	}
 	return array(

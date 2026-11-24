@@ -68,7 +68,7 @@ function jlife_challenges_share_view( $user_id, $day_key ) {
 		return $view;
 	}
 	$entry                = $view['entry'];
-	$view['shareable']    = $entry && '' !== trim( (string) $entry['body'] );
+	$view['shareable']    = $entry && ( '' !== trim( (string) $entry['body'] ) || ( jlife_challenges_campaign_accepts_photos( $view['campaign'] ) && jlife_challenges_entry_has_photo( (int) $entry['id'] ) ) );
 	$view['destinations'] = array();
 	if ( ! $view['shareable'] ) {
 		return $view;
@@ -232,13 +232,15 @@ function jlife_challenges_leader_thoughts( $viewer_user_id, $campaign, $day_key 
 		}
 		jlife_challenges_release_due_shares( (int) $m['group_id'] );
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- custom table; name from $wpdb->prefix.
-		$rows = (array) $wpdb->get_results( $wpdb->prepare( 'SELECT user_id, body FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND campaign_id = %d AND day_key = %s AND status = 'shared' AND advance = 1 AND user_id <> %d ORDER BY updated DESC", (int) $m['group_id'], (int) $campaign['id'], (string) $day_key, (int) $viewer_user_id ), ARRAY_A );
+		$rows = (array) $wpdb->get_results( $wpdb->prepare( 'SELECT id, user_id, body FROM ' . jlife_challenges_table( 'group_shares' ) . " WHERE group_id = %d AND campaign_id = %d AND day_key = %s AND status = 'shared' AND advance = 1 AND user_id <> %d ORDER BY updated DESC", (int) $m['group_id'], (int) $campaign['id'], (string) $day_key, (int) $viewer_user_id ), ARRAY_A );
+		$photos = jlife_challenges_share_photo_ids( array_column( $rows, 'id' ) );
 		foreach ( $rows as $r ) {
 			$out[] = array(
 				'group_id'   => (int) $m['group_id'],
 				'group_name' => (string) $m['name'],
 				'author'     => jlife_challenges_feed_name( (int) $r['user_id'] ),
 				'body'       => (string) $r['body'],
+				'photo_id'   => $photos[ (int) $r['id'] ] ?? 0,
 			);
 		}
 	}

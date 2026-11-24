@@ -726,6 +726,74 @@ Primary-plan Day 1 (`d001`) was John 1:1-18 alone; it is now **Luke 1:1-4; John 
 3. Today and `/soap?day=d001` show the same two passages, in the same order.
 4. A day 2 spot check is unchanged (Luke 1:5-25).
 
+## Photo reflections (#244)
+
+A photo of a handwritten page as another way to write the day's reflection. **Official Marathon only** (owner decision 1): the pilot stays text-only. Design and access rules: [challenges-engine-design.md §4j](challenges-engine-design.md).
+
+### Turn it on (before Day 1)
+
+It is a per-campaign setting, **off by default**, and locked like the scoring engine: it can change only before Day 1 and while the campaign has no entries.
+
+```
+wp jlife official create --photo-reflections      # a NEW official campaign, created with photos on
+wp jlife campaign set-photos <campaign-id> on     # an existing campaign, before Day 1 and before any entry
+wp jlife official status                          # prints "photo reflections on|off"
+```
+
+Do it right after **official create** (Dec 14). A starter who writes ahead (#209) creates an entry and locks the setting, so do not wait.
+
+### Where the files are
+
+`wp-content/jlife-private/site-<id>/`, outside the Media Library and `uploads/`, in random-named files with no extension. The folder has `.htaccess` (deny all) and `index.php`. A photo opens only through `/photo/<id>/`, after an access check; the answer to every refusal is the same 404.
+
+- **Better, if you can:** put the folder above the web root. Add `define( 'JLIFE_PHOTO_DIR', '/home/<user>/.latoc/photos' );` to `wp-config.php` (the plugin appends `/site-<id>`). Do it **before** the first photo: existing files are not moved.
+- **nginx or any host that ignores `.htaccess`:** the deny rule does not apply. The random names still cannot be guessed, but use `JLIFE_PHOTO_DIR` outside the web root.
+- **Backups:** the per-deploy backups contain **only the database**. Photos depend on the hosting account's own backups (off-site backups, #162, are deferred). A photo is about 300 KB, one per person per day, so 100 people for 104 days is about 3 GB at most.
+
+### Review a participant's photos (owner, by download)
+
+There is no review screen. The owner checks a prize finalist like this:
+
+```
+wp jlife photos export --user=<user-id> [--campaign=<campaign-id>]
+```
+
+It writes **one zip** of that person's *photo-earned* days (days where the photo, not the typed text, earned the point) to `~/.latoc/photos-u<user>-c<campaign>-<time>.zip` (mode 0600): `dNNN.jpg` per day and `days.csv` (campaign, day, date, upload time UTC, submission type, file). The output shows counts and the zip path only, no names or emails; the audit log records counts only. Download it with cPanel File Manager (Show Hidden Files), then **delete it**. A day whose photo the person later removed is listed with an empty file (the point stays: points are never taken back).
+
+Find the user ID with `wp user list --field=ID --search=<part of the email>` on the host. Do not paste it, or the email, into an issue or a public log.
+
+### Deleting photos
+
+- An account's deletion deletes its photos and the copies shared to groups, files included.
+- `wp jlife test-campaign remove` deletes the test campaign's photos (its preview counts them).
+- Removing a share ("Yours — change or remove") deletes the group's copy.
+- The 60-day pilot purge (#186) is not written yet: it must call `jlife_challenges_delete_campaign_photos( $campaign_id )`. The pilot is text-only, so it has none.
+
+### Owner paste-list (the live pages are yours; nothing here is applied for you)
+
+`data/help-pages.json` only seeds the Rules and Privacy pages the first time. For the live pages, paste these (the English and Vietnamese drafts are in that file, under **Rules** "A photo of a handwritten reflection" and **Privacy** "Photos of handwritten reflections"; both are marked for your review):
+
+1. **Rules**, after the scoring rule: the "A photo of a handwritten reflection" section (three paragraphs). Check the honor-system sentence and who may look at the photos.
+2. **Privacy**: the "Photos of handwritten reflections" section, and add **photos** to the list in "Keeping and deleting information" ("Deleting the account removes its SOAP entries, revisions, shares, **photos**, points, …").
+3. **Consent page** (`/consent`, wording in code, version `draft-2026-11-18`): not changed here, because a wording change must bump `JLIFE_AUTH_CONSENT_VERSION`, which asks everyone again (a test guards this). Proposed new bullet, for you to approve before Dec 14: *"If your campaign accepts photos, a photo of your handwritten page is private to you, stored apart from the website's public files, and shown to a group only if you tick that group's box when you submit."* Vietnamese draft: *"Nếu chiến dịch của bạn nhận ảnh, ảnh trang viết tay của bạn là riêng tư của bạn, được lưu tách khỏi các tệp công khai của trang web, và chỉ hiện cho một nhóm nếu bạn đánh dấu ô của nhóm đó khi gửi."* The points bullet on that page still says "all four parts of SOAP" (it predates the reflection rule), so it needs re-wording at the same time.
+
+### QA checklist on latoc
+
+Photo reflections need the setting on for the campaign you test with. The setting is locked once a campaign has entries, so use a fresh `test-` campaign (`wp jlife test-campaign create`) or a new one created with `--photo-reflections`, and turn the setting on **before anyone writes**.
+
+1. **iPhone Safari:** the button offers both "Take Photo" and "Photo Library". Take a photo and choose one. The preview appears, "Photo saved" shows, Submit gives the point, and the grid tile is green with a small camera and the label "Point earned – photo upload" (VoiceOver reads it).
+2. **Android Chrome:** the same, camera and gallery.
+3. **Desktop:** the file picker; Replace and Remove; a PDF or a renamed `.exe` is refused with a message and nothing is saved.
+4. **Airplane mode** after choosing: the message says it was not saved; choose it again online. Submit twice quickly: one point, one photo.
+5. **Text beats photo:** a complete text plus a photo gives a text point (no camera). An empty box plus a photo gives a photo point.
+6. **No JavaScript** (turn it off): the plain file input and Submit still work; Remove works.
+7. **Sharing:** tick a group, Submit. A member sees the thumbnail in My Group (opens full size); a non-member (another group, signed out, another browser) gets a 404 on `/photo/<id>/` for both the copy and the author's private photo. Replace your photo: the group's copy does not change until you tick again. "Yours — change or remove" removes the copy (404 afterwards). Leave the group: the member's access ends.
+8. **Public file URLs:** with a file name from `wp-content/jlife-private/` (cPanel), `https://<site>/wp-content/jlife-private/site-<id>/<name>` returns 403 or 404.
+9. **EXIF:** download the full-size image and open its properties: no location or camera data; upright even if the phone was sideways.
+10. **Export:** `wp jlife photos export --user=<id>` makes the zip in `~/.latoc/`; open it: `dNNN.jpg` for each photo-earned day and `days.csv`; delete it.
+11. **Deletion:** delete the test account (or `wp jlife test-campaign remove`): the files in `wp-content/jlife-private/site-<id>/` are gone.
+12. **Layout:** 375 px and 320 px, light and dark: the preview and buttons fit; the grid camera is legible on the green tile; Tab reaches the picker button and shows a focus ring.
+
 ## Backups and restore
 
 - Every deploy writes `~/.latoc/backups/<UTC timestamp>.sql.gz`; the 10 most recent are kept.

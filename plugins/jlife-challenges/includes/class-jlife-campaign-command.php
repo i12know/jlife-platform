@@ -3,7 +3,8 @@
  * WP-CLI: `wp jlife campaign close <id> [--dry-run]` (#179) and
  * `wp jlife campaign rollover --from=<id> --to=<id> --preview|--execute|--verify` (#180) and
  * `wp jlife campaign rollover-groups --from=<id> --to=<id> --plan=<file> --preview|--validate|--execute|--verify` (#182) and
- * `wp jlife campaign set-engine <campaign> <engine>` (#210).
+ * `wp jlife campaign set-engine <campaign> <engine>` (#210) and
+ * `wp jlife campaign set-photos <campaign> on|off` (#244).
  *
  * Prints counts only, never people: deploy logs may be public.
  *
@@ -88,6 +89,43 @@ class Jlife_Campaign_Command {
 			$r['changed']
 				? sprintf( 'Campaign %d now uses the %s scoring engine (was %s).', $campaign_id, $r['engine'], $r['previous'] )
 				: sprintf( 'Campaign %d already uses the %s scoring engine; nothing changed.', $campaign_id, $r['engine'] )
+		);
+	}
+
+	/**
+	 * Turn photo reflections (a photo of a handwritten page, #244) on or off for a
+	 * campaign. Off by default. Refused once Day 1 has started or any entry exists,
+	 * with the same lock as set-engine, so nobody is scored under a rule that later
+	 * changes. Prints the campaign ID and the setting only.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <campaign>
+	 * : The campaign ID on this site.
+	 *
+	 * <setting>
+	 * : on or off.
+	 *
+	 * @subcommand set-photos
+	 *
+	 * @param array $args       Positional args.
+	 * @param array $assoc_args Options.
+	 */
+	public function set_photos( $args, $assoc_args ) {
+		unset( $assoc_args ); // WP-CLI always passes it; set-photos takes no options.
+		$campaign_id = (int) ( $args[0] ?? 0 );
+		$setting     = strtolower( (string) ( $args[1] ?? '' ) );
+		if ( ! in_array( $setting, array( 'on', 'off' ), true ) ) {
+			WP_CLI::error( 'Give on or off.' );
+		}
+		$r = jlife_challenges_set_campaign_photos( jlife_challenges_cli_organizer(), $campaign_id, 'on' === $setting );
+		if ( is_wp_error( $r ) ) {
+			WP_CLI::error( $r->get_error_message() );
+		}
+		WP_CLI::success(
+			$r['changed']
+				? sprintf( 'Campaign %d now accepts photo reflections: %s.', $campaign_id, $r['accepts_photos'] ? 'on' : 'off' )
+				: sprintf( 'Campaign %d already has photo reflections %s; nothing changed.', $campaign_id, $r['accepts_photos'] ? 'on' : 'off' )
 		);
 	}
 

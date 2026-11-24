@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  * @param int $viewer_user_id  Viewer (self or organizer).
  * @param int $subject_user_id Participant.
  * @param int $campaign_id     Campaign.
- * @return array|WP_Error { points, day_count, days: { d###: earned|late_no_point|removed_by_review } }
+ * @return array|WP_Error { points, day_count, days: { d###: earned|late_no_point|removed_by_review }, types: { d###: text|photo } (what earned each day, #244) }
  */
 function jlife_challenges_progress( $viewer_user_id, $subject_user_id, $campaign_id ) {
 	$campaign = jlife_challenges_get_campaign( $campaign_id );
@@ -24,17 +24,20 @@ function jlife_challenges_progress( $viewer_user_id, $subject_user_id, $campaign
 		return jlife_challenges_denied();
 	}
 	global $wpdb;
-	$rows   = $wpdb->get_results( $wpdb->prepare( 'SELECT day_key, points, status FROM ' . jlife_challenges_table( 'score_ledger' ) . ' WHERE campaign_id = %d AND user_id = %d ORDER BY day_key', (int) $campaign_id, (int) $subject_user_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
+	$rows   = $wpdb->get_results( $wpdb->prepare( 'SELECT day_key, points, status, submission_type FROM ' . jlife_challenges_table( 'score_ledger' ) . ' WHERE campaign_id = %d AND user_id = %d ORDER BY day_key', (int) $campaign_id, (int) $subject_user_id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix.
 	$days   = array();
+	$types  = array();
 	$points = 0;
 	foreach ( $rows as $r ) {
-		$days[ $r['day_key'] ] = $r['status'];
-		$points               += (int) $r['points'];
+		$days[ $r['day_key'] ]  = $r['status'];
+		$types[ $r['day_key'] ] = $r['submission_type'];
+		$points                += (int) $r['points'];
 	}
 	return array(
 		'points'    => $points,
 		'day_count' => jlife_challenges_day_count( $campaign ),
 		'days'      => $days,
+		'types'     => $types,
 	);
 }
 

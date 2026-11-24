@@ -45,6 +45,31 @@ function jlife_challenges_register_rest() {
 			'callback'            => 'jlife_challenges_rest_save_draft',
 		)
 	);
+	// The photo of a handwritten reflection, saved with the draft as soon as it is chosen (#244). A multipart POST; signed in and nonce-checked like the draft route.
+	foreach ( array(
+		'/soap/photo'        => 'jlife_challenges_rest_save_photo',
+		'/soap/photo/remove' => 'jlife_challenges_rest_remove_photo',
+	) as $route => $callback ) {
+		register_rest_route(
+			'jlife/v1',
+			$route,
+			array(
+				'methods'             => 'POST',
+				'permission_callback' => static fn() => is_user_logged_in(),
+				'args'                => array(
+					'campaign_id' => array(
+						'type'     => 'integer',
+						'required' => true,
+					),
+					'day_key'     => array(
+						'type'     => 'string',
+						'required' => true,
+					),
+				),
+				'callback'            => $callback,
+			)
+		);
+	}
 	register_rest_route(
 		'jlife/v1',
 		'/reminder',
@@ -94,6 +119,64 @@ function jlife_challenges_register_rest() {
 			'callback'            => 'jlife_challenges_rest_save_bible',
 		)
 	);
+}
+
+/**
+ * The HTTP status for a refused photo request.
+ *
+ * @param WP_Error $error Error from the photo functions.
+ * @return int
+ */
+function jlife_challenges_photo_status( $error ) {
+	$code = $error->get_error_code();
+	if ( 'jlife_denied' === $code ) {
+		return 403;
+	}
+	return 'jlife_photo_big' === $code ? 413 : ( 'jlife_photo_failed' === $code || 'jlife_photo_unsupported' === $code ? 500 : 400 );
+}
+
+/**
+ * Add or replace the draft photo. Never scores.
+ *
+ * @param WP_REST_Request $request Request (multipart, file field "photo").
+ * @return WP_REST_Response|WP_Error
+ */
+function jlife_challenges_rest_save_photo( WP_REST_Request $request ) {
+	$files = $request->get_file_params();
+	$r     = jlife_challenges_photo_attach(
+		get_current_user_id(),
+		(int) $request['campaign_id'],
+		(string) $request['day_key'],
+		isset( $files['photo'] ) && is_array( $files['photo'] ) ? $files['photo'] : array()
+	);
+	if ( is_wp_error( $r ) ) {
+		$r->add_data( array( 'status' => jlife_challenges_photo_status( $r ) ) );
+		return $r;
+	}
+	return new WP_REST_Response(
+		array(
+			'saved'    => true,
+			'replaced' => $r['replaced'],
+			'url'      => jlife_challenges_photo_url( $r['photo_id'] ),
+			'thumb'    => jlife_challenges_photo_url( $r['photo_id'], true ),
+		),
+		200
+	);
+}
+
+/**
+ * Remove the draft (or submitted entry's) photo.
+ *
+ * @param WP_REST_Request $request Request.
+ * @return WP_REST_Response|WP_Error
+ */
+function jlife_challenges_rest_remove_photo( WP_REST_Request $request ) {
+	$r = jlife_challenges_photo_remove( get_current_user_id(), (int) $request['campaign_id'], (string) $request['day_key'] );
+	if ( is_wp_error( $r ) ) {
+		$r->add_data( array( 'status' => jlife_challenges_photo_status( $r ) ) );
+		return $r;
+	}
+	return new WP_REST_Response( array( 'removed' => true ), 200 );
 }
 
 /**

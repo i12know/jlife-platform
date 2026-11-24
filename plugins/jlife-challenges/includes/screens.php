@@ -20,6 +20,7 @@ add_action( 'init', 'jlife_challenges_add_rewrites' );
  */
 function jlife_challenges_add_rewrites() {
 	add_rewrite_rule( '^(today|soap|marathon|share|group|signout|unsubscribe)/?$', 'index.php?jlife_screen=$matches[1]', 'top' );
+	add_rewrite_rule( '^photo/([0-9]+)/?$', 'index.php?jlife_screen=photo&jlife_photo=$matches[1]', 'top' ); // The only way to open a photo (#244): access-checked, never a file URL.
 }
 
 add_filter( 'query_vars', 'jlife_challenges_query_vars' );
@@ -32,6 +33,7 @@ add_filter( 'query_vars', 'jlife_challenges_query_vars' );
  */
 function jlife_challenges_query_vars( $vars ) {
 	$vars[] = 'jlife_screen';
+	$vars[] = 'jlife_photo';
 	return $vars;
 }
 
@@ -94,7 +96,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 
 	$scripts  = '';
 	$versions = array(
-		'soap'     => 8,
+		'soap'     => 9,
 		'share'    => 4,
 		'reminder' => 2,
 		'bible'    => 1,
@@ -117,7 +119,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 	$html = '<!doctype html><html lang="' . esc_attr( '' !== $lang ? $lang : str_replace( '_', '-', determine_locale() ) ) . '"><head><meta charset="utf-8">'
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=28' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=29' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
 		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -792,6 +794,18 @@ function jlife_challenges_posted_text() {
 }
 
 /**
+ * The photo chosen in a SOAP form POST (the no-JavaScript path, #244), or null when
+ * no file was sent. PHP fills $_FILES itself; the gate and the image check decide
+ * what happens to it.
+ *
+ * @return array|null One PHP upload (tmp_name, error, ...).
+ */
+function jlife_challenges_posted_photo() {
+	$file = isset( $_FILES['jl_photo'] ) && is_array( $_FILES['jl_photo'] ) ? $_FILES['jl_photo'] : null; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- the nonce is verified by the caller; the file is validated by content in jlife_challenges_photo_process().
+	return $file && UPLOAD_ERR_NO_FILE !== (int) ( $file['error'] ?? UPLOAD_ERR_NO_FILE ) ? $file : null;
+}
+
+/**
  * The day a SOAP form POST to Today belongs to. The form names its day, so a
  * form opened before midnight still saves to that day if it is sent after
  * midnight instead of failing on the wrong day's nonce.
@@ -855,6 +869,25 @@ function jlife_challenges_process_soap_request( $user_id, $view, $screen ) {
 		// "Use SOAP template" without JavaScript: show the form again with the headings added. Nothing is saved, scored or shared.
 		$state['text'] = jlife_challenges_append_soap_template( $text );
 		return $state;
+	}
+	if ( 'photo_remove' === $action ) {
+		// "Remove photo" without JavaScript: the typed text stays in the box (nothing else is saved or submitted).
+		$r = jlife_challenges_photo_remove( $user_id, $cid, $view['day_key'] );
+		if ( is_wp_error( $r ) ) {
+			$state['error'] = $r->get_error_message();
+		} else {
+			$state['notice'] = __( 'Photo removed.', 'jlife-challenges' );
+		}
+		return $state;
+	}
+	$photo = in_array( $action, array( 'draft', 'submit' ), true ) ? jlife_challenges_posted_photo() : null;
+	if ( $photo && jlife_challenges_campaign_accepts_photos( $view['campaign'] ) ) {
+		// A photo chosen without JavaScript is saved first; a refused one stops the save with a message and keeps what was typed. Choosing a file never earns a point: only Submit does.
+		$stored = jlife_challenges_photo_attach( $user_id, $cid, $view['day_key'], $photo );
+		if ( is_wp_error( $stored ) ) {
+			$state['error'] = $stored->get_error_message();
+			return $state;
+		}
 	}
 	if ( 'draft' === $action ) {
 		$r = jlife_challenges_save_draft( $user_id, $cid, $view['day_key'], $text );
@@ -921,13 +954,14 @@ function jlife_challenges_return_flags() {
  * jlife_challenges_return_flags()) with its defaults.
  *
  * @param array $state Partial state.
- * @return array { error: string, text: string|null, share_groups: int[] (boxes to show ticked), flags: array }
+ * @return array { error: string, notice: string (a plain confirmation, e.g. the photo was removed), text: string|null, share_groups: int[] (boxes to show ticked), flags: array }
  */
 function jlife_challenges_page_state( $state ) {
 	$state          = wp_parse_args(
 		$state,
 		array(
 			'error'        => '',
+			'notice'       => '',
 			'text'         => null,
 			'share_groups' => array(),
 			'flags'        => array(),
@@ -984,7 +1018,7 @@ function jlife_challenges_render_soap_feedback( $view, $state ) {
 	if ( '' !== $state['error'] ) {
 		return '<p class="jl-err" role="alert">' . esc_html( $state['error'] ) . '</p>';
 	}
-	$out = '';
+	$out = '' !== $state['notice'] ? '<p class="jl-ok" role="status">' . esc_html( $state['notice'] ) . '</p>' : '';
 	if ( $flags['done'] && jlife_challenges_is_submitted( $view ) ) {
 		/* translators: 1: points, 2: number of days. */
 		$out .= '<p class="jl-ok" role="status">' . esc_html( jlife_challenges_status_text( $view ) ) . ' ' . esc_html( sprintf( __( 'You have %1$d of %2$d.', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>';
@@ -1072,7 +1106,8 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 			. jlife_challenges_render_devotional( $view )
 			. '<h2>' . esc_html__( 'My SOAP', 'jlife-challenges' ) . '</h2>'
 			. '<p class="jl-note" role="status">' . esc_html( jlife_challenges_campaign_closed_error()->get_error_message() ) . '</p>'
-			. ( '' !== $body ? '<div class="jl-preview">' . esc_html( $body ) . '</div>' : '' );
+			. ( '' !== $body ? '<div class="jl-preview">' . esc_html( $body ) . '</div>' : '' )
+			. jlife_challenges_render_photo_closed( $view );
 	}
 	$state     = jlife_challenges_page_state( $state );
 	$text      = null === $state['text'] ? jlife_challenges_entry_text( $view ) : (string) $state['text'];
@@ -1083,10 +1118,13 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$guided    = (bool) $sources;
 	$prefill   = jlife_challenges_guidance_prefill( $sources );
 	$groups    = (array) ( $view['share_groups'] ?? array() );
+	$photos    = jlife_challenges_campaign_accepts_photos( $view['campaign'] ); // #244: the photo option shows only when the campaign accepts it, so the pilot stays text-only.
+	$photo     = $photos ? jlife_challenges_day_photo( get_current_user_id(), (int) $view['campaign']['id'], (string) $view['day_key'] ) : null;
 	$out       = jlife_challenges_render_reader( $view )
 		. jlife_challenges_render_devotional( $view )
 		. jlife_challenges_render_leader_thoughts( $view )
-		. '<form method="post" class="jl-soap" data-status="' . esc_attr( $submitted ? 'submitted' : 'draft' ) . '"'
+		. '<form method="post" class="jl-soap"' . ( $photos ? ' enctype="multipart/form-data"' : '' ) . ' data-status="' . esc_attr( $submitted ? 'submitted' : 'draft' ) . '"'
+		. ( $photos ? ' data-photo-rest="' . esc_url( rest_url( 'jlife/v1/soap/photo' ) ) . '" data-photo-remove="' . esc_url( rest_url( 'jlife/v1/soap/photo/remove' ) ) . '"' : '' )
 		. ' data-rest="' . esc_url( rest_url( 'jlife/v1/soap/draft' ) ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'wp_rest' ) ) . '"'
 		. ' data-template="' . esc_attr( jlife_challenges_soap_template() ) . '" data-prefill="' . esc_attr( $prefill ) . '" data-headings="' . esc_attr( (string) wp_json_encode( array_values( $headings ) ) ) . '"'
 		. ' data-i18n="' . esc_attr(
@@ -1098,6 +1136,10 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 					'restored'      => __( 'Restored your unsaved draft', 'jlife-challenges' ),
 					'leave_failed'  => __( 'Could not save your writing, so you stayed on this day. Nothing was lost. Please try again.', 'jlife-challenges' ),
 					'leave_unsaved' => __( 'You have unsaved edits. Save them with the button below before you leave this day.', 'jlife-challenges' ),
+					'photo_saving'  => __( 'Saving your photo…', 'jlife-challenges' ),
+					'photo_saved'   => __( 'Photo saved', 'jlife-challenges' ),
+					'photo_failed'  => __( 'The photo was not saved. Check your connection and choose it again.', 'jlife-challenges' ),
+					'photo_removed' => __( 'Photo removed.', 'jlife-challenges' ),
 				)
 			)
 		) . '"'
@@ -1115,8 +1157,14 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$box = '<textarea id="jl-text" name="jl_text" rows="16" maxlength="' . esc_attr( (string) JLIFE_CHALLENGES_BODY_MAX ) . '">' . esc_textarea( $text ) . '</textarea>';
 	if ( $guided ) {
 		// Guided (#225): the actual questions are real text in the box (a new entry only); SOAP is an optional extra and never replaces what is typed.
-		$out .= '<p class="jl-soap-def">' . esc_html( '' !== $prefill ? __( 'Answer the question in the box below in your own words.', 'jlife-challenges' ) : __( "Write about today's reading in your own words.", 'jlife-challenges' ) ) . '</p>'
+		if ( $photos ) {
+			$help = '' !== $prefill ? __( 'Answer the question in the box below in your own words, or add a photo of your handwritten page.', 'jlife-challenges' ) : __( "Write about today's reading in your own words, or add a photo of your handwritten page.", 'jlife-challenges' );
+		} else {
+			$help = '' !== $prefill ? __( 'Answer the question in the box below in your own words.', 'jlife-challenges' ) : __( "Write about today's reading in your own words.", 'jlife-challenges' );
+		}
+		$out .= '<p class="jl-soap-def">' . esc_html( $help ) . '</p>'
 			. $box
+			. ( $photos ? jlife_challenges_render_photo_field( $photo ) : '' )
 			. '<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'Use SOAP', 'jlife-challenges' ) . '</summary>'
 			. $soap_def . $soap_how
 			. '<button type="submit" name="jl_action" value="template" class="jl-button jl-soap-template" formnovalidate>' . esc_html__( 'Use SOAP template', 'jlife-challenges' ) . '</button><small>' . esc_html__( 'Adds the four SOAP headings. Nothing you wrote is removed.', 'jlife-challenges' ) . '</small>'
@@ -1125,14 +1173,53 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		$out .= $soap_def
 			. '<small>' . esc_html( $free ? __( 'A few sentences in your own words earn the point for the day. SOAP headings are optional, and they do not count as your words.', 'jlife-challenges' ) : __( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ) ) . '</small>'
 			. '<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary>' . $soap_how . '</details>'
-			. $box;
+			. $box
+			. ( $photos ? '<p class="jl-soap-def">' . esc_html__( 'You can also add a photo of your handwritten page.', 'jlife-challenges' ) . '</p>' . jlife_challenges_render_photo_field( $photo ) : '' );
 	}
 	$out .= '<p class="jl-saved" aria-live="polite"></p>'
-		. jlife_challenges_render_share_boxes( $groups, (array) $state['share_groups'], ! empty( $view['ahead'] ) ? (string) $view['release_label'] : '' );
+		. jlife_challenges_render_share_boxes( $groups, (array) $state['share_groups'], ! empty( $view['ahead'] ) ? (string) $view['release_label'] : '', $photos ? is_array( $photo ) : null );
 	return $out
 		. '<button type="submit" name="jl_action" value="submit" class="jl-button jl-primary">' . esc_html( $submitted ? __( 'Save changes', 'jlife-challenges' ) : ( $guided || $free ? __( 'Submit', 'jlife-challenges' ) : __( 'Submit SOAP', 'jlife-challenges' ) ) ) . '</button>'
 		. ( $submitted ? '' : '<button type="submit" name="jl_action" value="draft" class="jl-button" formnovalidate>' . esc_html__( 'Save draft', 'jlife-challenges' ) . '</button>' )
 		. '</form>';
+}
+
+/**
+ * The photo option under the writing box (#244): one file input (JPEG or PNG, no
+ * "capture", so a phone offers both the camera and the library), a preview with
+ * Replace and Remove, and a status line. It is a plain file input inside the form, so
+ * without JavaScript the photo is sent with Save draft or Submit; the script saves it
+ * the moment it is chosen. Choosing a file never earns a point.
+ *
+ * @param array|null $photo The person's photo row for this day, or null.
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_render_photo_field( $photo ) {
+	$has = is_array( $photo );
+	$id  = $has ? (int) $photo['id'] : 0;
+	return '<div class="jl-photo" data-has="' . ( $has ? '1' : '0' ) . '">'
+		. '<input type="file" id="jl-photo" name="jl_photo" class="jl-photo-input" accept="image/jpeg,image/png">'
+		. '<label for="jl-photo" class="jl-button jl-photo-add"' . ( $has ? ' hidden' : '' ) . '><span aria-hidden="true">📷</span> ' . esc_html__( 'Add a photo of my handwritten reflection', 'jlife-challenges' ) . '</label>'
+		. '<div class="jl-photo-preview"' . ( $has ? '' : ' hidden' ) . '>'
+		. '<a class="jl-photo-link" href="' . esc_url( $has ? jlife_challenges_photo_url( $id ) : '#' ) . '" target="_blank" rel="noopener"><img class="jl-photo-img" src="' . esc_url( $has ? jlife_challenges_photo_url( $id, true ) : '' ) . '" alt="' . esc_attr__( 'Your handwritten reflection', 'jlife-challenges' ) . '"></a>'
+		. '<span class="jl-photo-actions"><label for="jl-photo" class="jl-button jl-photo-replace">' . esc_html__( 'Replace', 'jlife-challenges' ) . '</label>'
+		. '<button type="submit" name="jl_action" value="photo_remove" class="jl-button jl-photo-remove" formnovalidate>' . esc_html__( 'Remove', 'jlife-challenges' ) . '</button></span>'
+		. '</div>'
+		. '<small class="jl-photo-note">' . esc_html__( 'JPEG or PNG. Your photo is saved with your draft. It counts toward your point only when you press Submit.', 'jlife-challenges' ) . '</small>'
+		. '<p class="jl-photo-status" role="status" aria-live="polite"></p>'
+		. '</div>';
+}
+
+/**
+ * The person's own photo on a closed campaign's page (read-only): a thumbnail that
+ * opens full size, or nothing.
+ *
+ * @param array $view Day view.
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_render_photo_closed( $view ) {
+	$photo = jlife_challenges_campaign_accepts_photos( $view['campaign'] ) ? jlife_challenges_day_photo( get_current_user_id(), (int) $view['campaign']['id'], (string) $view['day_key'] ) : null;
+	return $photo ? '<p class="jl-photo-closed"><a href="' . esc_url( jlife_challenges_photo_url( (int) $photo['id'] ) ) . '" target="_blank" rel="noopener"><img class="jl-photo-img" src="' . esc_url( jlife_challenges_photo_url( (int) $photo['id'], true ) ) . '" alt="' . esc_attr__( 'Your handwritten reflection', 'jlife-challenges' ) . '"></a></p>' : '';
 }
 
 /**
@@ -1144,12 +1231,13 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
  * starts, under the legend "Share with this group on the reading day": a
  * separate, explicit choice that is never ticked for them.
  *
- * @param array[] $groups  Rows of { id, name, status } (see jlife_challenges_share_groups()).
- * @param int[]   $ticked  Group IDs to show ticked.
- * @param string  $release When the day opens ('' for a day that has opened).
+ * @param array[]   $groups  Rows of { id, name, status } (see jlife_challenges_share_groups()).
+ * @param int[]     $ticked  Group IDs to show ticked.
+ * @param string    $release When the day opens ('' for a day that has opened).
+ * @param bool|null $photo   null = this campaign takes no photos (no reminder line); true or false = it does, and the person has (true) or has not (false) added one: the line shows only for true (the script toggles it as the photo changes).
  * @return string
  */
-function jlife_challenges_render_share_boxes( $groups, $ticked, $release = '' ) {
+function jlife_challenges_render_share_boxes( $groups, $ticked, $release = '', $photo = null ) {
 	if ( ! $groups ) {
 		return '';
 	}
@@ -1180,7 +1268,8 @@ function jlife_challenges_render_share_boxes( $groups, $ticked, $release = '' ) 
 	if ( $any_fresh ) {
 		$note .= ' ' . __( "Groups you leave unticked don't see this entry.", 'jlife-challenges' );
 	}
-	return $out . '</fieldset><small class="jl-share-note">' . esc_html( $note ) . '</small>';
+	$reminder = null === $photo ? '' : '<small class="jl-share-note jl-share-photo-note"' . ( $photo ? '' : ' hidden' ) . '>' . esc_html__( "Your group will see this photo. Make sure it doesn't show anything private about other people.", 'jlife-challenges' ) . '</small>';
+	return $out . '</fieldset><small class="jl-share-note">' . esc_html( $note ) . '</small>' . $reminder;
 }
 
 /**
@@ -1332,6 +1421,53 @@ function jlife_challenges_screen_soap() {
 }
 
 /**
+ * The 104-day grid and its legend for My Marathon. A photo-earned day stays green and
+ * carries a small camera and the words "Point earned – photo upload" (#244); the legend
+ * explains the camera only when the campaign accepts photos.
+ *
+ * @param array $view Marathon view (jlife_challenges_marathon_view()).
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_render_grid( $view ) {
+	$labels = array(
+		'earned'   => __( 'done — 1 point', 'jlife-challenges' ),
+		'photo'    => __( 'Point earned – photo upload', 'jlife-challenges' ),
+		'late'     => __( 'done after the deadline', 'jlife-challenges' ),
+		'draft'    => __( 'draft', 'jlife-challenges' ),
+		'open'     => __( 'still open', 'jlife-challenges' ),
+		'not_done' => __( 'not written', 'jlife-challenges' ),
+		'today'    => __( 'today', 'jlife-challenges' ),
+		'future'   => __( 'coming up', 'jlife-challenges' ),
+	);
+	$grid   = '';
+	foreach ( $view['cells'] as $c ) {
+		/* translators: 1: day number, 2: status. */
+		$title = sprintf( __( 'Day %1$d: %2$s', 'jlife-challenges' ), $c['index'], ! empty( $c['ahead'] ) ? __( 'coming up — you can read ahead', 'jlife-challenges' ) : $labels[ ! empty( $c['photo'] ) ? 'photo' : $c['state'] ] );
+		$inner = esc_html( (string) $c['index'] ) . ( ! empty( $c['photo'] ) ? jlife_challenges_camera_icon() : '' ); // A photo-earned day stays green; the camera only says how the point was earned (#244).
+		$grid .= 'future' === $c['state'] && empty( $c['ahead'] )
+			? '<span class="jl-cell jl-' . esc_attr( $c['state'] ) . '" title="' . esc_attr( $title ) . '">' . $inner . '</span>'
+			: '<a class="jl-cell jl-' . esc_attr( $c['state'] ) . ( ! empty( $c['ahead'] ) ? ' jl-ahead' : '' ) . ( ! empty( $c['photo'] ) ? ' jl-has-photo' : '' ) . '" title="' . esc_attr( $title ) . '" aria-label="' . esc_attr( $title ) . '" href="' . esc_url( add_query_arg( 'day', $c['day_key'], home_url( '/soap/' ) ) ) . '">' . $inner . '</a>';
+	}
+	$legend = '';
+	foreach ( array( 'earned', 'late', 'draft', 'today', 'open' ) as $s ) {
+		$legend .= '<li><span class="jl-cell jl-' . esc_attr( $s ) . '"></span> ' . esc_html( $labels[ $s ] ) . '</li>';
+		if ( 'earned' === $s && jlife_challenges_campaign_accepts_photos( $view['campaign'] ) ) {
+			$legend .= '<li><span class="jl-cell jl-earned jl-has-photo">' . jlife_challenges_camera_icon() . '</span> ' . esc_html( $labels['photo'] ) . '</li>';
+		}
+	}
+	return '<div class="jl-grid">' . $grid . '</div><ul class="jl-legend">' . $legend . '</ul>';
+}
+
+/**
+ * The small camera on a photo-earned day (#244). Decorative: the tile's label says it in words.
+ *
+ * @return string SVG markup.
+ */
+function jlife_challenges_camera_icon() {
+	return '<svg class="jl-cam" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M5.5 2 4.6 3.5H2.5A1.5 1.5 0 0 0 1 5v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 15 12V5a1.5 1.5 0 0 0-1.5-1.5h-2.1L10.5 2h-5zM8 11.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>';
+}
+
+/**
  * /marathon
  */
 function jlife_challenges_screen_marathon() {
@@ -1358,35 +1494,13 @@ function jlife_challenges_screen_marathon() {
 	if ( ! $view ) {
 		jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), (string) jlife_challenges_render_no_day( array( 'state' => 'not_enrolled' ) ), 'marathon' );
 	}
-	$labels = array(
-		'earned'   => __( 'done — 1 point', 'jlife-challenges' ),
-		'late'     => __( 'done after the deadline', 'jlife-challenges' ),
-		'draft'    => __( 'draft', 'jlife-challenges' ),
-		'open'     => __( 'still open', 'jlife-challenges' ),
-		'not_done' => __( 'not written', 'jlife-challenges' ),
-		'today'    => __( 'today', 'jlife-challenges' ),
-		'future'   => __( 'coming up', 'jlife-challenges' ),
-	);
-	$grid   = '';
-	foreach ( $view['cells'] as $c ) {
-		/* translators: 1: day number, 2: status. */
-		$title = sprintf( __( 'Day %1$d: %2$s', 'jlife-challenges' ), $c['index'], ! empty( $c['ahead'] ) ? __( 'coming up — you can read ahead', 'jlife-challenges' ) : $labels[ $c['state'] ] );
-		$inner = esc_html( (string) $c['index'] );
-		$grid .= 'future' === $c['state'] && empty( $c['ahead'] )
-			? '<span class="jl-cell jl-' . esc_attr( $c['state'] ) . '" title="' . esc_attr( $title ) . '">' . $inner . '</span>'
-			: '<a class="jl-cell jl-' . esc_attr( $c['state'] ) . ( ! empty( $c['ahead'] ) ? ' jl-ahead' : '' ) . '" title="' . esc_attr( $title ) . '" aria-label="' . esc_attr( $title ) . '" href="' . esc_url( add_query_arg( 'day', $c['day_key'], home_url( '/soap/' ) ) ) . '">' . $inner . '</a>';
-	}
-	$legend = '';
-	foreach ( array( 'earned', 'late', 'draft', 'today', 'open' ) as $s ) {
-		$legend .= '<li><span class="jl-cell jl-' . esc_attr( $s ) . '"></span> ' . esc_html( $labels[ $s ] ) . '</li>';
-	}
 	// Settings first (#204): Language, Bible and, in Live mode only (#189), the reminder checkbox.
 	$body = '<h1>' . esc_html__( 'My Marathon', 'jlife-challenges' ) . '</h1>'
 		. jlife_challenges_render_reminder_settings( $user_id, $cid, isset( $_GET['reminders'] ), isset( $_GET['bible'] ), isset( $_GET['language'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display flags after a redirect.
 		/* translators: 1: points, 2: number of days. */
 		. '<p class="jl-score">' . esc_html( sprintf( __( '%1$d of %2$d', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>'
 		. '<p>' . esc_html__( 'Every day is a fresh start. Tap any day to read it or write your SOAP.', 'jlife-challenges' ) . '</p>'
-		. '<div class="jl-grid">' . $grid . '</div><ul class="jl-legend">' . $legend . '</ul>'
+		. jlife_challenges_render_grid( $view )
 		. jlife_challenges_render_past_section( $user_id ); // Earlier reading periods (#174, D4-A).
 	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon', array( 'language', 'reminder', 'bible' ) );
 }
@@ -1408,6 +1522,8 @@ function jlife_challenges_route() {
 		jlife_challenges_screen_share();
 	} elseif ( 'group' === $screen ) {
 		jlife_challenges_screen_group();
+	} elseif ( 'photo' === $screen ) {
+		jlife_challenges_screen_photo();
 	} elseif ( 'signout' === $screen ) {
 		jlife_challenges_screen_signout();
 	} elseif ( 'unsubscribe' === $screen ) {
