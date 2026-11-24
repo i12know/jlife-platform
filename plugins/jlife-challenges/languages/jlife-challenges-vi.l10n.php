@@ -606,7 +606,7 @@ return array(
 		'Your question' => 'Câu hỏi của bạn',
 		'What happens next?' => 'Điều gì xảy ra tiếp theo?',
 		'Your question is visible to authorized pastors, not to your group or other participants. Pastors may choose questions for an optional Bible Q&A after Sunday worship and discuss them without saying who asked. Please do not expect an immediate or personal reply; not every question can be covered.' => 'Các mục sư được ủy quyền sẽ thấy câu hỏi của bạn, nhóm và những người tham gia khác thì không. Các mục sư có thể chọn một số câu hỏi cho buổi hỏi đáp Kinh Thánh tùy chọn sau thờ phượng Chúa Nhật và thảo luận mà không nói ai đã hỏi. Xin đừng chờ đợi một câu trả lời ngay hoặc riêng cho bạn; không thể trả lời mọi câu hỏi.',
-		'This form is for Bible questions. It is not watched for urgent needs.' => 'Mẫu này dành cho câu hỏi về Kinh Thánh. Chúng tôi không theo dõi nó cho những nhu cầu khẩn cấp.',
+		'This form is for Bible questions. It is not watched for urgent needs.' => 'Mẫu này dành cho câu hỏi về Kinh Thánh. Biểu mẫu này không được theo dõi để xử lý các nhu cầu khẩn cấp.',
 		'Submit Question to Pastors' => 'Gửi câu hỏi cho các mục sư',
 		'Thank you. Your question was sent privately to the pastors. You don\'t need to wait here for an answer.' => 'Cảm ơn bạn. Câu hỏi của bạn đã được gửi riêng đến các mục sư. Bạn không cần chờ câu trả lời ở đây.',
 		'Back to Today' => 'Về trang Hôm nay',
