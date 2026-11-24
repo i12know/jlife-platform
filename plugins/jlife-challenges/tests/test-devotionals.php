@@ -240,7 +240,7 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * A pilot campaign (Dec 5 to 13) on the same plan as the Marathon.
+	 * A pilot campaign (Nov 29 to Dec 13) on the same plan as the Marathon.
 	 *
 	 * @return array Campaign row.
 	 */
@@ -251,7 +251,7 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 				'campaign_key' => 'pilot-' . wp_generate_password( 6, false ),
 				'plan_id'      => self::PLAN,
 				'title'        => 'Pilot (test)',
-				'start_date'   => '2026-12-05',
+				'start_date'   => '2026-11-29',
 				'end_date'     => '2026-12-13',
 				'status'       => 'active',
 			)
@@ -551,9 +551,9 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Release follows each campaign's own calendar: the pilot's Day 1 (Dec 5) and the
+	 * Release follows each campaign's own calendar: the pilot's Day 1 (Nov 29) and the
 	 * Marathon's Day 1 (Dec 20) are the same Reading Day. The post's own date never
-	 * decides it, and a day beyond the pilot's nine does not open there.
+	 * decides it, and a day beyond the pilot's fifteen does not open there.
 	 */
 	public function test_release_is_per_campaign_day() {
 		$pilot    = $this->make_pilot();
@@ -569,11 +569,11 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 		);
 		$this->make_post( 'd038', 'en', 'publish' );
 
-		$this->set_now( '2026-12-01 18:00:00' );
+		$this->set_now( '2026-11-29 04:00:00' ); // Nov 28, 8:00 PM Pacific.
 		$this->assertNull( jlife_challenges_devotional_for_day( $pilot, 'd001', 'en' ) );
 		$this->assertNull( jlife_challenges_devotional_for_day( $official, 'd001', 'en' ) );
 
-		$this->set_now( '2026-12-06 18:00:00' ); // Pilot Day 2; the Marathon has not started.
+		$this->set_now( '2026-11-30 18:00:00' ); // Pilot Day 2; the Marathon has not started.
 		$this->assertNotNull( jlife_challenges_devotional_for_day( $pilot, 'd001', 'en' ) );
 		$this->assertNull( jlife_challenges_devotional_for_day( $official, 'd001', 'en' ) );
 		$this->assertNull( jlife_challenges_devotional_for_day( $pilot, 'd038', 'en' ) );
@@ -633,11 +633,11 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 		$post = jlife_studies_find_reading_day( self::PLAN, 'd001' );
 		wp_set_current_user( 0 );
 
-		$this->set_now( '2026-11-30 18:00:00' );
+		$this->set_now( '2026-11-29 04:00:00' ); // Nov 28, 8:00 PM Pacific.
 		$view = jlife_challenges_public_reading_view( $post, 'en' );
 		$this->assertSame( '', jlife_challenges_render_devotional( $view ) );
 
-		$this->set_now( '2026-12-05 18:00:00' ); // Pilot Day 1.
+		$this->set_now( '2026-11-29 18:00:00' ); // Pilot Day 1.
 		$this->assertStringContainsString( 'Public body.', jlife_challenges_render_devotional( $view ) );
 		$this->assertSame( '', jlife_challenges_render_devotional( jlife_challenges_public_reading_view( $post, 'vi' ) ) );
 	}

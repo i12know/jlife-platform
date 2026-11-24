@@ -3,7 +3,7 @@
  * Official-Marathon reminder consent during Dec 14–19 onboarding (#181), and
  * the consent record a later join carries (PR #197 decision 4).
  *
- * The story: a pilot (Dec 5–13) and the official Marathon (Dec 20 – Apr 2),
+ * The story: a pilot (Nov 29–Dec 13) and the official Marathon (Dec 20 – Apr 2),
  * both Pacific time. Pilot participants made different reminder choices; the
  * pilot is closed on Dec 14 and the rollover carries everyone on Dec 15. Mail
  * is captured with a pre_wp_mail filter (nothing leaves the test). 14:00 UTC
@@ -76,7 +76,7 @@ class Test_Official_Reminder_Consent extends Jlife_Challenges_TestCase {
 		update_option( 'jlife_reminders_mode', 'live' );
 		delete_option( 'jlife_reminders_lock' );
 
-		$this->set_now( '2026-11-30 18:00:00' );
+		$this->set_now( '2026-11-29 04:00:00' ); // Nov 28, 8:00 PM Pacific.
 		$this->pilot    = (int) jlife_challenges_create_pilot_campaign( $this->u['organizer'] )['campaign_id'];
 		$this->official = (int) jlife_challenges_create_official_campaign( $this->u['organizer'] )['campaign_id'];
 

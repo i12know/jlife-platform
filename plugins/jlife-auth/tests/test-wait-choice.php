@@ -1,7 +1,7 @@
 <?php
 /**
  * The "I'll start Dec 20" choice on the join flow (#178). Written before the
- * code. With the Dec 5–13 pilot and the Dec 20 Marathon both active, a new
+ * code. With the Nov 29–Dec 13 pilot and the Dec 20 Marathon both active, a new
  * sign-up from Nov 29 lands in the pilot by default, or can choose to wait for
  * the official Marathon: the account is created as usual, nobody is enrolled,
  * and a per-user flag records the intent for the rollover (#180).
@@ -186,10 +186,10 @@ class Test_Wait_Choice extends WP_UnitTestCase {
 	}
 
 	/**
-	 * The choice is offered only while the pilot is what new people join (Nov 29 to Dec 13).
+	 * The choice is offered only while the pilot is what new people join (from creation on Nov 28 evening to Dec 13).
 	 */
 	public function test_waiting_is_offered_only_while_the_pilot_is_open() {
-		foreach ( array( '2026-11-29 08:00:00', '2026-12-07 18:00:00', '2026-12-14 07:59:59' ) as $utc ) {
+		foreach ( array( '2026-11-29 04:00:00', '2026-11-29 08:00:00', '2026-12-07 18:00:00', '2026-12-14 07:59:59' ) as $utc ) {
 			$this->set_now( $utc );
 			$this->assertTrue( jlife_auth_wait_offered(), $utc );
 		}

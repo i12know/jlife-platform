@@ -60,7 +60,7 @@ class Test_Rollover_Groups extends JLife_Challenges_TestCase {
 		$wpdb->update( jlife_challenges_table( 'campaigns' ), array( 'status' => 'draft' ), array( 'id' => $this->campaign ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$org = $this->u['organizer'];
 
-		$this->set_now( '2026-12-01 18:00:00' );
+		$this->set_now( '2026-11-29 04:00:00' ); // Nov 28, 8:00 PM Pacific.
 		$this->pilot    = (int) jlife_challenges_create_pilot_campaign( $org )['campaign_id'];
 		$this->official = (int) jlife_challenges_create_official_campaign( $org )['campaign_id'];
 		foreach ( array( 'starter', 'multi', 'youth1', 'youth2', 'removed', 'evening', 'solo', 'leaver' ) as $who ) {

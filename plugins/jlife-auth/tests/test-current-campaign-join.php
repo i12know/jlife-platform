@@ -1,7 +1,7 @@
 <?php
 /**
  * Sign-up paths follow the current-campaign rule (#177, docs/challenges-engine-
- * design.md §3b): with the Dec 5–13 pilot and the Dec 20 Marathon both active,
+ * design.md §3b): with the Nov 29–Dec 13 pilot and the Dec 20 Marathon both active,
  * "Read on my own" and "Start a group" join the pilot during the pilot and the
  * Marathon afterwards, and a pilot invite code stops once the pilot has ended.
  *
@@ -57,7 +57,7 @@ class Test_Current_Campaign_Join extends WP_UnitTestCase {
 		add_filter( 'wp_mail_from', static fn() => 'jlife@example.test' );
 		add_filter( 'jlife_challenges_now', array( $this, 'clock' ) );
 		$organizer         = self::factory()->user->create( array( 'role' => 'administrator' ) );
-		$this->pilot       = $this->campaign( $organizer, 'pilot', '2026-12-05', '2026-12-13' );
+		$this->pilot       = $this->campaign( $organizer, 'pilot', '2026-11-29', '2026-12-13' );
 		$this->marathon    = $this->campaign( $organizer, 'marathon', '2026-12-20', '2027-04-02' );
 		$this->pilot_group = jlife_challenges_create_group( $organizer, $this->pilot, 'Pilot Group' );
 	}

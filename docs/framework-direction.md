@@ -27,7 +27,7 @@ Only an owner-approved ADR changes a status, and it updates this table in the sa
 
 **Remaining conflicts after the 2026-11-21 amendments (not resolved here):**
 - [#209](https://github.com/i12know/jlife-platform/issues/209) (advance scoring for scheduled group shares) is still a proposed rule awaiting owner approval; nothing here records it as decided.
-- The owner updated the live Help pages in wp-admin on 2026-11-21. The Rules page must carry the `reflection-v1` rule before the pilot uses it (Dec 5) and before the official campaign starts.
+- The owner updated the live Help pages in wp-admin on 2026-11-21. The Rules page must carry the `reflection-v1` rule before the pilot uses it (Nov 29) and before the official campaign starts.
 - Existing campaigns keep `soap-regex`; no active campaign changes without an owner-reviewed plan.
 
 ## 1. Two frameworks, one rule
@@ -102,7 +102,7 @@ Decided 2026-11-20: latoc **stays on the existing shared hosting account**; no s
 
 ## 6. Deferred operations work
 
-The 2026-11-20 review proposed doing two items before the December 5 shadow pilot. On the same day the owner **deferred both to 2027 or later, at low priority**:
+The 2026-11-20 review proposed doing two items before the shadow pilot (then planned for December 5, now November 29). On the same day the owner **deferred both to 2027 or later, at low priority**:
 
 - [#162](https://github.com/i12know/jlife-platform/issues/162): off-site encrypted backups and a restore drill.
 - [#163](https://github.com/i12know/jlife-platform/issues/163): shared hosting account cleanup.

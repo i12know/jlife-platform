@@ -4,7 +4,7 @@ Status: development/pilot staging for the 104-Day SOAP Bible Marathon ([#49](htt
 
 **What runs there (Option C):** WordPress multisite at `https://latoc.vayhub.org/`, STUDY site only, with `jlife-studies` and `jlife-huddles`. **No Disciple.Tools and no `jlife-bridge`** (magic links stay off until #37/#38). Search engines are discouraged. A pinned **Polylang** serves the public bilingual landing page ([#110](https://github.com/i12know/jlife-platform/issues/110); see [Public landing pages](#public-landing-pages-en--vi)).
 
-> **Hosting checkpoint (D9), decided 2026-11-20:** latoc **stays on the shared hosting account** it uses with other sites, including after the Dec 5 shadow pilot stores real participants' SOAP entries. This is a cost decision. **The shared-hosting risk remains**: sites on one account are not isolated from each other, so every site's security affects latoc's data. Reducing that exposure ([#163](https://github.com/i12know/jlife-platform/issues/163)) and off-site backups ([#162](https://github.com/i12know/jlife-platform/issues/162)) are deferred to 2027 at low priority. Until then, the only backups are the per-deploy database dumps described below. latoc should stay portable, so another ministry can host its own copy. See [framework-direction.md](framework-direction.md).
+> **Hosting checkpoint (D9), decided 2026-11-20:** latoc **stays on the shared hosting account** it uses with other sites, including after the Nov 29 shadow pilot stores real participants' SOAP entries. This is a cost decision. **The shared-hosting risk remains**: sites on one account are not isolated from each other, so every site's security affects latoc's data. Reducing that exposure ([#163](https://github.com/i12know/jlife-platform/issues/163)) and off-site backups ([#162](https://github.com/i12know/jlife-platform/issues/162)) are deferred to 2027 at low priority. Until then, the only backups are the per-deploy database dumps described below. latoc should stay portable, so another ministry can host its own copy. See [framework-direction.md](framework-direction.md).
 
 ## Pieces
 
@@ -123,7 +123,7 @@ Three ordinary WordPress pages, in English and Vietnamese, linked as Polylang tr
 - **Page IDs live in options** (the English page; Polylang resolves the reader's language): `jlife_challenges_help_page_id`, `jlife_challenges_rules_page_id`, `jlife_challenges_privacy_page_id`. `wp jlife help-pages status` prints each option, its ID and the page's status. To use a page you wrote yourself: `wp option update jlife_challenges_privacy_page_id <page ID>`.
 - **Where the links appear.** A small Help · Rules · Privacy footer on Today, `/soap`, My Marathon, My Group, `/share`, the sign-out confirmation, `/join`, `/signin` and `/consent`, in the participant's language (the Polylang translation when it is published, else the page the option names). A **Privacy** link ("Read the full privacy summary") on the consent step. A "How SOAP works" link beside the SOAP one-liner's "More". **A link appears only when its page is published**: drafts and missing pages give no link, never a broken one. So until the owner publishes the pages, the screens look exactly as before, and the consent step has no Privacy link.
 - **Keep the SOAP anchor.** The heading "What SOAP means" on the Help page has the HTML anchor `what-is-soap`, which the SOAP link jumps to. If you retitle that heading, keep the anchor (Advanced > HTML anchor in the editor).
-- **Publish order:** edit the wording, replace the placeholder, delete the DRAFT notice, get the Vietnamese reviewed, then publish the English and Vietnamese page of each. Publish all three before the Dec 5 shadow pilot stores real participant data.
+- **Publish order:** edit the wording, replace the placeholder, delete the DRAFT notice, get the Vietnamese reviewed, then publish the English and Vietnamese page of each. Publish all three before the Nov 29 shadow pilot stores real participant data.
 
 ### D19: youth (13 to 17) group sharing needs no setting
 
@@ -131,7 +131,7 @@ The church's D19 policy (no separate guardian approval step in J-Life) is the **
 
 ## Pilot feedback post (#171)
 
-During the Dec 5–13 shadow pilot, testers leave feedback as **comments on one ordinary WordPress post**. They don't need a GitHub account. A small **Pilot Feedback** / **Góp ý thử nghiệm** link in the footer of the participant screens leads there.
+During the Nov 29–Dec 13 shadow pilot, testers leave feedback as **comments on one ordinary WordPress post**. They don't need a GitHub account. A small **Pilot Feedback** / **Góp ý thử nghiệm** link in the footer of the participant screens leads there.
 
 | | GitHub (the code) | wp-admin (the owner) |
 |---|---|---|
@@ -425,8 +425,8 @@ The deploy has a **test_campaign** choice (default `none`):
 
 Before the removal, the deploy takes its usual database backup
 (`~/.latoc/backups/`), which still holds the test data if it is ever needed.
-Run the removal before inviting real participants (by the Nov 29 announcement
-and the Dec 5 pilot at the latest). The pilot campaign must **not** use a
+Run the removal before inviting real participants (by the Nov 29 announcement,
+which is also the pilot's Day 1, at the latest). The pilot campaign must **not** use a
 `test-` key, or a later removal would delete it.
 
 The same commands exist on the server: `wp jlife test-campaign create|status`
@@ -435,11 +435,11 @@ also prints the counts `remove` would affect.
 
 ## Pilot campaign (#178)
 
-The Dec 5–13 pilot ("practice week") is a normal campaign whose key starts
+The Nov 29–Dec 13 pilot ("practice week", 15 days) is a normal campaign whose key starts
 with `pilot-`, never `test-`, so the test-campaign removal cannot delete it.
 
 - **Create it** with the deploy choice **pilot_campaign = create** (or
-  `wp jlife pilot create` on the server). It makes `pilot-2026-12` (Dec 5–13,
+  `wp jlife pilot create` on the server). It makes `pilot-2026-12` (Nov 29–Dec 13,
   2026, Pacific time, active, same reading plan as the Marathon). Running it
   again changes nothing. It creates no groups and enrolls no one. The deploy
   creates the pilot with the `reflection-v1` scoring engine (an existing
@@ -449,9 +449,9 @@ with `pilot-`, never `test-`, so the test-campaign removal cannot delete it.
   key, dates, phase, scoring engine, number of enrollments, and how many people chose
   "I'll start Dec 20". Counts only, safe in the public log.
 - **Do this after the test campaign is removed** and before the Nov 29
-  announcement. Sign-ups from Nov 29 join the pilot by default (the join rule,
+  announcement. Sign-ups from creation (Nov 28 evening) join the pilot by default (the join rule,
   design §3b); from Dec 14 00:00 Pacific new sign-ups go to the Marathon.
-- **While the pilot is current** its participants see "Practice week: Dec 5–13.
+- **While the pilot is current** its participants see "Practice week: Nov 29–Dec 13.
   Points don't count for prizes. The Marathon starts Dec 20." above Today, My
   Marathon, My Group and `/share`.
 - **"I'll start Dec 20"** appears on `/join` while the pilot is what people
@@ -633,7 +633,7 @@ A bilingual devotional (lead-in, teaching and reflection questions in **one** ri
 
 **How it is stored.** One non-public `jlife_devotional` post per reading-plan day and language. Draft or Ready is the post's own status. It is **not** on the Reading Day post, so the deploy's reading-plan import (which re-imports every day and forces Reading Days to publish) cannot publish, change or create a devotional, and importing devotionals never touches a Reading Day.
 
-**When it shows.** Only a **Ready** (published) devotional, only for a day that has **opened in the reader's campaign**, and only in the reader's language (no fallback to the other language: a missing translation shows nothing). The pilot's Day 1 is Dec 5 and the Marathon's Day 1 is Dec 20; they share the same Reading Day, so release follows each campaign's calendar. The post's own date is never used, so marking something Ready on Dec 1 shows nothing until Dec 5 (pilot) or Dec 20 (Marathon).
+**When it shows.** Only a **Ready** (published) devotional, only for a day that has **opened in the reader's campaign**, and only in the reader's language (no fallback to the other language: a missing translation shows nothing). The pilot's Day 1 is Nov 29 and the Marathon's Day 1 is Dec 20; they share the same Reading Day, so release follows each campaign's calendar. The post's own date is never used, so marking something Ready on Dec 1 shows nothing until Nov 29 (pilot) or Dec 20 (Marathon).
 
 ### 1. Write and export to Markdown
 
@@ -711,7 +711,7 @@ The post type uses the standard editor only. The theme's page builder is switche
 
 ### Acceptance demo (owner)
 
-Take one devotional drafted in Word or Google Docs, export it to Markdown, and upload the EN and VI files. Preview, import as Draft, mark Ready, and check it appears on the right campaign day (pilot Day 1 on Dec 5; or, before that, with a `test-` campaign). Run a routine deploy and check it survives. Upload the same files again and confirm nothing is created or erased; edit one in the block editor, upload again and confirm it is skipped.
+Take one devotional drafted in Word or Google Docs, export it to Markdown, and upload the EN and VI files. Preview, import as Draft, mark Ready, and check it appears on the right campaign day (pilot Day 1 on Nov 29; or, before that, with a `test-` campaign). Run a routine deploy and check it survives. Upload the same files again and confirm nothing is created or erased; edit one in the block editor, upload again and confirm it is skipped.
 
 ## Day 1 reading is Luke 1:1-4; John 1:1-18 (#219)
 
@@ -722,7 +722,7 @@ Primary-plan Day 1 (`d001`) was John 1:1-18 alone; it is now **Luke 1:1-4; John 
 **Checks after the deploy** (any enabled Bible: KT1925, NLT/NKJV/CSB, link-only):
 
 1. `wp jlife reading-plan import` output ends with 104 days for the primary plan and no error; J-Life Reading Days still lists 104 days, one `d001`.
-2. `/reading/` for Day 1 (Dec 5 for the pilot) shows **Luke 1:1-4** above **John 1:1-18** in English and Vietnamese ("Lu-ca 1:1-4", "Giăng 1:1-18"), with the Bible Gateway link `Luke+1:1-4;John+1:1-18`.
+2. `/reading/` for Day 1 (Nov 29 for the pilot) shows **Luke 1:1-4** above **John 1:1-18** in English and Vietnamese ("Lu-ca 1:1-4", "Giăng 1:1-18"), with the Bible Gateway link `Luke+1:1-4;John+1:1-18`.
 3. Today and `/soap?day=d001` show the same two passages, in the same order.
 4. A day 2 spot check is unchanged (Luke 1:5-25).
 
@@ -805,7 +805,7 @@ Photo reflections need the setting on for the campaign you test with. The settin
   gunzip -c backups/<timestamp>.sql.gz | /opt/cpanel/ea-php82/root/usr/bin/php ~/.latoc/wp-cli-2.11.0.phar --path=<document root> db import -
   ```
 
-- **Restore test** ([#56](https://github.com/i12know/jlife-platform/issues/56)): [`bin/deploy/latoc-restore-test.sh`](../bin/deploy/latoc-restore-test.sh) loads the newest backup into a scratch database (`<cpanel user>_rtest`, created and deleted with cPanel's `uapi`), compares table and row counts with the live site, and always deletes the scratch database. It only reads the live database and prints no passwords (the database password goes to a `mktemp` file, mode 600, removed on exit). Paste the script into cPanel → Terminal as `~/.latoc/restore-test.sh`, run it, then delete it. Re-run it before the Dec 5 shadow pilot and after any change to the backup step.
+- **Restore test** ([#56](https://github.com/i12know/jlife-platform/issues/56)): [`bin/deploy/latoc-restore-test.sh`](../bin/deploy/latoc-restore-test.sh) loads the newest backup into a scratch database (`<cpanel user>_rtest`, created and deleted with cPanel's `uapi`), compares table and row counts with the live site, and always deletes the scratch database. It only reads the live database and prints no passwords (the database password goes to a `mktemp` file, mode 600, removed on exit). Paste the script into cPanel → Terminal as `~/.latoc/restore-test.sh`, run it, then delete it. Re-run it before the Nov 29 shadow pilot and after any change to the backup step.
 - **Last restore test: 2026-11-19, passed.** Backup `20261119T030929Z.sql.gz` (256 KB) passed `gzip -t`; scratch database created and granted (`status: 1`); import succeeded in under a second; **31 of 31 tables** restored; row counts matched live exactly for `options` (177), `users` (11), `posts` (120), `blogs` (1) and every J-Life table checked (campaigns, enrollments, group members, SOAP entries, score ledger, audit log); restored `siteurl` was `https://latoc.vayhub.org`; scratch database deleted.
 
 ## Rollback

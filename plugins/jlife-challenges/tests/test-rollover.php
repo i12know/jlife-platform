@@ -14,7 +14,7 @@
 class Test_Rollover extends JLife_Challenges_TestCase {
 
 	/**
-	 * The pilot (Dec 5–13, 2026).
+	 * The pilot (Nov 29–Dec 13, 2026).
 	 *
 	 * @var int
 	 */
@@ -43,7 +43,7 @@ class Test_Rollover extends JLife_Challenges_TestCase {
 		global $wpdb;
 		$wpdb->update( jlife_challenges_table( 'campaigns' ), array( 'status' => 'draft' ), array( 'id' => $this->campaign ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
-		$this->set_now( '2026-11-30 18:00:00' );
+		$this->set_now( '2026-11-29 04:00:00' ); // Nov 28, 8:00 PM Pacific: the pilot is created before Day 1.
 		$this->pilot = (int) jlife_challenges_create_pilot_campaign( $this->u['organizer'] )['campaign_id'];
 		$made        = jlife_challenges_create_official_campaign( $this->u['organizer'] );
 		$this->assertIsArray( $made );
@@ -158,7 +158,7 @@ class Test_Rollover extends JLife_Challenges_TestCase {
 		global $wpdb;
 		$wpdb->update( jlife_challenges_table( 'campaigns' ), array( 'status' => 'active' ), array( 'id' => $this->pilot ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- reopen the pilot to replay the weeks before Dec 14.
 		$both = self::factory()->user->create( array( 'role' => 'subscriber' ) );
-		$this->set_now( '2026-11-29 20:00:00' ); // Pilot and official both upcoming.
+		$this->set_now( '2026-11-29 04:00:00' ); // Nov 28, 8:00 PM Pacific: pilot and official both upcoming.
 		$this->assertSame( $this->pilot, (int) jlife_challenges_open_campaign()['id'], 'nearest start: the pilot' );
 		$this->assertIsInt( jlife_challenges_enroll_solo( $both, $this->pilot, 'adult' ) );
 		$this->assertIsInt( jlife_challenges_enroll_solo( $both, $this->official, 'adult' ) );

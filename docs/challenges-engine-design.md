@@ -58,7 +58,7 @@ Whether an entry earns the day's point is decided by a separate, pluggable **sco
 
 - **Contract:** `jlife_challenges_score_entry( $text, $context )` returns `{ passes: bool, reasons: string[], engine: id, version: string }`. It is deterministic for a given input and engine version. `$context` carries the campaign row, day key and day index. An engine is registered with the `jlife_challenges_scoring_engines` filter (id → label, version, callback).
 - **Selection:** `campaigns.scoring_engine`; unknown or empty falls back to the default, `soap-regex`.
-- **Engines available:** `soap-regex` (the first engine; existing campaigns) and `reflection-v1` (#210; campaigns created from the Dec 5, 2026 pilot on, including the official Marathon). A campaign names exactly one.
+- **Engines available:** `soap-regex` (the first engine; existing campaigns) and `reflection-v1` (#210; campaigns created from the Nov 29, 2026 pilot on, including the official Marathon). A campaign names exactly one.
 - **`soap-regex` (first engine; kept for existing campaigns):** passes when `S`, `O`, `A` and `P` headings appear in that order and each has non-whitespace content beyond its heading. A heading is a line starting with the letter (any case) and then `:` or a dash (`—`, `–`, `-`), optionally followed by the English or Vietnamese template word. A plain hyphen glued to the next word (`A-rôn`, `A-đam`: Vietnamese writes names with hyphens) is text, not a heading, unless that word is the heading word (`S-Scripture`). The untouched template does not pass. Failure reasons are short, kind and translatable (for example "Add something under P — Prayer").
 - **`reflection-v1` (#210, owner decision 2026-11-21, [#205 comment 7069225640](https://github.com/i12know/jlife-platform/issues/205#issuecomment-7069225640)):** one rule for free-form reflections and SOAP entries. An entry passes with **at least 20 words of the person's own, at least 8 of them different**. Headings (both languages) and the day's printed questions do not count as the person's words. SOAP is an **optional scaffold**: a "Use SOAP template" button never erases text, and a suggested SOAP-practice day never disqualifies a free-form entry. The engine only counts words: **no AI or semantic assessment**, no outside calls. It is deterministic and versioned; the ledger records `engine` and `engine_version` on every scored row.
 - **Policy for any engine:** the rule is **fixed per campaign before Day 1** (`wp jlife campaign set-engine` is refused once Day 1 has started or any entry exists), is published on the Rules page first, and **never re-scores history**. One point per person per campaign per day.
@@ -67,7 +67,7 @@ Whether an entry earns the day's point is decided by a separate, pluggable **sco
 
 ## 3b. The current campaign (#177)
 
-From Dec 14, 2026 a person can be enrolled in two campaigns at once: the Dec 5–13 pilot, which is ending, and the official Dec 20 Marathon, which is upcoming. Every route must agree on which campaign is "current". **One rule** decides it, in `includes/current-campaign.php`: `jlife_challenges_pick_campaign( $campaigns, $purpose )`. Nothing else may sort campaigns by `start_date` or by the `test-` prefix.
+From Dec 14, 2026 a person can be enrolled in two campaigns at once: the Nov 29–Dec 13 pilot, which is ending, and the official Dec 20 Marathon, which is upcoming. Every route must agree on which campaign is "current". **One rule** decides it, in `includes/current-campaign.php`: `jlife_challenges_pick_campaign( $campaigns, $purpose )`. Nothing else may sort campaigns by `start_date` or by the `test-` prefix.
 
 **Phase of a campaign** at a moment, in the campaign's own timezone (`campaigns.timezone`, `America/Los_Angeles` for every J-Life campaign), comparing calendar dates as §3 does:
 
@@ -79,7 +79,7 @@ From Dec 14, 2026 a person can be enrolled in two campaigns at once: the Dec 5�
 | `running` | `active`, and `start_date` ≤ today ≤ `end_date` |
 | `ended` | `active`, and today is after `end_date` |
 
-A day starts at 00:00 campaign time: the pilot is `upcoming` until Dec 4 23:59:59, `running` from Dec 5 00:00 to Dec 13 23:59:59, and `ended` from Dec 14 00:00. The Marathon is `upcoming` until Dec 19 23:59:59 and `running` from Dec 20 00:00.
+A day starts at 00:00 campaign time: the pilot is `upcoming` until Nov 28 23:59:59, `running` from Nov 29 00:00 to Dec 13 23:59:59, and `ended` from Dec 14 00:00. The Marathon is `upcoming` until Dec 19 23:59:59 and `running` from Dec 20 00:00.
 
 **Order (first wins):**
 
@@ -106,14 +106,14 @@ A day starts at 00:00 campaign time: the pilot is `upcoming` until Dec 4 23:59:5
 
 | Moment | Current (`view`) | New joins (`join`) |
 |---|---|---|
-| Nov 29 – Dec 4 | Pilot (upcoming: "Almost time") | Pilot (nearest start), even if the Marathon is already `active` |
-| Dec 5 – Dec 13 | Pilot (running) | Pilot |
+| Nov 28 evening (pilot created) – 23:59 | Pilot (upcoming: "Almost time") | Pilot (nearest start), even if the Marathon is already `active` |
+| Nov 29 – Dec 13 | Pilot (running) | Pilot |
 | Dec 14 – Dec 19 | Marathon (upcoming: "Almost time") once enrolled in it; otherwise the pilot (ended) | Marathon |
 | From Dec 20 | Marathon (running) | Marathon |
 
 Two real campaigns running on the same dates should not happen; if they do, the one that started later wins, which is what the old rule did.
 
-**The pilot campaign and "I'll start Dec 20" (#178).** The pilot is an ordinary campaign: key `pilot-2026-12` (the prefix is `pilot-`, never `test-`, so the staging cleanup cannot touch it), Dec 5–13, 2026, `America/Los_Angeles`, status `active`, the same reading plan as the Marathon. It is created by `wp jlife pilot create` (deploy choice `pilot_campaign`), which is safe to rerun and creates no groups and enrolls no one. The pilot is recognised only by its key prefix; **which campaign is current is still decided only by the rule above.** While the pilot is a person's current campaign and has not ended, Today, My Marathon, My Group and `/share` show the practice banner (the nav items `today`, `marathon` and `group`; not the public reading pages or the sign-out page).
+**The pilot campaign and "I'll start Dec 20" (#178).** The pilot is an ordinary campaign: key `pilot-2026-12` (the prefix is `pilot-`, never `test-`, so the staging cleanup cannot touch it), Nov 29–Dec 13, 2026 (15 days), `America/Los_Angeles`, status `active`, the same reading plan as the Marathon. It is created by `wp jlife pilot create` (deploy choice `pilot_campaign`), which is safe to rerun and creates no groups and enrolls no one. The pilot is recognised only by its key prefix; **which campaign is current is still decided only by the rule above.** While the pilot is a person's current campaign and has not ended, Today, My Marathon, My Group and `/share` show the practice banner (the nav items `today`, `marathon` and `group`; not the public reading pages or the sign-out page).
 
 "I'll start Dec 20" is a join mode (`/join/?mode=wait`), offered only while the `join` pick is the pilot. It creates the account as usual (name, age band, language, consent as today) and sets the user meta `jlife_start_official` (UTC time of the choice). It enrolls no one, records no consent and no reminder choice, and the rollover (#180) reads `jlife_challenges_waiting_for_official_ids()` to enroll those people in the official campaign. The flag is not a consent and is not cleared by enrolling in the pilot.
 
@@ -121,7 +121,7 @@ Two real campaigns running on the same dates should not happen; if they do, the 
 
 ## 3c. Closing a campaign (#179)
 
-The Dec 5–13 pilot is frozen on Dec 14 (owner decision D4-A on #174): its private data is kept for 60 days, then purged without deleting accounts (#186). Closing is the freeze.
+The Nov 29–Dec 13 pilot is frozen on Dec 14 (owner decision D4-A on #174): its private data is kept for 60 days, then purged without deleting accounts (#186). Closing is the freeze.
 
 - **How:** `wp jlife campaign close <id> [--dry-run]`, on the site that holds the campaign, run by the owner. The dry run prints counts only (active enrollments, active groups, entries, ledger rows, live shares, queued reminders) and changes nothing. A real run sets `campaigns.status = 'closed'` and cancels the campaign's queued `reminder_sends` rows (`cancelled`, class `campaign_closed`). It writes one `campaign_closed` audit row with the same counts. Only an `active` campaign can be closed. Running it again changes nothing and writes no second audit row.
 - **Writes refused** (`jlife_campaign_closed`, "This reading period has closed. You can still read what you wrote, but it can no longer be changed or shared."), each checked by `jlife_challenges_campaign_accepts_writes()` in `gate.php` **after** the caller's own gate, so an outsider still gets the plain denial:
