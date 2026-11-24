@@ -398,14 +398,9 @@ function jlife_challenges_set_campaign_engine( $actor, $campaign_id, $engine ) {
 			'previous' => $previous,
 		);
 	}
-	if ( 'closed' === $campaign['status'] ) {
-		return new WP_Error( 'jlife_engine_locked', 'This campaign is closed; its scoring engine cannot change.' );
-	}
-	if ( jlife_challenges_local_date( $campaign, jlife_challenges_now() ) >= (string) $campaign['start_date'] ) {
-		return new WP_Error( 'jlife_engine_locked', 'Day 1 has already started; the scoring engine can no longer change.' );
-	}
-	if ( jlife_challenges_close_count( 'soap_entries', (int) $campaign_id ) > 0 || jlife_challenges_close_count( 'score_ledger', (int) $campaign_id ) > 0 ) {
-		return new WP_Error( 'jlife_engine_locked', 'This campaign already has entries; the scoring engine can no longer change.' );
+	$locked = jlife_challenges_campaign_rule_lock( $campaign, 'scoring engine' ); // Closed, Day 1 started or entries exist (shared with the photo setting, #244).
+	if ( $locked ) {
+		return $locked;
 	}
 	global $wpdb;
 	$ok = $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom table; no WP API exists.

@@ -147,7 +147,81 @@
 		});
 	});
 
+	// Photo of a handwritten reflection (#244). The photo is saved with the draft the moment it is
+	// chosen, so a dropped connection does not lose it; it never earns a point (only Submit does).
+	// Replace and Remove work on the saved photo. Without this script the file input is sent with
+	// Save draft or Submit and the Remove button submits the form; the page works the same.
+	var photo = form.querySelector('.jl-photo');
+	var photoBusy = false;
+	if (photo && form.dataset.photoRest && window.fetch && window.FormData) {
+		var photoInput = photo.querySelector('input[type=file]');
+		var photoAdd = photo.querySelector('.jl-photo-add');
+		var photoPreview = photo.querySelector('.jl-photo-preview');
+		var photoImg = photo.querySelector('.jl-photo-img');
+		var photoLink = photo.querySelector('.jl-photo-link');
+		var photoStatus = photo.querySelector('.jl-photo-status');
+		var photoRemove = photo.querySelector('.jl-photo-remove');
+		var groupNote = form.querySelector('.jl-share-photo-note');
+		var say = function (text, bad) {
+			photoStatus.textContent = text;
+			photoStatus.className = 'jl-photo-status' + (bad ? ' jl-photo-error' : '');
+		};
+		var show = function (has, thumb, full) {
+			photo.dataset.has = has ? '1' : '0';
+			if (photoAdd) { photoAdd.hidden = has; }
+			if (photoPreview) { photoPreview.hidden = !has; }
+			if (has && photoImg) { photoImg.src = thumb; }
+			if (has && photoLink) { photoLink.href = full; }
+			if (groupNote) { groupNote.hidden = !has; } // the "your group will see this photo" reminder
+		};
+		var send = function (url, extra) {
+			var data = new FormData();
+			data.append('campaign_id', form.dataset.campaign);
+			data.append('day_key', form.dataset.day);
+			if (extra) { data.append('photo', extra); }
+			return fetch(url, { method: 'POST', credentials: 'same-origin', headers: { 'X-WP-Nonce': form.dataset.nonce }, body: data })
+				.then(function (r) {
+					return r.json().catch(function () { return {}; }).then(function (j) {
+						if (!r.ok) { var err = new Error(j && j.message ? j.message : ''); throw err; }
+						return j;
+					});
+				});
+		};
+		photoInput.addEventListener('change', function () {
+			var file = photoInput.files && photoInput.files[0];
+			if (!file || photoBusy) { return; }
+			photoBusy = true;
+			say(msg.photo_saving, false);
+			send(form.dataset.photoRest, file).then(function (res) {
+				show(true, res.thumb, res.url);
+				say(msg.photo_saved, false);
+			}).catch(function (err) {
+				say(err && err.message ? err.message : msg.photo_failed, true);
+			}).then(function () {
+				photoBusy = false;
+				photoInput.value = ''; // sent already (or failed): choosing the same file again must work
+			});
+		});
+		if (photoRemove && form.dataset.photoRemove) {
+			photoRemove.addEventListener('click', function (e) {
+				e.preventDefault();
+				if (photoBusy) { return; }
+				photoBusy = true;
+				send(form.dataset.photoRemove).then(function () {
+					show(false, '', '');
+					say(msg.photo_removed, false);
+				}).catch(function (err) {
+					say(err && err.message ? err.message : msg.photo_failed, true);
+				}).then(function () { photoBusy = false; });
+			});
+		}
+	}
+
 	form.addEventListener('submit', function (e) {
+		if (photoBusy) { // a photo is still being saved: wait for it, so Submit sees it
+			e.preventDefault();
+			return;
+		}
 		clearTimeout(timer);
 		var btn = e.submitter;
 		if (btn && btn.value === 'submit') { clearBackup(); }

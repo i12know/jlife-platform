@@ -623,7 +623,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 		$this->assertNotFalse( $h1 );
 		$this->assertGreaterThan( $h1, $settings, 'under the heading' );
 		$this->assertLessThan( (int) strpos( $fn, 'jl-score' ), $settings, 'before the score' );
-		$this->assertLessThan( (int) strpos( $fn, 'jl-grid' ), $settings, 'before the grid' );
+		$this->assertLessThan( (int) strpos( $fn, 'jlife_challenges_render_grid(' ), $settings, 'before the grid' );
 
 		foreach ( array( 'off', 'dry_run', 'test' ) as $mode ) {
 			update_option( 'jlife_reminders_mode', $mode );
@@ -695,7 +695,7 @@ class Test_Bible_Choice extends Jlife_Challenges_TestCase {
 		$html = jlife_challenges_page_html( 'My Marathon', $this->section( $this->u['a'] ), 'marathon', array( 'reminder', 'bible' ) );
 		$this->assertStringContainsString( 'assets/bible.js?v=1', $html );
 		$this->assertStringContainsString( 'assets/reminder.js?v=2', $html );
-		$this->assertStringContainsString( 'assets/screens.css?v=28', $html );
+		$this->assertStringContainsString( 'assets/screens.css?v=29', $html );
 		$this->assertStringNotContainsString( 'bible.js', jlife_challenges_page_html( 'Today', '', 'today', array( 'soap', 'reminder' ) ) );
 		$css = (string) file_get_contents( dirname( __DIR__ ) . '/assets/screens.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
 		$this->assertStringContainsString( '.jl-bible-picker', $css );

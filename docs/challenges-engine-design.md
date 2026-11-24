@@ -447,6 +447,41 @@ Owner-approved rule (#209, 2026-11-22). Two separate, explicit actions. **Starte
 
 **Read-ahead content.** Scripture and **Ready** devotionals of that day only. No drafts, nobody else's writing, no change to a post's status, public date or comment window.
 
+### 4j. Photo of a handwritten reflection (#244)
+
+Owner decisions on #244 (2026-11-23): official Marathon only (the pilot stays text-only), one photo per day, shared with groups at Submit as a frozen copy, owner review by WP-CLI zip export. **P** = a photo (the author's own draft photo, `kind = entry`) and **PS** = a share copy of it (`kind = share`, one per share). The photo is another way to write the same reflection, not a new object with its own reader or point.
+
+**The setting.** `campaigns.accepts_photos` (0 default, so every existing campaign and the pilot stay off). Set at creation (`--photo-reflections` on `wp jlife official create` and `wp jlife pilot create`) or changed with `wp jlife campaign set-photos <id> on|off`, which has the same lock as `set-engine`: refused once Day 1 has started or the campaign has any entry or ledger row, or is closed. With the setting off there is no photo button, no upload route that works, and a submit never looks at a photo.
+
+**Storage and serving.** Files are re-encoded JPEGs (longest side 1600 px, EXIF orientation applied, EXIF/GPS/comments removed, no original kept) with random names and no extension, in `wp-content/jlife-private/site-<id>/` (or `JLIFE_PHOTO_DIR`), never the Media Library or `uploads/`; the folder denies direct requests. A photo is read only through `/photo/<id>/` (and `?size=thumb`), which answers every refusal with the same 404 and sends `Cache-Control: private, no-store`.
+
+| Actor / case | See P (own draft photo) | Upload / replace / remove P | See PS (share copy) |
+|---|---|---|---|
+| Author, any time (draft, submitted, closed campaign, after leaving the group) | ✅ always | ✅ while the campaign takes writes and accepts photos | ✅ own copies, any status |
+| Another participant, group member or starter, other group's member | ❌ 404 | ❌ | ❌ unless a member of that share's group (below) |
+| Member of the group, **before** the author ticked it, or the share is `scheduled` (#209), `hidden` (D17) or `removed` | ❌ | ❌ | ❌ |
+| Member of the group, the share is `shared` | ❌ P | ❌ | ✅ thumbnail and full size, that group's copy only |
+| Same member **after leaving** or being removed, or the group is disabled | ❌ | ❌ | ❌ at once |
+| Author removes the share, or the scheduled share is withdrawn | n/a | n/a | ❌ the copy is deleted from disk |
+| Member asking for a copy shared to another group, a photo id that is not theirs, a wrong day or campaign id | ❌ 404 | ❌ denied | ❌ 404 |
+| Organizer, site admin, anonymous, magic-link actor | ❌ no screen; the owner reviews by `wp jlife photos export` on the host only (audited, counts only) | ❌ | ❌ organizers hide by share ID only (D17) |
+| Participant of a campaign with photos **off** | n/a | ❌ refused (`jlife_photos_off`); nothing stored | n/a |
+| Not enrolled, or the day not available to them (#209) | ❌ | ❌ same refusal as a text save | ❌ |
+
+| Case | Result |
+|---|---|
+| Choosing a file | Saved with the draft at once (JS), or with Submit / Save draft (no JS). It never earns a point |
+| Not a real JPEG or PNG (renamed executable, PDF, HEIC, truncated file), over 12 MB, or no image library | Refused with a message; nothing stored; any earlier photo is kept; the typed text is kept |
+| Same upload repeated, double submit, retry | One row (UNIQUE `kind`, `entry`, `share`); the old file is deleted, never duplicated |
+| Submit: typed text passes the campaign engine | **Text** point (`score_ledger.submission_type = 'text'`), photo or not |
+| Submit: text does not pass, a stored photo exists, campaign accepts photos | **Photo** point (`submission_type = 'photo'`, engine `photo-upload` v1), on time or late by the usual deadline rule |
+| Submit: neither | No point; text and photo are kept |
+| Replace or remove after submission | The ledger row is untouched (same source, no new point, no revoked point); audited `photo_replaced` / `photo_removed` with IDs only |
+| Ticking a group on Submit with a photo | A **frozen copy** of the photo is made for that group's share; the entry's later replace or remove does not change it; ticking again replaces it. A photo-only entry can be shared. D19 youth rules and #209 release rules apply unchanged |
+| Account deletion, test-campaign removal, campaign purge (#186 hook) | Files and rows are deleted (`jlife_challenges_delete_campaign_photos()`); nothing is written to logs or the audit log but counts |
+| `wp jlife photos export` | Host only, organizer. Zip of one participant's photo-earned days (`dNNN.jpg` + `days.csv`) in `~/.latoc/` (0600); output and audit are counts and the path |
+| My Marathon | A photo-earned day stays green and shows a camera marker; its label reads "Point earned – photo upload" |
+
 ## 5. Required tests (written first; CI)
 
 **Calendar:**

@@ -1,7 +1,7 @@
 <?php
 /**
  * Account deletion (D15): a deleted user's entries, revisions, shares,
- * points, memberships, reminder choices, reminder send log and enrollments are removed. The audit entry records the purge
+ * points, memberships, reminder choices, reminder send log, enrollments and photos (files too, #244) are removed. The audit entry records the purge
  * without any SOAP text.
  *
  * @package jlife-challenges
@@ -21,6 +21,7 @@ function jlife_challenges_purge_user_data( $user_id ) {
 	$user_id = (int) $user_id;
 	$entries = jlife_challenges_table( 'soap_entries' );
 	$revs    = jlife_challenges_table( 'soap_revisions' );
+	jlife_challenges_delete_photos( array( 'user_id' => $user_id ) ); // Files first, then rows (#244): a deleted account leaves no photo, original or share copy.
 	// phpcs:disable WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom tables own this data; names from $wpdb->prefix.
 	$wpdb->query( $wpdb->prepare( "DELETE r FROM {$revs} r JOIN {$entries} e ON e.id = r.entry_id WHERE e.user_id = %d", $user_id ) );
 	$wpdb->delete( $entries, array( 'user_id' => $user_id ), array( '%d' ) );

@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const JLIFE_CHALLENGES_DB_VERSION = '7';
+const JLIFE_CHALLENGES_DB_VERSION = '8';
 
 /**
  * Table name helper.
@@ -46,6 +46,7 @@ function jlife_challenges_install_tables() {
 			grace_days TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
 			status VARCHAR(20) NOT NULL DEFAULT 'draft',
 			scoring_engine VARCHAR(40) NOT NULL DEFAULT 'soap-regex',
+			accepts_photos TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
 			created DATETIME NOT NULL,
 			PRIMARY KEY  (id),
 			UNIQUE KEY campaign_key (campaign_key)
@@ -154,6 +155,7 @@ function jlife_challenges_install_tables() {
 			source VARCHAR(20) NOT NULL DEFAULT 'platform',
 			engine VARCHAR(40) NOT NULL DEFAULT '',
 			engine_version VARCHAR(20) NOT NULL DEFAULT '',
+			submission_type VARCHAR(10) NOT NULL DEFAULT 'text',
 			early TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
 			early_hours SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
 			created DATETIME NOT NULL,
@@ -180,6 +182,32 @@ function jlife_challenges_install_tables() {
 			PRIMARY KEY  (id),
 			UNIQUE KEY entry_group (entry_id, group_id),
 			KEY group_status (group_id, status)
+		) {$c};"
+	);
+
+	// Photos of handwritten reflections (#244): one private draft photo per entry
+	// (kind 'entry') and one frozen copy per group share (kind 'share'). The files
+	// live outside the Media Library under random names (see photos.php); a row
+	// holds only those names, never a path.
+	dbDelta(
+		'CREATE TABLE ' . $t( 'photos' ) . " (
+			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			kind VARCHAR(10) NOT NULL DEFAULT 'entry',
+			entry_id BIGINT(20) UNSIGNED NOT NULL,
+			share_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+			user_id BIGINT(20) UNSIGNED NOT NULL,
+			campaign_id BIGINT(20) UNSIGNED NOT NULL,
+			day_key VARCHAR(20) NOT NULL,
+			file CHAR(32) NOT NULL,
+			thumb CHAR(32) NOT NULL,
+			bytes INT(10) UNSIGNED NOT NULL DEFAULT 0,
+			created DATETIME NOT NULL,
+			updated DATETIME NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY kind_entry_share (kind, entry_id, share_id),
+			KEY user (user_id),
+			KEY campaign (campaign_id),
+			KEY share (share_id)
 		) {$c};"
 	);
 
@@ -269,6 +297,7 @@ function jlife_challenges_maybe_upgrade() {
 	jlife_challenges_install_tables();
 	// A deploy may add a route (v5: /unsubscribe/); regenerate the rewrite rules on the next request.
 	delete_option( 'rewrite_rules' );
+	// v8 (#244): campaigns.accepts_photos (default 0: every existing campaign stays text-only), score_ledger.submission_type (default 'text': every existing point was typed) and the photos table are added by dbDelta above; and the /photo/ route needs the rewrite flush just above.
 	// v7 (#209): score_ledger.early / early_hours and group_shares.advance are added by dbDelta above; existing rows default to 0, so nothing already shared or scored changes.
 	// v6: the reminder cron event (the activation hook does not run on a deploy).
 	jlife_challenges_reminders_schedule();

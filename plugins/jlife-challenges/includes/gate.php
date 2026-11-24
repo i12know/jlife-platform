@@ -229,3 +229,38 @@ function jlife_challenges_can_read_ahead( $user_id, $campaign ) {
 	}
 	return false;
 }
+
+/**
+ * May the viewer open this photo (#244, matrix §4j)? Two kinds, nothing else:
+ *
+ * - An entry photo (the author's own draft or submitted photo): its author, always.
+ * - A share copy: its author, or a CURRENT active member of that share's group
+ *   while the share is live (`shared`). A scheduled (#209), hidden (D17) or
+ *   removed share, a member who left or was removed, a member of another group,
+ *   an organizer and anyone signed out get nothing.
+ *
+ * A scheduled share whose day has opened is released first, as a feed read does.
+ *
+ * @param int   $viewer_user_id Viewer.
+ * @param array $photo          Photo row.
+ * @return bool
+ */
+function jlife_challenges_can_read_photo( $viewer_user_id, $photo ) {
+	$viewer = (int) $viewer_user_id;
+	if ( $viewer < 1 ) {
+		return false;
+	}
+	if ( (int) $photo['user_id'] === $viewer ) {
+		return true;
+	}
+	if ( 'share' !== $photo['kind'] ) {
+		return false;
+	}
+	$share = jlife_challenges_find_share( (int) $photo['share_id'] );
+	if ( ! $share || (int) $share['entry_id'] !== (int) $photo['entry_id'] || (int) $share['campaign_id'] !== (int) $photo['campaign_id'] ) {
+		return false;
+	}
+	jlife_challenges_release_due_shares( (int) $share['group_id'] );
+	$share = jlife_challenges_find_share( (int) $photo['share_id'] );
+	return $share && 'shared' === $share['status'] && jlife_challenges_can_read_feed( $viewer, (int) $share['group_id'] );
+}

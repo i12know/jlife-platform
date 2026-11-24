@@ -28,6 +28,9 @@ class Jlife_Pilot_Command {
 	 * [--scoring-engine=<id>]
 	 * : Scoring engine for a NEW pilot: soap-regex (default; the four SOAP parts) or reflection-v1 (free-form or SOAP, 20 own words). An existing pilot keeps its engine; change it before Day 1 with `wp jlife campaign set-engine`.
 	 *
+	 * [--photo-reflections]
+	 * : Let participants add a photo of a handwritten reflection (#244) for a NEW pilot. Off by default; an existing campaign keeps its setting. Change it before Day 1 with `wp jlife campaign set-photos`.
+	 *
 	 * @param array $args       Positional args.
 	 * @param array $assoc_args Options.
 	 */
@@ -38,6 +41,9 @@ class Jlife_Pilot_Command {
 		}
 		if ( ! empty( $assoc_args['scoring-engine'] ) ) {
 			$input['scoring_engine'] = (string) $assoc_args['scoring-engine'];
+		}
+		if ( ! empty( $assoc_args['photo-reflections'] ) ) {
+			$input['accepts_photos'] = 1;
 		}
 		$r = jlife_challenges_create_pilot_campaign( $this->organizer(), $input );
 		if ( is_wp_error( $r ) ) {
@@ -69,7 +75,7 @@ class Jlife_Pilot_Command {
 		}
 		foreach ( $rows as $c ) {
 			$n = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$e} WHERE campaign_id = %d", (int) $c['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table; name from $wpdb->prefix.
-			WP_CLI::log( sprintf( '%s: %s to %s, status %s, phase %s, engine %s, enrollments %d.', $c['campaign_key'], $c['start_date'], $c['end_date'], $c['status'], jlife_challenges_campaign_phase( $c ), jlife_challenges_campaign_engine( $c ), $n ) );
+			WP_CLI::log( sprintf( '%s: %s to %s, status %s, phase %s, engine %s, photo reflections %s, enrollments %d.', $c['campaign_key'], $c['start_date'], $c['end_date'], $c['status'], jlife_challenges_campaign_phase( $c ), jlife_challenges_campaign_engine( $c ), jlife_challenges_campaign_accepts_photos( $c ) ? 'on' : 'off', $n ) );
 		}
 		WP_CLI::log( sprintf( 'Chose "I\'ll start Dec 20": %d.', count( jlife_challenges_waiting_for_official_ids() ) ) );
 	}

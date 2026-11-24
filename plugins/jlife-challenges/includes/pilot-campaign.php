@@ -100,6 +100,7 @@ function jlife_challenges_create_pilot_campaign( $actor, $args = array() ) {
 			'end_date'       => (string) $args['end_date'],
 			'status'         => 'active',
 			'scoring_engine' => $engine,
+			'accepts_photos' => ! empty( $args['accepts_photos'] ) ? 1 : 0,
 		)
 	);
 	if ( is_wp_error( $id ) ) {
