@@ -118,3 +118,17 @@ function jlife_challenges_launcher_hint() {
 		. ( '' !== $help ? ' <a href="' . esc_url( $help ) . '">' . esc_html__( 'How', 'jlife-challenges' ) . '</a>' : '' )
 		. '</p><button type="button" class="jl-button jl-launcher-dismiss">' . esc_html__( 'Dismiss', 'jlife-challenges' ) . '</button></div>';
 }
+
+add_action( 'wp_head', 'jlife_challenges_launcher_wp_head' );
+
+/**
+ * Print the tags on ordinary theme pages (the public landing page and any page
+ * someone arrives on from an invitation). Front end only; the standalone screens
+ * print the same helper themselves because they have no wp_head.
+ */
+function jlife_challenges_launcher_wp_head() {
+	if ( is_admin() ) {
+		return;
+	}
+	echo jlife_challenges_launcher_head_tags(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from escaped parts.
+}

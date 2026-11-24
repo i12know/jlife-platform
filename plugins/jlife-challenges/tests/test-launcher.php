@@ -125,4 +125,15 @@ class Test_Launcher extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'You may need to sign in the first time you open it.', $en );
 		$this->assertStringContainsString( 'Lần đầu mở, bạn có thể cần đăng nhập.', $vi );
 	}
+
+	/**
+	 * Ordinary theme pages (the landing page) get the same tags through wp_head.
+	 */
+	public function test_theme_pages_get_the_tags_through_wp_head() {
+		ob_start();
+		do_action( 'wp_head' );
+		$head = (string) ob_get_clean();
+		$this->assertStringContainsString( '<link rel="manifest" href="' . esc_url( home_url( '/latoc.webmanifest' ) ) . '">', $head );
+		$this->assertStringContainsString( 'name="apple-mobile-web-app-title"', $head );
+	}
 }
