@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const JLIFE_CHALLENGES_DB_VERSION = '8';
+const JLIFE_CHALLENGES_DB_VERSION = '9';
 
 /**
  * Table name helper.
@@ -268,6 +268,28 @@ function jlife_challenges_install_tables() {
 		) {$c};"
 	);
 
+	// Ask the Pastors (#249): private Bible questions, kept apart from entries, shares and scores. No retention job; see questions.php.
+	dbDelta(
+		'CREATE TABLE ' . $t( 'bible_questions' ) . " (
+			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			user_id BIGINT(20) UNSIGNED NOT NULL,
+			campaign_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+			day_key VARCHAR(20) NOT NULL DEFAULT '',
+			reference VARCHAR(100) NOT NULL DEFAULT '',
+			body TEXT NOT NULL,
+			minor TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+			status VARCHAR(20) NOT NULL DEFAULT 'new',
+			pastor_note TEXT NOT NULL,
+			created DATETIME NOT NULL,
+			status_changed DATETIME NOT NULL,
+			status_by BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+			PRIMARY KEY  (id),
+			KEY user_created (user_id, campaign_id, created),
+			KEY status_id (status, id),
+			KEY campaign (campaign_id)
+		) {$c};"
+	);
+
 	// Move rows written before the single-text entry (#98) into the new column,
 	// and enrollments' single group into membership rows (#112), then record the
 	// version. Both are idempotent.
@@ -297,6 +319,7 @@ function jlife_challenges_maybe_upgrade() {
 	jlife_challenges_install_tables();
 	// A deploy may add a route (v5: /unsubscribe/); regenerate the rewrite rules on the next request.
 	delete_option( 'rewrite_rules' );
+	// v9 (#249): the bible_questions table is added by dbDelta above and the /ask/ route needs the rewrite flush just above. Nothing existing changes, and the feature stays off until an administrator switches it on.
 	// v8 (#244): campaigns.accepts_photos (default 0: every existing campaign stays text-only), score_ledger.submission_type (default 'text': every existing point was typed) and the photos table are added by dbDelta above; and the /photo/ route needs the rewrite flush just above.
 	// v7 (#209): score_ledger.early / early_hours and group_shares.advance are added by dbDelta above; existing rows default to 0, so nothing already shared or scored changes.
 	// v6: the reminder cron event (the activation hook does not run on a deploy).

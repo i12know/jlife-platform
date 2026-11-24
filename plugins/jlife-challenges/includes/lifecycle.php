@@ -21,6 +21,7 @@ function jlife_challenges_purge_user_data( $user_id ) {
 	$user_id = (int) $user_id;
 	$entries = jlife_challenges_table( 'soap_entries' );
 	$revs    = jlife_challenges_table( 'soap_revisions' );
+	jlife_questions_delete_for_user( $user_id ); // Bible questions (#249) go with the account.
 	jlife_challenges_delete_photos( array( 'user_id' => $user_id ) ); // Files first, then rows (#244): a deleted account leaves no photo, original or share copy.
 	// phpcs:disable WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom tables own this data; names from $wpdb->prefix.
 	$wpdb->query( $wpdb->prepare( "DELETE r FROM {$revs} r JOIN {$entries} e ON e.id = r.entry_id WHERE e.user_id = %d", $user_id ) );
