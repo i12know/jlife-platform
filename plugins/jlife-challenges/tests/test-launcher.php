@@ -83,7 +83,7 @@ class Test_Launcher extends WP_UnitTestCase {
 		);
 		$sent = jlife_challenges_render_soap_feedback( $view, array( 'flags' => array( 'done' => true ) ) );
 		$this->assertStringContainsString( 'class="jl-launcher-hint" role="note" hidden', $sent );
-		$this->assertStringContainsString( 'Add LATOC to your Home Screen', $sent );
+		$this->assertStringContainsString( 'add LATOC to your Home Screen', $sent );
 		$this->assertStringContainsString( 'jl-launcher-dismiss', $sent );
 
 		$not_done = jlife_challenges_render_soap_feedback( $view, array() );
