@@ -19,7 +19,7 @@ add_action( 'init', 'jlife_challenges_add_rewrites' );
  * Routes.
  */
 function jlife_challenges_add_rewrites() {
-	add_rewrite_rule( '^(today|soap|marathon|share|group|signout|unsubscribe)/?$', 'index.php?jlife_screen=$matches[1]', 'top' );
+	add_rewrite_rule( '^(today|soap|marathon|share|group|ask|signout|unsubscribe)/?$', 'index.php?jlife_screen=$matches[1]', 'top' );
 	add_rewrite_rule( '^photo/([0-9]+)/?$', 'index.php?jlife_screen=photo&jlife_photo=$matches[1]', 'top' ); // The only way to open a photo (#244): access-checked, never a file URL.
 }
 
@@ -167,12 +167,12 @@ function jlife_challenges_nav_and_dialog( $active ) {
 /**
  * URL of a participant screen, optionally for one day. Unknown screens give Today.
  *
- * @param string $screen 'today', 'soap', 'marathon', 'share' or 'group'.
+ * @param string $screen 'today', 'soap', 'marathon', 'share', 'group' or 'ask'.
  * @param string $day    Day key, or ''.
  * @return string
  */
 function jlife_challenges_screen_url( $screen, $day = '' ) {
-	$screen = in_array( $screen, array( 'today', 'soap', 'marathon', 'share', 'group' ), true ) ? $screen : 'today';
+	$screen = in_array( $screen, array( 'today', 'soap', 'marathon', 'share', 'group', 'ask' ), true ) ? $screen : 'today';
 	$url    = home_url( '/' . $screen . '/' );
 	return '' !== $day ? add_query_arg( 'day', $day, $url ) : $url;
 }
@@ -1123,6 +1123,7 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 	$out       = jlife_challenges_render_reader( $view )
 		. jlife_challenges_render_devotional( $view )
 		. jlife_challenges_render_leader_thoughts( $view )
+		. jlife_questions_entry_html( $view ) // Ask the Pastors (#249): a link to its own screen, before the reflection editor.
 		. '<form method="post" class="jl-soap"' . ( $photos ? ' enctype="multipart/form-data"' : '' ) . ' data-status="' . esc_attr( $submitted ? 'submitted' : 'draft' ) . '"'
 		. ( $photos ? ' data-photo-rest="' . esc_url( rest_url( 'jlife/v1/soap/photo' ) ) . '" data-photo-remove="' . esc_url( rest_url( 'jlife/v1/soap/photo/remove' ) ) . '"' : '' )
 		. ' data-rest="' . esc_url( rest_url( 'jlife/v1/soap/draft' ) ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'wp_rest' ) ) . '"'
@@ -1510,6 +1511,7 @@ function jlife_challenges_screen_marathon() {
 		/* translators: 1: points, 2: number of days. */
 		. '<p class="jl-score">' . esc_html( sprintf( __( '%1$d of %2$d', 'jlife-challenges' ), $view['points'], $view['day_count'] ) ) . '</p>'
 		. '<p>' . esc_html__( 'Every day is a fresh start. Tap any day to read it or write your SOAP.', 'jlife-challenges' ) . '</p>'
+		. jlife_questions_marathon_link_html() // Ask the Pastors (#249).
 		. jlife_challenges_render_grid( $view )
 		. jlife_challenges_render_past_section( $user_id ); // Earlier reading periods (#174, D4-A).
 	jlife_challenges_send_page( __( 'My Marathon', 'jlife-challenges' ), $body, 'marathon', array( 'language', 'reminder', 'bible' ) );
@@ -1532,6 +1534,8 @@ function jlife_challenges_route() {
 		jlife_challenges_screen_share();
 	} elseif ( 'group' === $screen ) {
 		jlife_challenges_screen_group();
+	} elseif ( 'ask' === $screen ) {
+		jlife_questions_screen_ask();
 	} elseif ( 'photo' === $screen ) {
 		jlife_challenges_screen_photo();
 	} elseif ( 'signout' === $screen ) {
