@@ -588,8 +588,8 @@ function jlife_auth_consent_body( $error = '' ) {
 		__( 'Your SOAP entries are private. Only you can read them. Group leaders and organizers cannot see what you write.', 'jlife-auth' ),
 		__( 'Entries are private by default. You choose what to share: when you tick a group\'s box as you save, that group\'s members see the whole entry, including your Prayer, with your first name.', 'jlife-auth' ),
 		__( 'You can update or remove a share at any time on the share page (/share).', 'jlife-auth' ),
-		__( 'You earn one point for each day you submit, on time, a reflection that meets your campaign's rule (see Rules). It is one point per day at most.', 'jlife-auth' ),
-			__( 'If your campaign accepts photos, a photo of your handwritten page is private to you, stored apart from the website's public files, and shown to a group only if you tick that group's box when you submit.', 'jlife-auth' ),
+		__( 'You earn one point for each day you submit, on time, a reflection that meets your campaign\'s rule (see Rules). It is one point per day at most.', 'jlife-auth' ),
+		__( 'If your campaign accepts photos, a photo of your handwritten page is private to you, stored apart from the website\'s public files, and shown to a group only if you tick that group\'s box when you submit.', 'jlife-auth' ),
 		__( 'If you choose daily reminders, we email you each morning\'s reading. You can turn them off at any time from My Marathon or the link in any reminder.', 'jlife-auth' ),
 		__( 'You can delete your account and everything you have written at any time.', 'jlife-auth' ),
 	);
