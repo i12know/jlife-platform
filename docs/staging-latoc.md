@@ -779,7 +779,10 @@ Find the user ID with `wp user list --field=ID --search=<part of the email>` on 
 
 ### QA checklist on latoc
 
-Photo reflections need the setting on for the campaign you test with. The setting is locked once Day 1 is today (or any entry exists), and `wp jlife test-campaign create` makes a campaign whose Day 1 is **today** and has no photo flag, so `set-photos` is refused on a fresh test campaign. Instead, create the QA campaign **with photos already on**: `wp jlife official create --key=<qa-key> --photo-reflections` (Day 1 is Dec 20, so it is still in the future; add `--force` if the site has no pilot; a key may not start with `test-`, so `test-campaign remove` will not delete it), or give a test campaign a future start date before turning photos on. `wp jlife campaign set-photos <id> on` only works before Day 1 and before anyone writes.
+Photo reflections need the setting on for the campaign you test with. The setting is locked once Day 1 is today (or any entry exists), and `wp jlife test-campaign create` makes a campaign whose Day 1 is **today** and has no photo flag, so `set-photos` is refused on a fresh test campaign. `wp jlife campaign set-photos <id> on` only works before Day 1 and before anyone writes.
+
+- **On latoc, do not create an extra campaign for photo QA.** A second official campaign starting Dec 20 would compete with the real Marathon for new sign-ups and for the Dec 14 rollover, and `test-campaign remove` cannot delete it. Test photos in the official Marathon itself (created on Dec 14 with `--photo-reflections`) during Dec 14–19 via starter read-ahead, or on a disposable staging copy (the #183 rehearsal).
+- **On a local or disposable site only,** create the QA campaign with photos already on: `wp jlife official create --key=<qa-key> --photo-reflections --force` (Day 1 is Dec 20, so it is still in the future).
 
 1. **iPhone Safari:** the button offers both "Take Photo" and "Photo Library". Take a photo and choose one. The preview appears, "Photo saved" shows, Submit gives the point, and the grid tile is green with a small camera and the label "Point earned – photo upload" (VoiceOver reads it).
 2. **Android Chrome:** the same, camera and gallery.

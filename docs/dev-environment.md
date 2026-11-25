@@ -122,8 +122,7 @@ add_filter( 'pre_wp_mail', function ( $pre, $atts ) {
 	if ( 'localhost' !== wp_parse_url( home_url(), PHP_URL_HOST ) ) {
 		return $pre;
 	}
-	error_log( 'MAIL to ' . implode( ',', (array) $atts['to'] ) . ' | ' . $atts['subject'] . "
-" . $atts['message'] ); // phpcs:ignore
+	error_log( 'MAIL to ' . implode( ',', (array) $atts['to'] ) . ' | ' . $atts['subject'] . "\n" . $atts['message'] ); // phpcs:ignore
 	return true; // pretend it was sent.
 }, 5, 2 );
 ```
