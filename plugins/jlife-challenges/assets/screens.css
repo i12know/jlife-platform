@@ -41,6 +41,7 @@ h1{font-size:1.5rem;margin:.5rem 0}h2{font-size:1.25rem;margin:.25rem 0 .5rem}h3
 .jl-note{border:1px solid var(--line);background:var(--soft);padding:.75rem;border-radius:.6rem}
 .jl-note p{margin:0 0 .4rem;font-weight:600}.jl-note ul{margin:0;padding-left:1.25rem}
 .jl-guidance{margin:.5rem 0;font-size:.9375rem}.jl-guidance ul{margin:.4rem 0 0;padding-left:1.1rem}
+.jl-guidance>summary{display:flex;align-items:center;min-height:2.75rem}.jl-guidance>summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 /* Clear the sticky nav, including its two-row Vietnamese phone layout. */
 #jlife-soap-help{scroll-margin-top:6rem}
 .jl-soap .jl-share-opt{display:flex;gap:.6rem;align-items:flex-start;margin-top:.75rem;padding:.7rem;border:1px solid var(--line);border-radius:.6rem;cursor:pointer}

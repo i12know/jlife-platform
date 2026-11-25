@@ -235,6 +235,51 @@ function jlife_auth_pending_join_fields( $email ) {
 }
 
 /**
+ * The join keys carried between the code page, its forms and the join work.
+ *
+ * @return string[]
+ */
+function jlife_auth_join_keys() {
+	return array( 'mode', 'invite_code', 'group_name', 'first_name', 'age_band', 'locale', 'reminders' );
+}
+
+/**
+ * The join details a posted form carries (empty for a plain sign-in). Used to
+ * keep them through an error page, because the pending code may already be gone.
+ * The caller has verified the nonce.
+ *
+ * @return array
+ */
+function jlife_auth_join_fields_from_post() {
+	$join = array();
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- verified by caller.
+	if ( ! empty( $_POST['jl_join'] ) ) {
+		foreach ( jlife_auth_join_keys() as $k ) {
+			$join[ $k ] = isset( $_POST[ $k ] ) ? sanitize_text_field( wp_unslash( $_POST[ $k ] ) ) : '';
+		}
+	}
+	// phpcs:enable WordPress.Security.NonceVerification.Missing
+	return $join;
+}
+
+/**
+ * Hidden inputs that carry the join details (empty string for a sign-in).
+ *
+ * @param array $join Join form fields, or empty.
+ * @return string Escaped HTML.
+ */
+function jlife_auth_join_hidden_inputs( $join ) {
+	if ( empty( $join ) ) {
+		return '';
+	}
+	$out = '<input type="hidden" name="jl_join" value="1">';
+	foreach ( jlife_auth_join_keys() as $k ) {
+		$out .= '<input type="hidden" name="' . esc_attr( $k ) . '" value="' . esc_attr( (string) ( $join[ $k ] ?? '' ) ) . '">';
+	}
+	return $out;
+}
+
+/**
  * The "Send a new code" form: its own POST (nonce, email in the body, never in an
  * address). For a join it carries the join details, which are checked again as on
  * the first request.
@@ -248,13 +293,7 @@ function jlife_auth_resend_form( $email, $join ) {
 		. '<input type="hidden" name="step" value="resend"><input type="hidden" name="email" value="' . esc_attr( $email ) . '">'
 		. '<input type="hidden" name="jl_lang" value="' . esc_attr( 0 === strpos( determine_locale(), 'vi' ) ? 'vi' : 'en' ) . '">'
 		. '<input type="hidden" name="redirect_to" value="' . esc_attr( jlife_auth_redirect_target() ) . '">';
-	if ( ! empty( $join ) ) {
-		$out .= '<input type="hidden" name="jl_join" value="1">';
-		foreach ( array( 'mode', 'invite_code', 'group_name', 'first_name', 'age_band', 'locale', 'reminders' ) as $k ) {
-			$out .= '<input type="hidden" name="' . esc_attr( $k ) . '" value="' . esc_attr( (string) ( $join[ $k ] ?? '' ) ) . '">';
-		}
-	}
-	return $out . '<button type="submit" class="jl-secondary">' . esc_html__( 'Send a new code', 'jlife-auth' ) . '</button></form>';
+	return $out . jlife_auth_join_hidden_inputs( $join ) . '<button type="submit" class="jl-secondary">' . esc_html__( 'Send a new code', 'jlife-auth' ) . '</button></form>';
 }
 
 /**
@@ -286,6 +325,7 @@ function jlife_auth_code_form( $email, $error = '', $join = array(), $notice = '
 		. '<input type="hidden" name="step" value="verify"><input type="hidden" name="email" value="' . esc_attr( $email ) . '">'
 		. '<input type="hidden" name="jl_lang" value="' . esc_attr( 0 === strpos( determine_locale(), 'vi' ) ? 'vi' : 'en' ) . '">'
 		. '<input type="hidden" name="redirect_to" value="' . esc_attr( jlife_auth_redirect_target() ) . '">'
+		. jlife_auth_join_hidden_inputs( $join )
 		. '<label for="jl-code">' . esc_html__( '6-digit code', 'jlife-auth' ) . '</label>'
 		. '<input id="jl-code" type="text" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]*" maxlength="7" required autofocus>'
 		. '<button type="submit">' . esc_html__( 'Sign in', 'jlife-auth' ) . '</button></form>'
@@ -299,13 +339,8 @@ function jlife_auth_code_form( $email, $error = '', $join = array(), $notice = '
 function jlife_auth_handle_resend() {
 	// phpcs:disable WordPress.Security.NonceVerification.Missing -- verified by caller.
 	$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
-	$join  = array();
-	if ( ! empty( $_POST['jl_join'] ) ) {
-		foreach ( array( 'mode', 'invite_code', 'group_name', 'first_name', 'age_band', 'locale', 'reminders' ) as $k ) {
-			$join[ $k ] = isset( $_POST[ $k ] ) ? sanitize_text_field( wp_unslash( $_POST[ $k ] ) ) : '';
-		}
-	}
 	// phpcs:enable WordPress.Security.NonceVerification.Missing
+	$join = jlife_auth_join_fields_from_post();
 	if ( ! empty( $join ) ) {
 		$join['email'] = $email;
 		$sent          = jlife_auth_start_join( $join, jlife_auth_ip() );
@@ -326,13 +361,13 @@ function jlife_auth_handle_resend() {
 function jlife_auth_handle_verify() {
 	if ( jlife_auth_is_relang() ) {
 		// Only the language button: show the code page again, in the other language. The code is not checked or used up.
-		jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_code_form( isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by caller.
+		jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_code_form( isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '', '', jlife_auth_join_fields_from_post() ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by caller.
 	}
 	$email  = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by caller.
 	$code   = isset( $_POST['code'] ) ? sanitize_text_field( wp_unslash( $_POST['code'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified by caller.
 	$result = jlife_auth_complete( $email, $code );
 	if ( is_wp_error( $result ) ) {
-		jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_code_form( $email, $result->get_error_message() ) );
+		jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_code_form( $email, $result->get_error_message(), jlife_auth_join_fields_from_post() ) );
 	}
 	jlife_auth_log_in( $result['user_id'] );
 	jlife_auth_refresh_translations(); // The page was first built for a visitor; from here it is the person's own language.

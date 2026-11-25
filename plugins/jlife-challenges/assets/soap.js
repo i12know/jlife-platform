@@ -182,7 +182,7 @@
 			return fetch(url, { method: 'POST', credentials: 'same-origin', headers: { 'X-WP-Nonce': form.dataset.nonce }, body: data })
 				.then(function (r) {
 					return r.json().catch(function () { return {}; }).then(function (j) {
-						if (!r.ok) { var err = new Error(j && j.message ? j.message : ''); throw err; }
+						if (!r.ok) { var err = new Error(j && j.message ? j.message : ''); err.fromServer = true; throw err; }
 						return j;
 					});
 				});
@@ -196,7 +196,7 @@
 				show(true, res.thumb, res.url);
 				say(msg.photo_saved, false);
 			}).catch(function (err) {
-				say(err && err.message ? err.message : msg.photo_failed, true);
+				say(err && err.fromServer && err.message ? err.message : msg.photo_failed, true); // only the server's own (translated) text; a network error's English text never shows
 			}).then(function () {
 				photoBusy = false;
 				photoInput.value = ''; // sent already (or failed): choosing the same file again must work
@@ -211,7 +211,7 @@
 					show(false, '', '');
 					say(msg.photo_removed, false);
 				}).catch(function (err) {
-					say(err && err.message ? err.message : msg.photo_failed, true);
+					say(err && err.fromServer && err.message ? err.message : msg.photo_failed, true); // only the server's own (translated) text; a network error's English text never shows
 				}).then(function () { photoBusy = false; });
 			});
 		}

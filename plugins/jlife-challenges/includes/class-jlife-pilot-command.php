@@ -26,7 +26,7 @@ class Jlife_Pilot_Command {
 	 * : Campaign key. Default: pilot-2026-12.
 	 *
 	 * [--scoring-engine=<id>]
-	 * : Scoring engine for a NEW pilot: soap-regex (default; the four SOAP parts) or reflection-v1 (free-form or SOAP, 20 own words). An existing pilot keeps its engine; change it before Day 1 with `wp jlife campaign set-engine`.
+	 * : Scoring engine for a NEW pilot: reflection-v1 (default for the pilot: free-form or SOAP, 20 own words) or soap-regex (the four SOAP parts). An existing pilot keeps its engine; change it before Day 1 with `wp jlife campaign set-engine`.
 	 *
 	 * [--photo-reflections]
 	 * : Let participants add a photo of a handwritten reflection (#244) for a NEW pilot. Off by default; an existing campaign keeps its setting. Change it before Day 1 with `wp jlife campaign set-photos`.
@@ -35,16 +35,8 @@ class Jlife_Pilot_Command {
 	 * @param array $assoc_args Options.
 	 */
 	public function create( $args, $assoc_args ) {
-		$input = array();
-		if ( ! empty( $assoc_args['key'] ) ) {
-			$input['campaign_key'] = (string) $assoc_args['key'];
-		}
-		if ( ! empty( $assoc_args['scoring-engine'] ) ) {
-			$input['scoring_engine'] = (string) $assoc_args['scoring-engine'];
-		}
-		if ( ! empty( $assoc_args['photo-reflections'] ) ) {
-			$input['accepts_photos'] = 1;
-		}
+		$input = jlife_challenges_pilot_create_input( $assoc_args );
+
 		$r = jlife_challenges_create_pilot_campaign( $this->organizer(), $input );
 		if ( is_wp_error( $r ) ) {
 			WP_CLI::error( $r->get_error_message() );

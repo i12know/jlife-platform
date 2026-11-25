@@ -192,7 +192,7 @@ class Test_Pilot_Feedback extends WP_UnitTestCase {
 		$footer = jlife_challenges_help_footer();
 		$this->assertLessThan( strpos( $footer, 'jl-pilot-feedback' ), strpos( $footer, '>Help</a>' ), 'after Help, Rules and Privacy' );
 		$this->assertStringNotContainsString( 'Help</a>', jlife_challenges_page_html( 'X', '', 'public' ), 'the public shell gets only the feedback link' );
-		$this->assertStringContainsString( 'screens.css?v=30', jlife_challenges_page_html( 'X', '', 'today' ) );
+		$this->assertStringContainsString( 'screens.css?v=31', jlife_challenges_page_html( 'X', '', 'today' ) );
 	}
 
 	/**
