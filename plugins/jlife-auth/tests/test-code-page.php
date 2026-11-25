@@ -274,7 +274,7 @@ class Test_Code_Page extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'name="first_name" value="Linh"', $page );
 
 		reset_phpmailer_instance();
-		$fields = $_REQUEST; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- test fixture (the same fields, resent).
+		$fields = array_diff_key( $_POST, array( 'step' => 1, 'code' => 1 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound -- test fixture (the same details, resent).
 		$page   = $this->resend( 'jlife_auth_page_join', $fields );
 		$this->assertCount( 1, $this->sent(), 'the resend sends one code' );
 		$this->assertStringContainsString( 'We sent a new code.', $page );
