@@ -12,7 +12,7 @@ Tooling: [`@wordpress/env` (wp-env)](https://developer.wordpress.org/block-edito
 | Requirement | Notes |
 |---|---|
 | **Docker Desktop** | With the WSL2 backend on Windows. Admin rights + a reboot are typically needed once. |
-| **Node.js ≥ 20** | Drives wp-env and the setup/seed/verify scripts. |
+| **Node.js ≥ 22.13.0** | Drives wp-env and the setup/seed/verify scripts. |
 | **Git** | You already have it if you cloned this repo. |
 
 No local PHP, Composer, MySQL, or WP-CLI needed — everything runs in containers (WP-CLI is available via `npm run env:cli`).
@@ -109,9 +109,29 @@ Richer sample data: the official **Demo Content** plugin is activated on HUB —
 - HUB runs `vi` (Vietnamese) to keep the Disciple.Tools translation constantly in view (spike S2 material).
 - STUDY stays `en` until the content theme is chosen. To flip: `npm run env:cli -- option update WPLANG vi` (add `--url=...` for a specific subsite); to revert HUB to English for debugging: `npm run env:cli -- option update WPLANG "" --url=http://localhost:8888/hub`.
 
+## 5a. Seeing emailed sign-in codes locally
+
+Sign-in and join send a 6-digit code with `wp_mail()`. Nothing in this repo catches or logs those emails locally: there is no mail catcher in `.wp-env.json`, no `wp jlife` command to show a code, and no mail log (`wp jlife mail status|probe` only checks the Brevo setup on a server, and the plugin deliberately stores no recipients, codes or bodies). The wp-env container has no mail server, so without help the email is simply not delivered.
+
+To read a code on your own machine, add a **localhost-only mu-plugin** yourself (not committed; not part of this repo). It logs the message to the PHP error log, only when the site address is `localhost`:
+
+```php
+<?php
+// wp-content/mu-plugins/local-mail-log.php (local only; never deploy).
+add_filter( 'pre_wp_mail', function ( $pre, $atts ) {
+	if ( 'localhost' !== wp_parse_url( home_url(), PHP_URL_HOST ) ) {
+		return $pre;
+	}
+	error_log( 'MAIL to ' . implode( ',', (array) $atts['to'] ) . ' | ' . $atts['subject'] . "\n" . $atts['message'] ); // phpcs:ignore
+	return true; // pretend it was sent.
+}, 5, 2 );
+```
+
+Then read the code from the container log (`npx wp-env logs`). Use only fake `.test` addresses, and never copy real emails or codes into issues or commits. A mail catcher container such as Mailpit would also work, but is not set up here.
+
 ## 6. Known gaps / future issues
 
-- **`jlife-*` plugins** are mapped into the container (`.wp-env.json` `mappings`, since #14) but intentionally **not activated** — they are scaffolds with no feature logic. Activate manually when developing: `npm run env:cli -- plugin activate jlife-studies --url=http://localhost:8888`.
+- **`jlife-*` plugins** are mapped into the container (`.wp-env.json` `mappings`, since #14) but intentionally **not activated** by the setup scripts. They are no longer scaffolds: `jlife-auth` (emailed-code sign-in, join, consent), `jlife-challenges` (the Bible Marathon: campaigns, SOAP, groups, reminders, photos) and the content and scripture plugins carry real feature logic and CI tests. Activate the ones you need: `npm run env:cli -- plugin activate jlife-auth jlife-challenges --url=http://localhost:8888`.
 - **Magic Links flows** are installed but unconfigured — that's spike S4 (#11).
 - The `tests` environment wp-env creates on port 8889 is untouched for now; CI (#16) will use it.
 

@@ -47,7 +47,7 @@ function jlife_challenges_is_pilot_campaign( $campaign ) {
  * It creates no groups and enrolls no one.
  *
  * @param int   $actor Organizer.
- * @param array $args  Optional campaign_key, plan_id, title, start_date, end_date, scoring_engine (default soap-regex; new campaigns only).
+ * @param array $args  Optional campaign_key, plan_id, title, start_date, end_date, scoring_engine (default soap-regex when called directly; `wp jlife pilot create` passes reflection-v1; new campaigns only).
  * @return array|WP_Error { campaign_id, campaign_key, created, start_date, end_date }
  */
 function jlife_challenges_create_pilot_campaign( $actor, $args = array() ) {
@@ -113,6 +113,39 @@ function jlife_challenges_create_pilot_campaign( $actor, $args = array() ) {
 		'start_date'   => (string) $args['start_date'],
 		'end_date'     => (string) $args['end_date'],
 	);
+}
+
+/**
+ * The scoring engine `wp jlife pilot create` uses when `--scoring-engine` is not
+ * given: the pilot runs on reflection-v1 (owner decision, R13-02). The global
+ * default (JLIFE_CHALLENGES_DEFAULT_ENGINE) is not changed.
+ *
+ * @return string Engine id.
+ */
+function jlife_challenges_pilot_default_engine() {
+	return 'reflection-v1';
+}
+
+/**
+ * The arguments for creating the pilot from the WP-CLI options.
+ *
+ * @param array $assoc_args WP-CLI options (key, scoring-engine, photo-reflections).
+ * @return array Arguments for jlife_challenges_create_pilot_campaign().
+ */
+function jlife_challenges_pilot_create_input( $assoc_args ) {
+	$input = array(
+		'scoring_engine' => jlife_challenges_pilot_default_engine(),
+	);
+	if ( ! empty( $assoc_args['key'] ) ) {
+		$input['campaign_key'] = (string) $assoc_args['key'];
+	}
+	if ( ! empty( $assoc_args['scoring-engine'] ) ) {
+		$input['scoring_engine'] = (string) $assoc_args['scoring-engine'];
+	}
+	if ( ! empty( $assoc_args['photo-reflections'] ) ) {
+		$input['accepts_photos'] = 1;
+	}
+	return $input;
 }
 
 /**

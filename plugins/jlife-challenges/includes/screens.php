@@ -96,7 +96,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 
 	$scripts  = '';
 	$versions = array(
-		'soap'     => 9,
+		'soap'     => 10,
 		'share'    => 4,
 		'reminder' => 2,
 		'bible'    => 1,
@@ -124,7 +124,7 @@ function jlife_challenges_page_html( $title, $body, $active = '', $script = '', 
 		. '<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">'
 		. jlife_challenges_launcher_head_tags()
 		. '<title>' . esc_html( $title ) . '</title>'
-		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=30' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
+		. '<link rel="stylesheet" href="' . esc_url( $base . 'screens.css?v=31' ) . '">' // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- standalone page without wp_head.
 		. $reader_css
 		. '</head><body>' . ( $public ? '' : '<nav class="jl-nav">' . $nav . '</nav>' ) . '<main>' . ( $public ? '' : jlife_challenges_practice_banner( get_current_user_id(), $active ) ) . $body . '</main>' . ( $public ? jlife_challenges_pilot_feedback_footer() : jlife_challenges_help_footer() ) . $dialog
 		. ( '' !== $dialog ? '<script src="' . esc_url( $base . 'nav.js?v=1' ) . '"></script>' : '' ) // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- standalone page without wp_footer.
@@ -623,8 +623,15 @@ function jlife_challenges_render_no_day( $view ) {
 				. '<a class="jl-button" href="' . esc_url( add_query_arg( 'mode', 'start', home_url( '/join/' ) ) ) . '">' . esc_html__( 'Start a group', 'jlife-challenges' ) . '</a></p>'
 					. jlife_challenges_signin_recovery_html();
 		case 'before':
-			/* translators: %s: start date. */
-			return '<h1>' . esc_html__( 'Almost time', 'jlife-challenges' ) . '</h1><p>' . esc_html( sprintf( __( 'The Marathon starts on %s. See you on Day 1!', 'jlife-challenges' ), jlife_challenges_format_date( $view['start_date'] ) ) ) . '</p>';
+			$date = jlife_challenges_format_date( $view['start_date'] );
+			if ( jlife_challenges_is_pilot_campaign( (array) ( $view['campaign'] ?? array() ) ) ) {
+				/* translators: %s: start date of the practice period. */
+				$line = sprintf( __( 'The practice period starts on %s. See you on Day 1!', 'jlife-challenges' ), $date );
+			} else {
+				/* translators: %s: start date. */
+				$line = sprintf( __( 'The Marathon starts on %s. See you on Day 1!', 'jlife-challenges' ), $date );
+			}
+			return '<h1>' . esc_html__( 'Almost time', 'jlife-challenges' ) . '</h1><p>' . esc_html( $line ) . '</p>';
 		case 'after':
 			return '<h1>' . esc_html__( 'The Marathon is complete', 'jlife-challenges' ) . '</h1><p>'
 				. esc_html__( 'Thank you for reading with us. Your SOAP entries stay here for you.', 'jlife-challenges' ) . '</p>';

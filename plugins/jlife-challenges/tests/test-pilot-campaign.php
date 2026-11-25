@@ -166,6 +166,32 @@ class Test_Pilot_Campaign extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * Before Day 1 the pilot says "practice period", not "Marathon"; other campaigns keep the Marathon wording (R13-05).
+	 */
+	public function test_upcoming_pilot_says_practice_period() {
+		$this->set_now( '2026-11-29 04:00:00' ); // Nov 28, 8:00 PM Pacific: the pilot has not started.
+		$this->enroll_pilot( 'outsider' );
+		$view = jlife_challenges_day_view( $this->u['outsider'] );
+		$this->assertSame( 'before', $view['state'] );
+		$html = jlife_challenges_render_no_day( $view );
+		$this->assertStringContainsString( '<h1>Almost time</h1>', $html );
+		$this->assertStringContainsString( 'The practice period starts on November 29, 2026. See you on Day 1!', $html );
+		$this->assertStringNotContainsString( 'The Marathon starts', $html );
+
+		$marathon = array(
+			'state'      => 'before',
+			'start_date' => '2026-12-20',
+			'campaign'   => array( 'campaign_key' => 'marathon-2026' ),
+		);
+		$this->assertStringContainsString( 'The Marathon starts on December 20, 2026. See you on Day 1!', jlife_challenges_render_no_day( $marathon ) );
+		unset( $marathon['campaign'] );
+		$this->assertStringContainsString( 'The Marathon starts on December 20, 2026.', jlife_challenges_render_no_day( $marathon ), 'a view with no campaign keeps the Marathon wording' );
+
+		$catalog = require dirname( __DIR__ ) . '/languages/jlife-challenges-vi.l10n.php';
+		$this->assertSame( 'Giai đoạn thực hành bắt đầu vào %s. Hẹn gặp bạn vào Ngày 1!', $catalog['messages']['The practice period starts on %s. See you on Day 1!'] );
+	}
+
+	/**
 	 * "I'll start Dec 20": a per-user flag that enrolls no one.
 	 */
 	public function test_start_dec_20_flag() {
@@ -192,5 +218,23 @@ class Test_Pilot_Campaign extends Jlife_Challenges_TestCase {
 		$t = jlife_challenges_table( 'reminder_prefs' );
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared -- test read; custom table.
 		$this->assertSame( 0, (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$t} WHERE user_id = %d", $user ) ) );
+	}
+
+	/**
+	 * A bare `wp jlife pilot create` uses reflection-v1; the flag overrides it; the global default is unchanged (R13-02).
+	 */
+	public function test_cli_input_defaults_the_pilot_to_reflection_v1() {
+		$bare = jlife_challenges_pilot_create_input( array() );
+		$this->assertSame( 'reflection-v1', $bare['scoring_engine'] );
+		$this->assertArrayNotHasKey( 'campaign_key', $bare );
+		$this->assertArrayNotHasKey( 'accepts_photos', $bare );
+
+		$soap = jlife_challenges_pilot_create_input( array( 'scoring-engine' => 'soap-regex' ) );
+		$this->assertSame( 'soap-regex', $soap['scoring_engine'], 'the flag is an override' );
+
+		$made = jlife_challenges_create_pilot_campaign( $this->u['organizer'], jlife_challenges_pilot_create_input( array( 'key' => 'pilot-cli-default' ) ) );
+		$this->assertTrue( $made['created'] );
+		$this->assertSame( 'reflection-v1', jlife_challenges_get_campaign( $made['campaign_id'] )['scoring_engine'] );
+		$this->assertSame( 'soap-regex', JLIFE_CHALLENGES_DEFAULT_ENGINE, 'the global default is left alone' );
 	}
 }

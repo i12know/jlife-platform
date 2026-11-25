@@ -1255,6 +1255,25 @@ class Test_Photo_Reflections extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( "'X-WP-Nonce'", $js );
 	}
 
+	/**
+	 * A network failure shows the translated fallback, never the browser's English text; only the server's own message passes through (R13-04).
+	 */
+	public function test_photo_errors_show_server_text_or_the_translated_fallback() {
+		$js = (string) file_get_contents( dirname( __DIR__ ) . '/assets/soap.js' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
+		$this->assertStringContainsString( 'err.fromServer = true', $js, 'only an error built from the server response is marked' );
+		$this->assertSame( 2, substr_count( $js, 'err && err.fromServer && err.message ? err.message : msg.photo_failed' ), 'upload and remove both use it' );
+		$this->assertStringNotContainsString( 'say(err && err.message ?', $js, 'a TypeError ("Failed to fetch") is never shown' );
+	}
+
+	/**
+	 * The "Use SOAP" summary is at least 44 px tall and keeps a visible focus ring (R13-07).
+	 */
+	public function test_use_soap_summary_is_a_44px_tap_target() {
+		$css = (string) file_get_contents( dirname( __DIR__ ) . '/assets/screens.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
+		$this->assertStringContainsString( '.jl-guidance>summary{display:flex;align-items:center;min-height:2.75rem}', $css );
+		$this->assertStringContainsString( '.jl-guidance>summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}', $css );
+	}
+
 	// ------------------------------------------------------------------
 	// The owner's review by download.
 	// ------------------------------------------------------------------

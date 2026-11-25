@@ -180,6 +180,7 @@ return array(
 		'Welcome' => 'Chào mừng',
 		'Almost time' => 'Sắp bắt đầu',
 		'The Marathon starts on %s. See you on Day 1!' => 'Marathon bắt đầu vào %s. Hẹn gặp bạn vào Ngày 1!',
+		'The practice period starts on %s. See you on Day 1!' => 'Giai đoạn thực hành bắt đầu vào %s. Hẹn gặp bạn vào Ngày 1!',
 		'The Marathon is complete' => 'Marathon đã kết thúc',
 		'Thank you for reading with us. Your SOAP entries stay here for you.' => 'Cảm ơn bạn đã cùng đọc. Các bài SOAP của bạn vẫn được giữ ở đây cho bạn.',
 		'This day hasn\'t opened yet' => 'Ngày đọc chưa mở',

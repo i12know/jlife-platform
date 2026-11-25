@@ -227,6 +227,62 @@ class Test_Code_Page extends WP_UnitTestCase {
 	}
 
 	/**
+	 * An expired code during a join keeps the join details on the error page, so
+	 * "Send a new code" is still a join and not a plain sign-in (R13-01).
+	 */
+	public function test_expired_code_during_join_keeps_the_join_details() {
+		$input = array(
+			'email'       => 'latecomer@example.test',
+			'first_name'  => 'Linh',
+			'invite_code' => $this->invite,
+			'age_band'    => 'adult',
+			'locale'      => 'vi',
+		);
+		$this->assertTrue( jlife_auth_start_join( $input ) );
+		delete_transient( jlife_auth_code_key( 'latecomer@example.test' ) ); // The code has expired.
+		$this->visit( 'en' );
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+		$_POST                     = array(
+			'step'        => 'verify',
+			'email'       => 'latecomer@example.test',
+			'code'        => '123456',
+			'jl_join'     => '1',
+			'mode'        => 'invite',
+			'invite_code' => $this->invite,
+			'group_name'  => '',
+			'first_name'  => 'Linh',
+			'age_band'    => 'adult',
+			'locale'      => 'vi',
+			'reminders'   => '',
+		);
+		$_REQUEST                  = $_POST; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- test fixture.
+		$stop                      = static function ( $title, $body ) {
+			throw new RuntimeException( $body ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- a test seam, never output.
+		};
+		add_action( 'jlife_auth_page_will_send', $stop, 10, 2 );
+		$page = '';
+		try {
+			jlife_auth_handle_verify();
+			$this->fail( 'the error page should have been sent' );
+		} catch ( RuntimeException $e ) {
+			$page = $e->getMessage();
+		} finally {
+			remove_action( 'jlife_auth_page_will_send', $stop, 10 );
+		}
+		$this->assertStringContainsString( 'id="jl-resend"', $page );
+		$this->assertGreaterThanOrEqual( 2, substr_count( $page, 'name="jl_join" value="1"' ), 'both the code form and the resend form keep the join' );
+		$this->assertStringContainsString( 'name="first_name" value="Linh"', $page );
+
+		reset_phpmailer_instance();
+		$fields = array_diff_key( $_POST, array( 'step' => 1, 'code' => 1 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound -- test fixture (the same details, resent).
+		$page   = $this->resend( 'jlife_auth_page_join', $fields );
+		$this->assertCount( 1, $this->sent(), 'the resend sends one code' );
+		$this->assertStringContainsString( 'We sent a new code.', $page );
+		$r = jlife_auth_complete( 'latecomer@example.test', $this->last_code() );
+		$this->assertSame( 'join', $r['purpose'], 'the new code still joins' );
+	}
+
+	/**
 	 * An unknown or ineligible address gets the same page and no email.
 	 */
 	public function test_resend_does_not_disclose_unknown_or_ineligible_addresses() {
