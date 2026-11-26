@@ -343,8 +343,8 @@ function jlife_challenges_reminders_admin_html( array $o, $result = '' ) {
 		$people,
 		implode( ', ', array_keys( $zones ) )
 	);
-	$ready   = 'ok' === $o['mail_state'] && ! empty( $o['brevo_enabled'] );
-	$html   .= '<fieldset style="border:1px solid #c3c4c7;padding:8px 16px;max-width:640px"><legend><strong>' . esc_html__( 'Go live', 'jlife-challenges' ) . '</strong></legend>'
+	$ready = 'ok' === $o['mail_state'] && ! empty( $o['brevo_enabled'] );
+	$html .= '<fieldset style="border:1px solid #c3c4c7;padding:8px 16px;max-width:640px"><legend><strong>' . esc_html__( 'Go live', 'jlife-challenges' ) . '</strong></legend>'
 		. '<p><label><input type="checkbox" name="jl_confirm_live" value="1"' . ( $ready ? '' : ' disabled' ) . '> ' . esc_html( $confirm ) . '</label></p>'
 		. ( $ready ? '' : '<p>' . esc_html__( 'Live is unavailable until the mail settings are ready.', 'jlife-challenges' ) . '</p>' )
 		. '<p><button type="submit" name="jl_mode" value="live" class="button"' . ( $ready ? '' : ' disabled' ) . '>' . esc_html__( 'Switch to Live', 'jlife-challenges' ) . '</button></p></fieldset></form></div>';

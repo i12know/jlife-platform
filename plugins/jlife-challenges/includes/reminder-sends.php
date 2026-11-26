@@ -413,9 +413,9 @@ function jlife_challenges_reminder_build( $campaign, $index, $user_id, $locale )
  * @return string
  */
 function jlife_challenges_reminder_subject( $index, $sections ) {
-	$max    = 70;
-	$first  = (string) ( $sections[0] ?? '' );
-	$extra  = max( 0, count( $sections ) - 1 );
+	$max   = 70;
+	$first = (string) ( $sections[0] ?? '' );
+	$extra = max( 0, count( $sections ) - 1 );
 	/* translators: 1: day number, 2: the day's first reading title (with a count of more sections when there are any). */
 	$prefix = sprintf( __( 'Day %1$d: %2$s', 'jlife-challenges' ), $index, '' );
 	$count  = '';
@@ -431,7 +431,7 @@ function jlife_challenges_reminder_subject( $index, $sections ) {
 		if ( ' ' !== $next && false !== $pos && $pos > 0 ) {
 			$cut = mb_substr( $cut, 0, $pos );
 		}
-		$first = rtrim( $cut, " 	,;:.-–—·" ) . '…';
+		$first = rtrim( $cut, ' ,;:.-–—·' ) . '…';
 	}
 	/* translators: 1: day number, 2: the day's first reading title (with a count of more sections when there are any). */
 	return sprintf( __( 'Day %1$d: %2$s', 'jlife-challenges' ), $index, $first . $count );
