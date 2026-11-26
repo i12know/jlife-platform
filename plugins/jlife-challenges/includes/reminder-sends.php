@@ -354,11 +354,16 @@ function jlife_challenges_reminder_build( $campaign, $index, $user_id, $locale )
 				$passages[] = $display;
 			}
 		}
+		$sections = array();
+		foreach ( explode( ' · ', $title ) as $part ) {
+			if ( '' !== trim( $part ) ) {
+				$sections[] = trim( $part );
+			}
+		}
 		$today = home_url( '/today/' );
 		$unsub = jlife_challenges_unsubscribe_url( $user_id, (int) $campaign['id'] );
 
-		/* translators: 1: day number, 2: the day's reading title. */
-		$subject = sprintf( __( 'Day %1$d: %2$s', 'jlife-challenges' ), $index, $title );
+		$subject = jlife_challenges_reminder_subject( $index, $sections );
 		$hello   = __( "Good morning! Here is today's reading.", 'jlife-challenges' );
 		/* translators: %d: day number. */
 		$heading = sprintf( __( 'Day %d', 'jlife-challenges' ), $index );
@@ -395,6 +400,41 @@ function jlife_challenges_reminder_build( $campaign, $index, $user_id, $locale )
 		);
 	};
 	return function_exists( 'jlife_auth_in_locale' ) ? jlife_auth_in_locale( $locale, $build ) : $build();
+}
+
+/**
+ * The subject line: "Day N:" and the first section's title, with a count of
+ * the other sections when there are more (#260). A long title is cut at a word
+ * boundary so the whole subject stays near 70 characters in a phone inbox. The
+ * body keeps the full title and every passage.
+ *
+ * @param int      $index    Day index.
+ * @param string[] $sections The day's section titles, in the reader's language.
+ * @return string
+ */
+function jlife_challenges_reminder_subject( $index, $sections ) {
+	$max    = 70;
+	$first  = (string) ( $sections[0] ?? '' );
+	$extra  = max( 0, count( $sections ) - 1 );
+	/* translators: 1: day number, 2: the day's first reading title (with a count of more sections when there are any). */
+	$prefix = sprintf( __( 'Day %1$d: %2$s', 'jlife-challenges' ), $index, '' );
+	$count  = '';
+	if ( $extra > 0 ) {
+		/* translators: %d: how many more reading sections the day has; shown after the first title in the email subject. */
+		$count = ' ' . sprintf( __( '(+%d more)', 'jlife-challenges' ), $extra );
+	}
+	$room = $max - mb_strlen( $prefix ) - mb_strlen( $count );
+	if ( mb_strlen( $first ) > $room && $room > 1 ) {
+		$cut  = mb_substr( $first, 0, $room - 1 );
+		$next = mb_substr( $first, $room - 1, 1 );
+		$pos  = mb_strrpos( $cut, ' ' );
+		if ( ' ' !== $next && false !== $pos && $pos > 0 ) {
+			$cut = mb_substr( $cut, 0, $pos );
+		}
+		$first = rtrim( $cut, " 	,;:.-–—·" ) . '…';
+	}
+	/* translators: 1: day number, 2: the day's first reading title (with a count of more sections when there are any). */
+	return sprintf( __( 'Day %1$d: %2$s', 'jlife-challenges' ), $index, $first . $count );
 }
 
 /**

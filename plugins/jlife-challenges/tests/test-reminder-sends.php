@@ -161,6 +161,105 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * Create a reading day with the given section titles (English, and optionally Vietnamese).
+	 *
+	 * @param int      $i  Day index.
+	 * @param string[] $en English section titles.
+	 * @param string[] $vi Vietnamese section titles, or none.
+	 */
+	private function make_titled_day( $i, $en, $vi = array() ) {
+		$id = self::factory()->post->create(
+			array(
+				'post_type'   => 'jlife_reading_day',
+				'post_status' => 'publish',
+				'post_title'  => 'Day ' . $i,
+			)
+		);
+		update_post_meta( $id, '_jlife_plan_id', 'rpl-life-and-teachings-of-jesus-2026' );
+		update_post_meta( $id, '_jlife_day_id', jlife_challenges_day_key( $i ) );
+		$day = array(
+			'day_id'   => jlife_challenges_day_key( $i ),
+			'title'    => implode( ' | ', $en ),
+			'titles'   => $en,
+			'passages' => array( array( 'display' => 'John 1:1' ) ),
+		);
+		if ( $vi ) {
+			$day['i18n'] = array( 'vi' => array( 'title' => implode( ' | ', $vi ) ) );
+		}
+		jlife_studies_put_json_meta( $id, '_jlife_reading_day', $day );
+		jlife_studies_put_json_meta( $id, '_jlife_plan', array() );
+	}
+
+	/**
+	 * Subject for a made-up day, in a language.
+	 *
+	 * @param int      $i      Day index.
+	 * @param string[] $en     English titles.
+	 * @param string[] $vi     Vietnamese titles.
+	 * @param string   $locale en_US or vi.
+	 * @return array Preview (subject, text, html).
+	 */
+	private function preview_titled( $i, $en, $vi, $locale ) {
+		$this->use_catalogs();
+		$this->make_titled_day( $i, $en, $vi );
+		return jlife_challenges_reminder_preview( $this->campaign_row(), $i, $locale );
+	}
+
+	/**
+	 * A single short section: the subject is unchanged.
+	 */
+	public function test_subject_single_section_is_unchanged() {
+		$p = $this->preview_titled( 10, array( 'Jesus Teaches about Anger' ), array(), 'en_US' );
+		$this->assertSame( 'Day 10: Jesus Teaches about Anger', $p['subject'] );
+	}
+
+	/**
+	 * Several sections: the first title and a count; the body keeps all of them.
+	 */
+	public function test_subject_with_several_sections_shows_a_count_and_body_keeps_all() {
+		$en = array( 'Jesus Teaches about Anger', 'Adultery', 'Divorce', 'Oaths', 'Retaliation' );
+		$vi = array( 'Chúa Giê-xu dạy về sự giận dữ', 'Ngoại tình', 'Ly dị', 'Thề nguyền', 'Báo trả' );
+		$p  = $this->preview_titled( 23, $en, $vi, 'en_US' );
+		$this->assertSame( 'Day 23: Jesus Teaches about Anger (+4 more)', $p['subject'] );
+		foreach ( $en as $t ) {
+			$this->assertStringContainsString( $t, $p['text'] );
+			$this->assertStringContainsString( $t, $p['html'] );
+		}
+		$pv = jlife_challenges_reminder_preview( $this->campaign_row(), 23, 'vi' );
+		$this->assertSame( 'Ngày 23: Chúa Giê-xu dạy về sự giận dữ (+4 phần nữa)', $pv['subject'] );
+		$this->assertStringContainsString( 'Báo trả', $pv['text'] );
+		$this->assertStringContainsString( 'Báo trả', $pv['html'] );
+	}
+
+	/**
+	 * A day with no Vietnamese titles falls back to the English ones in a Vietnamese email.
+	 */
+	public function test_vietnamese_subject_falls_back_to_english_titles() {
+		$p = $this->preview_titled( 11, array( 'First Title', 'Second Title' ), array(), 'vi' );
+		$this->assertSame( 'Ngày 11: First Title (+1 phần nữa)', $p['subject'] );
+	}
+
+	/**
+	 * A long single title is cut at a word boundary with an ellipsis, multibyte-safe.
+	 */
+	public function test_long_title_is_cut_at_a_word_boundary() {
+		$long = 'The Sermon on the Mount: Blessed Are the Poor in Spirit and Those Who Mourn and Hunger';
+		$p    = $this->preview_titled( 12, array( $long ), array(), 'en_US' );
+		$this->assertLessThanOrEqual( 70, mb_strlen( $p['subject'] ) );
+		$this->assertStringEndsWith( '…', $p['subject'] );
+		$title = substr( $p['subject'], strlen( 'Day 12: ' ), -strlen( '…' ) );
+		$this->assertStringStartsWith( $title, $long );
+		$this->assertSame( ' ', substr( $long, strlen( $title ), 1 ), 'cut where a word ended' );
+		$this->assertStringContainsString( $long, $p['text'], 'the body keeps the full title' );
+
+		$vi_long = 'Chúa Giê-xu giảng bài giảng trên núi: phước cho những kẻ có lòng khó khăn và những người than khóc';
+		$pv      = $this->preview_titled( 13, array( 'x' ), array( $vi_long ), 'vi' );
+		$this->assertLessThanOrEqual( 70, mb_strlen( $pv['subject'] ) );
+		$this->assertStringEndsWith( '…', $pv['subject'] );
+		$this->assertTrue( mb_check_encoding( $pv['subject'], 'UTF-8' ) );
+	}
+
+	/**
 	 * Opt people in (English unless said).
 	 *
 	 * @param string[] $names Participant keys.
@@ -708,7 +807,9 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 		$vi = $by[ $this->email( 'a' ) ];
 		$en = $by[ $this->email( 'b' ) ];
 		$this->assertStringStartsWith( 'Ngày 1', $vi['subject'] );
-		$this->assertStringContainsString( 'Giăng Báp-tít', $vi['subject'] );
+		$this->assertStringContainsString( 'Chúa Giê-xu và Ni-cô-đem', $vi['subject'] );
+		$this->assertStringContainsString( '(+1 phần nữa)', $vi['subject'] );
+		$this->assertStringContainsString( 'Giăng Báp-tít', $vi['message'], 'the body keeps every section' );
 		$this->assertStringContainsString( 'Giăng 3:1-21', $vi['message'] );
 		$this->assertStringContainsString( 'Giăng 3:22-4:3', $vi['message'] );
 		$this->assertStringNotContainsString( 'John 3', $vi['message'] );
@@ -716,7 +817,8 @@ class Test_Reminder_Sends extends Jlife_Challenges_TestCase {
 		$this->assertStringNotContainsString( 'Open today', $vi['message'] );
 
 		$this->assertStringStartsWith( 'Day 1', $en['subject'] );
-		$this->assertStringContainsString( 'Jesus and Nicodemus', $en['subject'] );
+		$this->assertSame( 'Day 1: Jesus and Nicodemus (+1 more)', $en['subject'] );
+		$this->assertStringContainsString( 'Jesus and John the Baptizer', $en['message'], 'the body keeps every section' );
 		$this->assertStringContainsString( 'John 3:1-21', $en['message'] );
 		$this->assertStringNotContainsString( 'Giăng', $en['message'] );
 		$this->assertStringNotContainsString( 'Ngày', $en['message'] );

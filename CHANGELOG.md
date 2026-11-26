@@ -9,6 +9,10 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 ## Unreleased
 
 ### Fixed
+- **Daily reminder subjects are short enough for a phone inbox** (#260). A Harmony reading day with several sections made a subject of about 170 characters that phones cut off.
+  - **Now:** the subject is "Day N:", the first section's title and a count of the others, e.g. "Day 23: Jesus Teaches about Anger (+4 more)" (Vietnamese draft: "(+4 phần nữa)"). A title that is still over about 70 characters is cut at a word boundary with "…". A single short title is unchanged. The email body keeps the full title and every passage. Recipients, timing, modes and the unsubscribe link are unchanged.
+  - **Vietnamese:** reminders already took the Vietnamese day title from the reading plan's `i18n` data (the same helper as Today), so the Vietnamese subject and body use it; a day without one stays in English.
+- **Reminders admin: "email 1 person", not "1 people"** (#260). The Go-live confirmation uses the singular for one recipient (Vietnamese unchanged, drafted for review).
 - **Pre-pilot fixes from local QA round 13** (R13-01, -02, -04, -05, -07; no blocker, no privacy issue).
   - **R13-01, expired code during a join:** the error page for an expired or wrong code now keeps the join details (invite code, name, age, language, reminders) in both the code form and "Send a new code", so the resend is still a join and not a plain sign-in. Rate limits are unchanged.
   - **R13-02, pilot engine:** a bare `wp jlife pilot create` now creates the pilot on `reflection-v1`; `--scoring-engine=soap-regex` overrides it, and the global default stays `soap-regex`. The CLI help says so.
