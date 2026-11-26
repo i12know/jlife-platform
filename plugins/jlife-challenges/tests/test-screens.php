@@ -732,11 +732,11 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * Today (#136, #188): the SOAP block reads My SOAP, the instruction, the
-	 * heading help (id jlife-soap-help), then the textbox (no reference chips),
-	 * in English and in Vietnamese.
+	 * Today (#136, #188, #266): the SOAP block reads My SOAP, the definition,
+	 * the instruction, then the textbox (no reference chips and no heading help
+	 * box or "More" link), in English and in Vietnamese.
 	 */
-	public function test_today_soap_help_sits_between_the_instruction_and_the_textbox() {
+	public function test_today_soap_block_has_no_help_box_between_the_instruction_and_the_textbox() {
 		$force = static fn() => 'vi';
 		$dir   = static fn( $path, $domain ) => 'jlife-challenges' === $domain ? dirname( __DIR__ ) . '/languages/' : $path;
 		$form  = '';
@@ -750,8 +750,8 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 				$form  = $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
 				$order = array(
 					'<label for="jl-text">' . esc_html__( 'My SOAP', 'jlife-challenges' ),
+					esc_html__( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ),
 					esc_html__( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ),
-					'<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary>',
 					'<textarea id="jl-text"',
 				);
 				$last  = -1;
@@ -761,7 +761,9 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 					$this->assertGreaterThan( $last, $at, $lang . ': out of order at ' . $needle );
 					$last = $at;
 				}
-				$this->assertSame( 1, substr_count( $form, 'id="jlife-soap-help"' ), $lang . ': one help box' );
+				$this->assertStringNotContainsString( 'jlife-soap-help', $form, $lang . ': no help box or link to it' );
+				$this->assertStringNotContainsString( 'jl-soap-more', $form, $lang . ': no More link (no Help page is set here)' );
+				$this->assertStringNotContainsString( 'jl-guidance', $form, $lang . ': nothing expandable between the instruction and the box' );
 				$this->assertStringNotContainsString( 'jl-chip', $form, $lang . ': no reference chips' );
 			} finally {
 				remove_filter( 'determine_locale', $force, 99 );
@@ -769,7 +771,8 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 				unload_textdomain( 'jlife-challenges', true );
 			}
 		}
-		$this->assertStringContainsString( 'Viết gì dưới mỗi tiêu đề?', $form, 'the Vietnamese render is translated' );
+		$this->assertStringContainsString( 'Hãy viết dưới mỗi tiêu đề.', $form, 'the Vietnamese render is translated' );
+		$this->assertStringNotContainsString( 'Viết gì dưới mỗi tiêu đề?', $form, 'the removed box title is gone' );
 	}
 
 	/**
@@ -819,8 +822,8 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 	}
 
 	/**
-	 * With the Help page published, the SOAP one-liner keeps "More" pointing at the
-	 * in-page heading help and adds a link to the SOAP section of the Help page (#65).
+	 * With the Help page published, the SOAP one-liner links to the SOAP section of
+	 * the Help page (#65); there is no "More" link and no leading separator (#266).
 	 */
 	public function test_soap_one_liner_links_to_the_help_page_when_it_is_published() {
 		$help = (int) self::factory()->post->create(
@@ -832,9 +835,10 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		update_option( 'jlife_challenges_help_page_id', $help );
 		$form = $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
 
-		$this->assertStringContainsString( '<a href="#jlife-soap-help" class="jl-soap-more">More</a>', $form, '"More" still opens the in-page help' );
-		$this->assertStringContainsString( 'href="' . esc_url( get_permalink( $help ) ) . '#what-is-soap" class="jl-soap-more">How SOAP works</a></p>', $form );
-		$this->assertSame( 1, substr_count( $form, 'id="jlife-soap-help"' ) );
+		$this->assertStringNotContainsString( '>More<', $form, 'no More link (#266)' );
+		$this->assertStringNotContainsString( 'jlife-soap-help', $form );
+		$this->assertStringContainsString( '<p class="jl-soap-def">SOAP = Scripture, Observation, Application, Prayer. <a href="' . esc_url( get_permalink( $help ) ) . '#what-is-soap" class="jl-soap-more">How SOAP works</a></p>', $form );
+		$this->assertStringNotContainsString( 'Prayer. ·', $form, 'one link, so no separator' );
 
 		wp_update_post(
 			array(
@@ -844,20 +848,21 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		);
 		$form = $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
 		$this->assertStringNotContainsString( 'How SOAP works', $form, 'no link to a page that is not published' );
-		$this->assertStringContainsString( '<a href="#jlife-soap-help" class="jl-soap-more">More</a></p>', $form );
+		$this->assertStringContainsString( '<p class="jl-soap-def">SOAP = Scripture, Observation, Application, Prayer.</p>', $form, 'no dangling separator or space' );
 	}
 
 	/**
-	 * The SOAP block explains itself (#142): a one-liner with a "More" link to the
-	 * heading help. The reference chips and their "Tap a reference" prompt are
+	 * The SOAP block explains itself (#142): a one-liner (#266: no "More" link and
+	 * no heading help box). The reference chips and their "Tap a reference" prompt are
 	 * gone (#188, replacing #142 section 2): the reference is typed under S.
 	 */
 	public function test_soap_one_liner_and_no_reference_chips() {
 		$form = $this->form_of( jlife_challenges_today_body( $this->view_with_reading( $this->u['a'] ) ) );
 
-		$this->assertStringContainsString( '<p class="jl-soap-def">SOAP = Scripture, Observation, Application, Prayer. <a href="#jlife-soap-help" class="jl-soap-more">More</a></p>', $form );
-		$this->assertMatchesRegularExpression( '#<details[^>]*\bid="jlife-soap-help"[^>]*>#', $form, 'the link targets the heading help box' );
-		$this->assertSame( 1, substr_count( $form, 'id="jlife-soap-help"' ) );
+		$this->assertStringContainsString( '<p class="jl-soap-def">SOAP = Scripture, Observation, Application, Prayer.</p>', $form );
+		$this->assertStringNotContainsString( 'jlife-soap-help', $form, 'no heading help box' );
+		$this->assertStringNotContainsString( 'jl-soap-more', $form );
+		$this->assertStringNotContainsString( 'What goes under each heading?', $form );
 
 		foreach ( array( 'Tap a reference', 'jl-chips-label', 'jl-chip', 'data-insert', 'to my SOAP' ) as $gone ) {
 			$this->assertStringNotContainsString( $gone, $form, $gone );
@@ -865,12 +870,12 @@ class Test_Screens extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'S — Scripture', $form, 'the S heading is where the reference goes' );
 		$js = (string) file_get_contents( dirname( __DIR__ ) . '/assets/soap.js' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
 		$this->assertStringNotContainsString( 'data-insert', $js, 'the chip script is gone' );
-		$this->assertStringContainsString( 'jlife-soap-help', $js, 'the More link still opens the help' );
+		$this->assertStringContainsString( 'jlife-soap-help', $js, 'the guided "Use SOAP" box keeps its More link handler' );
 		$css = (string) file_get_contents( dirname( __DIR__ ) . '/assets/screens.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- plugin asset.
 		$this->assertStringNotContainsString( 'jl-chips-label', $css );
 
-		// Order: heading, one-liner, help, textbox.
-		$order = array( '>My SOAP</label>', 'class="jl-soap-def"', 'id="jlife-soap-help"', '<textarea' );
+		// Order: heading, one-liner, textbox.
+		$order = array( '>My SOAP</label>', 'class="jl-soap-def"', '<textarea' );
 		$last  = -1;
 		foreach ( $order as $needle ) {
 			$at = strpos( $form, $needle );

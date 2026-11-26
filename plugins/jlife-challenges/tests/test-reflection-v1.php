@@ -268,7 +268,7 @@ class Test_Reflection_V1 extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( '>Submit</button>', $form );
 		$this->assertStringNotContainsString( 'Submit SOAP', $form );
 		$this->assertStringContainsString( 'SOAP headings are optional', $form, 'the engine accepts free writing, so the form says so' );
-		$this->assertStringContainsString( 'id="jlife-soap-help"', $form, 'the heading help is still there' );
+		$this->assertStringNotContainsString( 'id="jlife-soap-help"', $form, 'the plain form has no heading help box (#266)' );
 
 		jlife_challenges_save_draft( $this->u['a'], $this->campaign, 'd001', 'half a thought' );
 		$this->assertSame( 'half a thought', jlife_challenges_entry_text( jlife_challenges_day_view( $this->u['a'] ) ) );

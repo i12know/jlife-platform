@@ -1080,11 +1080,12 @@ function jlife_challenges_render_soap_feedback( $view, $state ) {
  * A link to the SOAP section of the Help page, for the one-line SOAP definition,
  * or '' when the Help page is not set or not published.
  *
- * @return string Escaped HTML, starting with a separator.
+ * @param string $lead What goes before the link: the " · " separator after another link (default), or a plain space when it is the only one.
+ * @return string Escaped HTML, starting with the lead.
  */
-function jlife_challenges_soap_help_page_link() {
+function jlife_challenges_soap_help_page_link( $lead = ' · ' ) {
 	$url = jlife_challenges_help_page_url( 'help', '', JLIFE_CHALLENGES_SOAP_HELP_ANCHOR );
-	return '' === $url ? '' : ' · <a href="' . esc_url( $url ) . '" class="jl-soap-more">' . esc_html__( 'How SOAP works', 'jlife-challenges' ) . '</a>';
+	return '' === $url ? '' : $lead . '<a href="' . esc_url( $url ) . '" class="jl-soap-more">' . esc_html__( 'How SOAP works', 'jlife-challenges' ) . '</a>';
 }
 
 /**
@@ -1157,12 +1158,6 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		. wp_nonce_field( 'jlife_soap_' . $view['day_key'], '_jlife_soap', true, false )
 		. '<input type="hidden" name="jl_day" value="' . esc_attr( $view['day_key'] ) . '">'
 		. '<label for="jl-text">' . esc_html( $guided ? __( 'My reflection', 'jlife-challenges' ) : __( 'My SOAP', 'jlife-challenges' ) ) . '</label>';
-	$soap_def  = '<p class="jl-soap-def">' . esc_html__( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) . ' <a href="#jlife-soap-help" class="jl-soap-more">' . esc_html__( 'More', 'jlife-challenges' ) . '</a>' . jlife_challenges_soap_help_page_link() . '</p>';
-	$soap_how  = '<ul>';
-	foreach ( jlife_challenges_soap_guidance() as $letter => $guidance ) {
-		$soap_how .= '<li><strong>' . esc_html( $headings[ $letter ] ) . '</strong> ' . esc_html( $guidance ) . '</li>';
-	}
-	$soap_how .= '</ul>';
 	// No reference chips here (#188): the reference is typed under S.
 	$box = '<textarea id="jl-text" name="jl_text" rows="16" maxlength="' . esc_attr( (string) JLIFE_CHALLENGES_BODY_MAX ) . '">' . esc_textarea( $text ) . '</textarea>';
 	if ( $guided ) {
@@ -1172,7 +1167,14 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 		} else {
 			$help = '' !== $prefill ? __( 'Answer the question in the box below in your own words.', 'jlife-challenges' ) : __( "Write about today's reading in your own words.", 'jlife-challenges' );
 		}
-		$out .= '<p class="jl-soap-def">' . esc_html( $help ) . '</p>'
+		// The "Use SOAP" disclosure keeps its own definition line, "More" link and heading list (#225); #266 leaves it alone.
+		$soap_def = '<p class="jl-soap-def">' . esc_html__( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) . ' <a href="#jlife-soap-help" class="jl-soap-more">' . esc_html__( 'More', 'jlife-challenges' ) . '</a>' . jlife_challenges_soap_help_page_link() . '</p>';
+		$soap_how = '<ul>';
+		foreach ( jlife_challenges_soap_guidance() as $letter => $guidance ) {
+			$soap_how .= '<li><strong>' . esc_html( $headings[ $letter ] ) . '</strong> ' . esc_html( $guidance ) . '</li>';
+		}
+		$soap_how .= '</ul>';
+		$out      .= '<p class="jl-soap-def">' . esc_html( $help ) . '</p>'
 			. $box
 			. ( $photos ? jlife_challenges_render_photo_field( $photo ) : '' )
 			. '<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'Use SOAP', 'jlife-challenges' ) . '</summary>'
@@ -1180,9 +1182,9 @@ function jlife_challenges_render_soap_panel( $view, $state = array() ) {
 			. '<button type="submit" name="jl_action" value="template" class="jl-button jl-soap-template" formnovalidate>' . esc_html__( 'Use SOAP template', 'jlife-challenges' ) . '</button><small>' . esc_html__( 'Adds the four SOAP headings. Nothing you wrote is removed.', 'jlife-challenges' ) . '</small>'
 			. '</details>';
 	} else {
-		$out .= $soap_def
+		// Plain form (#266): the definition line and the Help page link only; no "More" link and no heading box.
+		$out .= '<p class="jl-soap-def">' . esc_html__( 'SOAP = Scripture, Observation, Application, Prayer.', 'jlife-challenges' ) . jlife_challenges_soap_help_page_link( ' ' ) . '</p>'
 			. '<small>' . esc_html( $free ? __( 'A few sentences in your own words earn the point for the day. SOAP headings are optional, and they do not count as your words.', 'jlife-challenges' ) : __( 'Write under each heading. Keep the headings: they help you and your group read it.', 'jlife-challenges' ) ) . '</small>'
-			. '<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>' . esc_html__( 'What goes under each heading?', 'jlife-challenges' ) . '</summary>' . $soap_how . '</details>'
 			. $box
 			. ( $photos ? '<p class="jl-soap-def">' . esc_html__( 'You can also add a photo of your handwritten page.', 'jlife-challenges' ) . '</p>' . jlife_challenges_render_photo_field( $photo ) : '' );
 	}

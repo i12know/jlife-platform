@@ -32,7 +32,6 @@ return array(
 		'Submit SOAP'                      => 'Gửi SOAP',
 		'Save changes'                     => 'Lưu thay đổi',
 		'Save draft'                       => 'Lưu bản nháp',
-		'What goes under each heading?'    => 'Viết gì dưới mỗi tiêu đề?',
 		'Write under each heading. Keep the headings: they help you and your group read it.' => 'Hãy viết dưới mỗi tiêu đề. Giữ nguyên các tiêu đề để bạn và nhóm dễ đọc.',
 		'Write the verse or reference that stood out to you.' => 'Ghi lại câu hoặc đoạn Kinh Thánh đã làm bạn chú ý.',
 		'What does it say? What do you notice about Jesus?' => 'Đoạn này nói gì? Bạn nhận thấy điều gì về Chúa Giê-xu?',
