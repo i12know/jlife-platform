@@ -73,7 +73,7 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 		$_FILES   = array();
 		$_POST    = array();
 		$_REQUEST = array();
-		unset( $GLOBALS['wp_rest_server'] );
+		unset( $_SERVER['REQUEST_METHOD'], $GLOBALS['wp_rest_server'] );
 	}
 
 	/**
@@ -896,5 +896,262 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 	public function test_the_handlers_check_their_nonce() {
 		$this->expectException( 'WPDieException' );
 		jlife_challenges_devotionals_handle_preview( self::PLAN );
+	}
+
+	// -- Bulk Mark Ready / Back to Draft (#262) -----------------------------
+
+	/**
+	 * Put a bulk request in the globals.
+	 *
+	 * @param string $action Bulk action: ready, draft or ''.
+	 * @param int[]  $ids    Posted post IDs.
+	 * @param bool   $nonce  Whether to send a valid nonce.
+	 * @param string $pos    Which toolbar was used: top or bottom.
+	 */
+	private function bulk_request( $action, array $ids, $nonce = true, $pos = 'top' ) {
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+		$_POST                     = array(
+			'jl_dev_action'   => 'bulk',
+			'jl_bulk_pos'     => $pos,
+			'jl_bulk_' . $pos => $action,
+			'jl_bulk_ids'     => array_map( 'strval', $ids ),
+		);
+		$_REQUEST                  = $_POST;
+		if ( $nonce ) {
+			$this->set_nonce( 'jlife_dev_bulk' );
+		}
+	}
+
+	/**
+	 * The page's HTML for the current request.
+	 *
+	 * @return string
+	 */
+	private function page_html() {
+		ob_start();
+		jlife_challenges_devotionals_admin_page();
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Bulk Ready on mixed cells: Drafts become Ready, Ready ones are counted as
+	 * already Ready, a trashed one is skipped, and the notice says so.
+	 */
+	public function test_bulk_ready_on_mixed_cells() {
+		$d1en = $this->make_post( 'd001', 'en', 'draft' );
+		$d1vi = $this->make_post( 'd001', 'vi', 'publish' );
+		$d2en = $this->make_post( 'd038', 'en', 'draft' );
+		$d3en = $this->make_post( 'd053', 'en', 'draft' );
+		wp_trash_post( $d3en );
+		$this->bulk_request( 'ready', array( $d1en, $d1vi, $d2en, $d3en ) );
+		$html = $this->page_html();
+		$this->assertSame( 'publish', get_post_status( $d1en ) );
+		$this->assertSame( 'publish', get_post_status( $d1vi ) );
+		$this->assertSame( 'publish', get_post_status( $d2en ) );
+		$this->assertSame( 'trash', get_post_status( $d3en ) );
+		$this->assertStringContainsString( '2 devotionals marked Ready, 1 already Ready, 1 skipped', $html );
+	}
+
+	/**
+	 * Bulk Back to Draft, from the bottom toolbar; Drafts count as already Draft.
+	 */
+	public function test_bulk_back_to_draft() {
+		$a = $this->make_post( 'd001', 'en', 'publish' );
+		$b = $this->make_post( 'd001', 'vi', 'publish' );
+		$c = $this->make_post( 'd038', 'en', 'draft' );
+		$this->bulk_request( 'draft', array( $a, $b, $c ), true, 'bottom' );
+		$html = $this->page_html();
+		$this->assertSame( 'draft', get_post_status( $a ) );
+		$this->assertSame( 'draft', get_post_status( $b ) );
+		$this->assertSame( 'draft', get_post_status( $c ) );
+		$this->assertStringContainsString( '2 devotionals put back to Draft, 1 already Draft, 0 skipped', $html );
+	}
+
+	/**
+	 * One changed devotional reads in the singular.
+	 */
+	public function test_the_notice_uses_the_singular() {
+		$a = $this->make_post( 'd001', 'en', 'draft' );
+		$this->bulk_request( 'ready', array( $a ) );
+		$this->assertStringContainsString( '1 devotional marked Ready, 0 already Ready, 0 skipped', $this->page_html() );
+	}
+
+	/**
+	 * A missing or forged nonce is refused and nothing changes; so is a nonce made
+	 * for another action (a single-cell one).
+	 */
+	public function test_bulk_refuses_a_missing_or_forged_nonce() {
+		$a = $this->make_post( 'd001', 'en', 'draft' );
+		foreach ( array( 'none', 'forged', 'single' ) as $kind ) {
+			$this->bulk_request( 'ready', array( $a ), false );
+			if ( 'forged' === $kind ) {
+				$_REQUEST['_wpnonce'] = 'abcdef1234';
+			} elseif ( 'single' === $kind ) {
+				$this->set_nonce( 'jlife_dev_status_' . $a );
+			}
+			$refused = false;
+			ob_start();
+			try {
+				jlife_challenges_devotionals_admin_page();
+			} catch ( WPDieException $e ) {
+				$refused = true;
+			}
+			ob_end_clean();
+			$this->assertTrue( $refused, $kind );
+			$this->assertSame( 'draft', get_post_status( $a ), $kind );
+		}
+	}
+
+	/**
+	 * Only administrators: an editor and a participant with a valid nonce are
+	 * refused, by the page and by the handler.
+	 */
+	public function test_bulk_is_for_administrators() {
+		$a      = $this->make_post( 'd001', 'en', 'draft' );
+		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
+		foreach ( array( $editor, $this->u['a'] ) as $user ) {
+			wp_set_current_user( $user );
+			$this->bulk_request( 'ready', array( $a ) );
+			$refused = false;
+			try {
+				jlife_challenges_devotionals_handle_bulk( self::PLAN );
+			} catch ( WPDieException $e ) {
+				$refused = true;
+			}
+			$this->assertTrue( $refused, 'handler' );
+			$refused = false;
+			ob_start();
+			try {
+				jlife_challenges_devotionals_admin_page();
+			} catch ( WPDieException $e ) {
+				$refused = true;
+			}
+			ob_end_clean();
+			$this->assertTrue( $refused, 'page' );
+			$this->assertSame( 'draft', get_post_status( $a ) );
+		}
+	}
+
+	/**
+	 * Posted IDs are never trusted: another plan's devotional, a post of another
+	 * type, a page, a made-up ID and a duplicate that the grid does not show are
+	 * all left alone and counted as skipped.
+	 */
+	public function test_bulk_ignores_ids_that_are_not_in_this_plans_grid() {
+		$mine  = $this->make_post( 'd001', 'en', 'draft' );
+		$other = $this->make_post( 'd001', 'vi', 'draft' );
+		update_post_meta( $other, '_jlife_dev_plan', 'some-other-plan' );
+		$normal = self::factory()->post->create( array( 'post_status' => 'draft' ) );
+		$page   = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'draft',
+			)
+		);
+		$dupe   = $this->make_post( 'd001', 'en', 'draft' ); // The older one is the one shown.
+		$this->bulk_request( 'ready', array( $mine, $other, $normal, $page, $dupe, 999999, 0, -4 ) );
+		$result = jlife_challenges_devotionals_handle_bulk( self::PLAN );
+		$this->assertSame( 'publish', get_post_status( $mine ) );
+		foreach ( array( $other, $normal, $page, $dupe ) as $id ) {
+			$this->assertSame( 'draft', get_post_status( $id ), (string) $id );
+		}
+		$this->assertSame( 1, $result['changed'] );
+		$this->assertSame( 0, $result['already'] );
+		$this->assertSame( 5, $result['skipped'], 'the five real IDs; 0 and negatives are dropped' );
+	}
+
+	/**
+	 * Nothing ticked, or no action chosen: a message and no change.
+	 */
+	public function test_bulk_needs_a_choice_and_a_selection() {
+		$a = $this->make_post( 'd001', 'en', 'draft' );
+		$this->bulk_request( 'ready', array() );
+		$this->assertStringContainsString( 'Tick at least one devotional first.', $this->page_html() );
+		$this->bulk_request( '', array( $a ) );
+		$this->assertStringContainsString( 'Choose Mark Ready or Back to Draft first.', $this->page_html() );
+		$this->bulk_request( 'delete', array( $a ) );
+		$this->assertStringContainsString( 'Choose Mark Ready or Back to Draft first.', $this->page_html() );
+		$this->assertSame( 'draft', get_post_status( $a ) );
+	}
+
+	/**
+	 * The audit log records each change like the single action, plus counts; never
+	 * a title or text.
+	 */
+	public function test_bulk_audits_ids_and_counts_only() {
+		global $wpdb;
+		$a = $this->make_post( 'd001', 'en', 'draft', 'Secret title', '<p>Secret body</p>' );
+		$b = $this->make_post( 'd001', 'vi', 'publish' );
+		$this->bulk_request( 'ready', array( $a, $b ) );
+		jlife_challenges_devotionals_handle_bulk( self::PLAN );
+		$table = jlife_challenges_table( 'audit_log' );
+		$rows  = $wpdb->get_results( "SELECT action, object_id, detail FROM {$table} WHERE action IN ('devotional_status','devotionals_bulk_status') ORDER BY id", ARRAY_A ); // phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL.NotPrepared -- test.
+		$this->assertCount( 2, $rows, 'one per changed devotional, one summary' );
+		$this->assertSame( 'devotional_status', $rows[0]['action'] );
+		$this->assertSame( (string) $a, $rows[0]['object_id'] );
+		$this->assertSame( 'devotionals_bulk_status', $rows[1]['action'] );
+		$detail = json_decode( $rows[1]['detail'], true );
+		$this->assertSame( 1, $detail['changed'] );
+		$this->assertSame( 1, $detail['already'] );
+		$this->assertSame( 0, $detail['skipped'] );
+		$this->assertSame( 1, $detail['ready'] );
+		$this->assertStringNotContainsString( 'Secret', wp_json_encode( $rows ) );
+	}
+
+	/**
+	 * Ready in bulk is still just a status: a day that has not opened shows
+	 * nothing to a reader.
+	 */
+	public function test_bulk_ready_does_not_release_a_day_early() {
+		$campaign = $this->make_pilot();
+		$id       = $this->make_post( 'd038', 'en', 'draft' );
+		$this->bulk_request( 'ready', array( $id ) );
+		jlife_challenges_devotionals_handle_bulk( self::PLAN );
+		$this->assertSame( 'publish', get_post_status( $id ) );
+		$this->assertNull( jlife_challenges_devotional_for_day( $campaign, 'd038', 'en' ) );
+	}
+
+	/**
+	 * The grid: a checkbox with a day-and-language label in each cell that has a
+	 * devotional, none in empty or trashed cells, all tied to the one bulk form,
+	 * a toolbar above and below, and the per-cell buttons unchanged.
+	 */
+	public function test_the_grid_has_checkboxes_and_two_toolbars() {
+		$a = $this->make_post( 'd001', 'en', 'draft' );
+		$b = $this->make_post( 'd001', 'vi', 'publish' );
+		$c = $this->make_post( 'd038', 'en', 'draft' );
+		wp_trash_post( $c );
+		$html = jlife_challenges_devotionals_grid_html( self::PLAN );
+		$this->assertSame( 2, preg_match_all( '/<input type="checkbox" name="jl_bulk_ids\[\]" value="\d+" form="jl-dev-bulk"/', $html ) );
+		$this->assertStringContainsString( 'value="' . $a . '" form="jl-dev-bulk"', $html );
+		$this->assertStringContainsString( 'value="' . $b . '" form="jl-dev-bulk"', $html );
+		$this->assertStringNotContainsString( 'value="' . $c . '" form="jl-dev-bulk"', $html );
+		$this->assertStringContainsString( 'Select day 1, English', $html );
+		$this->assertStringContainsString( 'Select day 1, Tiếng Việt', $html );
+		$this->assertSame( 1, substr_count( $html, '<form method="post" id="jl-dev-bulk"' ) );
+		$this->assertSame( 1, substr_count( $html, 'name="jl_bulk_top"' ) );
+		$this->assertSame( 1, substr_count( $html, 'name="jl_bulk_bottom"' ) );
+		$this->assertStringContainsString( 'name="jl_bulk_pos" value="top"', $html );
+		$this->assertStringContainsString( 'name="jl_bulk_pos" value="bottom"', $html );
+		$this->assertStringContainsString( 'Back to Draft', $html, 'the per-cell buttons stay' );
+		$this->assertStringContainsString( 'Mark Ready', $html );
+		$this->assertStringContainsString( 'Select all in English', $html );
+		$this->assertStringContainsString( 'Select both languages of day 1', $html );
+		$this->assertStringNotContainsString( ' checked', $html );
+	}
+
+	/**
+	 * After an import the cells just created or updated are ticked; unchanged ones
+	 * are not.
+	 */
+	public function test_import_pre_ticks_the_cells_it_wrote() {
+		$items = $this->day_one_items();
+		$out   = jlife_challenges_devotional_import( $this->u['organizer'], $items, self::PLAN );
+		$ids   = jlife_challenges_devotionals_written_ids( $out );
+		$this->assertCount( 2, $ids );
+		$html = jlife_challenges_devotionals_grid_html( self::PLAN, $ids );
+		$this->assertSame( 2, substr_count( $html, ' checked' ) );
+		$again = jlife_challenges_devotional_import( $this->u['organizer'], $items, self::PLAN );
+		$this->assertSame( array(), jlife_challenges_devotionals_written_ids( $again ), 'unchanged items are not ticked' );
 	}
 }

@@ -247,13 +247,17 @@ function jlife_challenges_devotionals_preview_html( $report ) {
 }
 
 /**
- * One Draft/Ready cell of the grid: the status, an Edit link, and the button that
- * flips the status.
+ * One Draft/Ready cell of the grid: the bulk checkbox, the status, an Edit link,
+ * and the button that flips the status.
  *
- * @param WP_Post|null $post The devotional, or null when none is imported.
+ * @param WP_Post|null $post    The devotional, or null when none is imported.
+ * @param string       $label   Screen-reader label of the checkbox (day and language).
+ * @param string       $lang    Language code, for the select-all script.
+ * @param int          $day_no  Day number in the plan, for the select-all script.
+ * @param bool         $checked Whether the checkbox starts ticked.
  * @return string Escaped HTML.
  */
-function jlife_challenges_devotionals_grid_cell( $post ) {
+function jlife_challenges_devotionals_grid_cell( $post, $label = '', $lang = '', $day_no = 0, $checked = false ) {
 	if ( ! $post ) {
 		return '<span aria-label="' . esc_attr__( 'Not imported', 'jlife-challenges' ) . '">–</span>';
 	}
@@ -270,13 +274,17 @@ function jlife_challenges_devotionals_grid_cell( $post ) {
 	}
 	$ready = 'publish' === $post->post_status;
 	$edit  = get_edit_post_link( $post->ID );
-	return $out . ( $edit ? ' · <a href="' . esc_url( $edit ) . '">' . esc_html__( 'Edit', 'jlife-challenges' ) . '</a>' : '' )
+	$pick  = '<label class="jl-dev-pick"><input type="checkbox" name="jl_bulk_ids[]" value="' . (int) $post->ID . '" form="jl-dev-bulk"'
+		. ' data-lang="' . esc_attr( $lang ) . '" data-day="' . (int) $day_no . '"' . ( $checked ? ' checked' : '' ) . '>'
+		. '<span class="screen-reader-text">' . esc_html( $label ) . '</span></label> ';
+	return $pick . $out . ( $edit ? ' · <a href="' . esc_url( $edit ) . '">' . esc_html__( 'Edit', 'jlife-challenges' ) . '</a>' : '' )
 		. '<form method="post" action="' . esc_url( admin_url( 'admin.php?page=' . JLIFE_DEVOTIONALS_PAGE ) ) . '" style="display:inline;margin-left:6px">'
 		. wp_nonce_field( 'jlife_dev_status_' . (int) $post->ID, '_wpnonce', true, false )
 		. '<input type="hidden" name="jl_post" value="' . (int) $post->ID . '">'
 		. '<input type="hidden" name="jl_dev_action" value="' . ( $ready ? 'draft' : 'ready' ) . '">'
 		. '<button type="submit" class="button button-small">' . esc_html( $ready ? __( 'Back to Draft', 'jlife-challenges' ) : __( 'Mark Ready', 'jlife-challenges' ) ) . '</button></form>';
 }
+
 
 /**
  * The plan's devotional posts keyed "d001/en", the oldest of each.
@@ -312,32 +320,242 @@ function jlife_challenges_devotional_posts_by_cell( $plan_id ) {
 	return $by;
 }
 
+
+/**
+ * The post IDs an import just created or updated: the cells to pre-tick.
+ *
+ * @param array[] $items Items returned by jlife_challenges_devotional_import().
+ * @return int[]
+ */
+function jlife_challenges_devotionals_written_ids( array $items ) {
+	$ids = array();
+	foreach ( $items as $item ) {
+		if ( ! empty( $item['written_id'] ) && in_array( $item['result'] ?? '', array( 'created', 'updated' ), true ) ) {
+			$ids[] = (int) $item['written_id'];
+		}
+	}
+	return $ids;
+}
+
+/**
+ * Handle the bulk Mark Ready / Back to Draft form (#262). Administrators only, a
+ * nonce for the form. Only the devotionals the grid shows (the oldest post of each
+ * day and language of this plan, not in the Trash) are touched; every other posted
+ * ID is counted as skipped and left alone. Each change goes through
+ * jlife_challenges_devotional_set_ready(), the single action, so the rules and the
+ * per-post audit entry are the same.
+ *
+ * @param string $plan_id Reading plan.
+ * @return array { action: string, changed: int, already: int, skipped: int, error: string }.
+ */
+function jlife_challenges_devotionals_handle_bulk( $plan_id ) {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'You are not allowed to see this page.', 'jlife-challenges' ), '', array( 'response' => 403 ) );
+	}
+	check_admin_referer( 'jlife_dev_bulk' );
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- the nonce was checked above.
+	$pos    = isset( $_POST['jl_bulk_pos'] ) && 'bottom' === sanitize_key( wp_unslash( $_POST['jl_bulk_pos'] ) ) ? 'bottom' : 'top';
+	$choice = isset( $_POST[ 'jl_bulk_' . $pos ] ) ? sanitize_key( wp_unslash( $_POST[ 'jl_bulk_' . $pos ] ) ) : '';
+	$posted = isset( $_POST['jl_bulk_ids'] ) && is_array( $_POST['jl_bulk_ids'] ) ? array_map( 'intval', wp_unslash( $_POST['jl_bulk_ids'] ) ) : array();
+	// phpcs:enable
+	$result = array(
+		'action'  => in_array( $choice, array( 'ready', 'draft' ), true ) ? $choice : '',
+		'changed' => 0,
+		'already' => 0,
+		'skipped' => 0,
+		'error'   => '',
+	);
+	$posted = array_values(
+		array_unique(
+			array_filter(
+				$posted,
+				static function ( $id ) {
+					return $id > 0;
+				}
+			)
+		)
+	);
+	if ( '' === $result['action'] ) {
+		$result['error'] = 'choice';
+		return $result;
+	}
+	if ( ! $posted ) {
+		$result['error'] = 'none';
+		return $result;
+	}
+	$shown = array();
+	foreach ( jlife_challenges_devotional_posts_by_cell( $plan_id ) as $post ) {
+		if ( 'trash' !== $post->post_status ) {
+			$shown[ (int) $post->ID ] = $post;
+		}
+	}
+	$ready = 'ready' === $result['action'];
+	foreach ( $posted as $id ) {
+		if ( ! isset( $shown[ $id ] ) ) {
+			++$result['skipped'];
+		} elseif ( $ready ? 'publish' === $shown[ $id ]->post_status : 'draft' === $shown[ $id ]->post_status ) {
+			++$result['already'];
+		} elseif ( jlife_challenges_devotional_set_ready( get_current_user_id(), $id, $ready ) ) {
+			++$result['changed'];
+		} else {
+			++$result['skipped'];
+		}
+	}
+	jlife_challenges_audit(
+		get_current_user_id(),
+		'devotionals_bulk_status',
+		'devotional',
+		0,
+		0,
+		array(
+			'ready'   => $ready ? 1 : 0,
+			'changed' => $result['changed'],
+			'already' => $result['already'],
+			'skipped' => $result['skipped'],
+		)
+	);
+	return $result;
+}
+
+/**
+ * The notice after a bulk action, with the counts.
+ *
+ * @param array $result From jlife_challenges_devotionals_handle_bulk().
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_devotionals_bulk_notice( $result ) {
+	if ( 'choice' === $result['error'] ) {
+		return '<div class="notice notice-error"><p>' . esc_html__( 'Choose Mark Ready or Back to Draft first.', 'jlife-challenges' ) . '</p></div>';
+	}
+	if ( 'none' === $result['error'] ) {
+		return '<div class="notice notice-error"><p>' . esc_html__( 'Tick at least one devotional first.', 'jlife-challenges' ) . '</p></div>';
+	}
+	if ( 'ready' === $result['action'] ) {
+		/* translators: 1: devotionals marked Ready, 2: devotionals that were already Ready, 3: devotionals skipped. */
+		$text = _n( '%1$d devotional marked Ready, %2$d already Ready, %3$d skipped', '%1$d devotionals marked Ready, %2$d already Ready, %3$d skipped', $result['changed'], 'jlife-challenges' );
+	} else {
+		/* translators: 1: devotionals put back to Draft, 2: devotionals that were already Draft, 3: devotionals skipped. */
+		$text = _n( '%1$d devotional put back to Draft, %2$d already Draft, %3$d skipped', '%1$d devotionals put back to Draft, %2$d already Draft, %3$d skipped', $result['changed'], 'jlife-challenges' );
+	}
+	return '<div class="notice notice-success"><p>' . esc_html( sprintf( $text, $result['changed'], $result['already'], $result['skipped'] ) ) . '</p></div>';
+}
+
+/**
+ * The bulk toolbar, above or below the grid. Its fields belong to the one bulk
+ * form (the `form` attribute), because the per-cell buttons are forms of their own.
+ *
+ * @param string $pos 'top' or 'bottom'.
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_devotionals_bulk_toolbar( $pos ) {
+	return '<div class="jl-dev-bulk">'
+		. '<label class="screen-reader-text" for="jl-dev-bulk-' . esc_attr( $pos ) . '">' . esc_html__( 'Bulk action', 'jlife-challenges' ) . '</label>'
+		. '<select id="jl-dev-bulk-' . esc_attr( $pos ) . '" name="jl_bulk_' . esc_attr( $pos ) . '" form="jl-dev-bulk">'
+		. '<option value="">' . esc_html__( 'Bulk action', 'jlife-challenges' ) . '</option>'
+		. '<option value="ready">' . esc_html__( 'Mark Ready', 'jlife-challenges' ) . '</option>'
+		. '<option value="draft">' . esc_html__( 'Back to Draft', 'jlife-challenges' ) . '</option></select> '
+		. '<button type="submit" class="button" form="jl-dev-bulk" name="jl_bulk_pos" value="' . esc_attr( $pos ) . '">' . esc_html__( 'Apply', 'jlife-challenges' ) . '</button></div>';
+}
+
+/**
+ * A select-all checkbox, shown only when JavaScript runs.
+ *
+ * @param string $scope 'col' or 'row'.
+ * @param string $key   Language code or day number.
+ * @param string $label Screen-reader label.
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_devotionals_select_all( $scope, $key, $label ) {
+	return '<label class="jl-dev-pick jl-dev-all" hidden><input type="checkbox" data-scope="' . esc_attr( $scope ) . '" data-key="' . esc_attr( $key ) . '">'
+		. '<span class="screen-reader-text">' . esc_html( $label ) . '</span></label>';
+}
+
+/**
+ * Styles and the small select-all script for the grid. Without JavaScript the
+ * select-all boxes stay hidden and the single checkboxes work as they are.
+ *
+ * @return string HTML.
+ */
+function jlife_challenges_devotionals_grid_assets() {
+	$css = '.jl-dev-pick{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;vertical-align:middle}'
+		. '.jl-dev-pick input{width:24px;height:24px;margin:0}'
+		. '.jl-dev-pick[hidden]{display:none}'
+		. '.jl-dev-bulk{margin:8px 0}.jl-dev-bulk select,.jl-dev-bulk .button{min-height:44px}'
+		. '.jl-dev-scroll{overflow-x:auto}';
+	$js  = '(function(){var g=document.getElementById("jl-dev-grid");if(!g){return;}'
+		. 'var all=g.querySelectorAll("[data-scope]"),picks=g.querySelectorAll("input[name=\'jl_bulk_ids[]\']");'
+		. 'function match(a,p){return a.getAttribute("data-scope")==="col"?p.getAttribute("data-lang")===a.getAttribute("data-key"):p.getAttribute("data-day")===a.getAttribute("data-key");}'
+		. 'function sync(){all.forEach(function(a){var m=[].filter.call(picks,function(p){return match(a,p);});a.checked=m.length>0&&m.every(function(p){return p.checked;});});}'
+		. 'all.forEach(function(a){a.parentNode.hidden=false;a.addEventListener("change",function(){picks.forEach(function(p){if(match(a,p)){p.checked=a.checked;}});sync();});});'
+		. 'picks.forEach(function(p){p.addEventListener("change",sync);});sync();})();';
+	return '<style>' . $css . '</style><script>' . $js . '</script>';
+}
+
 /**
  * The grid: the plan's days against English and Vietnamese.
  *
  * @param string $plan_id Reading plan.
+ * @param int[]  $ticked  Devotional post IDs to start ticked (the cells just imported).
  * @return string Escaped HTML.
  */
-function jlife_challenges_devotionals_grid_html( $plan_id ) {
+function jlife_challenges_devotionals_grid_html( $plan_id, array $ticked = array() ) {
 	$days = jlife_challenges_devotional_plan_days( $plan_id );
 	$html = '<h2>' . esc_html__( 'Days', 'jlife-challenges' ) . '</h2>';
 	if ( ! $days ) {
 		return $html . '<p>' . esc_html__( 'The reading plan is not loaded yet, so there are no days to show.', 'jlife-challenges' ) . '</p>';
 	}
-	$by   = jlife_challenges_devotional_posts_by_cell( $plan_id );
-	$rows = '';
-	$n    = 0;
+	$by    = jlife_challenges_devotional_posts_by_cell( $plan_id );
+	$names = array(
+		'en' => 'English',
+		'vi' => 'Tiếng Việt',
+	);
+	$rows  = '';
+	$n     = 0;
 	foreach ( $days as $day_id => $title ) {
 		++$n;
-		$rows .= '<tr><td>' . esc_html( $n . ' · ' . $title ) . '</td>'
-			. '<td>' . jlife_challenges_devotionals_grid_cell( $by[ $day_id . '/en' ] ?? null ) . '</td>'
-			. '<td>' . jlife_challenges_devotionals_grid_cell( $by[ $day_id . '/vi' ] ?? null ) . '</td></tr>';
+		$rows .= '<tr><td>' . jlife_challenges_devotionals_select_all(
+			'row',
+			(string) $n,
+			/* translators: %d: day number. */
+			sprintf( __( 'Select both languages of day %d', 'jlife-challenges' ), $n )
+		) . esc_html( $n . ' · ' . $title ) . '</td>';
+		foreach ( $names as $lang => $name ) {
+			$post  = $by[ $day_id . '/' . $lang ] ?? null;
+			$rows .= '<td>' . jlife_challenges_devotionals_grid_cell(
+				$post,
+				/* translators: 1: day number, 2: language name (English or Tiếng Việt). */
+				sprintf( __( 'Select day %1$d, %2$s', 'jlife-challenges' ), $n, $name ),
+				$lang,
+				$n,
+				$post && in_array( (int) $post->ID, $ticked, true )
+			) . '</td>';
+		}
+		$rows .= '</tr>';
 	}
-	$html .= '<table class="widefat striped"><thead><tr>'
-		. '<th scope="col">' . esc_html__( 'Day', 'jlife-challenges' ) . '</th>'
-		. '<th scope="col">English</th><th scope="col">Tiếng Việt</th></tr></thead><tbody>' . $rows;
-	return $html . '</tbody></table>'
-		. '<p class="description">' . esc_html__( "Ready means the devotional may be shown. It still appears only once that day has opened in the reader's campaign. Edit opens the block editor for fixes by hand.", 'jlife-challenges' ) . '</p>';
+	$heads = '';
+	foreach ( $names as $lang => $name ) {
+		$heads .= '<th scope="col">' . jlife_challenges_devotionals_select_all(
+			'col',
+			$lang,
+			/* translators: %s: language name (English or Tiếng Việt). */
+			sprintf( __( 'Select all in %s', 'jlife-challenges' ), $name )
+		) . esc_html( $name ) . '</th>';
+	}
+	$html .= '<p class="description">' . esc_html__( 'Tick devotionals, choose Mark Ready or Back to Draft, then press Apply. The buttons in each cell still change one devotional at a time.', 'jlife-challenges' ) . '</p>';
+	if ( $ticked ) {
+		$html .= '<p class="description"><strong>' . esc_html__( 'The devotionals you just imported are ticked. Choose Mark Ready and press Apply to release them all.', 'jlife-challenges' ) . '</strong></p>';
+	}
+	$html .= '<form method="post" id="jl-dev-bulk" action="' . esc_url( admin_url( 'admin.php?page=' . JLIFE_DEVOTIONALS_PAGE ) ) . '">'
+		. wp_nonce_field( 'jlife_dev_bulk', '_wpnonce', true, false )
+		. '<input type="hidden" name="jl_dev_action" value="bulk"></form>'
+		. jlife_challenges_devotionals_bulk_toolbar( 'top' )
+		. '<div class="jl-dev-scroll" id="jl-dev-grid"><table class="widefat striped"><thead><tr>'
+		. '<th scope="col">' . esc_html__( 'Day', 'jlife-challenges' ) . '</th>' . $heads . '</tr></thead><tbody>' . $rows
+		. '</tbody></table></div>'
+		. jlife_challenges_devotionals_bulk_toolbar( 'bottom' )
+		. '<p class="description">' . esc_html__( "Ready means the devotional may be shown. It still appears only once that day has opened in the reader's campaign. Edit opens the block editor for fixes by hand.", 'jlife-challenges' ) . '</p>'
+		. jlife_challenges_devotionals_grid_assets();
+	return $html;
 }
 
 /**
@@ -350,6 +568,7 @@ function jlife_challenges_devotionals_admin_page() {
 	$plan_id = jlife_challenges_devotional_plan_id();
 	$report  = null;
 	$notice  = '';
+	$ticked  = array();
 	$method  = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) : 'GET';
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- only picks which handler runs; each handler checks its own nonce first.
@@ -358,10 +577,16 @@ function jlife_challenges_devotionals_admin_page() {
 		$report = jlife_challenges_devotionals_handle_preview( $plan_id );
 	} elseif ( 'import' === $action ) {
 		$report = jlife_challenges_devotionals_handle_import( $plan_id );
+	} elseif ( 'bulk' === $action ) {
+		$notice = jlife_challenges_devotionals_bulk_notice( jlife_challenges_devotionals_handle_bulk( $plan_id ) );
 	} elseif ( in_array( $action, array( 'ready', 'draft' ), true ) ) {
 		$notice = jlife_challenges_devotionals_handle_status()
 			? '<div class="notice notice-success"><p>' . esc_html__( 'Saved.', 'jlife-challenges' ) . '</p></div>'
 			: '<div class="notice notice-error"><p>' . esc_html__( 'Not found or not allowed.', 'jlife-challenges' ) . '</p></div>';
+	}
+
+	if ( $report && 'import' === $report['mode'] ) {
+		$ticked = jlife_challenges_devotionals_written_ids( $report['items'] );
 	}
 
 	$html = '<div class="wrap"><h1>' . esc_html__( 'Devotionals', 'jlife-challenges' ) . '</h1>' . $notice;
@@ -377,5 +602,5 @@ function jlife_challenges_devotionals_admin_page() {
 	} elseif ( $report ) {
 		$html .= '<div class="notice notice-warning"><p>' . esc_html__( 'That preview has expired. Choose the files and preview them again.', 'jlife-challenges' ) . '</p></div>';
 	}
-	echo $html . jlife_challenges_devotionals_grid_html( $plan_id ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every part is escaped.
+	echo $html . jlife_challenges_devotionals_grid_html( $plan_id, $ticked ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every part is escaped.
 }
