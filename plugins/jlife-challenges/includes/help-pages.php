@@ -13,6 +13,8 @@
  * - `wp jlife help-pages seed` creates the pages ONCE, as drafts, in English and
  *   Vietnamese (data/help-pages.json). It never updates a page. The wording is
  *   the owner's: the seed is marked DRAFT.
+ * - The same first seed moves WordPress's untouched default "Sample Page" and
+ *   "Hello world!" post to the Trash (#263).
  *
  * @package jlife-challenges
  */
@@ -237,6 +239,47 @@ function jlife_challenges_create_help_page( $seed_key, $language, $page ) {
 }
 
 /**
+ * Move WordPress's default "Sample Page" and "Hello world!" post to the Trash
+ * (#263), only while they are still the untouched install defaults.
+ *
+ * A post qualifies only when ALL hold: the right type and slug (sample-page
+ * page, hello-world post), published, and never edited (post_modified_gmt equals
+ * post_date_gmt, as wp_install_defaults() leaves them). A page the owner made or
+ * edited with that slug is never touched. The Trash only, never a permanent
+ * delete; running again finds nothing to do. Polylang's language filter is
+ * bypassed so a post in either language is found.
+ *
+ * @return int[] Post IDs moved to the Trash by this call.
+ */
+function jlife_challenges_trash_wordpress_defaults() {
+	$trashed = array();
+	foreach ( array(
+		'page' => 'sample-page',
+		'post' => 'hello-world',
+	) as $type => $slug ) {
+		$found = get_posts(
+			array(
+				'post_type'        => $type,
+				'name'             => $slug,
+				'post_status'      => 'publish',
+				'posts_per_page'   => 5,
+				'suppress_filters' => true,
+				'no_found_rows'    => true,
+			)
+		);
+		foreach ( $found as $candidate ) {
+			if ( $candidate->post_modified_gmt !== $candidate->post_date_gmt ) {
+				continue; // Edited by a person: not a default any more.
+			}
+			if ( wp_trash_post( $candidate->ID ) ) {
+				$trashed[] = (int) $candidate->ID;
+			}
+		}
+	}
+	return $trashed;
+}
+
+/**
  * Seed the three pages ONCE, as drafts, in English and Vietnamese, linked as
  * translations, and record the English page IDs in the site options.
  *
@@ -247,18 +290,23 @@ function jlife_challenges_create_help_page( $seed_key, $language, $page ) {
  *   themselves) is left alone.
  * - Needs Polylang (languages en and vi); creates nothing without it.
  *
- * @return array|WP_Error { created: string[], existing: string[], seeded_before: bool }
+ * - The first run also trashes WordPress's untouched default Sample Page and
+ *   Hello world! post (#263), before the Polylang check so it never depends on it.
+ *
+ * @return array|WP_Error { created: string[], existing: string[], seeded_before: bool, trashed: int[] }
  */
 function jlife_challenges_seed_help_pages() {
 	$result = array(
 		'created'       => array(),
 		'existing'      => array(),
 		'seeded_before' => false,
+		'trashed'       => array(),
 	);
 	if ( get_option( JLIFE_CHALLENGES_HELP_SEEDED_OPTION ) ) {
 		$result['seeded_before'] = true;
 		return $result;
 	}
+	$result['trashed'] = jlife_challenges_trash_wordpress_defaults();
 	if ( ! jlife_challenges_help_polylang_ready() ) {
 		return new WP_Error( 'jlife_help_no_polylang', 'Polylang is not active on this site: the pages are English and Vietnamese, so they are not seeded.' );
 	}

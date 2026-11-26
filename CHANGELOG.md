@@ -9,6 +9,7 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 ## Unreleased
 
 ### Fixed
+- **A fresh site no longer keeps WordPress's default Sample Page and "Hello world!" post** (#263, also seen in the Vietnamese audit #119). The first `wp jlife help-pages seed` (in the deploy) moves them to the Trash only while they are still untouched (right slug, published, never edited); an owner's page with that slug, or any other page, is left alone and nothing is deleted for good. The runbook now says how latoc's top menu is built (check Appearance > Menus; a theme with no assigned menu lists every published page) and gives the one-time manual Trash step for latoc, whose seed has already run. No new visible text.
 - **Daily reminder subjects are short enough for a phone inbox** (#260). A Harmony reading day with several sections made a subject of about 170 characters that phones cut off.
   - **Now:** the subject is "Day N:", the first section's title and a count of the others, e.g. "Day 23: Jesus Teaches about Anger (+4 more)" (Vietnamese draft: "(+4 phần nữa)"). A title that is still over about 70 characters is cut at a word boundary with "…". A single short title is unchanged. The email body keeps the full title and every passage. Recipients, timing, modes and the unsubscribe link are unchanged.
   - **Vietnamese:** reminders already took the Vietnamese day title from the reading plan's `i18n` data (the same helper as Today), so the Vietnamese subject and body use it; a day without one stays in English.

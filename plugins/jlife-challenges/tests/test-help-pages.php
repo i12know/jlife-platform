@@ -397,6 +397,110 @@ class Test_Help_Pages extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'equally among everyone tied for the highest score', $rules );
 		$this->assertStringContainsString( 'The app takes no payments', $rules );
 	}
+
+	/**
+	 * Make a post as the WordPress installer leaves it: published, never edited.
+	 * Any real default already in the test database is removed first.
+	 *
+	 * @param string $type Post type.
+	 * @param string $slug Post slug.
+	 * @param bool   $edited Whether a person has edited it since.
+	 * @return int Post ID.
+	 */
+	private function make_default( $type, $slug, $edited = false ) {
+		foreach ( get_posts(
+			array(
+				'post_type'   => $type,
+				'name'        => $slug,
+				'post_status' => 'any',
+			)
+		) as $old ) {
+			wp_delete_post( $old->ID, true );
+		}
+		$id = self::factory()->post->create(
+			array(
+				'post_type'   => $type,
+				'post_name'   => $slug,
+				'post_title'  => 'default',
+				'post_status' => 'publish',
+				'post_date'   => '2026-11-01 10:00:00',
+			)
+		);
+		if ( $edited ) {
+			wp_update_post(
+				array(
+					'ID'         => $id,
+					'post_title' => 'Owner edit',
+				)
+			);
+		}
+		return $id;
+	}
+
+	/**
+	 * The untouched defaults go to the Trash (not deleted) on the first seed.
+	 */
+	public function test_untouched_wordpress_defaults_are_trashed_by_the_seed() {
+		$page = $this->make_default( 'page', 'sample-page' );
+		$post = $this->make_default( 'post', 'hello-world' );
+
+		$result = jlife_challenges_seed_help_pages();
+		$this->assertEqualsCanonicalizing( array( $page, $post ), $result['trashed'] );
+		$this->assertSame( 'trash', get_post_status( $page ) );
+		$this->assertSame( 'trash', get_post_status( $post ) );
+	}
+
+	/**
+	 * A Sample Page the owner edited is left alone.
+	 */
+	public function test_an_edited_sample_page_is_untouched() {
+		$page = $this->make_default( 'page', 'sample-page', true );
+		$this->assertSame( array(), jlife_challenges_trash_wordpress_defaults() );
+		$this->assertSame( 'publish', get_post_status( $page ) );
+	}
+
+	/**
+	 * Pages with other slugs, and a post with the page slug, are untouched.
+	 */
+	public function test_other_pages_are_untouched() {
+		$this->make_default( 'page', 'sample-page' );
+		$mine  = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_name'   => 'my-own-page',
+				'post_status' => 'publish',
+			)
+		);
+		$wrong = self::factory()->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_name'   => 'sample-page-news',
+				'post_status' => 'publish',
+			)
+		);
+		jlife_challenges_trash_wordpress_defaults();
+		$this->assertSame( 'publish', get_post_status( $mine ) );
+		$this->assertSame( 'publish', get_post_status( $wrong ) );
+	}
+
+	/**
+	 * A second run does nothing and does not error.
+	 */
+	public function test_running_the_cleanup_twice_is_harmless() {
+		$page  = $this->make_default( 'page', 'sample-page' );
+		$mine  = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_name'   => 'rules-of-mine',
+				'post_status' => 'publish',
+			)
+		);
+		$first = jlife_challenges_trash_wordpress_defaults();
+		$this->assertContains( $page, $first );
+		$this->assertSame( array(), jlife_challenges_trash_wordpress_defaults() );
+		$this->assertSame( 'trash', get_post_status( $page ) );
+		$this->assertSame( 'publish', get_post_status( $mine ) );
+	}
 }
 
 // The Polylang stand-ins are loaded with this file, before any test runs.

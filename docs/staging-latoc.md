@@ -195,6 +195,19 @@ During the Nov 29–Dec 13 shadow pilot, testers leave feedback as **comments on
 - Signed in as a test participant (a `.test` account), leave a comment. It says it is awaiting moderation, and it isn't visible signed out. Approve it in Comments > Pending and reply; both now show on the post under the first name. Then delete the test comment.
 - Unset the option. The link is gone from every screen.
 
+## WordPress default content, and the top menu (#263)
+
+**Defaults on a fresh site.** The first deploy runs `wp core multisite-install`, and WordPress's installer always creates a published **Sample Page** (`/sample-page/`) and a **Hello world!** post. The first run of `wp jlife help-pages seed` (the deploy's "Help, Rules and Privacy pages" step) now moves both to the **Trash** when they are still the untouched defaults: right type and slug (`sample-page` page, `hello-world` post), published, and never edited (modified time equals created time). A page the owner made or edited with that slug is left alone, nothing is ever permanently deleted, and the step runs only once (the same "seeded" flag as the help pages). Restore from Pages > Trash if you want one back.
+
+**latoc itself** was installed before this step existed, so its seed flag is already set and the step does not run there. Both were trashed by hand on 2026-11-26 (#263); on another older site, do it once: wp-admin > Pages > Sample Page > Trash, and Posts > Hello world! > Trash. (Local `npm run env:up` and `bin/cloud-dev.sh` sites also keep the defaults; they are dev sites and nothing seeds the help pages there.)
+
+**How the top menu is built.** The theme is not in this repository (latoc runs a theme chosen in wp-admin; the Divi notes below suggest Divi). On 2026-11-26 latoc had **no menus at all** (`wp menu list` was empty), so its top menu is the theme's fallback: every published top-level page. Check **Appearance > Menus** on any site:
+
+- If a menu is assigned to the **Primary / Header menu** location, the top menu is that fixed list. A new page does not appear until someone adds it there.
+- If no menu is assigned, Divi (like most themes) falls back to **all published top-level pages**, newest ordering per its setting. Then **any page you publish shows up in the top menu**, which is how Sample Page appeared next to Rules and Privacy.
+
+Before the Nov 29 pilot, create a menu with only the pages you want (for example Rules, Privacy, Help) and assign it to the primary location, or keep every other page as a draft until it is ready. Drafts never show in the fallback list. With Polylang, make the menu for English and assign a Vietnamese one too (Appearance > Menus > Manage Locations).
+
 ## First install: admin login
 
 The first run creates the network admin `latoc-admin` with a random password, saved only on the server:
