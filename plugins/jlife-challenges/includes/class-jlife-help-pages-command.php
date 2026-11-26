@@ -17,7 +17,9 @@ class Jlife_Help_Pages_Command {
 	/**
 	 * Create the Help, Rules and Privacy pages ONCE, as drafts, in English and
 	 * Vietnamese (needs Polylang). Never updates or recreates a page, so the
-	 * owner's edits in wp-admin are safe. Safe to run on every deploy.
+	 * owner's edits in wp-admin are safe. Safe to run on every deploy. The first
+	 * run also moves WordPress's untouched default Sample Page and Hello world!
+	 * post to the Trash (never a permanent delete; edited ones are left alone).
 	 *
 	 * ## EXAMPLES
 	 *
@@ -31,6 +33,9 @@ class Jlife_Help_Pages_Command {
 		if ( $result['seeded_before'] ) {
 			WP_CLI::log( 'Help, Rules and Privacy pages were seeded before: content left untouched (a deleted or trashed page is not recreated).' );
 			return;
+		}
+		foreach ( $result['trashed'] as $post_id ) {
+			WP_CLI::log( "Default WordPress post {$post_id} moved to the Trash (untouched Sample Page / Hello world!)." );
 		}
 		foreach ( $result['created'] as $key ) {
 			WP_CLI::log( "Page {$key}: created as a draft." );
