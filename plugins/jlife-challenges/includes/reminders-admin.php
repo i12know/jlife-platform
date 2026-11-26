@@ -331,10 +331,20 @@ function jlife_challenges_reminders_admin_html( array $o, $result = '' ) {
 	foreach ( $o['campaigns'] as $campaign ) {
 		$zones[ (string) $campaign['timezone'] ] = true;
 	}
-	/* translators: 1: number of people, 2: time zone name(s). */
-	$confirm = sprintf( __( 'Yes, email %1$d people every morning at 06:00 campaign time (%2$s). If the send window is already open, today\'s emails start within a few minutes.', 'jlife-challenges' ), (int) $o['recipients'], implode( ', ', array_keys( $zones ) ) );
-	$ready   = 'ok' === $o['mail_state'] && ! empty( $o['brevo_enabled'] );
-	$html   .= '<fieldset style="border:1px solid #c3c4c7;padding:8px 16px;max-width:640px"><legend><strong>' . esc_html__( 'Go live', 'jlife-challenges' ) . '</strong></legend>'
+	$people  = (int) $o['recipients'];
+	$confirm = sprintf(
+		/* translators: 1: number of people, 2: time zone name(s). */
+		_n(
+			"Yes, email %1\$d person every morning at 06:00 campaign time (%2\$s). If the send window is already open, today's emails start within a few minutes.",
+			"Yes, email %1\$d people every morning at 06:00 campaign time (%2\$s). If the send window is already open, today's emails start within a few minutes.",
+			$people,
+			'jlife-challenges'
+		),
+		$people,
+		implode( ', ', array_keys( $zones ) )
+	);
+	$ready = 'ok' === $o['mail_state'] && ! empty( $o['brevo_enabled'] );
+	$html .= '<fieldset style="border:1px solid #c3c4c7;padding:8px 16px;max-width:640px"><legend><strong>' . esc_html__( 'Go live', 'jlife-challenges' ) . '</strong></legend>'
 		. '<p><label><input type="checkbox" name="jl_confirm_live" value="1"' . ( $ready ? '' : ' disabled' ) . '> ' . esc_html( $confirm ) . '</label></p>'
 		. ( $ready ? '' : '<p>' . esc_html__( 'Live is unavailable until the mail settings are ready.', 'jlife-challenges' ) . '</p>' )
 		. '<p><button type="submit" name="jl_mode" value="live" class="button"' . ( $ready ? '' : ' disabled' ) . '>' . esc_html__( 'Switch to Live', 'jlife-challenges' ) . '</button></p></fieldset></form></div>';

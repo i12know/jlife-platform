@@ -388,6 +388,16 @@ class Test_Reminders_Admin extends Jlife_Challenges_TestCase {
 	}
 
 	/**
+	 * One recipient reads "1 person", not "1 people".
+	 */
+	public function test_the_live_confirmation_uses_the_singular_for_one_recipient() {
+		$this->assertTrue( jlife_challenges_set_reminder( $this->u['a'], $this->u['a'], $this->campaign, true, 'en_US' ) );
+		$html = jlife_challenges_reminders_admin_html( jlife_challenges_reminders_admin_overview() );
+		$this->assertStringContainsString( 'email 1 person every morning at 06:00 campaign time', $html );
+		$this->assertStringNotContainsString( '1 people', $html );
+	}
+
+	/**
 	 * Result notices are a fixed set; an unknown code shows nothing.
 	 */
 	public function test_notices_are_a_fixed_set() {

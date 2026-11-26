@@ -282,7 +282,8 @@ return array(
 		'Off sends nothing. Dry run builds every message and sends nothing. Test sends only to the test addresses. Live emails everyone who opted in.' => 'Tắt: không gửi gì. Chạy thử: soạn từng thư nhưng không gửi. Thử nghiệm: chỉ gửi đến các địa chỉ thử nghiệm. Chính thức: gửi cho mọi người đã chọn nhận.',
 		'A dry run or test run uses up that day\'s row for each person. If you switch to Live the same morning, people who were already skipped will not be emailed until tomorrow.' => 'Chạy thử hoặc thử nghiệm sẽ dùng hết lượt của ngày đó cho từng người. Nếu chuyển sang chính thức ngay buổi sáng đó, những người đã bị bỏ qua sẽ không nhận email cho đến ngày mai.',
 		'Go live' => 'Chuyển sang chính thức',
-		'Yes, email %1$d people every morning at 06:00 campaign time (%2$s). If the send window is already open, today\'s emails start within a few minutes.' => 'Đồng ý, gửi email cho %1$d người mỗi sáng lúc 06:00 theo giờ chiến dịch (%2$s). Nếu khung giờ gửi đã mở, email hôm nay sẽ bắt đầu gửi trong vài phút.',
+		"Yes, email %1\$d person every morning at 06:00 campaign time (%2\$s). If the send window is already open, today's emails start within a few minutes.\0Yes, email %1\$d people every morning at 06:00 campaign time (%2\$s). If the send window is already open, today's emails start within a few minutes." => 'Đồng ý, gửi email cho %1$d người mỗi sáng lúc 06:00 theo giờ chiến dịch (%2$s). Nếu khung giờ gửi đã mở, email hôm nay sẽ bắt đầu gửi trong vài phút.',
+		'(+%d more)' => '(+%d phần nữa)',
 		'Live is unavailable until the mail settings are ready.' => 'Chưa dùng được chế độ chính thức cho đến khi cấu hình thư sẵn sàng.',
 		'Switch to Live' => 'Chuyển sang Chính thức',
 		// Scripture sources (#141): the API.Bible attribution and J-Life → Scripture.
