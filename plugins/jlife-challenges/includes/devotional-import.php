@@ -491,6 +491,8 @@ function jlife_challenges_devotional_import( $actor, array $items, $plan_id, $ov
 			} else {
 				$result = 'new' === $item['state'] ? 'created' : 'updated';
 				++$counts[ $result ];
+				// The post the admin page pre-ticks for a bulk Mark Ready (#262).
+				$items[ $i ]['written_id'] = (int) $written;
 			}
 		} elseif ( 'unchanged' === $item['state'] ) {
 			$result = 'unchanged';
