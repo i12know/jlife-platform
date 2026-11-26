@@ -139,7 +139,7 @@
 		});
 	});
 
-	// "More" beside the SOAP one-liner opens the "What goes under each heading?" box it jumps to.
+	// "More" beside the guided SOAP one-liner opens the "Use SOAP" box it jumps to (guided days only; #266 removed the plain form's box).
 	form.querySelectorAll('a[href="#jlife-soap-help"]').forEach(function (link) {
 		link.addEventListener('click', function () {
 			var help = document.getElementById('jlife-soap-help');

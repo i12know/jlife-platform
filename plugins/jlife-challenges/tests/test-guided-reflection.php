@@ -97,7 +97,9 @@ class Test_Guided_Reflection extends Jlife_Challenges_TestCase {
 			$this->assertStringNotContainsString( 'jl-response', $form, 'no separate question panel' );
 			$this->assertMatchesRegularExpression( '/<textarea[^>]*>' . preg_quote( self::QUESTION, '/' ) . '\n\n\n<\/textarea>/', $form, 'the question is real text in the box' );
 			$this->assertStringNotContainsString( 'placeholder=', $form );
-			$this->assertStringContainsString( '<summary>Use SOAP</summary>', $form );
+			$this->assertStringContainsString( '<details id="jlife-soap-help" class="jl-optional jl-guidance"><summary>Use SOAP</summary>', $form, 'the guided disclosure is unchanged (#266 only touches the plain form)' );
+			$this->assertStringContainsString( '<a href="#jlife-soap-help" class="jl-soap-more">More</a>', $form, 'its More link still opens it' );
+			$this->assertStringContainsString( '<li><strong>S — Scripture</strong>', $form, 'its heading list is still inside' );
 			$this->assertStringContainsString( 'value="template" class="jl-button jl-soap-template" formnovalidate>Use SOAP template</button>', $form );
 			$this->assertStringContainsString( '>Submit</button>', $form );
 			$this->assertStringNotContainsString( 'Submit SOAP', $form );
