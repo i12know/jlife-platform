@@ -426,16 +426,14 @@ class Test_Help_Pages extends Jlife_Challenges_TestCase {
 				'post_date'   => '2026-11-01 10:00:00',
 			)
 		);
-		global $wpdb;
-		$wpdb->update(
-			$wpdb->posts,
-			array(
-				'post_modified'     => $edited ? '2026-11-20 09:00:00' : '2026-11-01 10:00:00',
-				'post_modified_gmt' => $edited ? get_gmt_from_date( '2026-11-20 09:00:00' ) : get_gmt_from_date( '2026-11-01 10:00:00' ),
-			),
-			array( 'ID' => $id )
-		);
-		clean_post_cache( $id );
+		if ( $edited ) {
+			wp_update_post(
+				array(
+					'ID'         => $id,
+					'post_title' => 'Owner edit',
+				)
+			);
+		}
 		return $id;
 	}
 
