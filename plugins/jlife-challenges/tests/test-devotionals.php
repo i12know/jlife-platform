@@ -1038,8 +1038,8 @@ class Test_Devotionals extends Jlife_Challenges_TestCase {
 	 * all left alone and counted as skipped.
 	 */
 	public function test_bulk_ignores_ids_that_are_not_in_this_plans_grid() {
-		$mine   = $this->make_post( 'd001', 'en', 'draft' );
-		$other  = $this->make_post( 'd001', 'vi', 'draft' );
+		$mine  = $this->make_post( 'd001', 'en', 'draft' );
+		$other = $this->make_post( 'd001', 'vi', 'draft' );
 		update_post_meta( $other, '_jlife_dev_plan', 'some-other-plan' );
 		$normal = self::factory()->post->create( array( 'post_status' => 'draft' ) );
 		$page   = self::factory()->post->create(
