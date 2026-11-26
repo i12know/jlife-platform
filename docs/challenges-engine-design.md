@@ -579,6 +579,11 @@ Owner decisions (2026-11-24): questions are **private to administrators, not ano
 - export holds no name, date, note or flag; no question text in `error_log`, the audit log or any email
 - account deletion and test-campaign removal purge; no retention cron
 
+**Devotionals bulk status (#262; written first, `test-devotionals.php`):**
+- bulk Ready and Back to Draft by an administrator only; an editor and a participant refused by the page and the handler; a missing, forged or other-action nonce refused with no change
+- posted IDs trusted no further than the grid: another plan, another post type, a duplicate cell, the Trash and made-up IDs are skipped; each change goes through the single action's function and audit; one summary audit row holds counts only, never a title or text
+- Ready still shows to a reader only once the day has opened in their campaign
+
 ## 6. Interfaces for the screens (M6/M7)
 
 - **PHP functions:**
