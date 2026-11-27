@@ -8,6 +8,10 @@ The format follows the spirit of [Keep a Changelog](https://keepachangelog.com/e
 
 ## Unreleased
 
+### Added
+- **`wp jlife reminders recipients`: see who gets the daily email, who is left out and why** (#63 Phase B; a wp-admin view is the follow-up [#268](https://github.com/i12know/jlife-platform/issues/268)). The Reminders screen shows only counts, so a participant's "I didn't get my email" could not be checked. The command is read-only and prints, per campaign, three sections with a total each: **Will be emailed** (exactly the people the next 06:00 send uses, with their reminder language, opt-in date and today's send-log status or "none yet"), **Opted in but not emailed** (reason: enrollment not active, or consent not accepted) and **Unsubscribed** (with the opt-out date).
+  - **Privacy:** user IDs, display names, language, dates and statuses only; no email address, reflection text, group name or score. `--email=<address>` shows only that person's rows without printing the address. `--campaign=<id>` and `--format=table|csv|json` are supported. It writes and sends nothing. Privacy matrix row in `docs/challenges-engine-design.md` §4e; the runbook (`docs/staging-latoc.md`) has the command and a "troubleshooting a reminder complaint" note. English-only like the other `wp jlife` commands, so no new translatable text.
+
 ### Fixed
 - **A fresh site no longer keeps WordPress's default Sample Page and "Hello world!" post** (#263, also seen in the Vietnamese audit #119). The first `wp jlife help-pages seed` (in the deploy) moves them to the Trash only while they are still untouched (right slug, published, never edited); an owner's page with that slug, or any other page, is left alone and nothing is deleted for good. The runbook now says how latoc's top menu is built (check Appearance > Menus; a theme with no assigned menu lists every published page) and gives the one-time manual Trash step for latoc, whose seed has already run. No new visible text.
 - **Daily reminder subjects are short enough for a phone inbox** (#260). A Harmony reading day with several sections made a subject of about 170 characters that phones cut off.
