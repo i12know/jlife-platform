@@ -702,11 +702,11 @@ function jlife_challenges_reminder_recipients_report( $campaign, $user_id = 0, $
 	$needle   = isset( $args['name'] ) ? trim( (string) $args['name'] ) : '';
 	$per_page = isset( $args['per_page'] ) ? max( 0, (int) $args['per_page'] ) : 0;
 	$page     = isset( $args['page'] ) ? max( 1, (int) $args['page'] ) : 1;
-	$window  = jlife_challenges_reminder_window( $campaign, jlife_challenges_now() );
-	$prefs   = jlife_challenges_table( 'reminder_prefs' );
-	$enrol   = jlife_challenges_table( 'enrollments' );
-	$sends   = jlife_challenges_table( 'reminder_sends' );
-	$log     = array();
+	$window   = jlife_challenges_reminder_window( $campaign, jlife_challenges_now() );
+	$prefs    = jlife_challenges_table( 'reminder_prefs' );
+	$enrol    = jlife_challenges_table( 'enrollments' );
+	$sends    = jlife_challenges_table( 'reminder_sends' );
+	$log      = array();
 	// phpcs:disable WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom tables; names from $wpdb->prefix.
 	$pref_rows = (array) $wpdb->get_results(
 		$wpdb->prepare(

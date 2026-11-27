@@ -313,8 +313,8 @@ function jlife_challenges_reminders_who_status_text( $today ) {
 		'cancelled' => __( 'Cancelled', 'jlife-challenges' ),
 		'none yet'  => __( 'None yet', 'jlife-challenges' ),
 	);
-	$word = (string) strtok( (string) $today, ' ' );
-	$rest = (string) substr( (string) $today, strlen( $word ) );
+	$word   = (string) strtok( (string) $today, ' ' );
+	$rest   = (string) substr( (string) $today, strlen( $word ) );
 	if ( 'none' === $word ) {
 		return $labels['none yet'];
 	}
@@ -421,11 +421,11 @@ function jlife_challenges_reminders_who_campaign_html( array $campaign, array $q
 		'opted_in_not_emailed' => __( 'Opted in but not emailed', 'jlife-challenges' ),
 		'unsubscribed'         => __( 'Unsubscribed', 'jlife-challenges' ),
 	);
-	$langs = array(
+	$langs  = array(
 		'en_US' => __( 'English', 'jlife-challenges' ),
 		'vi'    => __( 'Vietnamese', 'jlife-challenges' ),
 	);
-	$html = '<h3>' . esc_html( $report['title'] ) . '</h3>';
+	$html   = '<h3>' . esc_html( $report['title'] ) . '</h3>';
 	foreach ( $report['sections'] as $section ) {
 		$title = $titles[ $section['key'] ] ?? $section['title'];
 		$last  = 'unsubscribed' === $section['key'] ? __( 'Opted out', 'jlife-challenges' ) : ( 'will_be_emailed' === $section['key'] ? __( 'Today', 'jlife-challenges' ) : __( 'Reason', 'jlife-challenges' ) );

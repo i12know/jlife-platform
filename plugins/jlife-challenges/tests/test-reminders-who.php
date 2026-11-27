@@ -139,6 +139,7 @@ class Test_Reminders_Who extends Jlife_Challenges_TestCase {
 	 * @return array
 	 */
 	private function email_request( $email ) {
+		wp_set_current_user( $this->u['organizer'] ); // The nonce belongs to the signed-in admin.
 		return array(
 			'nonce' => wp_create_nonce( JLIFE_CHALLENGES_REMINDERS_WHO_ACTION ),
 			'email' => $email,
@@ -164,8 +165,8 @@ class Test_Reminders_Who extends Jlife_Challenges_TestCase {
 	 * Nobody but a site admin gets the list or a search result, whatever they forge.
 	 */
 	public function test_only_a_site_admin_gets_anything() {
-		$editor = self::factory()->user->create( array( 'role' => 'editor' ) );
-		$author = self::factory()->user->create( array( 'role' => 'author' ) );
+		$editor  = self::factory()->user->create( array( 'role' => 'editor' ) );
+		$author  = self::factory()->user->create( array( 'role' => 'author' ) );
 		$viewers = array();
 
 		$viewers['editor']            = $editor;
