@@ -377,8 +377,28 @@ have given consent and opted in to reminders.
 - `jlife reminders preview --day=<n> [--locale=vi] [--html]`: prints the subject
   and text for a made-up recipient. Sends and logs nothing. Use it to read the
   Vietnamese wording before a pilot.
+- `jlife reminders recipients [--campaign=<id>] [--email=<address>] [--format=table|csv|json]`:
+  read-only. For each campaign it lists, by user ID and display name (with
+  language and dates; never an email address, text, group name or score):
+  **Will be emailed** (exactly who the next 06:00 send uses, with today's send-log
+  status or "none yet"), **Opted in but not emailed** (reason `enrollment not
+  active` or `consent not accepted`) and **Unsubscribed** (with the opt-out date),
+  and a total per section. Dates are UTC. `csv` and `json` print one list with a
+  `section` column.
 - `jlife reminders run`: one tick now, the same work the cron event does.
 - `jlife reminders mode <off|dry_run|test|live>`
+
+**Troubleshooting a reminder complaint ("I didn't get my email").** Run
+`jlife reminders recipients --email=<their account address>`. Only their rows
+print (the address is looked up, never shown). Then read the sections: under
+**Unsubscribed** they stopped it themselves; under **Opted in but not emailed**
+the reason says what to fix (an enrollment that is not active, or consent not
+accepted); under **Will be emailed**, *today* shows whether the log has
+`accepted`, `failed (reason)`, `skipped (reason)` or "none yet" (check the mode
+with `status`: Off, Dry run and Test do not email everyone). No row at all means
+they never turned the reminder on for this campaign. `accepted` means Brevo took
+the message: if it is `accepted` and the person has nothing, check Brevo's
+blocked contacts and their spam folder.
 
 **Brevo settings** (checked on the Free plan, 2026-11-19, [#63](https://github.com/i12know/jlife-platform/issues/63#issuecomment-7013213884)):
 

@@ -646,3 +646,158 @@ function jlife_challenges_reminders_status( $campaign ) {
 		'next_run'    => (int) wp_next_scheduled( JLIFE_CHALLENGES_REMINDERS_HOOK ),
 	);
 }
+
+/**
+ * The user ID for an account email address, for the recipients listing's
+ * --email filter. The address is only looked up, never shown.
+ *
+ * @param string $email Address typed by the admin.
+ * @return int User ID, or 0 when no account has it.
+ */
+function jlife_challenges_reminder_recipients_user_id( $email ) {
+	$user = get_user_by( 'email', trim( (string) $email ) );
+	return $user ? (int) $user->ID : 0;
+}
+
+/**
+ * A name that is safe to print: the account's display name, unless it is
+ * missing or looks like an email address (some sign-ups use the address).
+ *
+ * @param int $user_id User.
+ * @return string
+ */
+function jlife_challenges_reminder_recipients_name( $user_id ) {
+	$user = get_userdata( (int) $user_id );
+	if ( ! $user ) {
+		return '(no account)';
+	}
+	$name = trim( (string) $user->display_name );
+	if ( '' === $name ) {
+		return '(no name)';
+	}
+	return false !== is_email( $name ) ? '(name hidden: looks like an email address)' : $name;
+}
+
+/**
+ * Who the next send uses, who opted in but is left out (and why), and who
+ * unsubscribed, for one campaign (WP-CLI recipients). Read-only: it queries the
+ * reminder choices, enrollments and today's send log, and writes and sends
+ * nothing. Rows hold IDs, display names, language, dates and statuses only: no
+ * email address, text, group name or score.
+ *
+ * @param array $campaign Campaign row.
+ * @param int   $user_id  Only this person's rows (0 = everyone).
+ * @return array { campaign_id, title, mode, day_key, sections: list of { key, title, fields, rows, total } }
+ */
+function jlife_challenges_reminder_recipients_report( $campaign, $user_id = 0 ) {
+	global $wpdb;
+	$cid     = (int) $campaign['id'];
+	$user_id = (int) $user_id;
+	$window  = jlife_challenges_reminder_window( $campaign, jlife_challenges_now() );
+	$prefs   = jlife_challenges_table( 'reminder_prefs' );
+	$enrol   = jlife_challenges_table( 'enrollments' );
+	$sends   = jlife_challenges_table( 'reminder_sends' );
+	$log     = array();
+	// phpcs:disable WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom tables; names from $wpdb->prefix.
+	$pref_rows = (array) $wpdb->get_results(
+		$wpdb->prepare(
+			"SELECT p.user_id, p.opted_in, p.opted_out, p.locale, e.status AS enrollment_status
+			FROM {$prefs} p LEFT JOIN {$enrol} e ON e.campaign_id = p.campaign_id AND e.user_id = p.user_id
+			WHERE p.campaign_id = %d AND p.opted_in IS NOT NULL ORDER BY p.user_id",
+			$cid
+		),
+		ARRAY_A
+	);
+	if ( '' !== $window['day_key'] ) {
+		$log_rows = (array) $wpdb->get_results( $wpdb->prepare( "SELECT user_id, status, last_error_class FROM {$sends} WHERE campaign_id = %d AND day_key = %s", $cid, $window['day_key'] ), ARRAY_A );
+		foreach ( $log_rows as $r ) {
+			$log[ (int) $r['user_id'] ] = $r['status'] . ( '' !== (string) $r['last_error_class'] ? ' (' . $r['last_error_class'] . ')' : '' );
+		}
+	}
+	// phpcs:enable
+	$send_to  = jlife_challenges_reminder_recipients( $cid );
+	$emailed  = array();
+	$left_out = array();
+	$stopped  = array();
+	foreach ( $pref_rows as $r ) {
+		$uid = (int) $r['user_id'];
+		if ( $user_id > 0 && $uid !== $user_id ) {
+			continue;
+		}
+		$row = array(
+			'user_id'       => $uid,
+			'display_name'  => jlife_challenges_reminder_recipients_name( $uid ),
+			'language'      => jlife_challenges_reminder_locale( (string) $r['locale'] ),
+			'opted_in_utc'  => (string) $r['opted_in'],
+			'opted_out_utc' => (string) $r['opted_out'],
+			'today'         => '',
+			'reason'        => '',
+		);
+		if ( null !== $r['opted_out'] ) {
+			$stopped[] = $row;
+		} elseif ( in_array( $uid, $send_to, true ) ) {
+			$row['today'] = $log[ $uid ] ?? 'none yet';
+			$emailed[]    = $row;
+		} else {
+			$row['reason'] = 'active' !== (string) $r['enrollment_status'] ? 'enrollment not active' : 'consent not accepted';
+			$left_out[]    = $row;
+		}
+	}
+	$sections = array(
+		array(
+			'key'    => 'will_be_emailed',
+			'title'  => 'Will be emailed (the next 06:00 send)',
+			'fields' => array( 'user_id', 'display_name', 'language', 'opted_in_utc', 'today' ),
+			'rows'   => $emailed,
+		),
+		array(
+			'key'    => 'opted_in_not_emailed',
+			'title'  => 'Opted in but not emailed',
+			'fields' => array( 'user_id', 'display_name', 'language', 'opted_in_utc', 'reason' ),
+			'rows'   => $left_out,
+		),
+		array(
+			'key'    => 'unsubscribed',
+			'title'  => 'Unsubscribed',
+			'fields' => array( 'user_id', 'display_name', 'language', 'opted_out_utc' ),
+			'rows'   => $stopped,
+		),
+	);
+	foreach ( $sections as $i => $section ) {
+		$sections[ $i ]['total'] = sprintf( 'Total, %s: %d', strtolower( $section['title'] ), count( $section['rows'] ) );
+	}
+	return array(
+		'campaign_id' => $cid,
+		'title'       => (string) $campaign['title'],
+		'mode'        => jlife_challenges_reminders_mode(),
+		'day_key'     => $window['day_key'],
+		'sections'    => $sections,
+	);
+}
+
+/**
+ * One flat list of rows for the csv and json formats: every row of every
+ * section, with its campaign and section name.
+ *
+ * @param array $report jlife_challenges_reminder_recipients_report() result.
+ * @return array[]
+ */
+function jlife_challenges_reminder_recipients_items( $report ) {
+	$items = array();
+	foreach ( $report['sections'] as $section ) {
+		foreach ( $section['rows'] as $row ) {
+			$items[] = array(
+				'campaign_id'   => $report['campaign_id'],
+				'section'       => $section['key'],
+				'user_id'       => $row['user_id'],
+				'display_name'  => $row['display_name'],
+				'language'      => $row['language'],
+				'opted_in_utc'  => $row['opted_in_utc'],
+				'opted_out_utc' => $row['opted_out_utc'],
+				'today'         => $row['today'],
+				'reason'        => $row['reason'],
+			);
+		}
+	}
+	return $items;
+}

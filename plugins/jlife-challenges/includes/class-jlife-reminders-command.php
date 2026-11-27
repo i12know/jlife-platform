@@ -1,6 +1,6 @@
 <?php
 /**
- * WP-CLI: `wp jlife reminders status|preview|run|mode` (#63 Phase B).
+ * WP-CLI: `wp jlife reminders status|preview|run|mode|recipients` (#63 Phase B).
  *
  * Output never contains an email address, a message body for a real person or a
  * credential. Preview writes for a made-up recipient.
@@ -112,6 +112,63 @@ class Jlife_Reminders_Command {
 			WP_CLI::error( $r->get_error_message() );
 		}
 		WP_CLI::success( 'Mode is now ' . jlife_challenges_reminders_mode() . '.' );
+	}
+
+	/**
+	 * List who gets the daily reminder, who is left out and why, and who unsubscribed. Read-only.
+	 *
+	 * Shows user IDs, display names, language and dates. Never an email address,
+	 * a reflection, a group name or a score. To look into one complaint, pass
+	 * --email: the person is found by address and only their rows are shown.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--campaign=<id>]
+	 * : Campaign ID. Default: every active campaign.
+	 *
+	 * [--email=<address>]
+	 * : Show only the person with this account email (the address is not printed).
+	 *
+	 * [--format=<format>]
+	 * : table (default, one table per section), csv or json (one list with a section column).
+	 *
+	 * @param array $args       Positional args.
+	 * @param array $assoc_args Options.
+	 */
+	public function recipients( $args, $assoc_args ) {
+		$campaigns = $this->campaigns( $assoc_args );
+		$format    = isset( $assoc_args['format'] ) ? (string) $assoc_args['format'] : 'table';
+		if ( ! in_array( $format, array( 'table', 'csv', 'json' ), true ) ) {
+			WP_CLI::error( 'Format must be table, csv or json.' );
+		}
+		$user_id = 0;
+		if ( isset( $assoc_args['email'] ) ) {
+			$user_id = jlife_challenges_reminder_recipients_user_id( (string) $assoc_args['email'] );
+			if ( $user_id < 1 ) {
+				WP_CLI::error( 'No account has that email address.' );
+			}
+		}
+		$items = array();
+		foreach ( $campaigns as $campaign ) {
+			$report = jlife_challenges_reminder_recipients_report( $campaign, $user_id );
+			if ( 'table' !== $format ) {
+				$items = array_merge( $items, jlife_challenges_reminder_recipients_items( $report ) );
+				continue;
+			}
+			WP_CLI::log( sprintf( 'Campaign %d (%s). Mode: %s. Today: %s.', $report['campaign_id'], $report['title'], $report['mode'], '' !== $report['day_key'] ? $report['day_key'] : 'outside the campaign' ) );
+			foreach ( $report['sections'] as $section ) {
+				WP_CLI::log( '' );
+				WP_CLI::log( $section['title'] );
+				if ( $section['rows'] ) {
+					\WP_CLI\Utils\format_items( 'table', $section['rows'], $section['fields'] );
+				}
+				WP_CLI::log( $section['total'] );
+			}
+			WP_CLI::log( '' );
+		}
+		if ( 'table' !== $format ) {
+			\WP_CLI\Utils\format_items( $format, $items, array( 'campaign_id', 'section', 'user_id', 'display_name', 'language', 'opted_in_utc', 'opted_out_utc', 'today', 'reason' ) );
+		}
 	}
 
 	/**
