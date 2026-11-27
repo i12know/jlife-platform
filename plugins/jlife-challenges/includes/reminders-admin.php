@@ -7,7 +7,7 @@
  * - J-Life → Reminders, and a "Settings" link on the Plugins screen. The mode is a
  *   per-site option, so the page lives in the site admin (also reachable from the
  *   network Plugins screen when the plugin is network-activated).
- * - Counts only: no participant name or email address is ever printed.
+ * - The status panel is counts only. The "Who gets reminders" section (#268) lists IDs, display names, language, dates and statuses, never an email address.
  * - Changes go through admin-post.php: POST only, nonce, manage_options, then a
  *   redirect, and through jlife_challenges_reminders_set_mode() so each is audited.
  *
@@ -21,6 +21,12 @@ defined( 'ABSPATH' ) || exit;
  */
 const JLIFE_CHALLENGES_REMINDERS_PAGE   = 'jlife-reminders';
 const JLIFE_CHALLENGES_REMINDERS_ACTION = 'jlife_reminders_mode';
+
+/**
+ * The "Who gets reminders" email search: its nonce action, and rows per section per page.
+ */
+const JLIFE_CHALLENGES_REMINDERS_WHO_ACTION   = 'jlife_reminders_who';
+const JLIFE_CHALLENGES_REMINDERS_WHO_PER_PAGE = 50;
 
 /**
  * Brevo's free plan sends at most this many emails a day.
@@ -249,6 +255,262 @@ function jlife_challenges_reminders_admin_when( $timestamp, $timezone ) {
 }
 
 /**
+ * What the "Who gets reminders" section was asked for (#268). Pure apart from the
+ * capability and nonce checks: the caller passes the request in. An email search
+ * is a POST with a nonce, so the address never reaches a URL or a log; a GET
+ * email is never read. A name search or a page number may be a GET.
+ *
+ * @param string $method 'GET' or 'POST'.
+ * @param array  $in     { nonce: string, email: string, name: string, page: int }.
+ * @return array { state: forbidden|all|name|bad_name|bad_nonce|email_found|email_unknown, user_id: int, name: string, page: int }
+ */
+function jlife_challenges_reminders_who_query( $method, array $in ) {
+	$out = array(
+		'state'   => 'all',
+		'user_id' => 0,
+		'name'    => '',
+		'page'    => max( 1, (int) ( $in['page'] ?? 1 ) ),
+	);
+	if ( ! current_user_can( 'manage_options' ) ) {
+		$out['state'] = 'forbidden';
+		return $out;
+	}
+	$email = trim( (string) ( $in['email'] ?? '' ) );
+	if ( 'POST' === strtoupper( (string) $method ) && '' !== $email ) {
+		if ( ! wp_verify_nonce( (string) ( $in['nonce'] ?? '' ), JLIFE_CHALLENGES_REMINDERS_WHO_ACTION ) ) {
+			$out['state'] = 'bad_nonce';
+			return $out;
+		}
+		$out['user_id'] = jlife_challenges_reminder_recipients_user_id( $email );
+		$out['state']   = $out['user_id'] > 0 ? 'email_found' : 'email_unknown';
+		$out['page']    = 1;
+		return $out;
+	}
+	$name = trim( (string) ( $in['name'] ?? '' ) );
+	if ( '' !== $name ) {
+		if ( false !== strpos( $name, '@' ) ) {
+			$out['state'] = 'bad_name';
+			return $out;
+		}
+		$out['state'] = 'name';
+		$out['name']  = $name;
+	}
+	return $out;
+}
+
+/**
+ * The words for a send status from the report ("failed (send_failed)", "none yet").
+ *
+ * @param string $today The report's `today` text.
+ * @return string
+ */
+function jlife_challenges_reminders_who_status_text( $today ) {
+	$labels = array(
+		'queued'    => __( 'Queued', 'jlife-challenges' ),
+		'accepted'  => __( 'Accepted', 'jlife-challenges' ),
+		'failed'    => __( 'Failed', 'jlife-challenges' ),
+		'skipped'   => __( 'Skipped', 'jlife-challenges' ),
+		'cancelled' => __( 'Cancelled', 'jlife-challenges' ),
+		'none yet'  => __( 'None yet', 'jlife-challenges' ),
+	);
+	$word   = (string) strtok( (string) $today, ' ' );
+	$rest   = (string) substr( (string) $today, strlen( $word ) );
+	if ( 'none' === $word ) {
+		return $labels['none yet'];
+	}
+	return isset( $labels[ $word ] ) ? $labels[ $word ] . $rest : (string) $today;
+}
+
+/**
+ * One section's "reason" cell.
+ *
+ * @param string $reason The report's reason text.
+ * @return string
+ */
+function jlife_challenges_reminders_who_reason_text( $reason ) {
+	if ( 'enrollment not active' === $reason ) {
+		return __( 'Enrollment is not active', 'jlife-challenges' );
+	}
+	if ( 'consent not accepted' === $reason ) {
+		return __( 'Consent not accepted', 'jlife-challenges' );
+	}
+	return (string) $reason;
+}
+
+/**
+ * A stored UTC time in the campaign's timezone, or a dash.
+ *
+ * @param string $utc      'Y-m-d H:i:s' in UTC.
+ * @param string $timezone IANA timezone.
+ * @return string
+ */
+function jlife_challenges_reminders_who_time( $utc, $timezone ) {
+	$stamp = '' !== (string) $utc ? strtotime( $utc . ' UTC' ) : false;
+	return $stamp ? jlife_challenges_reminders_admin_when( (int) $stamp, $timezone ) : '—';
+}
+
+/**
+ * The search forms and, for each active campaign, the three lists (#268). Shows
+ * IDs, display names, language, dates and statuses only: no email address (a
+ * display name that looks like one is already replaced), reflection text, group
+ * name or score. Read-only. Everything printed is escaped.
+ *
+ * @param array $campaigns Active campaign rows.
+ * @param array $query     jlife_challenges_reminders_who_query() result.
+ * @return string Escaped HTML, or '' when the viewer may not see it.
+ */
+function jlife_challenges_reminders_who_html( array $campaigns, array $query ) {
+	if ( ! current_user_can( 'manage_options' ) || 'forbidden' === $query['state'] ) {
+		return '';
+	}
+	$page_url = jlife_challenges_reminders_admin_url();
+	$html     = '<h2>' . esc_html__( 'Who gets reminders', 'jlife-challenges' ) . '</h2>'
+		. '<p>' . esc_html__( 'To check one complaint, search by email or by name. Email addresses are never shown in the lists.', 'jlife-challenges' ) . '</p>'
+		. '<form method="post" action="' . esc_url( $page_url ) . '"><p>'
+		. wp_nonce_field( JLIFE_CHALLENGES_REMINDERS_WHO_ACTION, 'jl_who_nonce', false, false )
+		. '<label for="jl-who-email">' . esc_html__( 'Search by email address', 'jlife-challenges' ) . '</label> '
+		. '<input type="email" id="jl-who-email" name="jl_email" value="" autocomplete="off"> '
+		. '<button type="submit" class="button">' . esc_html__( 'Search', 'jlife-challenges' ) . '</button></p></form>'
+		. '<form method="get" action="' . esc_url( admin_url( 'admin.php' ) ) . '"><p>'
+		. '<input type="hidden" name="page" value="' . esc_attr( JLIFE_CHALLENGES_REMINDERS_PAGE ) . '">'
+		. '<label for="jl-who-name">' . esc_html__( 'Search by name', 'jlife-challenges' ) . '</label> '
+		. '<input type="text" id="jl-who-name" name="jl_name" value="' . esc_attr( $query['name'] ) . '"> '
+		. '<button type="submit" class="button">' . esc_html__( 'Search', 'jlife-challenges' ) . '</button></p></form>';
+
+	if ( 'bad_nonce' === $query['state'] ) {
+		return $html . '<div class="notice notice-error inline"><p>' . esc_html__( 'The search could not be checked. Reload the page and try again.', 'jlife-challenges' ) . '</p></div>';
+	}
+	if ( 'bad_name' === $query['state'] ) {
+		return $html . '<div class="notice notice-warning inline"><p>' . esc_html__( 'Use the email box to search by email address.', 'jlife-challenges' ) . '</p></div>';
+	}
+	if ( 'email_unknown' === $query['state'] ) {
+		return $html . '<div class="notice notice-warning inline"><p>' . esc_html__( 'No account has the address you entered.', 'jlife-challenges' ) . '</p></div>';
+	}
+	if ( 'email_found' === $query['state'] ) {
+		$html .= '<p><strong>' . esc_html__( 'Results for the address you entered.', 'jlife-challenges' ) . '</strong> <a href="' . esc_url( $page_url ) . '">' . esc_html__( 'Show everyone', 'jlife-challenges' ) . '</a></p>';
+	}
+	if ( ! $campaigns ) {
+		return $html . '<p>' . esc_html__( 'There is no active campaign.', 'jlife-challenges' ) . '</p>';
+	}
+	foreach ( $campaigns as $campaign ) {
+		$html .= jlife_challenges_reminders_who_campaign_html( $campaign, $query );
+	}
+	return $html;
+}
+
+/**
+ * One campaign's three lists.
+ *
+ * @param array $campaign Campaign row.
+ * @param array $query    jlife_challenges_reminders_who_query() result.
+ * @return string Escaped HTML.
+ */
+function jlife_challenges_reminders_who_campaign_html( array $campaign, array $query ) {
+	$tz     = (string) $campaign['timezone'];
+	$report = jlife_challenges_reminder_recipients_report(
+		$campaign,
+		(int) $query['user_id'],
+		array(
+			'name'     => $query['name'],
+			'per_page' => JLIFE_CHALLENGES_REMINDERS_WHO_PER_PAGE,
+			'page'     => $query['page'],
+		)
+	);
+	$titles = array(
+		'will_be_emailed'      => __( 'Will be emailed (the next 06:00 send)', 'jlife-challenges' ),
+		'opted_in_not_emailed' => __( 'Opted in but not emailed', 'jlife-challenges' ),
+		'unsubscribed'         => __( 'Unsubscribed', 'jlife-challenges' ),
+	);
+	$langs  = array(
+		'en_US' => __( 'English', 'jlife-challenges' ),
+		'vi'    => __( 'Vietnamese', 'jlife-challenges' ),
+	);
+	$html   = '<h3>' . esc_html( $report['title'] ) . '</h3>';
+	foreach ( $report['sections'] as $section ) {
+		$title = $titles[ $section['key'] ] ?? $section['title'];
+		$last  = 'unsubscribed' === $section['key'] ? __( 'Opted out', 'jlife-challenges' ) : ( 'will_be_emailed' === $section['key'] ? __( 'Today', 'jlife-challenges' ) : __( 'Reason', 'jlife-challenges' ) );
+		$date  = 'unsubscribed' === $section['key'] ? __( 'Opted out', 'jlife-challenges' ) : __( 'Opted in', 'jlife-challenges' );
+		$html .= '<h4>' . esc_html( $title ) . '</h4>';
+		/* translators: 1: section name, 2: number of people. */
+		$html .= '<p>' . esc_html( sprintf( __( 'Total, %1$s: %2$d', 'jlife-challenges' ), $title, (int) $section['count'] ) ) . '</p>';
+		if ( ! $section['rows'] ) {
+			continue;
+		}
+		$html .= '<table class="widefat striped" style="max-width:900px"><thead><tr>'
+			. '<th scope="col">' . esc_html__( 'User', 'jlife-challenges' ) . '</th>'
+			. '<th scope="col">' . esc_html__( 'Name', 'jlife-challenges' ) . '</th>'
+			. '<th scope="col">' . esc_html__( 'Language', 'jlife-challenges' ) . '</th>'
+			. '<th scope="col">' . esc_html( $date ) . '</th>';
+		if ( 'unsubscribed' !== $section['key'] ) {
+			$html .= '<th scope="col">' . esc_html( $last ) . '</th>';
+		}
+		$html .= '</tr></thead><tbody>';
+		foreach ( $section['rows'] as $row ) {
+			$uid   = (int) $row['user_id'];
+			$stamp = 'unsubscribed' === $section['key'] ? $row['opted_out_utc'] : $row['opted_in_utc'];
+			$html .= '<tr><td><a href="' . esc_url( get_admin_url( get_current_blog_id(), 'user-edit.php?user_id=' . $uid ) ) . '">' . esc_html( (string) $uid ) . '</a></td>'
+				. '<td>' . esc_html( jlife_challenges_reminders_who_name_text( (string) $row['display_name'] ) ) . '</td>'
+				. '<td>' . esc_html( $langs[ $row['language'] ] ?? (string) $row['language'] ) . '</td>'
+				. '<td>' . esc_html( jlife_challenges_reminders_who_time( (string) $stamp, $tz ) ) . '</td>';
+			if ( 'will_be_emailed' === $section['key'] ) {
+				$html .= '<td>' . esc_html( jlife_challenges_reminders_who_status_text( (string) $row['today'] ) ) . '</td>';
+			} elseif ( 'opted_in_not_emailed' === $section['key'] ) {
+				$html .= '<td>' . esc_html( jlife_challenges_reminders_who_reason_text( (string) $row['reason'] ) ) . '</td>';
+			}
+			$html .= '</tr>';
+		}
+		$html .= '</tbody></table>' . jlife_challenges_reminders_who_pager( $section, $query );
+	}
+	return $html;
+}
+
+/**
+ * The report's placeholder names, translated.
+ *
+ * @param string $name The report's display name.
+ * @return string
+ */
+function jlife_challenges_reminders_who_name_text( $name ) {
+	if ( '(no account)' === $name ) {
+		return __( '(no account)', 'jlife-challenges' );
+	}
+	if ( '(no name)' === $name ) {
+		return __( '(no name)', 'jlife-challenges' );
+	}
+	if ( '(name hidden: looks like an email address)' === $name ) {
+		return __( '(name hidden: looks like an email address)', 'jlife-challenges' );
+	}
+	return $name;
+}
+
+/**
+ * Previous and next links for one section (page number and name search only).
+ *
+ * @param array $section Report section (page, pages).
+ * @param array $query   jlife_challenges_reminders_who_query() result.
+ * @return string Escaped HTML, or ''.
+ */
+function jlife_challenges_reminders_who_pager( array $section, array $query ) {
+	if ( (int) $section['pages'] < 2 ) {
+		return '';
+	}
+	$page = (int) $section['page'];
+	$base = jlife_challenges_reminders_admin_url();
+	if ( '' !== $query['name'] ) {
+		$base = add_query_arg( 'jl_name', $query['name'], $base );
+	}
+	/* translators: 1: current page, 2: number of pages. */
+	$html = '<p>' . esc_html( sprintf( __( 'Page %1$d of %2$d', 'jlife-challenges' ), $page, (int) $section['pages'] ) ) . ' ';
+	if ( $page > 1 ) {
+		$html .= '<a class="button" href="' . esc_url( add_query_arg( 'jl_page', $page - 1, $base ) ) . '">' . esc_html__( 'Previous', 'jlife-challenges' ) . '</a> ';
+	}
+	if ( $page < (int) $section['pages'] ) {
+		$html .= '<a class="button" href="' . esc_url( add_query_arg( 'jl_page', $page + 1, $base ) ) . '">' . esc_html__( 'Next', 'jlife-challenges' ) . '</a>';
+	}
+	return $html . '</p>';
+}
+
+/**
  * The notice shown after a change.
  *
  * @param string $code The jl_result code.
@@ -273,9 +535,10 @@ function jlife_challenges_reminders_admin_notice( $code ) {
  *
  * @param array  $o      jlife_challenges_reminders_admin_overview().
  * @param string $result The jl_result code from the redirect, or ''.
+ * @param string $who    The "Who gets reminders" section (already escaped), or ''.
  * @return string Escaped HTML.
  */
-function jlife_challenges_reminders_admin_html( array $o, $result = '' ) {
+function jlife_challenges_reminders_admin_html( array $o, $result = '', $who = '' ) {
 	$html  = '<div class="wrap"><h1>' . esc_html__( 'Daily reading reminders', 'jlife-challenges' ) . '</h1>';
 	$html .= jlife_challenges_reminders_admin_notice( $result );
 
@@ -347,7 +610,7 @@ function jlife_challenges_reminders_admin_html( array $o, $result = '' ) {
 	$html .= '<fieldset style="border:1px solid #c3c4c7;padding:8px 16px;max-width:640px"><legend><strong>' . esc_html__( 'Go live', 'jlife-challenges' ) . '</strong></legend>'
 		. '<p><label><input type="checkbox" name="jl_confirm_live" value="1"' . ( $ready ? '' : ' disabled' ) . '> ' . esc_html( $confirm ) . '</label></p>'
 		. ( $ready ? '' : '<p>' . esc_html__( 'Live is unavailable until the mail settings are ready.', 'jlife-challenges' ) . '</p>' )
-		. '<p><button type="submit" name="jl_mode" value="live" class="button"' . ( $ready ? '' : ' disabled' ) . '>' . esc_html__( 'Switch to Live', 'jlife-challenges' ) . '</button></p></fieldset></form></div>';
+		. '<p><button type="submit" name="jl_mode" value="live" class="button"' . ( $ready ? '' : ' disabled' ) . '>' . esc_html__( 'Switch to Live', 'jlife-challenges' ) . '</button></p></fieldset></form>' . $who . '</div>';
 	return $html;
 }
 
@@ -359,5 +622,20 @@ function jlife_challenges_reminders_admin_page() {
 		wp_die( esc_html__( 'You are not allowed to see this page.', 'jlife-challenges' ), '', array( 'response' => 403 ) );
 	}
 	$result = isset( $_GET['jl_result'] ) ? sanitize_key( wp_unslash( $_GET['jl_result'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification -- display only; changes nothing.
-	echo jlife_challenges_reminders_admin_html( jlife_challenges_reminders_admin_overview(), $result ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every part is escaped.
+	$method = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) : 'GET';
+
+	// phpcs:disable WordPress.Security.NonceVerification -- the email search is verified inside jlife_challenges_reminders_who_query(); a GET name search or page number only filters a read-only list.
+	$query = jlife_challenges_reminders_who_query(
+		$method,
+		array(
+			'nonce' => isset( $_POST['jl_who_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['jl_who_nonce'] ) ) : '',
+			'email' => isset( $_POST['jl_email'] ) ? sanitize_text_field( wp_unslash( $_POST['jl_email'] ) ) : '',
+			'name'  => isset( $_GET['jl_name'] ) ? sanitize_text_field( wp_unslash( $_GET['jl_name'] ) ) : '',
+			'page'  => isset( $_GET['jl_page'] ) ? absint( $_GET['jl_page'] ) : 1,
+		)
+	);
+	// phpcs:enable
+	$overview = jlife_challenges_reminders_admin_overview();
+	$who      = jlife_challenges_reminders_who_html( $overview['campaigns'], $query );
+	echo jlife_challenges_reminders_admin_html( $overview, $result, $who ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every part is escaped.
 }

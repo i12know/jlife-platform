@@ -685,19 +685,28 @@ function jlife_challenges_reminder_recipients_name( $user_id ) {
  * nothing. Rows hold IDs, display names, language, dates and statuses only: no
  * email address, text, group name or score.
  *
+ * The wp-admin screen (#268) passes `$args`: `name` (keep rows whose printed
+ * name contains this text, any case), `per_page` (0 = no paging, the CLI) and
+ * `page` (1-based). Each section's `count` is the number of matching rows before
+ * paging; `rows` is the current page; `total` is the sentence for `count`.
+ *
  * @param array $campaign Campaign row.
  * @param int   $user_id  Only this person's rows (0 = everyone).
- * @return array { campaign_id, title, mode, day_key, sections: list of { key, title, fields, rows, total } }
+ * @param array $args     Optional name, per_page, page.
+ * @return array { campaign_id, title, mode, day_key, sections: list of { key, title, fields, rows, total, count, page, pages } }
  */
-function jlife_challenges_reminder_recipients_report( $campaign, $user_id = 0 ) {
+function jlife_challenges_reminder_recipients_report( $campaign, $user_id = 0, $args = array() ) {
 	global $wpdb;
-	$cid     = (int) $campaign['id'];
-	$user_id = (int) $user_id;
-	$window  = jlife_challenges_reminder_window( $campaign, jlife_challenges_now() );
-	$prefs   = jlife_challenges_table( 'reminder_prefs' );
-	$enrol   = jlife_challenges_table( 'enrollments' );
-	$sends   = jlife_challenges_table( 'reminder_sends' );
-	$log     = array();
+	$cid      = (int) $campaign['id'];
+	$user_id  = (int) $user_id;
+	$needle   = isset( $args['name'] ) ? trim( (string) $args['name'] ) : '';
+	$per_page = isset( $args['per_page'] ) ? max( 0, (int) $args['per_page'] ) : 0;
+	$page     = isset( $args['page'] ) ? max( 1, (int) $args['page'] ) : 1;
+	$window   = jlife_challenges_reminder_window( $campaign, jlife_challenges_now() );
+	$prefs    = jlife_challenges_table( 'reminder_prefs' );
+	$enrol    = jlife_challenges_table( 'enrollments' );
+	$sends    = jlife_challenges_table( 'reminder_sends' );
+	$log      = array();
 	// phpcs:disable WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom tables; names from $wpdb->prefix.
 	$pref_rows = (array) $wpdb->get_results(
 		$wpdb->prepare(
@@ -719,14 +728,21 @@ function jlife_challenges_reminder_recipients_report( $campaign, $user_id = 0 ) 
 	$emailed  = array();
 	$left_out = array();
 	$stopped  = array();
+	if ( $user_id < 1 ) {
+		cache_users( array_map( 'intval', wp_list_pluck( $pref_rows, 'user_id' ) ) );
+	}
 	foreach ( $pref_rows as $r ) {
 		$uid = (int) $r['user_id'];
 		if ( $user_id > 0 && $uid !== $user_id ) {
 			continue;
 		}
+		$name = jlife_challenges_reminder_recipients_name( $uid );
+		if ( '' !== $needle && false === mb_stripos( $name, $needle ) ) {
+			continue;
+		}
 		$row = array(
 			'user_id'       => $uid,
-			'display_name'  => jlife_challenges_reminder_recipients_name( $uid ),
+			'display_name'  => $name,
 			'language'      => jlife_challenges_reminder_locale( (string) $r['locale'] ),
 			'opted_in_utc'  => (string) $r['opted_in'],
 			'opted_out_utc' => (string) $r['opted_out'],
@@ -764,7 +780,19 @@ function jlife_challenges_reminder_recipients_report( $campaign, $user_id = 0 ) 
 		),
 	);
 	foreach ( $sections as $i => $section ) {
-		$sections[ $i ]['total'] = sprintf( 'Total, %s: %d', strtolower( $section['title'] ), count( $section['rows'] ) );
+		$count    = count( $section['rows'] );
+		$pages    = $per_page > 0 ? max( 1, (int) ceil( $count / $per_page ) ) : 1;
+		$at       = min( $page, $pages );
+		$section += array(
+			'total' => sprintf( 'Total, %s: %d', strtolower( $section['title'] ), $count ),
+			'count' => $count,
+			'page'  => $at,
+			'pages' => $pages,
+		);
+		if ( $per_page > 0 ) {
+			$section['rows'] = array_slice( $section['rows'], ( $at - 1 ) * $per_page, $per_page );
+		}
+		$sections[ $i ] = $section;
 	}
 	return array(
 		'campaign_id' => $cid,

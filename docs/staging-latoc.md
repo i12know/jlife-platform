@@ -400,6 +400,12 @@ they never turned the reminder on for this campaign. `accepted` means Brevo took
 the message: if it is `accepted` and the person has nothing, check Brevo's
 blocked contacts and their spam folder.
 
+The same answer is now on **J-Life → Reminders → Who gets reminders** (#268), for
+site admins only: the same three lists per campaign, 50 rows per page, times in
+the campaign time zone. Search by email (a form that posts, so the address never
+lands in a URL or log, and it is not shown again) or by part of a name. No email
+address is printed in the lists.
+
 **Brevo settings** (checked on the Free plan, 2026-11-19, [#63](https://github.com/i12know/jlife-platform/issues/63#issuecomment-7013213884)):
 
 - **Tracking cannot be turned off.** Transactional → Settings offers only
