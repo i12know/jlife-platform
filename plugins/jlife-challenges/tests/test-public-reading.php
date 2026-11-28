@@ -1042,4 +1042,186 @@ class Test_Public_Reading extends Jlife_Challenges_TestCase {
 		$this->assertStringContainsString( 'Kinh Thánh 1925', $this->page( 'd001', 'vi' ) );
 		$this->assertStringContainsString( 'New Living Translation', $this->page( 'd001', 'en' ) );
 	}
+
+	/**
+	 * Add days to the fixture plan beside d001, d038 and d053 (copies of Day 1
+	 * with their own day number, date and title), through the importer, with
+	 * the site's pretty /reading/<plan>-dNNN/ addresses.
+	 *
+	 * @param int[] $days Day numbers to add.
+	 */
+	private function add_days( array $days ) {
+		$this->set_permalink_structure( '/%postname%/' );
+		jlife_studies_register_reading_day();
+		flush_rewrite_rules();
+		$doc  = $this->fixture( 'primary' );
+		$base = $doc['days'][0];
+		$add  = array();
+		foreach ( $days as $n ) {
+			$day           = $base;
+			$day['day_id'] = sprintf( 'd%03d', $n );
+			$day['day']    = $n;
+			$day['date']   = gmdate( 'Y-m-d', strtotime( '2026-12-19 +' . $n . ' days' ) );
+			$day['title']  = 'Fake day ' . $n;
+			unset( $day['i18n'] );
+			$add[] = $day;
+		}
+		$doc['days']      = $add;
+		$doc['day_count'] = count( $add );
+		$this->assertSame( count( $add ), jlife_studies_import_reading_plan( $doc ) );
+	}
+
+	/**
+	 * The day arrows block of a page: the jl-daynav row around the day line.
+	 *
+	 * @param string $html The whole page.
+	 * @return string
+	 */
+	private function daynav_of( $html ) {
+		$this->assertSame( 1, preg_match( '#<div class="jl-daynav">.*?</p>(<a [^>]*>.*?</a>|<span class="jl-daynav-gap"></span>)</div>#s', $html, $m ), 'one day-arrow row' );
+		return $m[0];
+	}
+
+	/**
+	 * The expected arrow link (the same markup as Today's, #225).
+	 *
+	 * @param string $url   Target.
+	 * @param string $label Accessible name.
+	 * @param string $arrow Arrow entity.
+	 * @return string
+	 */
+	private function arrow( $url, $label, $arrow ) {
+		return '<a class="jl-daynav-link" href="' . esc_url( $url ) . '" aria-label="' . esc_attr( $label ) . '"><span aria-hidden="true">' . $arrow . '</span></a>';
+	}
+
+	/**
+	 * #272: Day 1 has no previous link (an empty cell keeps the layout) and
+	 * links to Day 2's public page.
+	 */
+	public function test_day_one_has_no_previous_link_and_links_to_day_two() {
+		$this->add_days( array( 2 ) );
+		$nav = $this->daynav_of( $this->main_of( $this->page( 'd001' ) ) );
+		$this->assertStringStartsWith( '<div class="jl-daynav"><span class="jl-daynav-gap"></span><p class="jl-day">', $nav );
+		$this->assertStringNotContainsString( 'Previous day', $nav );
+		$this->assertStringEndsWith( $this->arrow( get_permalink( $this->post_of( 'd002' ) ), 'Next day: Day 2', '&rarr;' ) . '</div>', $nav );
+	}
+
+	/**
+	 * #272: the plan's last day (no later post) has no next link.
+	 */
+	public function test_the_last_day_has_no_next_link() {
+		$this->add_days( array( 52 ) );
+		$nav = $this->daynav_of( $this->main_of( $this->page( 'd053' ) ) );
+		$this->assertStringContainsString( '<div class="jl-daynav">' . $this->arrow( get_permalink( $this->post_of( 'd052' ) ), 'Previous day: Day 52', '&larr;' ) . '<p class="jl-day">', $nav );
+		$this->assertStringEndsWith( '</p><span class="jl-daynav-gap"></span></div>', $nav );
+		$this->assertStringNotContainsString( 'Next day', $nav );
+	}
+
+	/**
+	 * #272: a middle day links to both neighbors' public pages, with plain
+	 * permalinks (no query) when the page had no ?lang=.
+	 */
+	public function test_a_middle_day_links_to_both_neighbors() {
+		$this->add_days( array( 37, 39 ) );
+		$nav = $this->daynav_of( $this->main_of( $this->page( 'd038' ) ) );
+		$this->assertSame(
+			'<div class="jl-daynav">' . $this->arrow( get_permalink( $this->post_of( 'd037' ) ), 'Previous day: Day 37', '&larr;' ),
+			substr( $nav, 0, (int) strpos( $nav, '<p class="jl-day">' ) )
+		);
+		$this->assertStringEndsWith( $this->arrow( get_permalink( $this->post_of( 'd039' ) ), 'Next day: Day 39', '&rarr;' ) . '</div>', $nav );
+		$this->assertStringContainsString( 'href="' . esc_url( home_url( '/reading/life-and-teachings-of-jesus-2026-d039/' ) ) . '"', $nav );
+		$this->assertStringNotContainsString( '?', $nav, 'no query arguments' );
+		$this->assertStringNotContainsString( '/soap', $nav, 'not the signed-in screens' );
+	}
+
+	/**
+	 * #272: a missing or unpublished neighbor post means no link; the cell stays.
+	 */
+	public function test_a_missing_or_unpublished_neighbor_has_no_link() {
+		$nav = $this->daynav_of( $this->main_of( $this->page( 'd038' ) ) );
+		$this->assertSame( 2, substr_count( $nav, '<span class="jl-daynav-gap"></span>' ), 'd037 and d039 do not exist' );
+		$this->assertStringNotContainsString( '<a ', $nav );
+
+		$this->add_days( array( 37, 39 ) );
+		foreach ( array( 'draft', 'private', 'trash' ) as $status ) {
+			wp_update_post(
+				array(
+					'ID'          => $this->post_of( 'd039' ),
+					'post_status' => $status,
+				)
+			);
+			$nav = $this->daynav_of( $this->main_of( $this->page( 'd038' ) ) );
+			$this->assertStringNotContainsString( 'Next day', $nav, $status );
+			$this->assertStringEndsWith( '</p><span class="jl-daynav-gap"></span></div>', $nav, $status );
+			$this->assertStringContainsString( 'Previous day: Day 37', $nav, $status );
+		}
+	}
+
+	/**
+	 * #272: the language from the English | Tiếng Việt switch stays on both
+	 * links (and nothing else is added); the labels follow the page language.
+	 */
+	public function test_the_language_switch_is_kept_on_both_links() {
+		$this->add_days( array( 37, 39 ) );
+		$prev = get_permalink( $this->post_of( 'd037' ) );
+		$next = get_permalink( $this->post_of( 'd039' ) );
+		foreach ( array( 'vi', 'en' ) as $lang ) {
+			$nav = $this->daynav_of( $this->main_of( $this->page( 'd038', $lang ) ) );
+			$this->assertStringContainsString( 'href="' . esc_url( add_query_arg( 'lang', $lang, $prev ) ) . '"', $nav, $lang );
+			$this->assertStringContainsString( 'href="' . esc_url( add_query_arg( 'lang', $lang, $next ) ) . '"', $nav, $lang );
+			$this->assertSame( 2, preg_match_all( '#href="[^"?]*\?lang=' . $lang . '"#', $nav ), "{$lang}: only the language after the address" );
+		}
+		$vi      = $this->daynav_of( $this->main_of( $this->page( 'd038', 'vi' ) ) );
+		$catalog = include dirname( __DIR__ ) . '/languages/jlife-challenges-vi.l10n.php';
+		$this->assertStringContainsString( 'aria-label="' . esc_attr( sprintf( $catalog['messages']['Previous day: Day %d'], 37 ) ) . '"', $vi );
+		$this->assertStringContainsString( 'aria-label="' . esc_attr( sprintf( $catalog['messages']['Next day: Day %d'], 39 ) ) . '"', $vi );
+
+		$nav = $this->daynav_of( $this->main_of( $this->page( 'd038', 'xx' ) ) );
+		$this->assertStringNotContainsString( 'lang=', $nav, 'an unknown ?lang= is not carried' );
+	}
+
+	/**
+	 * #272: the arrows depend on nothing but the posts: not on the date, the
+	 * visitor or sign-in. Signed in or out, before the Marathon or long after,
+	 * the page differs only in the invitation, and Next reaches every
+	 * published day (no "today" cutoff).
+	 */
+	public function test_the_arrows_are_the_same_for_everyone_on_every_date() {
+		$this->add_days( array( 37, 39 ) );
+		$invite = '#<section class="jl-invite">.*?</section>#s';
+		foreach ( array( '', 'vi' ) as $lang ) {
+			$this->set_now( '2026-11-29 08:00:00' );
+			wp_set_current_user( 0 );
+			$reference = preg_replace( $invite, '', $this->page( 'd038', $lang ) );
+			$this->assertStringContainsString( (string) get_permalink( $this->post_of( 'd039' ) ), $this->daynav_of( (string) $reference ), "{$lang}: Next before Day 1 too" );
+			foreach ( array( '2026-12-20 08:00:00', '2027-06-01 08:00:00' ) as $now ) {
+				$this->set_now( $now );
+				foreach ( array( 0, $this->u['a'], $this->u['outsider'], $this->u['organizer'] ) as $viewer ) {
+					wp_set_current_user( $viewer );
+					$this->assertSame( $reference, preg_replace( $invite, '', $this->page( 'd038', $lang ) ), "{$lang} {$now} viewer {$viewer}" );
+				}
+			}
+		}
+	}
+
+	/**
+	 * #272: with arrows on the page it still carries no participant data and
+	 * needs no JavaScript.
+	 */
+	public function test_pages_with_arrows_carry_no_participant_data_or_script() {
+		$this->add_days( array( 2, 37, 39 ) );
+		$entry = jlife_challenges_save_and_share( $this->u['a'], $this->campaign, 'd001', $this->soap( 'SCORED-SOAP-xyz' ), array( $this->g['g1'] ) );
+		$this->assertNotWPError( $entry );
+		$user = get_userdata( $this->u['a'] );
+		foreach ( array( 0, $this->u['a'] ) as $viewer ) {
+			wp_set_current_user( $viewer );
+			foreach ( array( 'd001', 'd038' ) as $day ) {
+				$html = $this->page( $day, 'vi' );
+				foreach ( array( 'SCORED-SOAP', 'Group One', $user->display_name, $user->user_email, ' of 104', 'data-nonce', '/today', '/marathon', '/group', '<script', '<noscript', ' hidden', 'onclick', 'javascript:' ) as $bad ) {
+					$this->assertStringNotContainsString( $bad, $html, "{$day} viewer {$viewer}: {$bad}" );
+				}
+				$this->assertStringNotContainsString( '/soap', $this->daynav_of( $html ), 'the arrows never point at a signed-in screen' );
+			}
+		}
+	}
 }

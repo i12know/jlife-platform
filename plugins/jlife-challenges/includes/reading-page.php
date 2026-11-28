@@ -4,7 +4,9 @@
  * Today. The page is the standalone participant shell (screens.css, no theme)
  * with the same day line, title, reference list, reader and optional parallel
  * readings as Today, built by the same functions in screens.php, then a short
- * invitation and the plan's source line.
+ * invitation and the plan's source line. Previous / next day arrows sit around
+ * the day line (#272, amending #106), linking the plan's adjacent published
+ * reading-day pages.
  *
  * It is public: it reads the reading-day post and nothing else. Whether
  * someone is signed in decides one thing, the link at the bottom (to write
@@ -27,11 +29,9 @@ defined( 'ABSPATH' ) || exit;
  * @return string "en" or "vi".
  */
 function jlife_challenges_reading_page_language() {
-	if ( isset( $_GET['lang'] ) && is_string( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- a display language only; type-tested, then sanitized.
-		$lang = sanitize_key( wp_unslash( $_GET['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
-		if ( in_array( $lang, array( 'en', 'vi' ), true ) ) {
-			return $lang;
-		}
+	$switch = jlife_challenges_reading_page_switch();
+	if ( '' !== $switch ) {
+		return $switch;
 	}
 	if ( is_user_logged_in() ) {
 		$account = (string) get_user_meta( get_current_user_id(), 'locale', true );
@@ -40,6 +40,63 @@ function jlife_challenges_reading_page_language() {
 		}
 	}
 	return 0 === strpos( strtolower( (string) get_locale() ), 'vi' ) ? 'vi' : 'en';
+}
+
+/**
+ * The language chosen with the page's English | Tiếng Việt switch (`?lang=`),
+ * or '' when the address has none (or an unknown one).
+ *
+ * @return string "en", "vi" or ''.
+ */
+function jlife_challenges_reading_page_switch() {
+	if ( isset( $_GET['lang'] ) && is_string( $_GET['lang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- a display language only; type-tested, then sanitized.
+		$lang = sanitize_key( wp_unslash( $_GET['lang'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a display language only.
+		if ( in_array( $lang, array( 'en', 'vi' ), true ) ) {
+			return $lang;
+		}
+	}
+	return '';
+}
+
+/**
+ * The previous / next day arrows' targets on a public page (#272, amending
+ * #106): the same plan's reading-day posts for dNNN-1 and dNNN+1, each only
+ * when it exists and is published, so Day 1 has no previous link and the
+ * plan's last day no next one. They depend on the posts alone, never on the
+ * date, the visitor or sign-in (every published day is already open by its
+ * address), so the page stays the same for everyone. A language chosen with
+ * the switch stays on the link, as the switch builds it; nothing else is added.
+ *
+ * @param array $view Public day view (jlife_challenges_public_reading_view()).
+ * @return array Optional 'prev' / 'next': { index, url }.
+ */
+function jlife_challenges_public_adjacent_days( $view ) {
+	$plan_id = (string) ( $view['reading']['plan']['plan_id'] ?? '' );
+	$day_id  = (string) ( $view['reading']['day']['day_id'] ?? '' );
+	if ( '' === $plan_id || 1 !== preg_match( '/^d([0-9]{3})$/', $day_id, $m ) || ! function_exists( 'jlife_studies_find_reading_day' ) ) {
+		return array();
+	}
+	$number  = (int) $m[1];
+	$switch  = jlife_challenges_reading_page_switch();
+	$targets = array();
+	foreach ( array(
+		'prev' => $number - 1,
+		'next' => $number + 1,
+	) as $side => $other ) {
+		if ( $other < 1 || $other > 999 ) {
+			continue;
+		}
+		$post = jlife_studies_find_reading_day( $plan_id, sprintf( 'd%03d', $other ) );
+		$url  = $post && 'publish' === $post->post_status ? (string) get_permalink( $post ) : '';
+		if ( '' === $url ) {
+			continue;
+		}
+		$targets[ $side ] = array(
+			'index' => $other,
+			'url'   => '' === $switch ? $url : add_query_arg( 'lang', $switch, $url ),
+		);
+	}
+	return $targets;
 }
 
 /**
@@ -110,15 +167,15 @@ function jlife_challenges_render_public_invite( $view ) {
 }
 
 /**
- * The public page's body, in Today's order: day and date, title and
- * references, the reader, the optional parallel readings, the invitation and
- * the plan's source line.
+ * The public page's body, in Today's order: day and date (between the
+ * previous / next day arrows, #272), title and references, the reader, the
+ * optional parallel readings, the invitation and the plan's source line.
  *
  * @param array $view Public day view (jlife_challenges_public_reading_view()).
  * @return string
  */
 function jlife_challenges_render_public_reading( $view ) {
-	$out = jlife_challenges_render_day_head( $view )
+	$out = jlife_challenges_render_day_nav_row( $view, jlife_challenges_public_adjacent_days( $view ) )
 		. '<section class="jl-reading">' . jlife_challenges_render_reading_head( $view ) . '</section>'
 		. jlife_challenges_render_reader( $view )
 		. jlife_challenges_render_devotional( $view )
