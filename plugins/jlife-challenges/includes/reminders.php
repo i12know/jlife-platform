@@ -426,9 +426,10 @@ function jlife_challenges_reminder_label( $campaign_id ) {
  * @return string '' (no valid post), 'on' or 'off' (saved: the caller redirects, so a refresh never re-posts).
  */
 function jlife_challenges_handle_reminder_post( $user_id, $campaign_id ) {
-	if ( ! isset( $_POST['jl_reminder'] ) || ! check_admin_referer( JLIFE_CHALLENGES_REMINDER_NONCE, '_jlife_reminder' ) ) {
+	if ( ! isset( $_POST['jl_reminder'] ) ) {
 		return '';
 	}
+	check_admin_referer( JLIFE_CHALLENGES_REMINDER_NONCE, '_jlife_reminder' );
 	$choice = sanitize_key( wp_unslash( $_POST['jl_reminder'] ) );
 	if ( ! in_array( $choice, array( 'on', 'off' ), true ) ) {
 		return '';

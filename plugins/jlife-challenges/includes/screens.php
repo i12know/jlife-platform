@@ -888,9 +888,10 @@ function jlife_challenges_process_soap_request( $user_id, $view, $screen ) {
 		'redirect'     => '',
 		'error'        => '',
 	);
-	if ( ! isset( $_POST['jl_action'] ) || ! check_admin_referer( 'jlife_soap_' . $view['day_key'], '_jlife_soap' ) ) {
+	if ( ! isset( $_POST['jl_action'] ) ) {
 		return $state;
 	}
+	check_admin_referer( 'jlife_soap_' . $view['day_key'], '_jlife_soap' );
 	$text          = jlife_challenges_posted_text();
 	$state['text'] = $text;
 	// One box per group; only the ticked ones arrive. IDs are checked against the author's own groups by the gate.

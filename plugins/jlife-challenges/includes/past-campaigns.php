@@ -188,9 +188,10 @@ function jlife_challenges_past_share_ids( $user_id, $campaign_id ) {
  * @return string Error message ('' when there was no attempt).
  */
 function jlife_challenges_handle_past_unshare_post( $user_id, $campaign_id ) {
-	if ( ! isset( $_POST['jl_unshare_past'] ) || ! check_admin_referer( JLIFE_CHALLENGES_PAST_UNSHARE_NONCE, '_jlife_unshare_past' ) ) {
+	if ( ! isset( $_POST['jl_unshare_past'] ) ) {
 		return '';
 	}
+	check_admin_referer( JLIFE_CHALLENGES_PAST_UNSHARE_NONCE, '_jlife_unshare_past' );
 	$share_id = absint( wp_unslash( $_POST['jl_unshare_past'] ) );
 	$r        = in_array( $share_id, jlife_challenges_past_share_ids( $user_id, $campaign_id ), true )
 		? jlife_challenges_unshare( $user_id, $share_id )

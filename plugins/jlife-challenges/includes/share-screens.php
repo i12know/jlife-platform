@@ -205,9 +205,10 @@ function jlife_challenges_left_groups_section( $user_id ) {
  * @return string Error message ('' when there was no attempt).
  */
 function jlife_challenges_handle_old_share_post( $user_id ) {
-	if ( ! isset( $_POST['jl_unshare_old'] ) || ! check_admin_referer( 'jlife_unshare_old', '_jlife_unshare' ) ) {
+	if ( ! isset( $_POST['jl_unshare_old'] ) ) {
 		return '';
 	}
+	check_admin_referer( 'jlife_unshare_old', '_jlife_unshare' );
 	$share_id = absint( wp_unslash( $_POST['jl_unshare_old'] ) );
 	$pc       = jlife_challenges_participant_campaign( $user_id );
 	$allowed  = $pc ? array_map( 'intval', array_column( jlife_challenges_left_group_shares( $user_id, (int) $pc['campaign']['id'] ), 'id' ) ) : array();
@@ -253,7 +254,8 @@ function jlife_challenges_screen_share() {
 	}
 
 	$error = '';
-	if ( isset( $_POST['jl_share_action'] ) && check_admin_referer( 'jlife_share_' . $view['day_key'], '_jlife_share' ) ) {
+	if ( isset( $_POST['jl_share_action'] ) ) {
+		check_admin_referer( 'jlife_share_' . $view['day_key'], '_jlife_share' );
 		$error = jlife_challenges_handle_share_post( $user_id, $view );
 	}
 	jlife_challenges_send_page( __( 'Share', 'jlife-challenges' ), jlife_challenges_share_body( $view, $error ) . $left, 'group', 'share' );
@@ -497,9 +499,10 @@ function jlife_challenges_group_body( $view, $error = '', $joined = '', $more = 
  * @return string Error message ('' when there was no attempt).
  */
 function jlife_challenges_handle_join_post( $user_id ) {
-	if ( ! isset( $_POST['jl_invite_code'] ) || ! check_admin_referer( 'jlife_join_group', '_jlife_join' ) ) {
+	if ( ! isset( $_POST['jl_invite_code'] ) ) {
 		return '';
 	}
+	check_admin_referer( 'jlife_join_group', '_jlife_join' );
 	$code = sanitize_text_field( wp_unslash( $_POST['jl_invite_code'] ) );
 	$pc   = jlife_challenges_participant_campaign( $user_id );
 	if ( ! $pc ) {
@@ -541,9 +544,10 @@ function jlife_challenges_handle_manage_post( $user_id ) {
 		'body'       => '',
 		'start_name' => '',
 	);
-	if ( ! isset( $_POST['jl_group_action'] ) || ! check_admin_referer( 'jlife_group_manage', '_jlife_group' ) ) {
+	if ( ! isset( $_POST['jl_group_action'] ) ) {
 		return $out;
 	}
+	check_admin_referer( 'jlife_group_manage', '_jlife_group' );
 	$action   = sanitize_key( wp_unslash( $_POST['jl_group_action'] ) );
 	$group_id = isset( $_POST['jl_group_id'] ) ? absint( wp_unslash( $_POST['jl_group_id'] ) ) : 0;
 

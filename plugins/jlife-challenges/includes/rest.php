@@ -142,6 +142,11 @@ function jlife_challenges_photo_status( $error ) {
  * @return WP_REST_Response|WP_Error
  */
 function jlife_challenges_rest_save_photo( WP_REST_Request $request ) {
+	/**
+	 * Uploaded files; the stubs type this narrowly, but it is outside input, so stay defensive.
+	 *
+	 * @var array<string, mixed> $files
+	 */
 	$files = $request->get_file_params();
 	$r     = jlife_challenges_photo_attach(
 		get_current_user_id(),
