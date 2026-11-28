@@ -120,9 +120,10 @@ function jlife_challenges_rest_save_bible( WP_REST_Request $request ) {
  * @return bool True when saved (the caller redirects, so a refresh never re-posts).
  */
 function jlife_challenges_handle_bible_post( $user_id ) {
-	if ( ! isset( $_POST['jl_bible'] ) || ! check_admin_referer( JLIFE_CHALLENGES_BIBLE_NONCE, '_jlife_bible' ) ) {
+	if ( ! isset( $_POST['jl_bible'] ) ) {
 		return false;
 	}
+	check_admin_referer( JLIFE_CHALLENGES_BIBLE_NONCE, '_jlife_bible' );
 	$changes = array();
 	foreach ( array(
 		'jl_bible_version'   => 'primary',

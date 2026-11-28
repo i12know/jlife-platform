@@ -422,10 +422,12 @@ function jlife_auth_ip() {
  */
 function jlife_auth_page_signin() {
 	$step = isset( $_POST['step'] ) ? sanitize_key( wp_unslash( $_POST['step'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce checked per step below.
-	if ( 'verify' === $step && check_admin_referer( 'jlife_auth_verify', '_jlife_auth' ) ) {
+	if ( 'verify' === $step ) {
+		check_admin_referer( 'jlife_auth_verify', '_jlife_auth' );
 		jlife_auth_handle_verify();
 	}
-	if ( 'resend' === $step && check_admin_referer( 'jlife_auth_resend', '_jlife_resend' ) ) {
+	if ( 'resend' === $step ) {
+		check_admin_referer( 'jlife_auth_resend', '_jlife_resend' );
 		jlife_auth_handle_resend();
 	}
 	$error = '';
@@ -433,7 +435,8 @@ function jlife_auth_page_signin() {
 	if ( 'request' === $step && jlife_auth_is_relang() ) {
 		jlife_auth_send_page( __( 'Sign in', 'jlife-auth' ), jlife_auth_signin_body( '', $email ) ); // A language button: same page, other language.
 	}
-	if ( 'request' === $step && check_admin_referer( 'jlife_auth_signin', '_jlife_auth' ) ) {
+	if ( 'request' === $step ) {
+		check_admin_referer( 'jlife_auth_signin', '_jlife_auth' );
 		$email = sanitize_email( $email );
 		$sent  = jlife_auth_request_code( $email, 'signin', array(), jlife_auth_ip() );
 		if ( ! is_wp_error( $sent ) ) {
@@ -556,10 +559,12 @@ function jlife_auth_join_form( $mode, $input, $error = '' ) {
  */
 function jlife_auth_page_join() {
 	$step = isset( $_POST['step'] ) ? sanitize_key( wp_unslash( $_POST['step'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce checked per step below.
-	if ( 'verify' === $step && check_admin_referer( 'jlife_auth_verify', '_jlife_auth' ) ) {
+	if ( 'verify' === $step ) {
+		check_admin_referer( 'jlife_auth_verify', '_jlife_auth' );
 		jlife_auth_handle_verify();
 	}
-	if ( 'resend' === $step && check_admin_referer( 'jlife_auth_resend', '_jlife_resend' ) ) {
+	if ( 'resend' === $step ) {
+		check_admin_referer( 'jlife_auth_resend', '_jlife_resend' );
 		jlife_auth_handle_resend();
 	}
 	$error = '';
@@ -575,7 +580,8 @@ function jlife_auth_page_join() {
 	);
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a page selector; the POST below re-reads it with its nonce.
 	$mode = jlife_auth_join_mode( isset( $_GET['mode'] ) ? sanitize_key( wp_unslash( $_GET['mode'] ) ) : '' );
-	if ( 'request' === $step && check_admin_referer( 'jlife_auth_join', '_jlife_auth' ) ) {
+	if ( 'request' === $step ) {
+		check_admin_referer( 'jlife_auth_join', '_jlife_auth' );
 		foreach ( array_keys( $in ) as $k ) {
 			$in[ $k ] = isset( $_POST[ $k ] ) ? sanitize_text_field( wp_unslash( $_POST[ $k ] ) ) : '';
 		}
@@ -612,7 +618,8 @@ function jlife_auth_page_consent() {
 	}
 	$error = '';
 	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce checked here.
-	if ( isset( $_POST['step'] ) && check_admin_referer( 'jlife_auth_consent', '_jlife_auth' ) ) {
+	if ( isset( $_POST['step'] ) ) {
+		check_admin_referer( 'jlife_auth_consent', '_jlife_auth' );
 		if ( ! empty( $_POST['agree'] ) ) {
 			jlife_auth_record_consent( $user_id );
 			wp_safe_redirect( jlife_auth_redirect_target() );

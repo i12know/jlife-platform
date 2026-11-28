@@ -129,9 +129,10 @@ function jlife_challenges_rest_save_language( WP_REST_Request $request ) {
  * @return bool True when saved (the caller redirects, so the next page is in the new language).
  */
 function jlife_challenges_handle_language_post( $user_id ) {
-	if ( ! isset( $_POST['jl_language'] ) || ! check_admin_referer( JLIFE_CHALLENGES_LANGUAGE_NONCE, '_jlife_language' ) ) {
+	if ( ! isset( $_POST['jl_language'] ) ) {
 		return false;
 	}
+	check_admin_referer( JLIFE_CHALLENGES_LANGUAGE_NONCE, '_jlife_language' );
 	if ( ! is_string( $_POST['jl_language'] ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- a type test; the value is sanitized below.
 		return false;
 	}
