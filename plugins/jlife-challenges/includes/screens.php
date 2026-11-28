@@ -719,26 +719,47 @@ function jlife_challenges_compress_sections( $ids ) {
  * The day heading with the previous / next day arrows around it (#225).
  *
  * A link shows only for an adjacent day this participant may read now
- * (jlife_challenges_adjacent_days()). Without one, an empty cell keeps the
- * heading centered.
+ * (jlife_challenges_adjacent_days()), to that day's writing screen.
  *
  * @param array $view Day view.
  * @return string
  */
 function jlife_challenges_render_day_nav( $view ) {
 	$adjacent = jlife_challenges_adjacent_days( $view );
-	$gap      = '<span class="jl-daynav-gap"></span>';
-	$prev     = $gap;
-	$next     = $gap;
-	if ( $adjacent['prev'] ) {
-		/* translators: %d: day number. */
-		$label = sprintf( __( 'Previous day: Day %d', 'jlife-challenges' ), $adjacent['prev'] );
-		$prev  = jlife_challenges_day_nav_link( $adjacent['prev'], $label, '&larr;' );
+	$targets  = array();
+	foreach ( array( 'prev', 'next' ) as $side ) {
+		if ( $adjacent[ $side ] ) {
+			$targets[ $side ] = array(
+				'index' => $adjacent[ $side ],
+				'url'   => jlife_challenges_screen_url( 'soap', jlife_challenges_day_key( $adjacent[ $side ] ) ),
+			);
+		}
 	}
-	if ( $adjacent['next'] ) {
+	return jlife_challenges_render_day_nav_row( $view, $targets );
+}
+
+/**
+ * The arrow row itself, shared by the signed-in screens (#225) and the public
+ * /reading/ pages (#272), which only choose the targets. A side with no target
+ * gets an empty cell, which keeps the heading centered.
+ *
+ * @param array $view    Day view (for the heading).
+ * @param array $targets Optional 'prev' / 'next': { index: day number, url: link }.
+ * @return string
+ */
+function jlife_challenges_render_day_nav_row( $view, $targets ) {
+	$gap  = '<span class="jl-daynav-gap"></span>';
+	$prev = $gap;
+	$next = $gap;
+	if ( ! empty( $targets['prev'] ) ) {
 		/* translators: %d: day number. */
-		$label = sprintf( __( 'Next day: Day %d', 'jlife-challenges' ), $adjacent['next'] );
-		$next  = jlife_challenges_day_nav_link( $adjacent['next'], $label, '&rarr;' );
+		$label = sprintf( __( 'Previous day: Day %d', 'jlife-challenges' ), $targets['prev']['index'] );
+		$prev  = jlife_challenges_day_nav_link( $targets['prev']['url'], $label, '&larr;' );
+	}
+	if ( ! empty( $targets['next'] ) ) {
+		/* translators: %d: day number. */
+		$label = sprintf( __( 'Next day: Day %d', 'jlife-challenges' ), $targets['next']['index'] );
+		$next  = jlife_challenges_day_nav_link( $targets['next']['url'], $label, '&rarr;' );
 	}
 	return '<div class="jl-daynav">' . $prev . jlife_challenges_render_day_head( $view ) . $next . '</div>';
 }
@@ -746,13 +767,13 @@ function jlife_challenges_render_day_nav( $view ) {
 /**
  * One previous / next day link: a real link to that day's page; the arrow is decoration.
  *
- * @param int    $index Day index.
+ * @param string $url   The day's page.
  * @param string $label Accessible name, e.g. "Next day: Day 3".
  * @param string $arrow Arrow entity (trusted markup).
  * @return string
  */
-function jlife_challenges_day_nav_link( $index, $label, $arrow ) {
-	return '<a class="jl-daynav-link" href="' . esc_url( jlife_challenges_screen_url( 'soap', jlife_challenges_day_key( $index ) ) ) . '" aria-label="' . esc_attr( $label ) . '"><span aria-hidden="true">' . $arrow . '</span></a>';
+function jlife_challenges_day_nav_link( $url, $label, $arrow ) {
+	return '<a class="jl-daynav-link" href="' . esc_url( $url ) . '" aria-label="' . esc_attr( $label ) . '"><span aria-hidden="true">' . $arrow . '</span></a>';
 }
 
 /**
