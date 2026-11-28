@@ -98,4 +98,92 @@ class Test_Nonce_Gates extends Jlife_Challenges_TestCase {
 			}
 		}
 	}
+
+	/**
+	 * Rows a participant's SOAP save would write for the campaign.
+	 *
+	 * @param int $user_id User.
+	 * @return array{entries:int,revisions:int,ledger:int,shares:int}
+	 */
+	private function written( $user_id ) {
+		global $wpdb;
+		$count = static function ( $table, $where ) use ( $wpdb ) {
+			return (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . jlife_challenges_table( $table ) . ' WHERE ' . $where ); // phpcs:ignore WordPress.DB
+		};
+		$uid   = (int) $user_id;
+		$cid   = (int) $this->campaign;
+		return array(
+			'entries'   => $count( 'soap_entries', "user_id = $uid AND campaign_id = $cid" ),
+			'revisions' => $count( 'soap_revisions', "user_id = $uid" ),
+			'ledger'    => $count( 'score_ledger', "user_id = $uid AND campaign_id = $cid" ),
+			'shares'    => $count( 'group_shares', "campaign_id = $cid" ),
+		);
+	}
+
+	/**
+	 * A missing or wrong nonce stops a SOAP save: nothing is saved, scored or shared.
+	 */
+	public function test_soap_save_needs_its_nonce() {
+		$user = $this->u['a'];
+		wp_set_current_user( $user );
+		$view = jlife_challenges_day_view( $user, 'd001' );
+		$this->assertSame( 'd001', $view['day_key'] );
+		$before = $this->written( $user );
+
+		foreach ( array( array(), array( '_jlife_soap' => 'bad' ), array( '_jlife_soap' => wp_create_nonce( 'jlife_soap_d002' ) ) ) as $extra ) {
+			$_POST    = array(
+				'jl_text'         => $this->soap( 'nonce' ),
+				'jl_action'       => 'submit',
+				'jl_day'          => 'd001',
+				'jl_share_groups' => array( (string) $this->g['g1'] ),
+			) + $extra;
+			$_REQUEST = $_POST;
+			try {
+				jlife_challenges_process_soap_request( $user, $view, 'soap' );
+				$this->fail( 'a SOAP post without a valid nonce for its day must stop' );
+			} catch ( WPDieException $e ) {
+				$this->assertSame( $before, $this->written( $user ), 'nothing saved, scored or shared' );
+			}
+		}
+
+		// Control: the same post with the right nonce is accepted and does write.
+		$_POST    = array(
+			'jl_text'     => $this->soap( 'nonce' ),
+			'jl_action'   => 'draft',
+			'jl_day'      => 'd001',
+			'_jlife_soap' => wp_create_nonce( 'jlife_soap_d001' ),
+		);
+		$_REQUEST = $_POST;
+		$state    = jlife_challenges_process_soap_request( $user, $view, 'soap' );
+		$this->assertSame( '', $state['error'] );
+		$this->assertSame( $before['entries'] + 1, $this->written( $user )['entries'], 'the control draft was saved' );
+	}
+
+	/**
+	 * A missing or wrong nonce stops a share post on the /share screen: no share row is made.
+	 *
+	 * The screen function is called as a whole: it only sends a page (and exits)
+	 * after its nonce line, so a bad nonce is the one path that ends in wp_die().
+	 */
+	public function test_share_post_needs_its_nonce() {
+		$user = $this->u['a'];
+		$this->assertIsArray( jlife_challenges_submit( $user, $this->campaign, 'd001', $this->soap( 'share' ) ) );
+		wp_set_current_user( $user );
+		$before = $this->written( $user );
+
+		foreach ( array( array(), array( '_jlife_share' => 'bad' ), array( '_jlife_share' => wp_create_nonce( 'jlife_soap_d001' ) ) ) as $extra ) {
+			$_POST    = array(
+				'jl_share_action' => 'post',
+				'jl_share_groups' => array( (string) $this->g['g1'] ),
+			) + $extra;
+			$_REQUEST = $_POST;
+			try {
+				jlife_challenges_screen_share();
+				$this->fail( 'a share post without a valid nonce must stop' );
+			} catch ( WPDieException $e ) {
+				$this->assertSame( $before, $this->written( $user ), 'no group share was created' );
+				$this->assertSame( 0, $before['shares'] );
+			}
+		}
+	}
 }

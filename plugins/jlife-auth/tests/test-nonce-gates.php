@@ -81,4 +81,28 @@ class Test_Auth_Nonce_Gates extends WP_UnitTestCase {
 			}
 		}
 	}
+
+	/**
+	 * A missing or wrong nonce stops the consent page: no consent is recorded.
+	 */
+	public function test_consent_post_needs_its_nonce() {
+		$user = self::factory()->user->create( array( 'role' => 'subscriber' ) );
+		wp_set_current_user( $user );
+
+		foreach ( array( array(), array( '_jlife_auth' => 'bad' ), array( '_jlife_auth' => wp_create_nonce( 'jlife_auth_signin' ) ) ) as $extra ) {
+			$_POST    = array(
+				'step'  => 'agree',
+				'agree' => '1',
+			) + $extra;
+			$_REQUEST = $_POST;
+			try {
+				jlife_auth_page_consent();
+				$this->fail( 'a consent post without a valid nonce must stop' );
+			} catch ( WPDieException $e ) {
+				$this->assertSame( '', (string) get_user_meta( $user, 'jlife_consent_version', true ), 'no consent version recorded' );
+				$this->assertSame( '', (string) get_user_meta( $user, 'jlife_consent_at', true ), 'no consent time recorded' );
+				$this->assertTrue( jlife_auth_needs_consent( $user ), 'still needs consent' );
+			}
+		}
+	}
 }
